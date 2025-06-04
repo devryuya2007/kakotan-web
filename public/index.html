@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>単語帳アプリ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- アプリのメインコンテナ -->
+    <div id="app">
+        <h1>単語帳アプリ</h1>
+        <!-- 英単語を表示する要素 -->
+        <p id="word" class="word"></p>
+        <!-- 日本語訳を表示する要素 -->
+        <p id="translation" class="translation hidden"></p>
+        <div class="buttons">
+            <!-- 答え（日本語訳）を表示するボタン -->
+            <button id="show-translation">答えを見る</button>
+            <!-- 次の単語へ進むボタン -->
+            <button id="next-word" disabled>次へ</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
