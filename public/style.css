@@ -1,9 +1,10 @@
 /* シンプルなスタイル設定 */
 body {
-    font-family: sans-serif;
+    /* 画面全体のフォントと背景 */
+    font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
     margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5;
+    padding: 40px 10px;
+    background: linear-gradient(135deg, #e0f7fa, #80deea);
 }
 
 #app {
@@ -42,25 +43,38 @@ button {
 
 /* ホームや成績ページの中央寄せ用 */
 #home, #grades {
+    /* 中央に配置する白いカード */
     max-width: 400px;
     margin: 0 auto;
     text-align: center;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* 指定のボタンスタイル */
 .btn-square-shadow {
+    /* ポップな色合いのボタン */
     display: inline-block;
-    padding: 0.5em 1em;
+    margin: 10px;
+    padding: 0.6em 1.2em;
     text-decoration: none;
-    background: #627295;
-    color: #FFF;
-    border-bottom: solid 4px #627295;
-    border-radius: 3px;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 8px;
+    background: linear-gradient(45deg, #ff6b6b, #f94d6a);
+    box-shadow: 0 4px 0 #c13b44;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.btn-square-shadow:hover {
+    /* ホバー時に少し持ち上がる */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #c13b44;
 }
 .btn-square-shadow:active {
-    -webkit-transform: translateY(4px);
-    transform: translateY(4px);
-    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);
-    border-bottom: none;
+    /* 押した感覚を出す */
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #c13b44;
 }
 
