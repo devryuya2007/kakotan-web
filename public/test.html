@@ -3,24 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>単語帳アプリ</title>
+    <title>Phrasey - 単語テスト</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- アプリのメインコンテナ -->
-    <div id="app">
-        <h1>単語帳アプリ</h1>
-        <!-- 英単語を表示する要素 -->
-        <p id="word" class="word"></p>
-        <!-- 日本語訳を表示する要素 -->
-        <p id="translation" class="translation hidden"></p>
-        <div class="buttons">
-            <!-- 答え（日本語訳）を表示するボタン -->
-            <button id="show-translation">答えを見る</button>
-            <!-- 次の単語へ進むボタン -->
-            <button id="next-word" disabled>次へ</button>
-        </div>
+    <!-- ホーム画面 -->
+    <div id="home-screen" class="container fade-in">
+        <h1 class="title">Phrasey</h1>
+        <button class="btn btn-primary" onclick="startQuiz()">クイズを始める</button>
+        <button class="btn btn-secondary" onclick="showWordList()">単語一覧</button>
     </div>
+
+    <!-- クイズ画面 -->
+    <div id="quiz-screen" class="container hidden">
+        <button class="back-btn" onclick="goHome()">←</button>
+        <div class="score-display">
+            <div>問題 <span id="current-question">1</span> / 20</div>
+            <div>正解数: <span id="correct-count">0</span></div>
+        </div>
+        <div class="question-card">
+            <div class="english-word" id="english-word">apple</div>
+        </div>
+        <div id="choices">
+            <button class="btn btn-choice" onclick="selectAnswer(0)">りんご</button>
+            <button class="btn btn-choice" onclick="selectAnswer(1)">バナナ</button>
+            <button class="btn btn-choice" onclick="selectAnswer(2)">オレンジ</button>
+            <button class="btn btn-choice" onclick="selectAnswer(3)">ぶどう</button>
+        </div>
+        <button id="next-btn" class="btn btn-secondary hidden" onclick="nextQuestion()">次の問題</button>
+    </div>
+
+    <!-- 結果画面 -->
+    <div id="result-screen" class="container hidden">
+        <h2 class="title">結果発表</h2>
+        <div class="score-display">
+            <div style="font-size: 1.5rem; margin-bottom: 10px;">
+                <span id="final-score">0</span> / 20 問正解！
+            </div>
+            <div id="score-message">お疲れ様でした！</div>
+        </div>
+        <button class="btn btn-primary" onclick="startQuiz()">もう一度</button>
+        <a href="index.html" class="btn btn-secondary">ホームに戻る</a>
+    </div>
+
+    <!-- 単語一覧画面 -->
+    <div id="wordlist-screen" class="container hidden">
+        <button class="back-btn" onclick="goHome()">←</button>
+        <h2 class="title">単語一覧</h2>
+        <div id="word-list" style="max-height: 400px; overflow-y: auto; text-align: left;"></div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

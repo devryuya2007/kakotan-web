@@ -1,80 +1,203 @@
-/* シンプルなスタイル設定 */
-body {
-    /* 画面全体のフォントと背景 */
-    font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+/* 基本のリセット */
+* {
     margin: 0;
-    padding: 40px 10px;
-    background: linear-gradient(135deg, #e0f7fa, #80deea);
+    padding: 0;
+    box-sizing: border-box;
 }
 
-#app {
-    max-width: 400px;
-    margin: 0 auto;
-    background-color: #fff;
+/* 全体の背景とフォント設定 */
+body {
+    font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.word {
-    font-size: 2em;
+/* 画面内で使うカード風のコンテナ */
+.container {
+    max-width: 400px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 30px;
     text-align: center;
-    margin-bottom: 10px;
+    position: relative;
 }
 
-.translation {
-    font-size: 1.5em;
-    text-align: center;
+/* タイトルのスタイル */
+.title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ボタン共通の見た目 */
+.btn {
+    width: 100%;
+    padding: 15px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* 紫系のボタン */
+.btn-primary {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
+}
+.btn-primary:active {
+    transform: translateY(2px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* 緑系のボタン */
+.btn-secondary {
+    background: linear-gradient(45deg, #11998e, #38ef7d);
+    color: white;
+    box-shadow: 0 8px 16px rgba(17, 153, 142, 0.3);
+}
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(17, 153, 142, 0.4);
+}
+.btn-secondary:active {
+    transform: translateY(2px);
+    box-shadow: 0 4px 8px rgba(17, 153, 142, 0.3);
+}
+
+/* 選択肢ボタン用 */
+.btn-choice {
+    background: linear-gradient(45deg, #f093fb, #f5576c);
+    color: white;
+    box-shadow: 0 6px 12px rgba(240, 147, 251, 0.3);
+    font-size: 1rem;
+    margin: 8px 0;
+}
+.btn-choice:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(240, 147, 251, 0.4);
+}
+.btn-choice:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 6px rgba(240, 147, 251, 0.3);
+}
+
+/* 正解・不正解時の色付け */
+.btn-correct {
+    background: linear-gradient(45deg, #11998e, #38ef7d) !important;
+    animation: pulse 0.5s ease-in-out;
+}
+.btn-incorrect {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b) !important;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* クイズ中のカード表示 */
+.question-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.english-word {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.score-display {
+    background: linear-gradient(45deg, #ffecd2, #fcb69f);
+    border-radius: 15px;
+    padding: 15px;
     margin-bottom: 20px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* 戻るボタン */
+.back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+.back-btn:active {
+    transform: scale(0.95);
 }
 
 .hidden {
     display: none;
 }
 
-.buttons {
-    text-align: center;
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-button {
-    padding: 10px 20px;
-    margin: 5px;
-    font-size: 1em;
+/* スマホ向けの調整 */
+@media (max-width: 480px) {
+    .container {
+        padding: 20px;
+        margin: 10px;
+    }
+    .title {
+        font-size: 2rem;
+    }
+    .english-word {
+        font-size: 1.5rem;
+    }
+    .btn {
+        padding: 12px 15px;
+        font-size: 1rem;
+    }
 }
-
-/* ホームや成績ページの中央寄せ用 */
-#home, #grades {
-    /* 中央に配置する白いカード */
-    max-width: 400px;
-    margin: 0 auto;
-    text-align: center;
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* 指定のボタンスタイル */
-.btn-square-shadow {
-    /* ポップな色合いのボタン */
-    display: inline-block;
-    margin: 10px;
-    padding: 0.6em 1.2em;
-    text-decoration: none;
-    color: #fff;
-    font-weight: bold;
-    border-radius: 8px;
-    background: linear-gradient(45deg, #ff6b6b, #f94d6a);
-    box-shadow: 0 4px 0 #c13b44;
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-.btn-square-shadow:hover {
-    /* ホバー時に少し持ち上がる */
-    transform: translateY(-2px);
-    box-shadow: 0 6px 0 #c13b44;
-}
-.btn-square-shadow:active {
-    /* 押した感覚を出す */
-    transform: translateY(2px);
-    box-shadow: 0 2px 0 #c13b44;
-}
-
