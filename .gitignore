@@ -1,0 +1,25 @@
+# Node
+node_modules/
+dist/
+build/
+npm-debug.log*
+yarn-error.log
+
+# Python (for OCR/processing scripts)
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Env/config
+.env
+.env.*
+.DS_Store
+
+# Data artifacts
+data/extracted/
+data/out/
+data/source-pdfs/
+
+# Keep placeholders
+!data/**/.gitkeep
