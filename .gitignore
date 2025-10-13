@@ -21,5 +21,10 @@ data/extracted/
 data/out/
 data/source-pdfs/
 
+# Frontend (nested Vite app)
+scripts/home.js/node_modules/
+scripts/home.js/dist/
+scripts/home.js/.vite/
+
 # Keep placeholders
 !data/**/.gitkeep
