@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "freq": "node scripts/freq.mjs"
+    "freq": "node scripts/freq.mjs",
+    "dev": "npm --prefix home.js run dev",
+    "build": "npm --prefix home.js run build -- --outDir ../dist --emptyOutDir",
+    "preview": "npm --prefix home.js run preview"
   },
   "repository": {
     "type": "git",
