@@ -1,10 +1,8 @@
-import { StrictMode, useContext } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import {
   createBrowserRouter,
   RouterProvider,
-  createRoutesFromElements,
-  Route,
 } from "react-router-dom";
 import "./index.css";
 import App from "./App.tsx";
@@ -16,14 +14,10 @@ if (!container) {
   throw new Error("Root element #root not found");
 }
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <>
-      <Route path="/" element={<App />} />
-      <Route path="/menu" element={<Menu />} />
-    </>
-  )
-);
+const router = createBrowserRouter([
+  { path: "/", element: <App /> },
+  { path: "/menu", element: <Menu /> },
+]);
 
 createRoot(container).render(
   <StrictMode>

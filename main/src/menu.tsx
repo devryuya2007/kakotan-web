@@ -1,5 +1,5 @@
-import App from "./App";
+import {} App  from "./App";
 
-export default function menu() {
-  return App;
+export default function Menu() {
+  return BackgroundGlow();
 }
