@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, useContext } from "react";
 import { createRoot } from "react-dom/client";
 import {
   createBrowserRouter,
@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import "./index.css";
 import App from "./App.tsx";
+import Menu from "./menu.tsx";
 
 const container = document.getElementById("root");
 
@@ -16,7 +17,12 @@ if (!container) {
 }
 
 const router = createBrowserRouter(
-  createRoutesFromElements(<Route path="/*" element={<App />} />)
+  createRoutesFromElements(
+    <>
+      <Route path="/" element={<App />} />
+      <Route path="/menu" element={<Menu />} />
+    </>
+  )
 );
 
 createRoot(container).render(
