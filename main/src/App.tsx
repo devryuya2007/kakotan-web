@@ -5,10 +5,10 @@ import { PromoCard } from "./components/PromoCard";
 import { QuickStartButton } from "./components/QuickStartButton";
 
 export default function App() {
-  const navigate = useNavigate();
+  const nav = useNavigate();
 
   const handleQuickStart = () => {
-    navigate("/menu");
+    nav("/menu");
   };
 
   return (

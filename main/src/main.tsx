@@ -1,13 +1,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import App from "./App.tsx";
-import Menu from "./menu.tsx";
-
+import Menu, { BodyStyle } from "./menu.tsx";
 const container = document.getElementById("root");
 
 if (!container) {
@@ -16,7 +12,7 @@ if (!container) {
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
-  { path: "/menu", element: <Menu /> },
+  { path: "/menu", element: <Menu BodyStyle={BodyStyle()} /> },
 ]);
 
 createRoot(container).render(
