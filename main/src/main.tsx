@@ -12,7 +12,7 @@ if (!container) {
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
-  { path: "/menu", element: <Menu BodyStyle={BodyStyle()} /> },
+  { path: "/menu", element: <Menu BodyStyle={BodyStyle} /> },
 ]);
 
 createRoot(container).render(
