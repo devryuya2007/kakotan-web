@@ -1,50 +1,52 @@
+import type { ReactNode } from "react";
+import { useState } from "react";
 import { AppLayout } from "./components/AppLayout";
 import "./index.css";
 import { QuickStartButtonStyle } from "./App";
-import { Modal } from "./components/test_7/Modal";
+import { Modal } from "./components/Modal";
+import ModalCompornentPop_7 from "./components/test_7/ModalCompornentPop_7";
 
-const MENU_BUTTON_LABELS = [
-  { label: "令和３年", path: "/components/test_3/main" },
-  { label: "令和４年", path: "/components/test_4/main" },
-  { label: "令和５年", path: "/components/test_5/main" },
-  { label: "令和６年", path: "/components/test_6/main" },
-  { label: "令和７年", path: "/components/test_7/main" },
-];
+const MENU_ITEMS = [
+  { label: "令和３年", path: "/components/test_3/main", modalKey: "reiwa3" },
+  { label: "令和４年", path: "/components/test_4/main", modalKey: "reiwa4" },
+  { label: "令和５年", path: "/components/test_5/main", modalKey: "reiwa5" },
+  { label: "令和６年", path: "/components/test_6/main", modalKey: "reiwa6" },
+  { label: "令和７年", path: "/components/test_7/main", modalKey: "reiwa7" },
+] as const;
 
-interface MenuButtonProps {
-  label: string;
-  // onClick?: () => void;
-  className: string;
-  Modal: any;
-  index: string;
-}
-
-export const BodyStyle =
-  "flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#0b0b13] to-[#1a1a23] p-4";
+type MenuItem = (typeof MENU_ITEMS)[number];
+type MenuModalKey = MenuItem["modalKey"];
 
 export default function Menu() {
+  const [openKey, setOpenKey] = useState<MenuModalKey | null>(null);
+
+  const activeItem = openKey
+    ? MENU_ITEMS.find((item) => item.modalKey === openKey)
+    : undefined;
+
+  const modalContent = createModalContent(activeItem);
+
   return (
     <AppLayout>
-      <div className=" my-auto w-full max-w-4xl rounded-2xl  bg-white/5 ">
+      <div className="my-auto w-full max-w-4xl rounded-2xl bg-white/5">
         <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl bg-[#0b0b13]/80 backdrop-blur-md">
-          <div className="flex text-center min-h-0 flex-1 flex-col gap-6 overflow-hidden px-8 py-10 sm:gap-8 sm:px-12 sm:py-12">
+          <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-hidden px-8 py-10 text-center sm:gap-8 sm:px-12 sm:py-12">
             <header className="space-y-8">
               <h1 className="select-none text-2xl font-semibold tracking-widest text-[#f2c97d] sm:text-3xl">
                 SELECT
               </h1>
-              <p className="text-sm text-[#f2c97d]/70 select-none">
+              <p className="select-none text-sm text-[#f2c97d]/70">
                 出題範囲を選んでください。
               </p>
             </header>
 
             <section>
               <div className="grid grid-cols-3 gap-4 sm:gap-6">
-                {MENU_BUTTON_LABELS.map(({ label, index }, onClick) => (
+                {MENU_ITEMS.map(({ label, modalKey }) => (
                   <MenuButton
-                    className={QuickStartButtonStyle}
-                    key={label + index}
+                    key={modalKey}
                     label={label}
-                    onClick={}
+                    onSelect={() => setOpenKey(modalKey)}
                   />
                 ))}
               </div>
@@ -52,20 +54,71 @@ export default function Menu() {
           </div>
         </div>
       </div>
+
+      <Modal
+        open={Boolean(activeItem)}
+        onClose={() => setOpenKey(null)}
+        content={modalContent}
+      />
     </AppLayout>
   );
 }
 
-const ToModal = ({ open, onClose, children }: ModalProps) => {
-  Modal;
+type MenuButtonProps = {
+  label: string;
+  onSelect: () => void;
 };
 
-export const MenuButton = ({ label, Modal }: MenuButtonProps) => (
-  <button type="button" onClick={Modal} className={QuickStartButtonStyle}>
-    {label}
-  </button>
-);
+function MenuButton({ label, onSelect }: MenuButtonProps) {
+  return (
+    <button type="button" onClick={onSelect} className={QuickStartButtonStyle}>
+      {label}
+    </button>
+  );
+}
 
-export function ButtonWrapStyle() {
-  return <div></div>;
+function createModalContent(item: MenuItem | undefined): ReactNode {
+  if (!item) {
+    return null;
+  }
+
+  if (item.modalKey === "reiwa7") {
+    return <ModalCompornentPop_7 />;
+  }
+
+  return (
+    <BasicModalContent
+      yearLabel={item.label}
+      startButtonLabel="開始する"
+      description="この問題は共通テストの出題傾向から頻出語を抜粋した練習セットです。"
+      estimatedTime="終了目安は10分です。"
+    />
+  );
+}
+
+type BasicModalContentProps = {
+  yearLabel: string;
+  description: string;
+  estimatedTime: string;
+  startButtonLabel: string;
+};
+
+function BasicModalContent({
+  yearLabel,
+  description,
+  estimatedTime,
+  startButtonLabel,
+}: BasicModalContentProps) {
+  return (
+    <div className="space-y-3 text-left">
+      <h1 className="text-xl font-semibold text-[#f2c97d]">共通テスト　{yearLabel}</h1>
+      <p className="text-sm text-white/80">{description}</p>
+      <p className="text-sm text-white/80">{estimatedTime}</p>
+      <div className="pt-2 text-right">
+        <button type="button" className={QuickStartButtonStyle}>
+          {startButtonLabel}
+        </button>
+      </div>
+    </div>
+  );
 }

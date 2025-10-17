@@ -5,10 +5,10 @@ import { createPortal } from "react-dom";
 type ModalProps = {
   open: boolean;
   onClose: () => void;
-  children: ReactNode;
+  content: ReactNode;
 };
 
-export function Modal({ open, onClose, children }: ModalProps) {
+export function Modal({ open, onClose, content }: ModalProps) {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -30,19 +30,19 @@ export function Modal({ open, onClose, children }: ModalProps) {
   }
 
   return createPortal(
-    <ModalShell onClose={onClose}>{children}</ModalShell>,
+    <ModalShell onClose={onClose} content={content} />,
     document.body
   );
 }
 
 type ModalShellProps = {
   onClose: () => void;
-  children: ReactNode;
+  content: ReactNode;
 };
 
-function ModalShell({ onClose, children }: ModalShellProps) {
+function ModalShell({ onClose, content }: ModalShellProps) {
   return (
-    <div className="fixed inset-0 z-50">
+    <div className="fixed inset-0 z-50 select-none">
       <div
         className="absolute inset-0 bg-black/60"
         onClick={onClose}
@@ -50,7 +50,7 @@ function ModalShell({ onClose, children }: ModalShellProps) {
       />
       <div className="absolute inset-0 grid place-items-center p-6">
         <div className="w-full max-w-lg rounded-2xl border border-[#f2c97d1a] bg-[#0b0b13] p-6 shadow-[0_20px_45px_-25px_rgba(0,0,0,0.75)]">
-          {children}
+          {content}
         </div>
       </div>
     </div>
