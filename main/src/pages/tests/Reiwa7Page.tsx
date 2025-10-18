@@ -1,4 +1,4 @@
-export default function TestPageMainCompornent7() {
+export default function Reiwa7Page() {
   return (
     <>
       <div>main</div>

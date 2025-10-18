@@ -1,23 +1,30 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
+<<<<<<< HEAD:main/src/menu.tsx
 import { useNavigate } from "react-router-dom";
 import { AppLayout } from "./components/AppLayout";
 import "./index.css";
 import { QuickStartButtonStyle } from "./App";
 import { Modal } from "./components/Modal";
+=======
+import { AppLayout } from "../../components/layout/AppLayout";
+import "../../index.css";
+import { QuickStartButtonStyle } from "../../components/buttons/QuickStartButton";
+import { Modal } from "../../components/modal/Modal";
+>>>>>>> 93ed085 (feat: 新しいコンポーネントを追加し、ルーティングを更新):main/src/pages/menu/MenuPage.tsx
 
 const MENU_ITEMS = [
-  { label: "令和３年", path: "/components/test_3/main", modalKey: "reiwa3" },
-  { label: "令和４年", path: "/components/test_4/main", modalKey: "reiwa4" },
-  { label: "令和５年", path: "/components/test_5/main", modalKey: "reiwa5" },
-  { label: "令和６年", path: "/components/test_6/main", modalKey: "reiwa6" },
-  { label: "令和７年", path: "/components/test_7/main", modalKey: "reiwa7" },
+  { label: "令和３年", path: "/tests/reiwa3", modalKey: "reiwa3" },
+  { label: "令和４年", path: "/tests/reiwa4", modalKey: "reiwa4" },
+  { label: "令和５年", path: "/tests/reiwa5", modalKey: "reiwa5" },
+  { label: "令和６年", path: "/tests/reiwa6", modalKey: "reiwa6" },
+  { label: "令和７年", path: "/tests/reiwa7", modalKey: "reiwa7" },
 ] as const;
 
 type MenuItem = (typeof MENU_ITEMS)[number];
 type MenuModalKey = MenuItem["modalKey"];
 
-export default function Menu() {
+export default function MenuPage() {
   const [openKey, setOpenKey] = useState<MenuModalKey | null>(null);
   const navigate = useNavigate();
 
