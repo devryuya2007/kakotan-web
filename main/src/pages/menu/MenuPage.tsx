@@ -133,8 +133,7 @@ function BasicModalContent({
         <button
           type="button"
           className={QuickStartButtonStyle}
-          onClick={onStart}
-        >
+          onClick={onStart}>
           {startButtonLabel}
         </button>
       </div>
