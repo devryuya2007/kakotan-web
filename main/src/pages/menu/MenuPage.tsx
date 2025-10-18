@@ -1,17 +1,9 @@
-import type { ReactNode } from "react";
 import { useState } from "react";
-<<<<<<< HEAD:main/src/menu.tsx
 import { useNavigate } from "react-router-dom";
-import { AppLayout } from "./components/AppLayout";
-import "./index.css";
-import { QuickStartButtonStyle } from "./App";
-import { Modal } from "./components/Modal";
-=======
-import { AppLayout } from "../../components/layout/AppLayout";
 import "../../index.css";
 import { QuickStartButtonStyle } from "../../components/buttons/QuickStartButton";
+import { AppLayout } from "../../components/layout/AppLayout";
 import { Modal } from "../../components/modal/Modal";
->>>>>>> 93ed085 (feat: 新しいコンポーネントを追加し、ルーティングを更新):main/src/pages/menu/MenuPage.tsx
 
 const MENU_ITEMS = [
   { label: "令和３年", path: "/tests/reiwa3", modalKey: "reiwa3" },
@@ -24,6 +16,14 @@ const MENU_ITEMS = [
 type MenuItem = (typeof MENU_ITEMS)[number];
 type MenuModalKey = MenuItem["modalKey"];
 
+const QUESTION_COUNTS: Record<MenuModalKey, number> = {
+  reiwa3: 1000,
+  reiwa4: 1200,
+  reiwa5: 1100,
+  reiwa6: 1300,
+  reiwa7: 1400,
+};
+
 export default function MenuPage() {
   const [openKey, setOpenKey] = useState<MenuModalKey | null>(null);
   const navigate = useNavigate();
@@ -32,15 +32,25 @@ export default function MenuPage() {
     ? MENU_ITEMS.find((item) => item.modalKey === openKey)
     : undefined;
 
-  const modalContent = createModalContent(activeItem, {
-    onStart() {
-      if (!activeItem) {
-        return;
-      }
-      setOpenKey(null);
-      navigate(activeItem.path);
-    },
-  });
+  const handleStart = () => {
+    if (!activeItem) {
+      return;
+    }
+
+    setOpenKey(null);
+    navigate(activeItem.path);
+  };
+
+  const modalContent = activeItem ? (
+    <BasicModalContent
+      yearLabel={activeItem.label}
+      startButtonLabel="開始する"
+      description="この問題は共通テストの出題傾向から頻出語を抜粋した練習セットです。" // props化して後により詳細を柔軟に追加
+      estimatedTime="終了目安は10分です。"
+      questionSummary={getQuestionSummary(activeItem)}
+      onStart={handleStart}
+    />
+  ) : null;
 
   return (
     <AppLayout>
@@ -91,70 +101,23 @@ function MenuButton({ label, onSelect }: MenuButtonProps) {
   );
 }
 
-<<<<<<< HEAD
-type ModalContentOptions = {
-  onStart: () => void;
-};
-
-function createModalContent(
-  item: MenuItem | undefined,
-  options: ModalContentOptions,
-): ReactNode {
-=======
-const QUESTION_COUNTS: Record<MenuModalKey, number> = {
-  reiwa3: 1000,
-  reiwa4: 1200,
-  reiwa5: 1100,
-  reiwa6: 1300,
-  reiwa7: 1400,
-};
-
-function createModalContent(item: MenuItem | undefined): ReactNode {
->>>>>>> 5429cc2 (feat: update Modal component and add question summary to BasicModalContent)
-  if (!item) {
-    return null;
-  }
-
-  const questionSummary = getQuestionSummary(item);
-
-  return (
-    <BasicModalContent
-      yearLabel={item.label}
-      startButtonLabel="開始する"
-      description="この問題は共通テストの出題傾向から頻出語を抜粋した練習セットです。" // props化して後により詳細を柔軟に追加
-      estimatedTime="終了目安は10分です。"
-<<<<<<< HEAD
-      onStart={options.onStart}
-=======
-      questionSummary={questionSummary}
->>>>>>> 5429cc2 (feat: update Modal component and add question summary to BasicModalContent)
-    />
-  );
-}
-// TODO:　ここだけじゃなくて、interface型で統一する
 type BasicModalContentProps = {
   yearLabel: string;
   description: string;
   estimatedTime: string;
   startButtonLabel: string;
-<<<<<<< HEAD
   onStart: () => void;
-=======
   questionSummary: string | null;
->>>>>>> 5429cc2 (feat: update Modal component and add question summary to BasicModalContent)
 };
 
-//　Modalを直接作ってpropsで中身を変えられる
+// Modalを直接作ってpropsで中身を変えられる
 function BasicModalContent({
   yearLabel,
   description,
   estimatedTime,
   startButtonLabel,
-<<<<<<< HEAD
   onStart,
-=======
   questionSummary,
->>>>>>> 5429cc2 (feat: update Modal component and add question summary to BasicModalContent)
 }: BasicModalContentProps) {
   return (
     <div className="space-y-3 text-left">
