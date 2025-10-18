@@ -4,7 +4,6 @@ import { AppLayout } from "./components/AppLayout";
 import "./index.css";
 import { QuickStartButtonStyle } from "./App";
 import { Modal } from "./components/Modal";
-import ModalCompornentPop_7 from "./components/test_7/ModalCompornentPop_7";
 
 const MENU_ITEMS = [
   { label: "令和３年", path: "/components/test_3/main", modalKey: "reiwa3" },
@@ -82,20 +81,16 @@ function createModalContent(item: MenuItem | undefined): ReactNode {
     return null;
   }
 
-  if (item.modalKey === "reiwa7") {
-    return <ModalCompornentPop_7 />;
-  }
-
   return (
     <BasicModalContent
       yearLabel={item.label}
       startButtonLabel="開始する"
-      description="この問題は共通テストの出題傾向から頻出語を抜粋した練習セットです。"
+      description="この問題は共通テストの出題傾向から頻出語を抜粋した練習セットです。" // props化して後により詳細を柔軟に追加
       estimatedTime="終了目安は10分です。"
     />
   );
 }
-
+// TODO:　ここだけじゃなくて、interface型で統一する
 type BasicModalContentProps = {
   yearLabel: string;
   description: string;
@@ -103,6 +98,7 @@ type BasicModalContentProps = {
   startButtonLabel: string;
 };
 
+//　Modalを直接作ってpropsで中身を変えられる
 function BasicModalContent({
   yearLabel,
   description,
@@ -111,7 +107,9 @@ function BasicModalContent({
 }: BasicModalContentProps) {
   return (
     <div className="space-y-3 text-left">
-      <h1 className="text-xl font-semibold text-[#f2c97d]">共通テスト　{yearLabel}</h1>
+      <h1 className="text-xl font-semibold text-[#f2c97d]">
+        共通テスト　{yearLabel}
+      </h1>
       <p className="text-sm text-white/80">{description}</p>
       <p className="text-sm text-white/80">{estimatedTime}</p>
       <div className="pt-2 text-right">
