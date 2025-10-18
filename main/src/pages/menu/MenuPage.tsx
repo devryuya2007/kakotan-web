@@ -44,30 +44,28 @@ export default function MenuPage() {
 
   return (
     <AppLayout>
-      <div className="my-auto w-full max-w-4xl rounded-2xl bg-white/5">
-        <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl bg-[#0b0b13]/80 backdrop-blur-md">
-          <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-hidden px-8 py-10 text-center sm:gap-8 sm:px-12 sm:py-12">
-            <header className="space-y-8">
-              <h1 className="select-none text-2xl font-semibold tracking-widest text-[#f2c97d] sm:text-3xl">
-                SELECT
-              </h1>
-              <p className="select-none text-sm text-[#f2c97d]/70">
-                出題範囲を選んでください。
-              </p>
-            </header>
+      <div className="my-auto w-full max-w-4xl rounded-2xl">
+        <div className="flex h-full w-full flex-col gap-8 rounded-2xl px-8 py-10 text-center sm:gap-10 sm:px-12 sm:py-12">
+          <header className="space-y-8">
+            <h1 className="select-none text-2xl font-semibold tracking-widest text-[#f2c97d] sm:text-3xl">
+              SELECT
+            </h1>
+            <p className="select-none text-sm text-[#f2c97d]/70">
+              出題範囲を選んでください。
+            </p>
+          </header>
 
-            <section>
-              <div className="grid grid-cols-3 gap-4 sm:gap-6">
-                {MENU_ITEMS.map(({ label, modalKey }) => (
-                  <MenuButton
-                    key={modalKey}
-                    label={label}
-                    onSelect={() => setOpenKey(modalKey)}
-                  />
-                ))}
-              </div>
-            </section>
-          </div>
+          <section>
+            <div className="grid grid-cols-3 gap-4 sm:gap-6">
+              {MENU_ITEMS.map(({ label, modalKey }) => (
+                <MenuButton
+                  key={modalKey}
+                  label={label}
+                  onSelect={() => setOpenKey(modalKey)}
+                />
+              ))}
+            </div>
+          </section>
         </div>
       </div>
 
