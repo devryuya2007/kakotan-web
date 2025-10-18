@@ -42,17 +42,19 @@ type ModalShellProps = {
 
 function ModalShell({ onClose, content }: ModalShellProps) {
   return (
-    <div className="fixed inset-0 z-50 select-none">
+    <div className="fixed inset-0 z-50" role="presentation">
+      <div className="absolute inset-0 bg-black/60" role="presentation"></div>
       <div
-        className="absolute inset-0 bg-black/60"
-        onClick={onClose}
-        role="presentation"
-      />
-      <div className="absolute inset-0 grid place-items-center p-6">
-        <div className="w-full max-w-lg rounded-2xl border border-[#f2c97d1a] bg-[#0b0b13] p-6 shadow-[0_20px_45px_-25px_rgba(0,0,0,0.75)]">
+        className="absolute inset-0 grid place-items-center p-6"
+        onClick={onClose}>
+        <div
+          className="w-full max-w-lg rounded-2xl border border-[#f2c97d1a] bg-[#0b0b13] p-6 shadow-[0_20px_45px_-25px_rgba(0,0,0,0.75)]"
+          onClick={(event) => event.stopPropagation()}>
           {content}
         </div>
       </div>
     </div>
   );
 }
+
+//

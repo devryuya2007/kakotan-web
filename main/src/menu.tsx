@@ -86,6 +86,7 @@ function MenuButton({ label, onSelect }: MenuButtonProps) {
   );
 }
 
+<<<<<<< HEAD
 type ModalContentOptions = {
   onStart: () => void;
 };
@@ -94,9 +95,22 @@ function createModalContent(
   item: MenuItem | undefined,
   options: ModalContentOptions,
 ): ReactNode {
+=======
+const QUESTION_COUNTS: Record<MenuModalKey, number> = {
+  reiwa3: 1000,
+  reiwa4: 1200,
+  reiwa5: 1100,
+  reiwa6: 1300,
+  reiwa7: 1400,
+};
+
+function createModalContent(item: MenuItem | undefined): ReactNode {
+>>>>>>> 5429cc2 (feat: update Modal component and add question summary to BasicModalContent)
   if (!item) {
     return null;
   }
+
+  const questionSummary = getQuestionSummary(item);
 
   return (
     <BasicModalContent
@@ -104,7 +118,11 @@ function createModalContent(
       startButtonLabel="開始する"
       description="この問題は共通テストの出題傾向から頻出語を抜粋した練習セットです。" // props化して後により詳細を柔軟に追加
       estimatedTime="終了目安は10分です。"
+<<<<<<< HEAD
       onStart={options.onStart}
+=======
+      questionSummary={questionSummary}
+>>>>>>> 5429cc2 (feat: update Modal component and add question summary to BasicModalContent)
     />
   );
 }
@@ -114,7 +132,11 @@ type BasicModalContentProps = {
   description: string;
   estimatedTime: string;
   startButtonLabel: string;
+<<<<<<< HEAD
   onStart: () => void;
+=======
+  questionSummary: string | null;
+>>>>>>> 5429cc2 (feat: update Modal component and add question summary to BasicModalContent)
 };
 
 //　Modalを直接作ってpropsで中身を変えられる
@@ -123,7 +145,11 @@ function BasicModalContent({
   description,
   estimatedTime,
   startButtonLabel,
+<<<<<<< HEAD
   onStart,
+=======
+  questionSummary,
+>>>>>>> 5429cc2 (feat: update Modal component and add question summary to BasicModalContent)
 }: BasicModalContentProps) {
   return (
     <div className="space-y-3 text-left">
@@ -132,6 +158,9 @@ function BasicModalContent({
       </h1>
       <p className="text-sm text-white/80">{description}</p>
       <p className="text-sm text-white/80">{estimatedTime}</p>
+      {questionSummary ? (
+        <p className="text-sm text-white/80">{questionSummary}</p>
+      ) : null}
       <div className="pt-2 text-right">
         <button
           type="button"
@@ -143,4 +172,13 @@ function BasicModalContent({
       </div>
     </div>
   );
+}
+
+function getQuestionSummary(item: MenuItem): string | null {
+  const count = QUESTION_COUNTS[item.modalKey];
+  if (!count) {
+    return null;
+  }
+
+  return `総問題数は${count}問です。`;
 }
