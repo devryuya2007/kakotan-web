@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AppLayout } from "./components/AppLayout";
 import "./index.css";
 import { QuickStartButtonStyle } from "./App";
@@ -18,12 +19,21 @@ type MenuModalKey = MenuItem["modalKey"];
 
 export default function Menu() {
   const [openKey, setOpenKey] = useState<MenuModalKey | null>(null);
+  const navigate = useNavigate();
 
   const activeItem = openKey
     ? MENU_ITEMS.find((item) => item.modalKey === openKey)
     : undefined;
 
-  const modalContent = createModalContent(activeItem);
+  const modalContent = createModalContent(activeItem, {
+    onStart() {
+      if (!activeItem) {
+        return;
+      }
+      setOpenKey(null);
+      navigate(activeItem.path);
+    },
+  });
 
   return (
     <AppLayout>
@@ -76,7 +86,14 @@ function MenuButton({ label, onSelect }: MenuButtonProps) {
   );
 }
 
-function createModalContent(item: MenuItem | undefined): ReactNode {
+type ModalContentOptions = {
+  onStart: () => void;
+};
+
+function createModalContent(
+  item: MenuItem | undefined,
+  options: ModalContentOptions,
+): ReactNode {
   if (!item) {
     return null;
   }
@@ -87,6 +104,7 @@ function createModalContent(item: MenuItem | undefined): ReactNode {
       startButtonLabel="開始する"
       description="この問題は共通テストの出題傾向から頻出語を抜粋した練習セットです。" // props化して後により詳細を柔軟に追加
       estimatedTime="終了目安は10分です。"
+      onStart={options.onStart}
     />
   );
 }
@@ -96,6 +114,7 @@ type BasicModalContentProps = {
   description: string;
   estimatedTime: string;
   startButtonLabel: string;
+  onStart: () => void;
 };
 
 //　Modalを直接作ってpropsで中身を変えられる
@@ -104,6 +123,7 @@ function BasicModalContent({
   description,
   estimatedTime,
   startButtonLabel,
+  onStart,
 }: BasicModalContentProps) {
   return (
     <div className="space-y-3 text-left">
@@ -113,7 +133,11 @@ function BasicModalContent({
       <p className="text-sm text-white/80">{description}</p>
       <p className="text-sm text-white/80">{estimatedTime}</p>
       <div className="pt-2 text-right">
-        <button type="button" className={QuickStartButtonStyle}>
+        <button
+          type="button"
+          className={QuickStartButtonStyle}
+          onClick={onStart}
+        >
           {startButtonLabel}
         </button>
       </div>

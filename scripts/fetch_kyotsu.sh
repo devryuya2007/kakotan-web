@@ -248,10 +248,6 @@ done
 
 # 変換に成功したPDFを削除（デフォルト）
 if [ "$KEEP_PDF" = false ]; then
-  # parse the success list emitted by the Python block
-  mapfile -t SUCC < <(sed -n '/__SUCCESS_LIST__/{n;p;:a;n;p;ba}' /dev/stdin 2>/dev/null || true)
-  # Fallback: if mapfile failed, read success from the tmp file in python output
-  # Instead, re-evaluate by checking texts/*.txt
   for txt in texts/*.txt; do
     [ ! -f "$txt" ] && continue
     pdf="${txt##*/}"
