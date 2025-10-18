@@ -1,0 +1,26 @@
+{
+  "name": "bst-1900",
+  "version": "1.0.0",
+  "description": "ターゲット1900　受験用　単語帳アプリ　テスト・成績機能のみの予定",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "freq": "node scripts/freq.mjs",
+    "dev": "npm --prefix home.js run dev",
+    "build": "npm --prefix home.js run build -- --outDir ../dist --emptyOutDir",
+    "preview": "npm --prefix home.js run preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devryuya2007/BST-1900.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/devryuya2007/BST-1900/issues"
+  },
+  "homepage": "https://github.com/devryuya2007/BST-1900#readme",
+  "dependencies": {},
+  "devDependencies": {}
+}
