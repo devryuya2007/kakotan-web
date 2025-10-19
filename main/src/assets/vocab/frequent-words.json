@@ -1,0 +1,4022 @@
+{
+  "reiwa3": {
+    "unigram": [
+      {
+        "phrase": "sabine",
+        "count": 29
+      },
+      {
+        "phrase": "players",
+        "count": 21
+      },
+      {
+        "phrase": "sweeteners",
+        "count": 21
+      },
+      {
+        "phrase": "forest",
+        "count": 13
+      },
+      {
+        "phrase": "silent",
+        "count": 13
+      },
+      {
+        "phrase": "policy",
+        "count": 12
+      },
+      {
+        "phrase": "mountain",
+        "count": 11
+      },
+      {
+        "phrase": "farmer",
+        "count": 11
+      },
+      {
+        "phrase": "hockey",
+        "count": 11
+      },
+      {
+        "phrase": "concussion",
+        "count": 11
+      },
+      {
+        "phrase": "member",
+        "count": 10
+      },
+      {
+        "phrase": "choose",
+        "count": 10
+      },
+      {
+        "phrase": "judges",
+        "count": 10
+      },
+      {
+        "phrase": "following",
+        "count": 10
+      },
+      {
+        "phrase": "schedule",
+        "count": 10
+      },
+      {
+        "phrase": "membership",
+        "count": 8
+      },
+      {
+        "phrase": "information",
+        "count": 8
+      },
+      {
+        "phrase": "energy",
+        "count": 8
+      },
+      {
+        "phrase": "number",
+        "count": 8
+      },
+      {
+        "phrase": "station",
+        "count": 8
+      },
+      {
+        "phrase": "centre",
+        "count": 8
+      },
+      {
+        "phrase": "hibari",
+        "count": 8
+      },
+      {
+        "phrase": "artificial",
+        "count": 8
+      },
+      {
+        "phrase": "memory",
+        "count": 7
+      },
+      {
+        "phrase": "events",
+        "count": 7
+      },
+      {
+        "phrase": "around",
+        "count": 7
+      },
+      {
+        "phrase": "something",
+        "count": 7
+      },
+      {
+        "phrase": "however",
+        "count": 7
+      },
+      {
+        "phrase": "concussions",
+        "count": 7
+      },
+      {
+        "phrase": "sweeter",
+        "count": 7
+      },
+      {
+        "phrase": "stevia",
+        "count": 7
+      },
+      {
+        "phrase": "history",
+        "count": 6
+      },
+      {
+        "phrase": "poster",
+        "count": 6
+      },
+      {
+        "phrase": "become",
+        "count": 6
+      },
+      {
+        "phrase": "comments",
+        "count": 6
+      },
+      {
+        "phrase": "agreed",
+        "count": 6
+      },
+      {
+        "phrase": "berger",
+        "count": 6
+      },
+      {
+        "phrase": "activities",
+        "count": 6
+      },
+      {
+        "phrase": "minutes",
+        "count": 6
+      },
+      {
+        "phrase": "victoria",
+        "count": 6
+      },
+      {
+        "phrase": "training",
+        "count": 6
+      },
+      {
+        "phrase": "making",
+        "count": 6
+      },
+      {
+        "phrase": "player",
+        "count": 6
+      },
+      {
+        "phrase": "alternative",
+        "count": 6
+      },
+      {
+        "phrase": "aspartame",
+        "count": 6
+      },
+      {
+        "phrase": "sucralose",
+        "count": 6
+      },
+      {
+        "phrase": "message",
+        "count": 5
+      },
+      {
+        "phrase": "arrive",
+        "count": 5
+      },
+      {
+        "phrase": "options",
+        "count": 5
+      },
+      {
+        "phrase": "exchange",
+        "count": 5
+      },
+      {
+        "phrase": "express",
+        "count": 5
+      },
+      {
+        "phrase": "getting",
+        "count": 5
+      },
+      {
+        "phrase": "serious",
+        "count": 5
+      },
+      {
+        "phrase": "safety",
+        "count": 5
+      },
+      {
+        "phrase": "introduced",
+        "count": 5
+      },
+      {
+        "phrase": "airport",
+        "count": 5
+      },
+      {
+        "phrase": "international",
+        "count": 5
+      },
+      {
+        "phrase": "campaign",
+        "count": 5
+      },
+      {
+        "phrase": "guests",
+        "count": 5
+      },
+      {
+        "phrase": "aquarium",
+        "count": 5
+      },
+      {
+        "phrase": "garden",
+        "count": 5
+      },
+      {
+        "phrase": "plants",
+        "count": 5
+      },
+      {
+        "phrase": "option",
+        "count": 5
+      },
+      {
+        "phrase": "mother",
+        "count": 5
+      },
+      {
+        "phrase": "problems",
+        "count": 5
+      },
+      {
+        "phrase": "health",
+        "count": 5
+      },
+      {
+        "phrase": "calories",
+        "count": 5
+      },
+      {
+        "phrase": "author",
+        "count": 5
+      },
+      {
+        "phrase": "afternoon",
+        "count": 4
+      },
+      {
+        "phrase": "concert",
+        "count": 4
+      },
+      {
+        "phrase": "zoomer",
+        "count": 4
+      },
+      {
+        "phrase": "online",
+        "count": 4
+      },
+      {
+        "phrase": "access",
+        "count": 4
+      },
+      {
+        "phrase": "popular",
+        "count": 4
+      },
+      {
+        "phrase": "reading",
+        "count": 4
+      },
+      {
+        "phrase": "experience",
+        "count": 4
+      },
+      {
+        "phrase": "return",
+        "count": 4
+      },
+      {
+        "phrase": "thinks",
+        "count": 4
+      },
+      {
+        "phrase": "hollytree",
+        "count": 4
+      },
+      {
+        "phrase": "decided",
+        "count": 4
+      },
+      {
+        "phrase": "english",
+        "count": 4
+      },
+      {
+        "phrase": "natsuki",
+        "count": 4
+      },
+      {
+        "phrase": "attached",
+        "count": 4
+      },
+      {
+        "phrase": "science",
+        "count": 4
+      },
+      {
+        "phrase": "botanical",
+        "count": 4
+      },
+      {
+        "phrase": "presentation",
+        "count": 4
+      },
+      {
+        "phrase": "started",
+        "count": 4
+      },
+      {
+        "phrase": "figures",
+        "count": 4
+      },
+      {
+        "phrase": "variety",
+        "count": 4
+      },
+      {
+        "phrase": "effects",
+        "count": 4
+      },
+      {
+        "phrase": "example",
+        "count": 4
+      },
+      {
+        "phrase": "spotters",
+        "count": 4
+      },
+      {
+        "phrase": "medical",
+        "count": 4
+      },
+      {
+        "phrase": "drinks",
+        "count": 4
+      },
+      {
+        "phrase": "desserts",
+        "count": 4
+      },
+      {
+        "phrase": "request",
+        "count": 3
+      },
+      {
+        "phrase": "homework",
+        "count": 3
+      },
+      {
+        "phrase": "speeder",
+        "count": 3
+      },
+      {
+        "phrase": "please",
+        "count": 3
+      },
+      {
+        "phrase": "regular",
+        "count": 3
+      },
+      {
+        "phrase": "discount",
+        "count": 3
+      },
+      {
+        "phrase": "requires",
+        "count": 3
+      },
+      {
+        "phrase": "scores",
+        "count": 3
+      },
+      {
+        "phrase": "average",
+        "count": 3
+      },
+      {
+        "phrase": "performance",
+        "count": 3
+      },
+      {
+        "phrase": "singing",
+        "count": 3
+      },
+      {
+        "phrase": "originality",
+        "count": 3
+      },
+      {
+        "phrase": "audience",
+        "count": 3
+      },
+      {
+        "phrase": "shared",
+        "count": 3
+      },
+      {
+        "phrase": "evaluation",
+        "count": 3
+      },
+      {
+        "phrase": "therefore",
+        "count": 3
+      },
+      {
+        "phrase": "suggestion",
+        "count": 3
+      },
+      {
+        "phrase": "change",
+        "count": 3
+      },
+      {
+        "phrase": "roberts",
+        "count": 3
+      },
+      {
+        "phrase": "activity",
+        "count": 3
+      },
+      {
+        "phrase": "report",
+        "count": 3
+      },
+      {
+        "phrase": "protect",
+        "count": 3
+      },
+      {
+        "phrase": "electricity",
+        "count": 3
+      },
+      {
+        "phrase": "rate",
+        "count": 3
+      },
+      {
+        "phrase": "travel",
+        "count": 3
+      },
+      {
+        "phrase": "answer",
+        "count": 3
+      },
+      {
+        "phrase": "underground",
+        "count": 3
+      },
+      {
+        "phrase": "sakura",
+        "count": 3
+      },
+      {
+        "phrase": "problem",
+        "count": 3
+      },
+      {
+        "phrase": "months",
+        "count": 3
+      },
+      {
+        "phrase": "taking",
+        "count": 3
+      },
+      {
+        "phrase": "longer",
+        "count": 3
+      },
+      {
+        "phrase": "working",
+        "count": 3
+      },
+      {
+        "phrase": "together",
+        "count": 3
+      },
+      {
+        "phrase": "further",
+        "count": 3
+      },
+      {
+        "phrase": "sister",
+        "count": 3
+      },
+      {
+        "phrase": "timetable",
+        "count": 3
+      },
+      {
+        "phrase": "watching",
+        "count": 3
+      },
+      {
+        "phrase": "quickly",
+        "count": 3
+      },
+      {
+        "phrase": "developed",
+        "count": 3
+      },
+      {
+        "phrase": "walking",
+        "count": 3
+      },
+      {
+        "phrase": "sometimes",
+        "count": 3
+      },
+      {
+        "phrase": "kilometers",
+        "count": 3
+      },
+      {
+        "phrase": "changes",
+        "count": 3
+      },
+      {
+        "phrase": "injury",
+        "count": 3
+      },
+      {
+        "phrase": "disorders",
+        "count": 3
+      },
+      {
+        "phrase": "national",
+        "count": 3
+      },
+      {
+        "phrase": "league",
+        "count": 3
+      },
+      {
+        "phrase": "visors",
+        "count": 3
+      },
+      {
+        "phrase": "sweetness",
+        "count": 3
+      },
+      {
+        "phrase": "weight",
+        "count": 3
+      },
+      {
+        "phrase": "university",
+        "count": 2
+      },
+      {
+        "phrase": "library",
+        "count": 2
+      },
+      {
+        "phrase": "thanks",
+        "count": 2
+      },
+      {
+        "phrase": "thinking",
+        "count": 2
+      },
+      {
+        "phrase": "website",
+        "count": 2
+      },
+      {
+        "phrase": "exciting",
+        "count": 2
+      },
+      {
+        "phrase": "receive",
+        "count": 2
+      },
+      {
+        "phrase": "contains",
+        "count": 2
+      },
+      {
+        "phrase": "delivered",
+        "count": 2
+      },
+      {
+        "phrase": "emails",
+        "count": 2
+      },
+      {
+        "phrase": "messages",
+        "count": 2
+      },
+      {
+        "phrase": "postcards",
+        "count": 2
+      },
+      {
+        "phrase": "calendar",
+        "count": 2
+      },
+      {
+        "phrase": "invitations",
+        "count": 2
+      },
+      {
+        "phrase": "special",
+        "count": 2
+      },
+      {
+        "phrase": "signing",
+        "count": 2
+      },
+      {
+        "phrase": "tickets",
+        "count": 2
+      },
+      {
+        "phrase": "delivery",
+        "count": 2
+      },
+      {
+        "phrase": "either",
+        "count": 2
+      },
+      {
+        "phrase": "upgrade",
+        "count": 2
+      },
+      {
+        "phrase": "whether",
+        "count": 2
+      },
+      {
+        "phrase": "charge",
+        "count": 2
+      },
+      {
+        "phrase": "understand",
+        "count": 2
+      },
+      {
+        "phrase": "rankings",
+        "count": 2
+      },
+      {
+        "phrase": "thousand",
+        "count": 2
+      },
+      {
+        "phrase": "individual",
+        "count": 2
+      },
+      {
+        "phrase": "connected",
+        "count": 2
+      },
+      {
+        "phrase": "responded",
+        "count": 2
+      },
+      {
+        "phrase": "practice",
+        "count": 2
+      },
+      {
+        "phrase": "determined",
+        "count": 2
+      },
+      {
+        "phrase": "decide",
+        "count": 2
+      },
+      {
+        "phrase": "opinion",
+        "count": 2
+      },
+      {
+        "phrase": "future",
+        "count": 2
+      },
+      {
+        "phrase": "studying",
+        "count": 2
+      },
+      {
+        "phrase": "posted",
+        "count": 2
+      },
+      {
+        "phrase": "september",
+        "count": 2
+      },
+      {
+        "phrase": "welcome",
+        "count": 2
+      },
+      {
+        "phrase": "saving",
+        "count": 2
+      },
+      {
+        "phrase": "concerns",
+        "count": 2
+      },
+      {
+        "phrase": "especially",
+        "count": 2
+      },
+      {
+        "phrase": "police",
+        "count": 2
+      },
+      {
+        "phrase": "showed",
+        "count": 2
+      },
+      {
+        "phrase": "increase",
+        "count": 2
+      },
+      {
+        "phrase": "improve",
+        "count": 2
+      },
+      {
+        "phrase": "research",
+        "count": 2
+      },
+      {
+        "phrase": "budget",
+        "count": 2
+      },
+      {
+        "phrase": "castleton",
+        "count": 2
+      },
+      {
+        "phrase": "recommend",
+        "count": 2
+      },
+      {
+        "phrase": "buxton",
+        "count": 2
+      },
+      {
+        "phrase": "inexpensive",
+        "count": 2
+      },
+      {
+        "phrase": "convenient",
+        "count": 2
+      },
+      {
+        "phrase": "mossfield",
+        "count": 2
+      },
+      {
+        "phrase": "transferring",
+        "count": 2
+      },
+      {
+        "phrase": "orange",
+        "count": 2
+      }
+    ]
+  },
+  "reiwa4": {
+    "unigram": [
+      {
+        "phrase": "plastic",
+        "count": 24
+      },
+      {
+        "phrase": "farnsworth",
+        "count": 23
+      },
+      {
+        "phrase": "library",
+        "count": 17
+      },
+      {
+        "phrase": "system",
+        "count": 17
+      },
+      {
+        "phrase": "television",
+        "count": 16
+      },
+      {
+        "phrase": "university",
+        "count": 14
+      },
+      {
+        "phrase": "choose",
+        "count": 13
+      },
+      {
+        "phrase": "patent",
+        "count": 12
+      },
+      {
+        "phrase": "recycling",
+        "count": 12
+      },
+      {
+        "phrase": "plastics",
+        "count": 11
+      },
+      {
+        "phrase": "however",
+        "count": 10
+      },
+      {
+        "phrase": "containers",
+        "count": 10
+      },
+      {
+        "phrase": "giraffe",
+        "count": 9
+      },
+      {
+        "phrase": "following",
+        "count": 9
+      },
+      {
+        "phrase": "electronic",
+        "count": 9
+      },
+      {
+        "phrase": "schedule",
+        "count": 8
+      },
+      {
+        "phrase": "august",
+        "count": 8
+      },
+      {
+        "phrase": "challenge",
+        "count": 8
+      },
+      {
+        "phrase": "morning",
+        "count": 8
+      },
+      {
+        "phrase": "symbols",
+        "count": 8
+      },
+      {
+        "phrase": "website",
+        "count": 7
+      },
+      {
+        "phrase": "contest",
+        "count": 7
+      },
+      {
+        "phrase": "live",
+        "count": 7
+      },
+      {
+        "phrase": "family",
+        "count": 7
+      },
+      {
+        "phrase": "reading",
+        "count": 7
+      },
+      {
+        "phrase": "information",
+        "count": 7
+      },
+      {
+        "phrase": "owners",
+        "count": 7
+      },
+      {
+        "phrase": "difficult",
+        "count": 7
+      },
+      {
+        "phrase": "called",
+        "count": 7
+      },
+      {
+        "phrase": "complete",
+        "count": 7
+      },
+      {
+        "phrase": "warranties",
+        "count": 7
+      },
+      {
+        "phrase": "recycled",
+        "count": 7
+      },
+      {
+        "phrase": "recycle",
+        "count": 7
+      },
+      {
+        "phrase": "borrow",
+        "count": 6
+      },
+      {
+        "phrase": "article",
+        "count": 6
+      },
+      {
+        "phrase": "working",
+        "count": 6
+      },
+      {
+        "phrase": "prices",
+        "count": 6
+      },
+      {
+        "phrase": "presentation",
+        "count": 6
+      },
+      {
+        "phrase": "electricity",
+        "count": 6
+      },
+      {
+        "phrase": "products",
+        "count": 6
+      },
+      {
+        "phrase": "inside",
+        "count": 5
+      },
+      {
+        "phrase": "around",
+        "count": 5
+      },
+      {
+        "phrase": "watching",
+        "count": 5
+      },
+      {
+        "phrase": "australia",
+        "count": 5
+      },
+      {
+        "phrase": "longer",
+        "count": 5
+      },
+      {
+        "phrase": "members",
+        "count": 5
+      },
+      {
+        "phrase": "experience",
+        "count": 5
+      },
+      {
+        "phrase": "mountain",
+        "count": 5
+      },
+      {
+        "phrase": "scafell",
+        "count": 5
+      },
+      {
+        "phrase": "minibus",
+        "count": 5
+      },
+      {
+        "phrase": "started",
+        "count": 5
+      },
+      {
+        "phrase": "events",
+        "count": 5
+      },
+      {
+        "phrase": "robinson",
+        "count": 5
+      },
+      {
+        "phrase": "appliances",
+        "count": 5
+      },
+      {
+        "phrase": "suggests",
+        "count": 5
+      },
+      {
+        "phrase": "options",
+        "count": 5
+      },
+      {
+        "phrase": "zworykin",
+        "count": 5
+      },
+      {
+        "phrase": "option",
+        "count": 5
+      },
+      {
+        "phrase": "research",
+        "count": 4
+      },
+      {
+        "phrase": "popular",
+        "count": 4
+      },
+      {
+        "phrase": "interesting",
+        "count": 4
+      },
+      {
+        "phrase": "welcome",
+        "count": 4
+      },
+      {
+        "phrase": "future",
+        "count": 4
+      },
+      {
+        "phrase": "highest",
+        "count": 4
+      },
+      {
+        "phrase": "keeping",
+        "count": 4
+      },
+      {
+        "phrase": "suitable",
+        "count": 4
+      },
+      {
+        "phrase": "japanese",
+        "count": 4
+      },
+      {
+        "phrase": "culture",
+        "count": 4
+      },
+      {
+        "phrase": "activities",
+        "count": 4
+      },
+      {
+        "phrase": "takoyaki",
+        "count": 4
+      },
+      {
+        "phrase": "snowdon",
+        "count": 4
+      },
+      {
+        "phrase": "reached",
+        "count": 4
+      },
+      {
+        "phrase": "though",
+        "count": 4
+      },
+      {
+        "phrase": "household",
+        "count": 4
+      },
+      {
+        "phrase": "inventor",
+        "count": 4
+      },
+      {
+        "phrase": "battle",
+        "count": 4
+      },
+      {
+        "phrase": "tolman",
+        "count": 4
+      },
+      {
+        "phrase": "daytime",
+        "count": 4
+      },
+      {
+        "phrase": "begins",
+        "count": 4
+      },
+      {
+        "phrase": "easily",
+        "count": 4
+      },
+      {
+        "phrase": "common",
+        "count": 4
+      },
+      {
+        "phrase": "poster",
+        "count": 4
+      },
+      {
+        "phrase": "symbol",
+        "count": 4
+      },
+      {
+        "phrase": "international",
+        "count": 3
+      },
+      {
+        "phrase": "cupuaçu",
+        "count": 3
+      },
+      {
+        "phrase": "within",
+        "count": 3
+      },
+      {
+        "phrase": "making",
+        "count": 3
+      },
+      {
+        "phrase": "buriti",
+        "count": 3
+      },
+      {
+        "phrase": "healthy",
+        "count": 3
+      },
+      {
+        "phrase": "follow",
+        "count": 3
+      },
+      {
+        "phrase": "finalists",
+        "count": 3
+      },
+      {
+        "phrase": "posted",
+        "count": 3
+      },
+      {
+        "phrase": "winning",
+        "count": 3
+      },
+      {
+        "phrase": "access",
+        "count": 3
+      },
+      {
+        "phrase": "returned",
+        "count": 3
+      },
+      {
+        "phrase": "computers",
+        "count": 3
+      },
+      {
+        "phrase": "entrance",
+        "count": 3
+      },
+      {
+        "phrase": "orientation",
+        "count": 3
+      },
+      {
+        "phrase": "possible",
+        "count": 3
+      },
+      {
+        "phrase": "coffee",
+        "count": 3
+      },
+      {
+        "phrase": "videos",
+        "count": 3
+      },
+      {
+        "phrase": "english",
+        "count": 3
+      },
+      {
+        "phrase": "results",
+        "count": 3
+      },
+      {
+        "phrase": "living",
+        "count": 3
+      },
+      {
+        "phrase": "having",
+        "count": 3
+      },
+      {
+        "phrase": "report",
+        "count": 3
+      },
+      {
+        "phrase": "performances",
+        "count": 3
+      },
+      {
+        "phrase": "rakugo",
+        "count": 3
+      },
+      {
+        "phrase": "workshop",
+        "count": 3
+      },
+      {
+        "phrase": "learnt",
+        "count": 3
+      },
+      {
+        "phrase": "traditional",
+        "count": 3
+      },
+      {
+        "phrase": "magazine",
+        "count": 3
+      },
+      {
+        "phrase": "climbers",
+        "count": 3
+      },
+      {
+        "phrase": "approximately",
+        "count": 3
+      },
+      {
+        "phrase": "planned",
+        "count": 3
+      },
+      {
+        "phrase": "decided",
+        "count": 3
+      },
+      {
+        "phrase": "successful",
+        "count": 3
+      },
+      {
+        "phrase": "improved",
+        "count": 3
+      },
+      {
+        "phrase": "successfully",
+        "count": 3
+      },
+      {
+        "phrase": "vacuum",
+        "count": 3
+      },
+      {
+        "phrase": "microwave",
+        "count": 3
+      },
+      {
+        "phrase": "buying",
+        "count": 3
+      },
+      {
+        "phrase": "bought",
+        "count": 3
+      },
+      {
+        "phrase": "warranty",
+        "count": 3
+      },
+      {
+        "phrase": "environment",
+        "count": 3
+      },
+      {
+        "phrase": "century",
+        "count": 3
+      },
+      {
+        "phrase": "develop",
+        "count": 3
+      },
+      {
+        "phrase": "create",
+        "count": 3
+      },
+      {
+        "phrase": "broadcast",
+        "count": 3
+      },
+      {
+        "phrase": "company",
+        "count": 3
+      },
+      {
+        "phrase": "against",
+        "count": 3
+      },
+      {
+        "phrase": "always",
+        "count": 3
+      },
+      {
+        "phrase": "without",
+        "count": 3
+      },
+      {
+        "phrase": "provide",
+        "count": 3
+      },
+      {
+        "phrase": "nocturnal",
+        "count": 3
+      },
+      {
+        "phrase": "certain",
+        "count": 3
+      },
+      {
+        "phrase": "religious",
+        "count": 3
+      },
+      {
+        "phrase": "chinese",
+        "count": 3
+      },
+      {
+        "phrase": "change",
+        "count": 3
+      },
+      {
+        "phrase": "studies",
+        "count": 3
+      },
+      {
+        "phrase": "nature",
+        "count": 3
+      },
+      {
+        "phrase": "society",
+        "count": 3
+      },
+      {
+        "phrase": "recyclable",
+        "count": 3
+      },
+      {
+        "phrase": "numbers",
+        "count": 3
+      },
+      {
+        "phrase": "polyethylene",
+        "count": 3
+      },
+      {
+        "phrase": "commonly",
+        "count": 3
+      },
+      {
+        "phrase": "brazil",
+        "count": 2
+      },
+      {
+        "phrase": "brazilian",
+        "count": 2
+      },
+      {
+        "phrase": "fruits",
+        "count": 2
+      },
+      {
+        "phrase": "desserts",
+        "count": 2
+      },
+      {
+        "phrase": "tastes",
+        "count": 2
+      },
+      {
+        "phrase": "chocolate",
+        "count": 2
+      },
+      {
+        "phrase": "yogurt",
+        "count": 2
+      },
+      {
+        "phrase": "jabuticaba",
+        "count": 2
+      },
+      {
+        "phrase": "jellies",
+        "count": 2
+      },
+      {
+        "phrase": "pitanga",
+        "count": 2
+      },
+      {
+        "phrase": "already",
+        "count": 2
+      },
+      {
+        "phrase": "running",
+        "count": 2
+      },
+      {
+        "phrase": "parents",
+        "count": 2
+      },
+      {
+        "phrase": "starting",
+        "count": 2
+      },
+      {
+        "phrase": "camera",
+        "count": 2
+      },
+      {
+        "phrase": "submission",
+        "count": 2
+      },
+      {
+        "phrase": "stream",
+        "count": 2
+      },
+      {
+        "phrase": "prizes",
+        "count": 2
+      },
+      {
+        "phrase": "submitted",
+        "count": 2
+      },
+      {
+        "phrase": "included",
+        "count": 2
+      },
+      {
+        "phrase": "picture",
+        "count": 2
+      },
+      {
+        "phrase": "campus",
+        "count": 2
+      },
+      {
+        "phrase": "computer",
+        "count": 2
+      },
+      {
+        "phrase": "workstations",
+        "count": 2
+      },
+      {
+        "phrase": "laptop",
+        "count": 2
+      },
+      {
+        "phrase": "orientations",
+        "count": 2
+      },
+      {
+        "phrase": "details",
+        "count": 2
+      },
+      {
+        "phrase": "materials",
+        "count": 2
+      },
+      {
+        "phrase": "earphones",
+        "count": 2
+      },
+      {
+        "phrase": "headphones",
+        "count": 2
+      },
+      {
+        "phrase": "photocopiers",
+        "count": 2
+      },
+      {
+        "phrase": "written",
+        "count": 2
+      },
+      {
+        "phrase": "animals",
+        "count": 2
+      },
+      {
+        "phrase": "survey",
+        "count": 2
+      },
+      {
+        "phrase": "feeling",
+        "count": 2
+      },
+      {
+        "phrase": "problems",
+        "count": 2
+      },
+      {
+        "phrase": "countries",
+        "count": 2
+      },
+      {
+        "phrase": "according",
+        "count": 2
+      },
+      {
+        "phrase": "finding",
+        "count": 2
+      },
+      {
+        "phrase": "interested",
+        "count": 2
+      },
+      {
+        "phrase": "sundays",
+        "count": 2
+      },
+      {
+        "phrase": "winsfield",
+        "count": 2
+      },
+      {
+        "phrase": "stands",
+        "count": 2
+      },
+      {
+        "phrase": "served",
+        "count": 2
+      },
+      {
+        "phrase": "yakitori",
+        "count": 2
+      },
+      {
+        "phrase": "especially",
+        "count": 2
+      },
+      {
+        "phrase": "comedy",
+        "count": 2
+      },
+      {
+        "phrase": "relaxing",
+        "count": 2
+      },
+      {
+        "phrase": "cultural",
+        "count": 2
+      },
+      {
+        "phrase": "onigiri",
+        "count": 2
+      },
+      {
+        "phrase": "noodles",
+        "count": 2
+      },
+      {
+        "phrase": "bamboo",
+        "count": 2
+      },
+      {
+        "phrase": "enjoyed",
+        "count": 2
+      },
+      {
+        "phrase": "likely",
+        "count": 2
+      }
+    ]
+  },
+  "reiwa5": {
+    "unigram": [
+      {
+        "phrase": "learning",
+        "count": 21
+      },
+      {
+        "phrase": "tardigrades",
+        "count": 21
+      },
+      {
+        "phrase": "english",
+        "count": 16
+      },
+      {
+        "phrase": "tennis",
+        "count": 13
+      },
+      {
+        "phrase": "collecting",
+        "count": 12
+      },
+      {
+        "phrase": "survive",
+        "count": 12
+      },
+      {
+        "phrase": "middle",
+        "count": 11
+      },
+      {
+        "phrase": "children",
+        "count": 11
+      },
+      {
+        "phrase": "choose",
+        "count": 10
+      },
+      {
+        "phrase": "studying",
+        "count": 8
+      },
+      {
+        "phrase": "support",
+        "count": 8
+      },
+      {
+        "phrase": "playing",
+        "count": 8
+      },
+      {
+        "phrase": "started",
+        "count": 8
+      },
+      {
+        "phrase": "understand",
+        "count": 8
+      },
+      {
+        "phrase": "adventure",
+        "count": 8
+      },
+      {
+        "phrase": "information",
+        "count": 8
+      },
+      {
+        "phrase": "creatures",
+        "count": 8
+      },
+      {
+        "phrase": "collect",
+        "count": 7
+      },
+      {
+        "phrase": "however",
+        "count": 7
+      },
+      {
+        "phrase": "sleeping",
+        "count": 7
+      },
+      {
+        "phrase": "intervals",
+        "count": 7
+      },
+      {
+        "phrase": "collection",
+        "count": 7
+      },
+      {
+        "phrase": "collections",
+        "count": 7
+      },
+      {
+        "phrase": "tardigrade",
+        "count": 7
+      },
+      {
+        "phrase": "stylets",
+        "count": 7
+      },
+      {
+        "phrase": "pharynx",
+        "count": 7
+      },
+      {
+        "phrase": "reading",
+        "count": 6
+      },
+      {
+        "phrase": "records",
+        "count": 6
+      },
+      {
+        "phrase": "live",
+        "count": 6
+      },
+      {
+        "phrase": "having",
+        "count": 6
+      },
+      {
+        "phrase": "challenge",
+        "count": 6
+      },
+      {
+        "phrase": "studied",
+        "count": 6
+      },
+      {
+        "phrase": "commuting",
+        "count": 6
+      },
+      {
+        "phrase": "oxford",
+        "count": 6
+      },
+      {
+        "phrase": "science",
+        "count": 6
+      },
+      {
+        "phrase": "spaced",
+        "count": 6
+      },
+      {
+        "phrase": "communication",
+        "count": 6
+      },
+      {
+        "phrase": "friends",
+        "count": 6
+      },
+      {
+        "phrase": "option",
+        "count": 6
+      },
+      {
+        "phrase": "others",
+        "count": 6
+      },
+      {
+        "phrase": "state",
+        "count": 6
+      },
+      {
+        "phrase": "salivary",
+        "count": 6
+      },
+      {
+        "phrase": "esophagus",
+        "count": 6
+      },
+      {
+        "phrase": "performances",
+        "count": 5
+      },
+      {
+        "phrase": "summer",
+        "count": 5
+      },
+      {
+        "phrase": "instructors",
+        "count": 5
+      },
+      {
+        "phrase": "future",
+        "count": 5
+      },
+      {
+        "phrase": "learned",
+        "count": 5
+      },
+      {
+        "phrase": "options",
+        "count": 5
+      },
+      {
+        "phrase": "participants",
+        "count": 5
+      },
+      {
+        "phrase": "camping",
+        "count": 5
+      },
+      {
+        "phrase": "section",
+        "count": 5
+      },
+      {
+        "phrase": "different",
+        "count": 5
+      },
+      {
+        "phrase": "contextual",
+        "count": 5
+      },
+      {
+        "phrase": "example",
+        "count": 5
+      },
+      {
+        "phrase": "called",
+        "count": 5
+      },
+      {
+        "phrase": "attention",
+        "count": 5
+      },
+      {
+        "phrase": "without",
+        "count": 5
+      },
+      {
+        "phrase": "reasons",
+        "count": 5
+      },
+      {
+        "phrase": "researchers",
+        "count": 5
+      },
+      {
+        "phrase": "technology",
+        "count": 5
+      },
+      {
+        "phrase": "temperatures",
+        "count": 5
+      },
+      {
+        "phrase": "complete",
+        "count": 4
+      },
+      {
+        "phrase": "international",
+        "count": 4
+      },
+      {
+        "phrase": "campers",
+        "count": 4
+      },
+      {
+        "phrase": "course",
+        "count": 4
+      },
+      {
+        "phrase": "skills",
+        "count": 4
+      },
+      {
+        "phrase": "ability",
+        "count": 4
+      },
+      {
+        "phrase": "written",
+        "count": 4
+      },
+      {
+        "phrase": "popular",
+        "count": 4
+      },
+      {
+        "phrase": "searching",
+        "count": 4
+      },
+      {
+        "phrase": "features",
+        "count": 4
+      },
+      {
+        "phrase": "wearing",
+        "count": 4
+      },
+      {
+        "phrase": "memory",
+        "count": 4
+      },
+      {
+        "phrase": "comfortable",
+        "count": 4
+      },
+      {
+        "phrase": "likely",
+        "count": 4
+      },
+      {
+        "phrase": "friend",
+        "count": 4
+      },
+      {
+        "phrase": "always",
+        "count": 4
+      },
+      {
+        "phrase": "reason",
+        "count": 4
+      },
+      {
+        "phrase": "classmates",
+        "count": 4
+      },
+      {
+        "phrase": "clothes",
+        "count": 4
+      },
+      {
+        "phrase": "advice",
+        "count": 4
+      },
+      {
+        "phrase": "plates",
+        "count": 4
+      },
+      {
+        "phrase": "jackets",
+        "count": 4
+      },
+      {
+        "phrase": "shirts",
+        "count": 4
+      },
+      {
+        "phrase": "trousers",
+        "count": 4
+      },
+      {
+        "phrase": "create",
+        "count": 4
+      },
+      {
+        "phrase": "experience",
+        "count": 4
+      },
+      {
+        "phrase": "family",
+        "count": 4
+      },
+      {
+        "phrase": "missing",
+        "count": 4
+      },
+      {
+        "phrase": "following",
+        "count": 4
+      },
+      {
+        "phrase": "father",
+        "count": 4
+      },
+      {
+        "phrase": "effective",
+        "count": 4
+      },
+      {
+        "phrase": "repetitive",
+        "count": 4
+      },
+      {
+        "phrase": "memorize",
+        "count": 4
+      },
+      {
+        "phrase": "various",
+        "count": 4
+      },
+      {
+        "phrase": "discussed",
+        "count": 4
+      },
+      {
+        "phrase": "longer",
+        "count": 4
+      },
+      {
+        "phrase": "workbooks",
+        "count": 4
+      },
+      {
+        "phrase": "whether",
+        "count": 4
+      },
+      {
+        "phrase": "football",
+        "count": 4
+      },
+      {
+        "phrase": "player",
+        "count": 4
+      },
+      {
+        "phrase": "opponent",
+        "count": 4
+      },
+      {
+        "phrase": "becoming",
+        "count": 4
+      },
+      {
+        "phrase": "someone",
+        "count": 4
+      },
+      {
+        "phrase": "continue",
+        "count": 4
+      },
+      {
+        "phrase": "species",
+        "count": 4
+      },
+      {
+        "phrase": "activity",
+        "count": 3
+      },
+      {
+        "phrase": "theater",
+        "count": 3
+      },
+      {
+        "phrase": "costumes",
+        "count": 3
+      },
+      {
+        "phrase": "available",
+        "count": 3
+      },
+      {
+        "phrase": "interested",
+        "count": 3
+      },
+      {
+        "phrase": "intensive",
+        "count": 3
+      },
+      {
+        "phrase": "simple",
+        "count": 3
+      },
+      {
+        "phrase": "countries",
+        "count": 3
+      },
+      {
+        "phrase": "worked",
+        "count": 3
+      },
+      {
+        "phrase": "advanced",
+        "count": 3
+      },
+      {
+        "phrase": "application",
+        "count": 3
+      },
+      {
+        "phrase": "personalised",
+        "count": 3
+      },
+      {
+        "phrase": "balance",
+        "count": 3
+      },
+      {
+        "phrase": "exercise",
+        "count": 3
+      },
+      {
+        "phrase": "directions",
+        "count": 3
+      },
+      {
+        "phrase": "getting",
+        "count": 3
+      },
+      {
+        "phrase": "cycling",
+        "count": 3
+      },
+      {
+        "phrase": "according",
+        "count": 3
+      },
+      {
+        "phrase": "customer",
+        "count": 3
+      },
+      {
+        "phrase": "paying",
+        "count": 3
+      },
+      {
+        "phrase": "participated",
+        "count": 3
+      },
+      {
+        "phrase": "quickly",
+        "count": 3
+      },
+      {
+        "phrase": "improve",
+        "count": 3
+      },
+      {
+        "phrase": "author",
+        "count": 3
+      },
+      {
+        "phrase": "kaitlyn",
+        "count": 3
+      },
+      {
+        "phrase": "practical",
+        "count": 3
+      },
+      {
+        "phrase": "lessons",
+        "count": 3
+      },
+      {
+        "phrase": "backpack",
+        "count": 3
+      },
+      {
+        "phrase": "although",
+        "count": 3
+      },
+      {
+        "phrase": "created",
+        "count": 3
+      },
+      {
+        "phrase": "enjoyed",
+        "count": 3
+      },
+      {
+        "phrase": "making",
+        "count": 3
+      },
+      {
+        "phrase": "sherlock",
+        "count": 3
+      },
+      {
+        "phrase": "holmes",
+        "count": 3
+      },
+      {
+        "phrase": "sweets",
+        "count": 3
+      },
+      {
+        "phrase": "challenges",
+        "count": 3
+      },
+      {
+        "phrase": "happened",
+        "count": 3
+      },
+      {
+        "phrase": "living",
+        "count": 3
+      },
+      {
+        "phrase": "recall",
+        "count": 3
+      },
+      {
+        "phrase": "workbook",
+        "count": 3
+      },
+      {
+        "phrase": "obsidian",
+        "count": 3
+      },
+      {
+        "phrase": "igneous",
+        "count": 3
+      },
+      {
+        "phrase": "glassy",
+        "count": 3
+      },
+      {
+        "phrase": "rather",
+        "count": 3
+      },
+      {
+        "phrase": "though",
+        "count": 3
+      },
+      {
+        "phrase": "massed",
+        "count": 3
+      },
+      {
+        "phrase": "content",
+        "count": 3
+      },
+      {
+        "phrase": "easily",
+        "count": 3
+      },
+      {
+        "phrase": "groups",
+        "count": 3
+      },
+      {
+        "phrase": "helpful",
+        "count": 3
+      },
+      {
+        "phrase": "length",
+        "count": 3
+      },
+      {
+        "phrase": "unexpected",
+        "count": 3
+      },
+      {
+        "phrase": "practice",
+        "count": 3
+      },
+      {
+        "phrase": "brother",
+        "count": 3
+      },
+      {
+        "phrase": "patrick",
+        "count": 3
+      },
+      {
+        "phrase": "communicate",
+        "count": 3
+      },
+      {
+        "phrase": "something",
+        "count": 3
+      },
+      {
+        "phrase": "communicator",
+        "count": 3
+      },
+      {
+        "phrase": "events",
+        "count": 3
+      },
+      {
+        "phrase": "social",
+        "count": 3
+      },
+      {
+        "phrase": "motivation",
+        "count": 3
+      },
+      {
+        "phrase": "change",
+        "count": 3
+      },
+      {
+        "phrase": "collected",
+        "count": 3
+      },
+      {
+        "phrase": "adults",
+        "count": 3
+      },
+      {
+        "phrase": "guinness",
+        "count": 3
+      },
+      {
+        "phrase": "collectors",
+        "count": 3
+      },
+      {
+        "phrase": "collector",
+        "count": 3
+      },
+      {
+        "phrase": "almost",
+        "count": 3
+      },
+      {
+        "phrase": "presentation",
+        "count": 3
+      },
+      {
+        "phrase": "toughest",
+        "count": 3
+      },
+      {
+        "phrase": "surface",
+        "count": 3
+      },
+      {
+        "phrase": "springs",
+        "count": 3
+      },
+      {
+        "phrase": "alive",
+        "count": 3
+      },
+      {
+        "phrase": "radiation",
+        "count": 3
+      },
+      {
+        "phrase": "digestive",
+        "count": 3
+      },
+      {
+        "phrase": "systems",
+        "count": 3
+      },
+      {
+        "phrase": "conditions",
+        "count": 3
+      },
+      {
+        "phrase": "handout",
+        "count": 2
+      },
+      {
+        "phrase": "together",
+        "count": 2
+      },
+      {
+        "phrase": "wherever",
+        "count": 2
+      },
+      {
+        "phrase": "guitar",
+        "count": 2
+      },
+      {
+        "phrase": "starts",
+        "count": 2
+      },
+      {
+        "phrase": "running",
+        "count": 2
+      },
+      {
+        "phrase": "including",
+        "count": 2
+      },
+      {
+        "phrase": "performance",
+        "count": 2
+      },
+      {
+        "phrase": "drinks",
+        "count": 2
+      },
+      {
+        "phrase": "original",
+        "count": 2
+      },
+      {
+        "phrase": "explain",
+        "count": 2
+      },
+      {
+        "phrase": "senior",
+        "count": 2
+      },
+      {
+        "phrase": "website",
+        "count": 2
+      },
+      {
+        "phrase": "provided",
+        "count": 2
+      },
+      {
+        "phrase": "environment",
+        "count": 2
+      },
+      {
+        "phrase": "august",
+        "count": 2
+      }
+    ]
+  },
+  "reiwa6": {
+    "unigram": [
+      {
+        "phrase": "flying",
+        "count": 24
+      },
+      {
+        "phrase": "exploration",
+        "count": 21
+      },
+      {
+        "phrase": "animals",
+        "count": 16
+      },
+      {
+        "phrase": "melody",
+        "count": 13
+      },
+      {
+        "phrase": "presentation",
+        "count": 12
+      },
+      {
+        "phrase": "around",
+        "count": 11
+      },
+      {
+        "phrase": "choose",
+        "count": 10
+      },
+      {
+        "phrase": "patterns",
+        "count": 10
+      },
+      {
+        "phrase": "following",
+        "count": 9
+      },
+      {
+        "phrase": "bluebird",
+        "count": 9
+      },
+      {
+        "phrase": "animal",
+        "count": 9
+      },
+      {
+        "phrase": "countries",
+        "count": 8
+      },
+      {
+        "phrase": "conference",
+        "count": 8
+      },
+      {
+        "phrase": "whiskers",
+        "count": 8
+      },
+      {
+        "phrase": "decorations",
+        "count": 7
+      },
+      {
+        "phrase": "vehicles",
+        "count": 7
+      },
+      {
+        "phrase": "professor",
+        "count": 7
+      },
+      {
+        "phrase": "modern",
+        "count": 6
+      },
+      {
+        "phrase": "speakers",
+        "count": 6
+      },
+      {
+        "phrase": "developing",
+        "count": 6
+      },
+      {
+        "phrase": "improve",
+        "count": 6
+      },
+      {
+        "phrase": "contest",
+        "count": 6
+      },
+      {
+        "phrase": "working",
+        "count": 6
+      },
+      {
+        "phrase": "debate",
+        "count": 6
+      },
+      {
+        "phrase": "reason",
+        "count": 6
+      },
+      {
+        "phrase": "outline",
+        "count": 6
+      },
+      {
+        "phrase": "longer",
+        "count": 6
+      },
+      {
+        "phrase": "source",
+        "count": 6
+      },
+      {
+        "phrase": "spacecraft",
+        "count": 6
+      },
+      {
+        "phrase": "likely",
+        "count": 5
+      },
+      {
+        "phrase": "different",
+        "count": 5
+      },
+      {
+        "phrase": "future",
+        "count": 5
+      },
+      {
+        "phrase": "problems",
+        "count": 5
+      },
+      {
+        "phrase": "difficult",
+        "count": 5
+      },
+      {
+        "phrase": "mentioned",
+        "count": 5
+      },
+      {
+        "phrase": "parking",
+        "count": 5
+      },
+      {
+        "phrase": "decided",
+        "count": 5
+      },
+      {
+        "phrase": "sleeping",
+        "count": 5
+      },
+      {
+        "phrase": "experience",
+        "count": 5
+      },
+      {
+        "phrase": "closing",
+        "count": 5
+      },
+      {
+        "phrase": "heroes",
+        "count": 5
+      },
+      {
+        "phrase": "superhero",
+        "count": 5
+      },
+      {
+        "phrase": "humanity",
+        "count": 5
+      },
+      {
+        "phrase": "options",
+        "count": 5
+      },
+      {
+        "phrase": "asleep",
+        "count": 5
+      },
+      {
+        "phrase": "opinions",
+        "count": 5
+      },
+      {
+        "phrase": "aquarium",
+        "count": 4
+      },
+      {
+        "phrase": "health",
+        "count": 4
+      },
+      {
+        "phrase": "services",
+        "count": 4
+      },
+      {
+        "phrase": "already",
+        "count": 4
+      },
+      {
+        "phrase": "speaker",
+        "count": 4
+      },
+      {
+        "phrase": "rather",
+        "count": 4
+      },
+      {
+        "phrase": "number",
+        "count": 4
+      },
+      {
+        "phrase": "notice",
+        "count": 4
+      },
+      {
+        "phrase": "private",
+        "count": 4
+      },
+      {
+        "phrase": "underlined",
+        "count": 4
+      },
+      {
+        "phrase": "comment",
+        "count": 4
+      },
+      {
+        "phrase": "university",
+        "count": 4
+      },
+      {
+        "phrase": "volunteer",
+        "count": 4
+      },
+      {
+        "phrase": "address",
+        "count": 4
+      },
+      {
+        "phrase": "business",
+        "count": 4
+      },
+      {
+        "phrase": "tables",
+        "count": 4
+      },
+      {
+        "phrase": "members",
+        "count": 4
+      },
+      {
+        "phrase": "member",
+        "count": 4
+      },
+      {
+        "phrase": "information",
+        "count": 4
+      },
+      {
+        "phrase": "state",
+        "count": 4
+      },
+      {
+        "phrase": "parents",
+        "count": 4
+      },
+      {
+        "phrase": "superpowers",
+        "count": 4
+      },
+      {
+        "phrase": "option",
+        "count": 4
+      },
+      {
+        "phrase": "humans",
+        "count": 4
+      },
+      {
+        "phrase": "biphasic",
+        "count": 4
+      },
+      {
+        "phrase": "periods",
+        "count": 4
+      },
+      {
+        "phrase": "temperature",
+        "count": 4
+      },
+      {
+        "phrase": "reasons",
+        "count": 4
+      },
+      {
+        "phrase": "position",
+        "count": 4
+      },
+      {
+        "phrase": "research",
+        "count": 4
+      },
+      {
+        "phrase": "international",
+        "count": 4
+      },
+      {
+        "phrase": "cooperation",
+        "count": 4
+      },
+      {
+        "phrase": "industry",
+        "count": 4
+      },
+      {
+        "phrase": "governments",
+        "count": 4
+      },
+      {
+        "phrase": "pamphlet",
+        "count": 3
+      },
+      {
+        "phrase": "natural",
+        "count": 3
+      },
+      {
+        "phrase": "artificial",
+        "count": 3
+      },
+      {
+        "phrase": "objects",
+        "count": 3
+      },
+      {
+        "phrase": "harmful",
+        "count": 3
+      },
+      {
+        "phrase": "amount",
+        "count": 3
+      },
+      {
+        "phrase": "transportation",
+        "count": 3
+      },
+      {
+        "phrase": "written",
+        "count": 3
+      },
+      {
+        "phrase": "called",
+        "count": 3
+      },
+      {
+        "phrase": "discussed",
+        "count": 3
+      },
+      {
+        "phrase": "cities",
+        "count": 3
+      },
+      {
+        "phrase": "technology",
+        "count": 3
+      },
+      {
+        "phrase": "available",
+        "count": 3
+      },
+      {
+        "phrase": "forward",
+        "count": 3
+      },
+      {
+        "phrase": "correct",
+        "count": 3
+      },
+      {
+        "phrase": "interesting",
+        "count": 3
+      },
+      {
+        "phrase": "however",
+        "count": 3
+      },
+      {
+        "phrase": "something",
+        "count": 3
+      },
+      {
+        "phrase": "leader",
+        "count": 3
+      },
+      {
+        "phrase": "although",
+        "count": 3
+      },
+      {
+        "phrase": "problem",
+        "count": 3
+      },
+      {
+        "phrase": "writing",
+        "count": 3
+      },
+      {
+        "phrase": "comments",
+        "count": 3
+      },
+      {
+        "phrase": "instead",
+        "count": 3
+      },
+      {
+        "phrase": "quality",
+        "count": 3
+      },
+      {
+        "phrase": "activities",
+        "count": 3
+      },
+      {
+        "phrase": "events",
+        "count": 3
+      },
+      {
+        "phrase": "having",
+        "count": 3
+      },
+      {
+        "phrase": "overall",
+        "count": 3
+      },
+      {
+        "phrase": "period",
+        "count": 3
+      },
+      {
+        "phrase": "program",
+        "count": 3
+      },
+      {
+        "phrase": "received",
+        "count": 3
+      },
+      {
+        "phrase": "representative",
+        "count": 3
+      },
+      {
+        "phrase": "schedule",
+        "count": 3
+      },
+      {
+        "phrase": "morning",
+        "count": 3
+      },
+      {
+        "phrase": "undecided",
+        "count": 3
+      },
+      {
+        "phrase": "moderator",
+        "count": 3
+      },
+      {
+        "phrase": "registration",
+        "count": 3
+      },
+      {
+        "phrase": "speech",
+        "count": 3
+      },
+      {
+        "phrase": "titles",
+        "count": 3
+      },
+      {
+        "phrase": "volunteers",
+        "count": 3
+      },
+      {
+        "phrase": "possible",
+        "count": 3
+      },
+      {
+        "phrase": "details",
+        "count": 3
+      },
+      {
+        "phrase": "diagram",
+        "count": 3
+      },
+      {
+        "phrase": "reality",
+        "count": 3
+      },
+      {
+        "phrase": "mother",
+        "count": 3
+      },
+      {
+        "phrase": "powers",
+        "count": 3
+      },
+      {
+        "phrase": "ranger",
+        "count": 3
+      },
+      {
+        "phrase": "various",
+        "count": 3
+      },
+      {
+        "phrase": "distances",
+        "count": 3
+      },
+      {
+        "phrase": "science",
+        "count": 3
+      },
+      {
+        "phrase": "sleeps",
+        "count": 3
+      },
+      {
+        "phrase": "physical",
+        "count": 3
+      },
+      {
+        "phrase": "species",
+        "count": 3
+      },
+      {
+        "phrase": "common",
+        "count": 3
+      },
+      {
+        "phrase": "hunger",
+        "count": 3
+      },
+      {
+        "phrase": "create",
+        "count": 3
+      },
+      {
+        "phrase": "travel",
+        "count": 3
+      },
+      {
+        "phrase": "danger",
+        "count": 3
+      },
+      {
+        "phrase": "pattern",
+        "count": 3
+      },
+      {
+        "phrase": "unihemispheric",
+        "count": 3
+      },
+      {
+        "phrase": "rate",
+        "count": 3
+      },
+      {
+        "phrase": "exploring",
+        "count": 3
+      },
+      {
+        "phrase": "evidence",
+        "count": 3
+      },
+      {
+        "phrase": "economic",
+        "count": 3
+      },
+      {
+        "phrase": "estimated",
+        "count": 3
+      },
+      {
+        "phrase": "billion",
+        "count": 3
+      },
+      {
+        "phrase": "rise",
+        "count": 3
+      },
+      {
+        "phrase": "emissions",
+        "count": 3
+      },
+      {
+        "phrase": "damaging",
+        "count": 3
+      },
+      {
+        "phrase": "debris",
+        "count": 3
+      },
+      {
+        "phrase": "potential",
+        "count": 3
+      },
+      {
+        "phrase": "education",
+        "count": 3
+      },
+      {
+        "phrase": "family",
+        "count": 2
+      },
+      {
+        "phrase": "decorate",
+        "count": 2
+      },
+      {
+        "phrase": "spaces",
+        "count": 2
+      },
+      {
+        "phrase": "others",
+        "count": 2
+      },
+      {
+        "phrase": "places",
+        "count": 2
+      },
+      {
+        "phrase": "stones",
+        "count": 2
+      },
+      {
+        "phrase": "necessary",
+        "count": 2
+      },
+      {
+        "phrase": "plants",
+        "count": 2
+      },
+      {
+        "phrase": "carefully",
+        "count": 2
+      },
+      {
+        "phrase": "lovers",
+        "count": 2
+      },
+      {
+        "phrase": "experienced",
+        "count": 2
+      },
+      {
+        "phrase": "advice",
+        "count": 2
+      },
+      {
+        "phrase": "methods",
+        "count": 2
+      },
+      {
+        "phrase": "provide",
+        "count": 2
+      },
+      {
+        "phrase": "briefly",
+        "count": 2
+      },
+      {
+        "phrase": "according",
+        "count": 2
+      },
+      {
+        "phrase": "prepare",
+        "count": 2
+      },
+      {
+        "phrase": "solutions",
+        "count": 2
+      },
+      {
+        "phrase": "points",
+        "count": 2
+      },
+      {
+        "phrase": "general",
+        "count": 2
+      },
+      {
+        "phrase": "technologies",
+        "count": 2
+      },
+      {
+        "phrase": "improved",
+        "count": 2
+      },
+      {
+        "phrase": "faster",
+        "count": 2
+      },
+      {
+        "phrase": "traffic",
+        "count": 2
+      },
+      {
+        "phrase": "hospitals",
+        "count": 2
+      },
+      {
+        "phrase": "safety",
+        "count": 2
+      },
+      {
+        "phrase": "tested",
+        "count": 2
+      },
+      {
+        "phrase": "recent",
+        "count": 2
+      },
+      {
+        "phrase": "someone",
+        "count": 2
+      },
+      {
+        "phrase": "answered",
+        "count": 2
+      },
+      {
+        "phrase": "environmental",
+        "count": 2
+      },
+      {
+        "phrase": "opinion",
+        "count": 2
+      },
+      {
+        "phrase": "exchange",
+        "count": 2
+      },
+      {
+        "phrase": "popular",
+        "count": 2
+      },
+      {
+        "phrase": "worried",
+        "count": 2
+      },
+      {
+        "phrase": "figure",
+        "count": 2
+      },
+      {
+        "phrase": "continued",
+        "count": 2
+      },
+      {
+        "phrase": "practise",
+        "count": 2
+      },
+      {
+        "phrase": "rehearsal",
+        "count": 2
+      },
+      {
+        "phrase": "additional",
+        "count": 2
+      },
+      {
+        "phrase": "everything",
+        "count": 2
+      },
+      {
+        "phrase": "listened",
+        "count": 2
+      },
+      {
+        "phrase": "playing",
+        "count": 2
+      },
+      {
+        "phrase": "slightly",
+        "count": 2
+      },
+      {
+        "phrase": "attention",
+        "count": 2
+      },
+      {
+        "phrase": "everyone",
+        "count": 2
+      },
+      {
+        "phrase": "explained",
+        "count": 2
+      }
+    ]
+  },
+  "reiwa7": {
+    "unigram": [
+      {
+        "phrase": "takuya",
+        "count": 28
+      },
+      {
+        "phrase": "kasumi",
+        "count": 24
+      },
+      {
+        "phrase": "english",
+        "count": 20
+      },
+      {
+        "phrase": "peppers",
+        "count": 20
+      },
+      {
+        "phrase": "choose",
+        "count": 17
+      },
+      {
+        "phrase": "members",
+        "count": 12
+      },
+      {
+        "phrase": "wasabi",
+        "count": 12
+      },
+      {
+        "phrase": "capsaicin",
+        "count": 12
+      },
+      {
+        "phrase": "different",
+        "count": 11
+      },
+      {
+        "phrase": "option",
+        "count": 11
+      },
+      {
+        "phrase": "strategy",
+        "count": 9
+      },
+      {
+        "phrase": "kawanaka",
+        "count": 9
+      },
+      {
+        "phrase": "called",
+        "count": 9
+      },
+      {
+        "phrase": "yentonville",
+        "count": 8
+      },
+      {
+        "phrase": "experience",
+        "count": 7
+      },
+      {
+        "phrase": "support",
+        "count": 7
+      },
+      {
+        "phrase": "likely",
+        "count": 7
+      },
+      {
+        "phrase": "classroom",
+        "count": 7
+      },
+      {
+        "phrase": "restaurant",
+        "count": 7
+      },
+      {
+        "phrase": "business",
+        "count": 7
+      },
+      {
+        "phrase": "became",
+        "count": 7
+      },
+      {
+        "phrase": "coffee",
+        "count": 7
+      },
+      {
+        "phrase": "effects",
+        "count": 7
+      },
+      {
+        "phrase": "tolerance",
+        "count": 7
+      },
+      {
+        "phrase": "international",
+        "count": 6
+      },
+      {
+        "phrase": "travel",
+        "count": 6
+      },
+      {
+        "phrase": "friends",
+        "count": 6
+      },
+      {
+        "phrase": "participants",
+        "count": 6
+      },
+      {
+        "phrase": "following",
+        "count": 6
+      },
+      {
+        "phrase": "having",
+        "count": 6
+      },
+      {
+        "phrase": "playing",
+        "count": 6
+      },
+      {
+        "phrase": "insurance",
+        "count": 6
+      },
+      {
+        "phrase": "university",
+        "count": 6
+      },
+      {
+        "phrase": "health",
+        "count": 6
+      },
+      {
+        "phrase": "classrooms",
+        "count": 6
+      },
+      {
+        "phrase": "naturalness",
+        "count": 6
+      },
+      {
+        "phrase": "change",
+        "count": 6
+      },
+      {
+        "phrase": "family",
+        "count": 6
+      },
+      {
+        "phrase": "timing",
+        "count": 6
+      },
+      {
+        "phrase": "language",
+        "count": 5
+      },
+      {
+        "phrase": "reading",
+        "count": 5
+      },
+      {
+        "phrase": "japanese",
+        "count": 5
+      },
+      {
+        "phrase": "member",
+        "count": 5
+      },
+      {
+        "phrase": "information",
+        "count": 5
+      },
+      {
+        "phrase": "activity",
+        "count": 5
+      },
+      {
+        "phrase": "comment",
+        "count": 5
+      },
+      {
+        "phrase": "telephone",
+        "count": 5
+      },
+      {
+        "phrase": "article",
+        "count": 5
+      },
+      {
+        "phrase": "island",
+        "count": 5
+      },
+      {
+        "phrase": "something",
+        "count": 5
+      },
+      {
+        "phrase": "longer",
+        "count": 5
+      },
+      {
+        "phrase": "eating",
+        "count": 5
+      },
+      {
+        "phrase": "dance",
+        "count": 4
+      },
+      {
+        "phrase": "pictures",
+        "count": 4
+      },
+      {
+        "phrase": "displayed",
+        "count": 4
+      },
+      {
+        "phrase": "foreign",
+        "count": 4
+      },
+      {
+        "phrase": "opposite",
+        "count": 4
+      },
+      {
+        "phrase": "concert",
+        "count": 4
+      },
+      {
+        "phrase": "several",
+        "count": 4
+      },
+      {
+        "phrase": "created",
+        "count": 4
+      },
+      {
+        "phrase": "afterwards",
+        "count": 4
+      },
+      {
+        "phrase": "around",
+        "count": 4
+      },
+      {
+        "phrase": "design",
+        "count": 4
+      },
+      {
+        "phrase": "events",
+        "count": 4
+      },
+      {
+        "phrase": "actually",
+        "count": 4
+      },
+      {
+        "phrase": "appropriate",
+        "count": 4
+      },
+      {
+        "phrase": "covered",
+        "count": 4
+      },
+      {
+        "phrase": "hospital",
+        "count": 4
+      },
+      {
+        "phrase": "assistance",
+        "count": 4
+      },
+      {
+        "phrase": "however",
+        "count": 4
+      },
+      {
+        "phrase": "writer",
+        "count": 4
+      },
+      {
+        "phrase": "remember",
+        "count": 4
+      },
+      {
+        "phrase": "decided",
+        "count": 4
+      },
+      {
+        "phrase": "science",
+        "count": 4
+      },
+      {
+        "phrase": "screen",
+        "count": 4
+      },
+      {
+        "phrase": "making",
+        "count": 4
+      },
+      {
+        "phrase": "stimulation",
+        "count": 4
+      },
+      {
+        "phrase": "individualization",
+        "count": 4
+      },
+      {
+        "phrase": "example",
+        "count": 4
+      },
+      {
+        "phrase": "temperature",
+        "count": 4
+      },
+      {
+        "phrase": "successful",
+        "count": 4
+      },
+      {
+        "phrase": "options",
+        "count": 4
+      },
+      {
+        "phrase": "kitchen",
+        "count": 4
+      },
+      {
+        "phrase": "company",
+        "count": 4
+      },
+      {
+        "phrase": "beautella",
+        "count": 4
+      },
+      {
+        "phrase": "mental",
+        "count": 4
+      },
+      {
+        "phrase": "psychological",
+        "count": 4
+      },
+      {
+        "phrase": "shapes",
+        "count": 4
+      },
+      {
+        "phrase": "amount",
+        "count": 4
+      },
+      {
+        "phrase": "lifestyle",
+        "count": 4
+      },
+      {
+        "phrase": "spiciness",
+        "count": 4
+      },
+      {
+        "phrase": "compounds",
+        "count": 4
+      },
+      {
+        "phrase": "scoville",
+        "count": 4
+      },
+      {
+        "phrase": "exchange",
+        "count": 3
+      },
+      {
+        "phrase": "various",
+        "count": 3
+      },
+      {
+        "phrase": "country",
+        "count": 3
+      },
+      {
+        "phrase": "participate",
+        "count": 3
+      },
+      {
+        "phrase": "offers",
+        "count": 3
+      },
+      {
+        "phrase": "church",
+        "count": 3
+      },
+      {
+        "phrase": "beautiful",
+        "count": 3
+      },
+      {
+        "phrase": "demonstrations",
+        "count": 3
+      },
+      {
+        "phrase": "walking",
+        "count": 3
+      },
+      {
+        "phrase": "artists",
+        "count": 3
+      },
+      {
+        "phrase": "hockey",
+        "count": 3
+      },
+      {
+        "phrase": "unique",
+        "count": 3
+      },
+      {
+        "phrase": "skills",
+        "count": 3
+      },
+      {
+        "phrase": "thinking",
+        "count": 3
+      },
+      {
+        "phrase": "without",
+        "count": 3
+      },
+      {
+        "phrase": "online",
+        "count": 3
+      },
+      {
+        "phrase": "computer",
+        "count": 3
+      },
+      {
+        "phrase": "regular",
+        "count": 3
+      },
+      {
+        "phrase": "comments",
+        "count": 3
+      },
+      {
+        "phrase": "focused",
+        "count": 3
+      },
+      {
+        "phrase": "explain",
+        "count": 3
+      },
+      {
+        "phrase": "joined",
+        "count": 3
+      },
+      {
+        "phrase": "schools",
+        "count": 3
+      },
+      {
+        "phrase": "useful",
+        "count": 3
+      },
+      {
+        "phrase": "necessary",
+        "count": 3
+      },
+      {
+        "phrase": "improve",
+        "count": 3
+      },
+      {
+        "phrase": "studied",
+        "count": 3
+      },
+      {
+        "phrase": "months",
+        "count": 3
+      },
+      {
+        "phrase": "minutes",
+        "count": 3
+      },
+      {
+        "phrase": "include",
+        "count": 3
+      },
+      {
+        "phrase": "medical",
+        "count": 3
+      },
+      {
+        "phrase": "smartphone",
+        "count": 3
+      },
+      {
+        "phrase": "included",
+        "count": 3
+      },
+      {
+        "phrase": "considered",
+        "count": 3
+      },
+      {
+        "phrase": "friend",
+        "count": 3
+      },
+      {
+        "phrase": "reason",
+        "count": 3
+      },
+      {
+        "phrase": "system",
+        "count": 3
+      },
+      {
+        "phrase": "process",
+        "count": 3
+      },
+      {
+        "phrase": "checkpoints",
+        "count": 3
+      },
+      {
+        "phrase": "enough",
+        "count": 3
+      },
+      {
+        "phrase": "realised",
+        "count": 3
+      },
+      {
+        "phrase": "newspaper",
+        "count": 3
+      },
+      {
+        "phrase": "virtual",
+        "count": 3
+      },
+      {
+        "phrase": "weather",
+        "count": 3
+      },
+      {
+        "phrase": "creatures",
+        "count": 3
+      },
+      {
+        "phrase": "number",
+        "count": 3
+      },
+      {
+        "phrase": "projector",
+        "count": 3
+      },
+      {
+        "phrase": "notice",
+        "count": 3
+      },
+      {
+        "phrase": "though",
+        "count": 3
+      },
+      {
+        "phrase": "results",
+        "count": 3
+      },
+      {
+        "phrase": "questionnaire",
+        "count": 3
+      },
+      {
+        "phrase": "handout",
+        "count": 3
+      },
+      {
+        "phrase": "discussion",
+        "count": 3
+      },
+      {
+        "phrase": "framework",
+        "count": 3
+      },
+      {
+        "phrase": "windows",
+        "count": 3
+      },
+      {
+        "phrase": "understand",
+        "count": 3
+      },
+      {
+        "phrase": "presentation",
+        "count": 3
+      },
+      {
+        "phrase": "eventually",
+        "count": 3
+      },
+      {
+        "phrase": "started",
+        "count": 3
+      },
+      {
+        "phrase": "graduation",
+        "count": 3
+      },
+      {
+        "phrase": "cosmetics",
+        "count": 3
+      },
+      {
+        "phrase": "ishijima",
+        "count": 3
+      },
+      {
+        "phrase": "instead",
+        "count": 3
+      },
+      {
+        "phrase": "retrospective",
+        "count": 3
+      },
+      {
+        "phrase": "prospective",
+        "count": 3
+      },
+      {
+        "phrase": "studies",
+        "count": 3
+      },
+      {
+        "phrase": "boredom",
+        "count": 3
+      },
+      {
+        "phrase": "skydiving",
+        "count": 3
+      },
+      {
+        "phrase": "children",
+        "count": 3
+      },
+      {
+        "phrase": "similar",
+        "count": 3
+      },
+      {
+        "phrase": "sensation",
+        "count": 3
+      },
+      {
+        "phrase": "stress",
+        "count": 3
+      },
+      {
+        "phrase": "contain",
+        "count": 3
+      },
+      {
+        "phrase": "pepper",
+        "count": 3
+      },
+      {
+        "phrase": "benefits",
+        "count": 3
+      },
+      {
+        "phrase": "energy",
+        "count": 3
+      },
+      {
+        "phrase": "negative",
+        "count": 3
+      },
+      {
+        "phrase": "feeling",
+        "count": 3
+      },
+      {
+        "phrase": "studying",
+        "count": 2
+      },
+      {
+        "phrase": "planning",
+        "count": 2
+      },
+      {
+        "phrase": "attend",
+        "count": 2
+      },
+      {
+        "phrase": "thorpe",
+        "count": 2
+      },
+      {
+        "phrase": "entrance",
+        "count": 2
+      },
+      {
+        "phrase": "please",
+        "count": 2
+      },
+      {
+        "phrase": "languages",
+        "count": 2
+      },
+      {
+        "phrase": "communicate",
+        "count": 2
+      },
+      {
+        "phrase": "expressions",
+        "count": 2
+      },
+      {
+        "phrase": "cultures",
+        "count": 2
+      },
+      {
+        "phrase": "gestures",
+        "count": 2
+      },
+      {
+        "phrase": "dishes",
+        "count": 2
+      },
+      {
+        "phrase": "provided",
+        "count": 2
+      },
+      {
+        "phrase": "tourist",
+        "count": 2
+      },
+      {
+        "phrase": "office",
+        "count": 2
+      },
+      {
+        "phrase": "history",
+        "count": 2
+      },
+      {
+        "phrase": "finally",
+        "count": 2
+      },
+      {
+        "phrase": "public",
+        "count": 2
+      },
+      {
+        "phrase": "opened",
+        "count": 2
+      },
+      {
+        "phrase": "morning",
+        "count": 2
+      },
+      {
+        "phrase": "district",
+        "count": 2
+      },
+      {
+        "phrase": "gallery",
+        "count": 2
+      },
+      {
+        "phrase": "across",
+        "count": 2
+      },
+      {
+        "phrase": "studios",
+        "count": 2
+      },
+      {
+        "phrase": "sculpture",
+        "count": 2
+      },
+      {
+        "phrase": "football",
+        "count": 2
+      },
+      {
+        "phrase": "training",
+        "count": 2
+      },
+      {
+        "phrase": "facility",
+        "count": 2
+      },
+      {
+        "phrase": "completed",
+        "count": 2
+      }
+    ]
+  }
+}
