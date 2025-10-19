@@ -1,0 +1,1395 @@
+[
+  {
+    "phrase": "plastic",
+    "count": 24,
+    "onePhrase": "Recycling plastic helps protect the environment.",
+    "mean": "プラスチック",
+    "onePhraseJa": "プラスチックをリサイクルすると環境を守れる。"
+  },
+  {
+    "phrase": "library",
+    "count": 17,
+    "onePhrase": "the information about the library so that you can do.",
+    "mean": "図書館",
+    "onePhraseJa": "図書館の情報を得ることができる。"
+  },
+  {
+    "phrase": "system",
+    "count": 17,
+    "onePhrase": "called a mechanical television system but it was not a.",
+    "mean": "システム",
+    "onePhraseJa": "機械式テレビシステムと呼ばれるものであった。"
+  },
+  {
+    "phrase": "television",
+    "count": 16,
+    "onePhrase": "Television quickly bec e part of daily life.",
+    "mean": "テレビ",
+    "onePhraseJa": "テレビはすぐに日常生活の一部になった。"
+  },
+  {
+    "phrase": "university",
+    "count": 14,
+    "onePhrase": "The progr me runs on a UK university c pus.",
+    "mean": "大学",
+    "onePhraseJa": "このプログラムは英国の大学キャンパスで行われる。"
+  },
+  {
+    "phrase": "choose",
+    "count": 13,
+    "onePhrase": "The zoo staff will choose five finalists from all the.",
+    "mean": "選ぶ",
+    "onePhraseJa": "動物園のスタッフは、すべての候補者の中から最終選考に残った5人を選びます。"
+  },
+  {
+    "phrase": "patent",
+    "count": 12,
+    "onePhrase": "They fought over the electronic television patent.",
+    "mean": "特許",
+    "onePhraseJa": "彼らは電子テレビの特許を争った。"
+  },
+  {
+    "phrase": "recycling",
+    "count": 12,
+    "onePhrase": "Learning about plastic recycling is essential today.",
+    "mean": "リサイクル",
+    "onePhraseJa": "プラスチックのリサイクルを学ぶことはいま大切だ。"
+  },
+  {
+    "phrase": "plastics",
+    "count": 11,
+    "onePhrase": "The plastics industry created standard recycling codes.",
+    "mean": "プラスチック",
+    "onePhraseJa": "プラスチック業界が標準のリサイクルコードを作った。"
+  },
+  {
+    "phrase": "however",
+    "count": 10,
+    "onePhrase": "However Australia has the highest percentage of homes with pets.",
+    "mean": "しかし",
+    "onePhraseJa": "しかし、オーストラリアはペットを飼っている家庭の割合が最も高い。"
+  },
+  {
+    "phrase": "containers",
+    "count": 10,
+    "onePhrase": "suitable for furniture food containers and polymer banknotes such as.",
+    "mean": "容器",
+    "onePhraseJa": "家具用食品容器や、以下のようなポリマー紙幣に適している。"
+  },
+  {
+    "phrase": "giraffe",
+    "count": 9,
+    "onePhrase": "N e a Baby Giraffe Let's welcome our newest animal.",
+    "mean": "キリン",
+    "onePhraseJa": "キリンの赤ちゃんに名前をつけよう。"
+  },
+  {
+    "phrase": "following",
+    "count": 9,
+    "onePhrase": "Pet owners mention the following advantages of living with pets.",
+    "mean": "以下",
+    "onePhraseJa": "ペットを飼っている人は、ペットと暮らすことの利点を次のように挙げている。"
+  },
+  {
+    "phrase": "electronic",
+    "count": 9,
+    "onePhrase": "competing to develop an electronic television system which later bec.",
+    "mean": "電子",
+    "onePhraseJa": "電子テレビ・システムの開発を競い合った。"
+  },
+  {
+    "phrase": "schedule",
+    "count": 8,
+    "onePhrase": "Contest schedule for June is posted.",
+    "mean": "スケジュール",
+    "onePhraseJa": "6月のコンテスト日程が掲載されている。"
+  },
+  {
+    "phrase": "august",
+    "count": 8,
+    "onePhrase": "borrowed three books on August and returned them on August.",
+    "mean": "8月",
+    "onePhraseJa": "月に3冊の本を借りて、8月に返却した。"
+  },
+  {
+    "phrase": "challenge",
+    "count": 8,
+    "onePhrase": "I joined the Three Peaks Challenge with friends.",
+    "mean": "挑戦",
+    "onePhraseJa": "友人とスリーピークス・チャレンジに参加した。"
+  },
+  {
+    "phrase": "morning",
+    "count": 8,
+    "onePhrase": "We started hiking on a crisp autumn morning.",
+    "mean": "朝",
+    "onePhraseJa": "私たちは涼しい秋の朝に登山を始めた。"
+  },
+  {
+    "phrase": "symbols",
+    "count": 8,
+    "onePhrase": "These recycling symbols look like a triangle of chasing pointers.",
+    "mean": "シンボル",
+    "onePhraseJa": "これらのリサイクル・シンボルは、三角形のポインターを追いかけるような形をしている。"
+  },
+  {
+    "phrase": "website",
+    "count": 7,
+    "onePhrase": "You are viewing the City Zoo website.",
+    "mean": "ウェブサイト",
+    "onePhraseJa": "市立動物園のウェブサイトを見ている。"
+  },
+  {
+    "phrase": "contest",
+    "count": 7,
+    "onePhrase": "Enter the zoo contest to n e the giraffe.",
+    "mean": "コンテスト",
+    "onePhraseJa": "キリンの名前を決める動物園のコンテストに応募しよう。"
+  },
+  {
+    "phrase": "live",
+    "count": 7,
+    "onePhrase": "baby giraffe on the live web c era to help.",
+    "mean": "生きる",
+    "onePhraseJa": "キリンの赤ちゃんがライブカメラに映し出されます。"
+  },
+  {
+    "phrase": "family",
+    "count": 7,
+    "onePhrase": "baby giraffe with his f ily as well as a.",
+    "mean": "家族",
+    "onePhraseJa": "キリンの赤ちゃんとその家族。"
+  },
+  {
+    "phrase": "reading",
+    "count": 7,
+    "onePhrase": "You are reading the information about the library so that.",
+    "mean": "読書",
+    "onePhraseJa": "あなたは図書館の情報を読んでいる。"
+  },
+  {
+    "phrase": "information",
+    "count": 7,
+    "onePhrase": "You are reading the information about the library so that.",
+    "mean": "情報",
+    "onePhraseJa": "あなたは図書館の情報を読んでいる。"
+  },
+  {
+    "phrase": "owners",
+    "count": 7,
+    "onePhrase": "Pet owners mention the following advantages of living with pets.",
+    "mean": "オーナー",
+    "onePhraseJa": "ペットを飼っている人は、ペットと暮らすことの利点を次のように挙げている。"
+  },
+  {
+    "phrase": "difficult",
+    "count": 7,
+    "onePhrase": "It may be difficult to organise care for them of.",
+    "mean": "難しい",
+    "onePhraseJa": "そのような人たちのためにケアをするのは難しいかもしれない。"
+  },
+  {
+    "phrase": "called",
+    "count": 7,
+    "onePhrase": "The event called A Slice of Japan shares culture.",
+    "mean": "という",
+    "onePhraseJa": "「A Slice of Japan」というイベントが文化を紹介する。"
+  },
+  {
+    "phrase": "complete",
+    "count": 7,
+    "onePhrase": "It took thirty minutes to complete Scafell Pike.",
+    "mean": "完全",
+    "onePhraseJa": "スカフェル・パイクを登り切るのに30分かかった。"
+  },
+  {
+    "phrase": "warranties",
+    "count": 7,
+    "onePhrase": "Those used appliances c e without warranties.",
+    "mean": "保証",
+    "onePhraseJa": "その中古家電には保証が付いていなかった。"
+  },
+  {
+    "phrase": "recycled",
+    "count": 7,
+    "onePhrase": "Some plastics can be recycled only a few times.",
+    "mean": "リサイクル",
+    "onePhraseJa": "プラスチックは数回しかリサイクルできないものもある。"
+  },
+  {
+    "phrase": "recycle",
+    "count": 7,
+    "onePhrase": "density Polyethylene is a recycle type plastic and is commonly.",
+    "mean": "リサイクル",
+    "onePhraseJa": "密度ポリエチレンは、リサイクルタイプのプラスチックで、一般的に使用されている。"
+  },
+  {
+    "phrase": "borrow",
+    "count": 6,
+    "onePhrase": "Borrowing Books You can borrow a maximum of eight books.",
+    "mean": "借りる",
+    "onePhraseJa": "図書の貸出 最大8冊まで借りることができます。"
+  },
+  {
+    "phrase": "article",
+    "count": 6,
+    "onePhrase": "A UK expert wrote the article for the paper.",
+    "mean": "記事",
+    "onePhraseJa": "英国の専門家がその記事を執筆した。"
+  },
+  {
+    "phrase": "working",
+    "count": 6,
+    "onePhrase": "some of them stopped working after just one month and.",
+    "mean": "ワーキング",
+    "onePhraseJa": "中には1ヶ月で動かなくなったものもある。"
+  },
+  {
+    "phrase": "prices",
+    "count": 6,
+    "onePhrase": "Compare prices at several shops before buying.",
+    "mean": "物価",
+    "onePhraseJa": "買う前に複数の店の価格を比べよう。"
+  },
+  {
+    "phrase": "presentation",
+    "count": 6,
+    "onePhrase": "you will give a presentation about a great inventor.",
+    "mean": "プレゼンテーション",
+    "onePhraseJa": "偉大な発明家についてプレゼンテーションを行う。"
+  },
+  {
+    "phrase": "electricity",
+    "count": 6,
+    "onePhrase": "f ily did not have electricity until he was years.",
+    "mean": "電気",
+    "onePhraseJa": "歳まで電気がなかった。"
+  },
+  {
+    "phrase": "products",
+    "count": 6,
+    "onePhrase": "Certain products can be recycled several times.",
+    "mean": "製品",
+    "onePhraseJa": "製品によっては数回リサイクルできる。"
+  },
+  {
+    "phrase": "inside",
+    "count": 5,
+    "onePhrase": "Buriti Orange inside similar to a peach or a mango.",
+    "mean": "内部",
+    "onePhraseJa": "中身は桃やマンゴーに似たオレンジ。"
+  },
+  {
+    "phrase": "around",
+    "count": 5,
+    "onePhrase": "The baby giraffe was already running around.",
+    "mean": "周辺",
+    "onePhraseJa": "赤ちゃんキリンはすでに走り回っていた。"
+  },
+  {
+    "phrase": "watching",
+    "count": 5,
+    "onePhrase": "are some TVs for watching the library's videos.",
+    "mean": "ウォッチング",
+    "onePhraseJa": "は、ライブラリーのビデオを見るためのテレビです。"
+  },
+  {
+    "phrase": "australia",
+    "count": 5,
+    "onePhrase": "However Australia has the highest percentage of homes with pets.",
+    "mean": "オーストラリア",
+    "onePhraseJa": "しかし、オーストラリアはペットを飼っている家庭の割合が最も高い。"
+  },
+  {
+    "phrase": "longer",
+    "count": 5,
+    "onePhrase": "money you can sleep longer you will become popular your.",
+    "mean": "もっと長い",
+    "onePhraseJa": "長く眠れるようになれば、人気者になれる。"
+  },
+  {
+    "phrase": "members",
+    "count": 5,
+    "onePhrase": "Many f ilies with pets have several members.",
+    "mean": "メンバー",
+    "onePhraseJa": "ペットを飼う家庭は家族が多いことが多い。"
+  },
+  {
+    "phrase": "experience",
+    "count": 5,
+    "onePhrase": "The workshop and cultural experience were fun.",
+    "mean": "経験",
+    "onePhraseJa": "ワークショップと文化体験は楽しかった。"
+  },
+  {
+    "phrase": "mountain",
+    "count": 5,
+    "onePhrase": "Read the hiking magazine article about mountains.",
+    "mean": "山",
+    "onePhraseJa": "山登り雑誌の記事を読もう。"
+  },
+  {
+    "phrase": "scafell",
+    "count": 5,
+    "onePhrase": "Scafell Pike took thirty minutes to climb.",
+    "mean": "スカフェル",
+    "onePhraseJa": "スカフェル・パイクの登頂には30分かかった。"
+  },
+  {
+    "phrase": "minibus",
+    "count": 5,
+    "onePhrase": "us climbers and two minibus drivers participated in the Three.",
+    "mean": "ミニバス",
+    "onePhraseJa": "私たちクライマーとミニバスの運転手2人が参加した。"
+  },
+  {
+    "phrase": "started",
+    "count": 5,
+    "onePhrase": "in the minibus we started our second climb full of.",
+    "mean": "開始",
+    "onePhraseJa": "ミニバスの中で、私たちは2度目の登山を開始した。"
+  },
+  {
+    "phrase": "events",
+    "count": 5,
+    "onePhrase": "Put the following events into the order they happened.",
+    "mean": "イベント",
+    "onePhraseJa": "以下の出来事を起こった順番に並べてみてほしい。"
+  },
+  {
+    "phrase": "robinson",
+    "count": 5,
+    "onePhrase": "New students are arriving at Robinson University.",
+    "mean": "ロビンソン",
+    "onePhraseJa": "ロビンソン大学に新入生が到着している。"
+  },
+  {
+    "phrase": "appliances",
+    "count": 5,
+    "onePhrase": "We still need appliances for c pus life.",
+    "mean": "電化製品",
+    "onePhraseJa": "キャンパス生活には家電がまだ必要だ。"
+  },
+  {
+    "phrase": "suggests",
+    "count": 5,
+    "onePhrase": "in a hurry Cindy suggests buying from a single big.",
+    "mean": "提案",
+    "onePhraseJa": "急ぎの場合は、シンディがひとつの大きな店から買うことを勧めている。"
+  },
+  {
+    "phrase": "options",
+    "count": 5,
+    "onePhrase": "Choose the best option for each price box.",
+    "mean": "オプション",
+    "onePhraseJa": "各価格ボックスに最適な選択肢を選ぼう。"
+  },
+  {
+    "phrase": "zworykin",
+    "count": 5,
+    "onePhrase": "They recruited Vladimir Zworykin who had already worked on an.",
+    "mean": "ズウォリキン",
+    "onePhraseJa": "ウラジーミル・ズヴォーリキンを採用した。"
+  },
+  {
+    "phrase": "option",
+    "count": 5,
+    "onePhrase": "Pick the option that completes the outcome.",
+    "mean": "選択肢",
+    "onePhraseJa": "結果を完成させる選択肢を選びなさい。"
+  },
+  {
+    "phrase": "research",
+    "count": 4,
+    "onePhrase": "Please research Brazilian foods for the article.",
+    "mean": "リサーチ",
+    "onePhraseJa": "記事のためにブラジル料理を調べてほしい。"
+  },
+  {
+    "phrase": "popular",
+    "count": 4,
+    "onePhrase": "Cupuaçu is a popular fruit in Brazil.",
+    "mean": "ポピュラー",
+    "onePhraseJa": "クプアスーはブラジルで人気の果物だ。"
+  },
+  {
+    "phrase": "interesting",
+    "count": 4,
+    "onePhrase": "and you find an interesting contest announcement.",
+    "mean": "面白い",
+    "onePhraseJa": "そして、興味深いコンテストの告知を見つける。"
+  },
+  {
+    "phrase": "welcome",
+    "count": 4,
+    "onePhrase": "Welcome the baby giraffe to the city zoo.",
+    "mean": "歓迎",
+    "onePhraseJa": "赤ちゃんキリンを市の動物園へ歓迎しよう。"
+  },
+  {
+    "phrase": "future",
+    "count": 4,
+    "onePhrase": "You are on a Future Leader summer progr me which.",
+    "mean": "フューチャー",
+    "onePhraseJa": "あなたはフューチャー・リーダー・サマー・プログラムに参加しています。"
+  },
+  {
+    "phrase": "highest",
+    "count": 4,
+    "onePhrase": "However Australia has the highest percentage of homes with pets.",
+    "mean": "最高",
+    "onePhraseJa": "しかし、オーストラリアはペットを飼っている家庭の割合が最も高い。"
+  },
+  {
+    "phrase": "keeping",
+    "count": 4,
+    "onePhrase": "These results suggest that keeping pets is a good thing.",
+    "mean": "キープ",
+    "onePhraseJa": "これらの結果は、ペットを飼うことは良いことだと示唆している。"
+  },
+  {
+    "phrase": "suitable",
+    "count": 4,
+    "onePhrase": "Which title is most suitable for this article?",
+    "mean": "ふさわしい",
+    "onePhraseJa": "この記事に最もふさわしいタイトルはどれか。"
+  },
+  {
+    "phrase": "japanese",
+    "count": 4,
+    "onePhrase": "are interested in how Japanese culture is represented in other.",
+    "mean": "日本語",
+    "onePhraseJa": "日本文化が他の国でどのように表現されているかに興味がある。"
+  },
+  {
+    "phrase": "culture",
+    "count": 4,
+    "onePhrase": "I wonder how Japanese culture appears overseas.",
+    "mean": "文化",
+    "onePhraseJa": "日本文化が海外でどう表現されるか知りたい。"
+  },
+  {
+    "phrase": "activities",
+    "count": 4,
+    "onePhrase": "The event offered booths activities and performances.",
+    "mean": "活動",
+    "onePhraseJa": "イベントでは屋台や体験活動、素晴らしい演技があった。"
+  },
+  {
+    "phrase": "takoyaki",
+    "count": 4,
+    "onePhrase": "The yatai served green tea ice cre takoyaki and yakitori.",
+    "mean": "たこ焼き",
+    "onePhraseJa": "屋台では抹茶アイスのたこ焼きと焼き鳥が振る舞われた。"
+  },
+  {
+    "phrase": "snowdon",
+    "count": 4,
+    "onePhrase": "Our te climbed Snowdon together last September.",
+    "mean": "スノードン",
+    "onePhraseJa": "私たちのチームは昨年9月にスノードンに登った。"
+  },
+  {
+    "phrase": "reached",
+    "count": 4,
+    "onePhrase": "to our training we reached the summit in under three.",
+    "mean": "到達",
+    "onePhraseJa": "トレーニングの甲斐あって、私たちは3時間足らずで山頂に到達した。"
+  },
+  {
+    "phrase": "though",
+    "count": 4,
+    "onePhrase": "As it got darker though we had to slow down.",
+    "mean": "けれども",
+    "onePhraseJa": "でも、暗くなるにつれてスピードを落とさなければならなかった。"
+  },
+  {
+    "phrase": "household",
+    "count": 4,
+    "onePhrase": "preparing to buy some household appliances or electronics for your.",
+    "mean": "家庭",
+    "onePhraseJa": "家電製品や電化製品を購入する準備をしている。"
+  },
+  {
+    "phrase": "inventor",
+    "count": 4,
+    "onePhrase": "Prepare a presentation about a great inventor.",
+    "mean": "発明者",
+    "onePhraseJa": "偉大な発明家についてのプレゼンを準備しよう。"
+  },
+  {
+    "phrase": "battle",
+    "count": 4,
+    "onePhrase": "US there was a battle over the patent for the.",
+    "mean": "戦い",
+    "onePhraseJa": "の特許をめぐる争いがあった。"
+  },
+  {
+    "phrase": "tolman",
+    "count": 4,
+    "onePhrase": "his chemistry teacher Justin Tolman and asked for advice about.",
+    "mean": "トルマン",
+    "onePhraseJa": "化学の教師であるジャスティン・トルマンに、次のようなアドバイスを求めた。"
+  },
+  {
+    "phrase": "daytime",
+    "count": 4,
+    "onePhrase": "Performing in daytime hours bec e a lifelong challenge.",
+    "mean": "昼間",
+    "onePhraseJa": "昼間の公演は生涯の課題になった。"
+  },
+  {
+    "phrase": "begins",
+    "count": 4,
+    "onePhrase": "Usually their world experience begins with darkness.",
+    "mean": "始まる",
+    "onePhraseJa": "通常、彼らの世界体験は暗闇から始まる。"
+  },
+  {
+    "phrase": "easily",
+    "count": 4,
+    "onePhrase": "all of us fit easily into the common daytime schedule.",
+    "mean": "簡単に",
+    "onePhraseJa": "私たちは皆、日中の一般的なスケジュールに簡単に合わせることができる。"
+  },
+  {
+    "phrase": "common",
+    "count": 4,
+    "onePhrase": "Common daytime schedules are easy to adjust.",
+    "mean": "一般的",
+    "onePhraseJa": "一般的な昼の予定なら調整しやすい。"
+  },
+  {
+    "phrase": "poster",
+    "count": 4,
+    "onePhrase": "student group preparing a poster for a scientific presentation contest.",
+    "mean": "ポスター",
+    "onePhraseJa": "科学プレゼンテーションコンテストのポスターを準備する学生グループ。"
+  },
+  {
+    "phrase": "symbol",
+    "count": 4,
+    "onePhrase": "will notice a recycling symbol on them.",
+    "mean": "シンボル",
+    "onePhraseJa": "リサイクルマークがついていることに気づくだろう。"
+  },
+  {
+    "phrase": "international",
+    "count": 3,
+    "onePhrase": "about Brazil in the international club at your senior high.",
+    "mean": "国際",
+    "onePhraseJa": "あなたの高校の国際クラブでブラジルについて話してください。"
+  },
+  {
+    "phrase": "cupuaçu",
+    "count": 3,
+    "onePhrase": "Cupuaçu is a cacao-like fruit from the Amazon.",
+    "mean": "キュプアス",
+    "onePhraseJa": "クプアスーはアマゾン原産のカカオに似た果物だ。"
+  },
+  {
+    "phrase": "within",
+    "count": 3,
+    "onePhrase": "a grape Eat them within three days of picking for.",
+    "mean": "内",
+    "onePhraseJa": "ブドウ 摘んでから3日以内に食べる。"
+  },
+  {
+    "phrase": "making",
+    "count": 3,
+    "onePhrase": "sour use them for making j s jellies and cakes.",
+    "mean": "作成",
+    "onePhraseJa": "ジャムやゼリー、ケーキ作りに使う。"
+  },
+  {
+    "phrase": "buriti",
+    "count": 3,
+    "onePhrase": "Buriti Orange inside similar to a peach or a mango.",
+    "mean": "ブリティ",
+    "onePhraseJa": "中身は桃やマンゴーに似たオレンジ。"
+  },
+  {
+    "phrase": "healthy",
+    "count": 3,
+    "onePhrase": "A healthy baby giraffe was born on May at the.",
+    "mean": "健康的",
+    "onePhraseJa": "で5月、元気なキリンの赤ちゃんが誕生した。"
+  },
+  {
+    "phrase": "follow",
+    "count": 3,
+    "onePhrase": "for his n e and follow the directions.",
+    "mean": "従う",
+    "onePhraseJa": "彼の名前を入力し、指示に従ってください。"
+  },
+  {
+    "phrase": "finalists",
+    "count": 3,
+    "onePhrase": "staff will choose five finalists from all the entries.",
+    "mean": "ファイナリスト",
+    "onePhraseJa": "スタッフが全応募作品の中から5名のファイナリストを選出する。"
+  },
+  {
+    "phrase": "posted",
+    "count": 3,
+    "onePhrase": "These n es will be posted on the zoo's website.",
+    "mean": "掲載",
+    "onePhraseJa": "これらの名前は、以下の期日までに動物園のウェブサイトに掲載される。"
+  },
+  {
+    "phrase": "winning",
+    "count": 3,
+    "onePhrase": "How will the parents de e on the winning n.",
+    "mean": "ウイニング",
+    "onePhraseJa": "両親はどのようにして当選者の名前を決めるのか。"
+  },
+  {
+    "phrase": "access",
+    "count": 3,
+    "onePhrase": "a day have free access to the live website meet.",
+    "mean": "アクセス",
+    "onePhraseJa": "日間、ライブ・ウェブサイト・ミーティングに無料でアクセスできる。"
+  },
+  {
+    "phrase": "returned",
+    "count": 3,
+    "onePhrase": "If books are not returned by the due date you.",
+    "mean": "返品",
+    "onePhraseJa": "返却期限までに本が返却されない場合、次のことを行ってください。"
+  },
+  {
+    "phrase": "computers",
+    "count": 3,
+    "onePhrase": "Using Computers floor.",
+    "mean": "コンピュータ",
+    "onePhraseJa": "コンピュータフロア。"
+  },
+  {
+    "phrase": "entrance",
+    "count": 3,
+    "onePhrase": "Workstations by the main entrance on the first Students may.",
+    "mean": "エントランス",
+    "onePhraseJa": "メインエントランス脇のワークステーション 生徒は次のことができる。"
+  },
+  {
+    "phrase": "orientation",
+    "count": 3,
+    "onePhrase": "Comments from Past Students The library orientation was really good.",
+    "mean": "オリエンテーション",
+    "onePhraseJa": "過去の受講生からのコメント 図書館のオリエンテーションは本当に良かった。"
+  },
+  {
+    "phrase": "possible",
+    "count": 3,
+    "onePhrase": "Get there as early as possible to get a seat.",
+    "mean": "可能",
+    "onePhraseJa": "座席を確保するため、できるだけ早く現地に到着すること。"
+  },
+  {
+    "phrase": "coffee",
+    "count": 3,
+    "onePhrase": "the one at the coffee shop next door is good.",
+    "mean": "コーヒー",
+    "onePhraseJa": "隣の喫茶店のコーヒーがおいしいよ。"
+  },
+  {
+    "phrase": "videos",
+    "count": 3,
+    "onePhrase": "for watching the library's videos.",
+    "mean": "ビデオ",
+    "onePhraseJa": "ライブラリーのビデオを見るために。"
+  },
+  {
+    "phrase": "english",
+    "count": 3,
+    "onePhrase": "editor of a school English paper.",
+    "mean": "英語",
+    "onePhraseJa": "学校英語新聞編集者。"
+  },
+  {
+    "phrase": "results",
+    "count": 3,
+    "onePhrase": "Results of a survey done in Australia give us some.",
+    "mean": "結果",
+    "onePhraseJa": "オーストラリアで行われた調査の結果、いくつかのことが判明した。"
+  },
+  {
+    "phrase": "living",
+    "count": 3,
+    "onePhrase": "the following advantages of living with pets The love happiness.",
+    "mean": "生活",
+    "onePhraseJa": "ペットと暮らすことの利点 愛の幸福。"
+  },
+  {
+    "phrase": "having",
+    "count": 3,
+    "onePhrase": "give The feeling of having another f ily member over.",
+    "mean": "持つこと",
+    "onePhraseJa": "もう一人の家族がいるような感覚を与える。"
+  },
+  {
+    "phrase": "report",
+    "count": 3,
+    "onePhrase": "Australia According to David's report one advantage of having pets.",
+    "mean": "レポート",
+    "onePhraseJa": "オーストラリア デイビッドのレポートによると、ペットを飼うことの利点のひとつは。"
+  },
+  {
+    "phrase": "performances",
+    "count": 3,
+    "onePhrase": "called yatai hands on activities and some great performances.",
+    "mean": "パフォーマンス",
+    "onePhraseJa": "屋台の体験活動と素晴らしいパフォーマンス。"
+  },
+  {
+    "phrase": "rakugo",
+    "count": 3,
+    "onePhrase": "One of them was a rakugo comedy given in English.",
+    "mean": "落語",
+    "onePhraseJa": "そのうちのひとつが、英語での落語だった。"
+  },
+  {
+    "phrase": "workshop",
+    "count": 3,
+    "onePhrase": "I attended a workshop and a cultural experience which were.",
+    "mean": "ワークショップ",
+    "onePhraseJa": "私はワークショップと文化体験に参加した。"
+  },
+  {
+    "phrase": "learnt",
+    "count": 3,
+    "onePhrase": "In the workshop I learnt how to make onigiri.",
+    "mean": "学ぶ",
+    "onePhraseJa": "ワークショップでは、おにぎりの作り方を学んだ。"
+  },
+  {
+    "phrase": "traditional",
+    "count": 3,
+    "onePhrase": "Hands on Activities Traditional Performances Nagashi somen noodles Experience.",
+    "mean": "伝統的",
+    "onePhraseJa": "伝統芸能や流しそうめんの体験がある。"
+  },
+  {
+    "phrase": "magazine",
+    "count": 3,
+    "onePhrase": "in a mountain climbing magazine.",
+    "mean": "雑誌",
+    "onePhraseJa": "登山雑誌で。"
+  },
+  {
+    "phrase": "climbers",
+    "count": 3,
+    "onePhrase": "te of of us climbers and two minibus drivers participated.",
+    "mean": "クライマー",
+    "onePhraseJa": "私たち登山者とミニバスの運転手2人のチームが参加した。"
+  },
+  {
+    "phrase": "approximately",
+    "count": 3,
+    "onePhrase": "Snowdon within hours including approximately hours of driving between the.",
+    "mean": "約",
+    "onePhraseJa": "スノードンまでは、車で数時間かかる。"
+  },
+  {
+    "phrase": "planned",
+    "count": 3,
+    "onePhrase": "for several months and planned the route carefully.",
+    "mean": "予定",
+    "onePhraseJa": "数ヶ月間、入念にルートを計画した。"
+  },
+  {
+    "phrase": "decided",
+    "count": 3,
+    "onePhrase": "members of the te de ed to return to the.",
+    "mean": "決定",
+    "onePhraseJa": "チームのメンバーはミニバスに戻ることにした。"
+  },
+  {
+    "phrase": "successful",
+    "count": 3,
+    "onePhrase": "Even though we weren't successful with the time challenge we.",
+    "mean": "旨い",
+    "onePhraseJa": "タイムチャレンジはうまくいかなかったが。"
+  },
+  {
+    "phrase": "improved",
+    "count": 3,
+    "onePhrase": "The te had to wait until the conditions improved.",
+    "mean": "改良型",
+    "onePhraseJa": "チームはコンディションが良くなるまで待たなければならなかった。"
+  },
+  {
+    "phrase": "successfully",
+    "count": 3,
+    "onePhrase": "of all three mountains successfully completed the time challenge was.",
+    "mean": "首尾よく",
+    "onePhraseJa": "3つの山すべてでタイムチャレンジに成功したのは、次の3人だった。"
+  },
+  {
+    "phrase": "vacuum",
+    "count": 3,
+    "onePhrase": "goods such as televisions vacuum cleaners and microwaves.",
+    "mean": "真空",
+    "onePhraseJa": "テレビ、掃除機、電子レンジなどの商品。"
+  },
+  {
+    "phrase": "microwave",
+    "count": 3,
+    "onePhrase": "Microwave model cu.",
+    "mean": "マイクロウェーブ",
+    "onePhraseJa": "電子レンジ（1.1 cu.ft、900W）。"
+  },
+  {
+    "phrase": "buying",
+    "count": 3,
+    "onePhrase": "Plus by buying from Second Hand you'll be supporting a.",
+    "mean": "買い付け",
+    "onePhraseJa": "中古店Second Handの支援にもつながる。"
+  },
+  {
+    "phrase": "bought",
+    "count": 3,
+    "onePhrase": "my first year I bought all of my appliances at.",
+    "mean": "購入",
+    "onePhraseJa": "最初の年、私はすべての電化製品を買った。"
+  },
+  {
+    "phrase": "warranty",
+    "count": 3,
+    "onePhrase": "item is over the warranty is extended by four years.",
+    "mean": "保証",
+    "onePhraseJa": "保証期間は4年間延長されます。"
+  },
+  {
+    "phrase": "environment",
+    "count": 3,
+    "onePhrase": "are good for the environment they are affordable for students.",
+    "mean": "環境",
+    "onePhraseJa": "学生にとって手頃な価格である。"
+  },
+  {
+    "phrase": "century",
+    "count": 3,
+    "onePhrase": "years of the th century there was something called a.",
+    "mean": "世紀",
+    "onePhraseJa": "世紀には。"
+  },
+  {
+    "phrase": "develop",
+    "count": 3,
+    "onePhrase": "were also competing to develop an electronic television system which.",
+    "mean": "開発する",
+    "onePhraseJa": "もまた、電子テレビ・システムの開発を競っていた。"
+  },
+  {
+    "phrase": "create",
+    "count": 3,
+    "onePhrase": "might be possible to create an electronic image on a.",
+    "mean": "作成する",
+    "onePhraseJa": "に電子画像を作成することは可能かもしれない。"
+  },
+  {
+    "phrase": "broadcast",
+    "count": 3,
+    "onePhrase": "that it could successfully broadcast live images.",
+    "mean": "ブロードキャスト",
+    "onePhraseJa": "ライブ映像の放送に成功した。"
+  },
+  {
+    "phrase": "company",
+    "count": 3,
+    "onePhrase": "A giant company RCA Radio Corporation of America also saw.",
+    "mean": "会社",
+    "onePhraseJa": "大企業RCAも同様に考えていた。"
+  },
+  {
+    "phrase": "against",
+    "count": 3,
+    "onePhrase": "company took legal action against Farnsworth claiming that Zworykin's patent.",
+    "mean": "に対して",
+    "onePhraseJa": "はファンズワースに対し、ズヴォーリキンの特許は特許法違反であるとして訴訟を起こした。"
+  },
+  {
+    "phrase": "always",
+    "count": 3,
+    "onePhrase": "worthwhile His story will always be tied to his teenage.",
+    "mean": "常に",
+    "onePhraseJa": "価値がある 彼の物語は常に10代の頃と結びついている。"
+  },
+  {
+    "phrase": "without",
+    "count": 3,
+    "onePhrase": "in a log cabin without electricity Sequence of Key Events.",
+    "mean": "なし",
+    "onePhraseJa": "電気のない丸太小屋での出来事 重要な出来事の順序。"
+  },
+  {
+    "phrase": "provide",
+    "count": 3,
+    "onePhrase": "bought a generator to provide his f ily with electricity.",
+    "mean": "提供する",
+    "onePhraseJa": "家族に電気を供給するために発電機を購入した。"
+  },
+  {
+    "phrase": "nocturnal",
+    "count": 3,
+    "onePhrase": "emerging at night are nocturnal Yet another proverb states Early.",
+    "mean": "夜行性",
+    "onePhraseJa": "また、別のことわざにはこうある。"
+  },
+  {
+    "phrase": "certain",
+    "count": 3,
+    "onePhrase": "young larks may perform certain tasks better.",
+    "mean": "確実",
+    "onePhraseJa": "若いヒバリは、ある種の仕事をよりうまくこなすかもしれない。"
+  },
+  {
+    "phrase": "religious",
+    "count": 3,
+    "onePhrase": "an approximately year old religious group believe a day is.",
+    "mean": "宗教的",
+    "onePhraseJa": "年の歴史を持つ宗教団体は、1日を「1日」と考えている。"
+  },
+  {
+    "phrase": "chinese",
+    "count": 3,
+    "onePhrase": "The Chinese use their system of animals not only to.",
+    "mean": "チャイニーズ",
+    "onePhraseJa": "中国人が動物のシステムを使うのは、次のような理由からだけではない。"
+  },
+  {
+    "phrase": "change",
+    "count": 3,
+    "onePhrase": "A Can people change.",
+    "mean": "変更",
+    "onePhraseJa": "A 人は変われるか。"
+  },
+  {
+    "phrase": "studies",
+    "count": 3,
+    "onePhrase": "are not all in studies of young adults seem to.",
+    "mean": "学業",
+    "onePhraseJa": "若年成人を対象とした研究では、すべてがそうではないようだ。"
+  },
+  {
+    "phrase": "nature",
+    "count": 3,
+    "onePhrase": "their lark or owl nature.",
+    "mean": "ネイチャー",
+    "onePhraseJa": "ひばり気質。"
+  },
+  {
+    "phrase": "society",
+    "count": 3,
+    "onePhrase": "started in by the Society of the Plastics Industry in.",
+    "mean": "社会",
+    "onePhraseJa": "のプラスチック工業協会によって始められた。"
+  },
+  {
+    "phrase": "recyclable",
+    "count": 3,
+    "onePhrase": "that it might be recyclable.",
+    "mean": "リサイクル可能",
+    "onePhraseJa": "リサイクル可能かもしれない。"
+  },
+  {
+    "phrase": "numbers",
+    "count": 3,
+    "onePhrase": "So what do these numbers mean.",
+    "mean": "数字",
+    "onePhraseJa": "この数字は何を意味するのか？"
+  },
+  {
+    "phrase": "polyethylene",
+    "count": 3,
+    "onePhrase": "High density Polyethylene is a recycle type plastic and is.",
+    "mean": "ポリエチレン",
+    "onePhraseJa": "高密度ポリエチレンは、リサイクルタイプのプラスチックである。"
+  },
+  {
+    "phrase": "commonly",
+    "count": 3,
+    "onePhrase": "type plastic and is commonly called HDPE.",
+    "mean": "一般的に",
+    "onePhraseJa": "一般にHDPEと呼ばれる。"
+  },
+  {
+    "phrase": "brazil",
+    "count": 2,
+    "onePhrase": "You are studying about Brazil in the international club at.",
+    "mean": "ブラジル",
+    "onePhraseJa": "あなたはブラジルの国際クラブでブラジルについて勉強している。"
+  },
+  {
+    "phrase": "brazilian",
+    "count": 2,
+    "onePhrase": "You find a Brazilian cookbook and read about fruits used.",
+    "mean": "ブラジル人",
+    "onePhraseJa": "ブラジルの料理本を見つけ、使われる果物について読む。"
+  },
+  {
+    "phrase": "fruits",
+    "count": 2,
+    "onePhrase": "cookbook and read about fruits used to make desserts.",
+    "mean": "フルーツ",
+    "onePhraseJa": "料理本を読み、デザートに使われる果物について読む。"
+  },
+  {
+    "phrase": "desserts",
+    "count": 2,
+    "onePhrase": "fruits used to make desserts.",
+    "mean": "デザート",
+    "onePhraseJa": "フルーツ。"
+  },
+  {
+    "phrase": "tastes",
+    "count": 2,
+    "onePhrase": "Cupua u Smells and tastes like chocolate Great for desserts.",
+    "mean": "趣味",
+    "onePhraseJa": "キュプア u チョコレートのような香りと味 デザートに最適。"
+  },
+  {
+    "phrase": "chocolate",
+    "count": 2,
+    "onePhrase": "Smells and tastes like chocolate Great for desserts such as.",
+    "mean": "チョコレート",
+    "onePhraseJa": "チョコレートのような香りと味わい。"
+  },
+  {
+    "phrase": "yogurt",
+    "count": 2,
+    "onePhrase": "as cakes and with yogurt Brazilians love the chocolate flavored.",
+    "mean": "ヨーグルト",
+    "onePhraseJa": "ブラジルの人々は、チョコレート風味のケーキやヨーグルトを好む。"
+  },
+  {
+    "phrase": "jabuticaba",
+    "count": 2,
+    "onePhrase": "Jabuticaba Looks like a grape Eat them within three days.",
+    "mean": "ジャブチカバ",
+    "onePhraseJa": "ジャブチカバ ブドウのような見た目 3日以内に食べる。"
+  },
+  {
+    "phrase": "jellies",
+    "count": 2,
+    "onePhrase": "them for making j s jellies and cakes.",
+    "mean": "ゼリー",
+    "onePhraseJa": "ジャムやゼリー、ケーキ作りに。"
+  },
+  {
+    "phrase": "pitanga",
+    "count": 2,
+    "onePhrase": "D Pitanga Comes in two varieties red and green Use.",
+    "mean": "ピタンガ",
+    "onePhraseJa": "D ピタンガ 赤と緑の2種類がある。"
+  },
+  {
+    "phrase": "already",
+    "count": 2,
+    "onePhrase": "He's already walking and running around.",
+    "mean": "すでに",
+    "onePhraseJa": "すでに歩き回り、走り回っている。"
+  },
+  {
+    "phrase": "running",
+    "count": 2,
+    "onePhrase": "He's already walking and running around.",
+    "mean": "ランニング",
+    "onePhraseJa": "すでに歩き回り、走り回っている。"
+  },
+  {
+    "phrase": "parents",
+    "count": 2,
+    "onePhrase": "is to help his parents Billy and Noelle pick a.",
+    "mean": "両親",
+    "onePhraseJa": "は、両親のビリーとノエルが、次の候補者を選ぶのを手伝うことだ。"
+  },
+  {
+    "phrase": "starting",
+    "count": 2,
+    "onePhrase": "Enter Here N es are accepted starting at a m.",
+    "mean": "スタート",
+    "onePhraseJa": "ここに入力してください。"
+  },
+  {
+    "phrase": "camera",
+    "count": 2,
+    "onePhrase": "on the live web c era to help you get.",
+    "mean": "カメラ",
+    "onePhraseJa": "ライブウェブカメラで、アイデアを得るのに役立つ。"
+  },
+  {
+    "phrase": "submission",
+    "count": 2,
+    "onePhrase": "Live Web C era Each submission is.",
+    "mean": "服従",
+    "onePhraseJa": "ライブウェブカメラ。"
+  },
+  {
+    "phrase": "stream",
+    "count": 2,
+    "onePhrase": "Click on the live stre link between a m.",
+    "mean": "ストリーム",
+    "onePhraseJa": "ライブ・ストリームのリンクをクリックする。"
+  },
+  {
+    "phrase": "prizes",
+    "count": 2,
+    "onePhrase": "Prizes All five contest finalists will receive free one day.",
+    "mean": "賞品",
+    "onePhraseJa": "賞品 コンテスト最終選考に残った5名全員に、1日無料招待券が贈られます。"
+  },
+  {
+    "phrase": "submitted",
+    "count": 2,
+    "onePhrase": "The one who submitted the winning n e will also.",
+    "mean": "提出済み",
+    "onePhraseJa": "当選された方は、以下の賞品も獲得できます。"
+  },
+  {
+    "phrase": "included",
+    "count": 2,
+    "onePhrase": "n e you submitted is included ong the five finalists.",
+    "mean": "付属",
+    "onePhraseJa": "あなたが提出した名前は、最終選考に残った5名の中に含まれています。"
+  },
+  {
+    "phrase": "picture",
+    "count": 2,
+    "onePhrase": "baby giraffe take a picture with the giraffe's f ily.",
+    "mean": "写真",
+    "onePhraseJa": "キリンの家族と記念撮影をする赤ちゃんA。"
+  },
+  {
+    "phrase": "campus",
+    "count": 2,
+    "onePhrase": "place on a university c pus in the UK.",
+    "mean": "キャンパス",
+    "onePhraseJa": "イギリスの大学キャンパス。"
+  },
+  {
+    "phrase": "computer",
+    "count": 2,
+    "onePhrase": "connections are in the Computer Workstations by the main entrance.",
+    "mean": "コンピュータ",
+    "onePhraseJa": "接続は正面玄関脇のコンピュータ・ワークステーションで行います。"
+  },
+  {
+    "phrase": "workstations",
+    "count": 2,
+    "onePhrase": "are in the Computer Workstations by the main entrance on.",
+    "mean": "ワークステーション",
+    "onePhraseJa": "の正面玄関脇のコンピュータ・ワークステーションにある。"
+  },
+  {
+    "phrase": "laptop",
+    "count": 2,
+    "onePhrase": "may bring their own laptop computers and tablets into the.",
+    "mean": "ラップトップ",
+    "onePhraseJa": "には、各自のノートパソコンやタブレットを持ち込むことができる。"
+  },
+  {
+    "phrase": "orientations",
+    "count": 2,
+    "onePhrase": "Library Orientations On Tuesdays at minute library orientations are.",
+    "mean": "ガイドライン",
+    "onePhraseJa": "図書館オリエンテーション 毎週火曜日午前1時から、図書館オリエンテーションが行われる。"
+  },
+  {
+    "phrase": "details",
+    "count": 2,
+    "onePhrase": "Talk to the Information Desk staff for details.",
+    "mean": "詳細",
+    "onePhraseJa": "詳しくはインフォメーションデスクにお尋ねください。"
+  },
+  {
+    "phrase": "materials",
+    "count": 2,
+    "onePhrase": "The materials were great too.",
+    "mean": "材料",
+    "onePhraseJa": "素材も素晴らしかった。"
+  },
+  {
+    "phrase": "earphones",
+    "count": 2,
+    "onePhrase": "to use your own earphones or headphones.",
+    "mean": "イヤホン",
+    "onePhraseJa": "自分のイヤホンやヘッドホンを使う。"
+  },
+  {
+    "phrase": "headphones",
+    "count": 2,
+    "onePhrase": "your own earphones or headphones.",
+    "mean": "ヘッドフォン",
+    "onePhraseJa": "イヤホンまたはヘッドホン。"
+  },
+  {
+    "phrase": "photocopiers",
+    "count": 2,
+    "onePhrase": "Next to the TV s there are photocopiers.",
+    "mean": "写真複写機",
+    "onePhraseJa": "テレビの隣にはコピー機がある。"
+  },
+  {
+    "phrase": "written",
+    "count": 2,
+    "onePhrase": "from the UK has written an article for the paper.",
+    "mean": "書",
+    "onePhraseJa": "英国人記者が同紙に寄稿した。"
+  },
+  {
+    "phrase": "animals",
+    "count": 2,
+    "onePhrase": "Do you like animals.",
+    "mean": "動物",
+    "onePhraseJa": "動物は好きですか？"
+  },
+  {
+    "phrase": "survey",
+    "count": 2,
+    "onePhrase": "Results of a survey done in Australia give us some.",
+    "mean": "調査",
+    "onePhraseJa": "オーストラリアで行われた調査の結果、いくつかのことが判明した。"
+  },
+  {
+    "phrase": "feeling",
+    "count": 2,
+    "onePhrase": "friendship pets give The feeling of having another f ily.",
+    "mean": "フィーリング",
+    "onePhraseJa": "ペットが与えてくれる友情 もう一人の家族がいるような感覚。"
+  },
+  {
+    "phrase": "problems",
+    "count": 2,
+    "onePhrase": "I have seen other problems such as space time and.",
+    "mean": "問題点",
+    "onePhraseJa": "他にも、時空間や、。。。。"
+  },
+  {
+    "phrase": "countries",
+    "count": 2,
+    "onePhrase": "is represented in other countries.",
+    "mean": "国々",
+    "onePhraseJa": "は他の国にもある。"
+  },
+  {
+    "phrase": "according",
+    "count": 2,
+    "onePhrase": "US the UK Australia According to David's report one advantage.",
+    "mean": "それによると",
+    "onePhraseJa": "アメリカ イギリス オーストラリア デビッドのレポートによると、1つの利点がある。"
+  },
+  {
+    "phrase": "finding",
+    "count": 2,
+    "onePhrase": "that best reflects one finding from the survey is 'I.",
+    "mean": "発見",
+    "onePhraseJa": "この調査から得られた知見を最もよく反映しているのは、『私はこう思う』という言葉である。"
+  },
+  {
+    "phrase": "interested",
+    "count": 2,
+    "onePhrase": "A You are interested in how Japanese culture is represented.",
+    "mean": "興味津々",
+    "onePhraseJa": "A 日本文化がどのように表現されているかに興味がある。"
+  },
+  {
+    "phrase": "sundays",
+    "count": 2,
+    "onePhrase": "On the first two Sundays in July every year there.",
+    "mean": "日曜日",
+    "onePhraseJa": "毎年7月の最初の2つの日曜日には、次のようなイベントがある。"
+  },
+  {
+    "phrase": "winsfield",
+    "count": 2,
+    "onePhrase": "an intercultural event in Winsfield called A Slice of Japan.",
+    "mean": "ウィンスフィールド",
+    "onePhraseJa": "ウィンスフィールドでの異文化交流イベント「A Slice of Japan。"
+  },
+  {
+    "phrase": "stands",
+    "count": 2,
+    "onePhrase": "There were many authentic food stands.",
+    "mean": "スタンド",
+    "onePhraseJa": "本格的な屋台がたくさんあった。"
+  },
+  {
+    "phrase": "served",
+    "count": 2,
+    "onePhrase": "The yatai served green tea ice cre takoyaki and yakitori.",
+    "mean": "奉仕",
+    "onePhraseJa": "屋台では抹茶アイスのたこ焼きと焼き鳥が振る舞われた。"
+  },
+  {
+    "phrase": "yakitori",
+    "count": 2,
+    "onePhrase": "The yatai served green tea ice cre takoyaki and yakitori.",
+    "mean": "焼き鳥",
+    "onePhraseJa": "屋台では抹茶アイスのたこ焼きと焼き鳥が振る舞われた。"
+  },
+  {
+    "phrase": "especially",
+    "count": 2,
+    "onePhrase": "The takoyaki was especially delicious.",
+    "mean": "特に",
+    "onePhraseJa": "たこ焼きが特においしかった。"
+  },
+  {
+    "phrase": "comedy",
+    "count": 2,
+    "onePhrase": "One of them was a rakugo comedy given in English.",
+    "mean": "コメディ",
+    "onePhraseJa": "そのうちのひとつが、英語での落語だった。"
+  },
+  {
+    "phrase": "relaxing",
+    "count": 2,
+    "onePhrase": "The taiko were powerful and the koto was relaxing.",
+    "mean": "リラックス",
+    "onePhraseJa": "太鼓は力強く、琴はリラックスさせてくれた。"
+  },
+  {
+    "phrase": "cultural",
+    "count": 2,
+    "onePhrase": "a workshop and a cultural experience which were fun.",
+    "mean": "文化的",
+    "onePhraseJa": "ワークショップと文化体験は楽しかった。"
+  },
+  {
+    "phrase": "onigiri",
+    "count": 2,
+    "onePhrase": "In the workshop I learnt how to make onigiri.",
+    "mean": "おにぎり",
+    "onePhraseJa": "ワークショップでは、おにぎりの作り方を学んだ。"
+  },
+  {
+    "phrase": "noodles",
+    "count": 2,
+    "onePhrase": "trying to catch cooked noodles with chopsticks as they slid.",
+    "mean": "麺類",
+    "onePhraseJa": "茹で上がった麺を箸でキャッチしようとする。"
+  },
+  {
+    "phrase": "bamboo",
+    "count": 2,
+    "onePhrase": "they slid down a b boo water slide.",
+    "mean": "バンブー",
+    "onePhraseJa": "竹のウォータースライダーを滑り降りる。"
+  },
+  {
+    "phrase": "enjoyed",
+    "count": 2,
+    "onePhrase": "you read that she enjoyed Japanese traditional music learnt how.",
+    "mean": "楽しい",
+    "onePhraseJa": "日本の伝統音楽が好きで、それをどのように学んだかを書いている。"
+  },
+  {
+    "phrase": "likely",
+    "count": 2,
+    "onePhrase": "foods Emily was most likely comedy.",
+    "mean": "おそらく",
+    "onePhraseJa": "エミリーはお笑い芸人だった可能性が高い。"
+  }
+]
