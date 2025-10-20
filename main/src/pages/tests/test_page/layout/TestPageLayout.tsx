@@ -2,8 +2,8 @@ import { QuickStartButton } from "../../../../components/buttons/QuickStartButto
 
 export default function TestPageLayout() {
   return (
-    <h1 className="">
-      <div>TestPageLayout</div>
-    </h1>
+    <div className="bg-[#050509] rounded [box-shadow: 0 0 white]">
+      <h1 className="text-[#f2c97d] font-bold text-4xl">TestPageLayout</h1>
+    </div>
   );
 }
