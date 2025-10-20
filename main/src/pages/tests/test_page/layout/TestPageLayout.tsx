@@ -1,8 +1,9 @@
-import 
-
+import { QuickStartButton } from "../../../../components/buttons/QuickStartButton";
 
 export default function TestPageLayout() {
   return (
-    <div>TestPageLayout</div>
-  )
+    <h1 className="">
+      <div>TestPageLayout</div>
+    </h1>
+  );
 }
