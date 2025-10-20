@@ -3,7 +3,7 @@ import { useYearVocab } from "../../../hooks/useYearVocab";
 import TestPageLayout from "./layout/TestPageLayout";
 
 export default function Reiwa3Page() {
-  const { status, count, error } = useYearVocab("reiwa3", 20);
+  const { status, count, error, questions } = useYearVocab("reiwa3", 20);
 
   return (
     <AppLayout>
@@ -14,7 +14,10 @@ export default function Reiwa3Page() {
         {status === "loading" && <p>データを読み込んでいます…</p>}
         {status === "ready" && (
           <>
-            <TestPageLayout />
+            <TestPageLayout
+              title="共通テスト 令和3年（データ読込サンプル）"
+              questions={questions}
+            />
             <p>{count}</p>
           </>
         )}

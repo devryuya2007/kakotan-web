@@ -12,6 +12,7 @@ export type VocabEntry = {
  * Load per-year vocabulary entries from bundled JSON assets.
  * Uses `new URL(..., import.meta.url)` so it works without special TS config.
  */
+
 export async function loadYearVocab(year: YearKey): Promise<VocabEntry[]> {
   const map: Record<YearKey, string> = {
     reiwa3: "../assets/vocab/reiwa3_7/reiwa3.unigram.json",
@@ -41,7 +42,12 @@ export async function loadYearVocab(year: YearKey): Promise<VocabEntry[]> {
   ]*/
 }
 
-export type QuizQuestion = {
+/**
+ * Create simple 4-choice questions from vocab entries.
+ * Default: prompt asks for the Japanese meaning of an English word.
+ */
+
+export interface QuizQuestion {
   id: string;
   prompt: string; // e.g. 日本語の意味は？
   choices: string[]; // 表示用選択肢
@@ -50,12 +56,8 @@ export type QuizQuestion = {
   mean?: string; // 正解の意味
   contextEn?: string; // 例文（英）
   contextJa?: string; // 例文（和）
-};
+}
 
-/**
- * Create simple 4-choice questions from vocab entries.
- * Default: prompt asks for the Japanese meaning of an English word.
- */
 export function buildQuestionsFromVocab(
   vocab: VocabEntry[],
   maxCount = 20
@@ -101,7 +103,7 @@ export function buildQuestionsFromVocab(
   return result;
 }
 
-function shuffle<T>(arr: T[], rnd: () => number): T[] {
+export function shuffle<T>(arr: T[], rnd: () => number): T[] {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(rnd() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -110,7 +112,7 @@ function shuffle<T>(arr: T[], rnd: () => number): T[] {
 }
 
 // Small deterministic PRNG so choices are stable across reloads
-function mulberry32(a: number) {
+export function mulberry32(a: number) {
   return function () {
     let t = (a += 0x6d2b79f5);
     t = Math.imul(t ^ (t >>> 15), t | 1);
