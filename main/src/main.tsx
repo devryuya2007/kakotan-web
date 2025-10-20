@@ -4,11 +4,11 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import HomePage from "./pages/home/HomePage";
 import MenuPage from "./pages/menu/MenuPage";
-import Reiwa3Page from "./pages/tests/Reiwa3Page";
-import Reiwa4Page from "./pages/tests/Reiwa4Page";
-import Reiwa5Page from "./pages/tests/Reiwa5Page";
-import Reiwa6Page from "./pages/tests/Reiwa6Page";
-import Reiwa7Page from "./pages/tests/Reiwa7Page";
+import Reiwa3Page from "./pages/tests/test_page/Reiwa3Page";
+import Reiwa4Page from "./pages/tests/test_page/Reiwa4Page";
+import Reiwa5Page from "./pages/tests/test_page/Reiwa5Page";
+import Reiwa6Page from "./pages/tests/test_page/Reiwa6Page";
+import Reiwa7Page from "./pages/tests/test_page/Reiwa7Page";
 
 const container = document.getElementById("root");
 
