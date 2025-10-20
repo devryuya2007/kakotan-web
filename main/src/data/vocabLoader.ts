@@ -22,13 +22,23 @@ export async function loadYearVocab(year: YearKey): Promise<VocabEntry[]> {
   };
 
   const rel = map[year];
-  const url = new URL(rel, import.meta.url).href;
+  const url = new URL(rel, import.meta.url).href; // （絶対URLにしたいもの, 起点となる絶対URL
+  // ）
   const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`Failed to load vocab for ${year}: ${res.status}`);
   }
   const json = (await res.json()) as VocabEntry[];
   return json;
+  /*
+   [{
+     phrase: ...;
+     mean: ...;
+     onePhrase: ...;
+     onePhraseJa: ...;
+     count: ...;
+     },
+  ]*/
 }
 
 export type QuizQuestion = {
@@ -48,26 +58,27 @@ export type QuizQuestion = {
  */
 export function buildQuestionsFromVocab(
   vocab: VocabEntry[],
-  maxCount = 20,
+  maxCount = 20
 ): QuizQuestion[] {
   const entries = vocab.filter((e) => !!e.phrase && !!e.mean);
   const take = Math.min(maxCount, entries.length);
 
-  const rng = mulberry32(0xC0FFEE); // deterministic selection for now
-  const shuffledIdx = shuffle([...entries.keys()], rng);
+  const rng = mulberry32(0xc0ffee); // 適当に整数入れてランダムな整数を返す
+  const shuffledIdx = shuffle([...entries.keys()], rng); // entriesのインデックス配列とランダムな整数 ["0","1","2"...]
 
   const pickPool = shuffledIdx.slice(0, Math.max(40, take * 3));
   const result: QuizQuestion[] = [];
 
   for (let i = 0; i < take; i++) {
-    const idx = pickPool[i % pickPool.length]!;
-    const e = entries[idx]!;
+    const idx = pickPool[i % pickPool.length]!; // pickpoolをiが超えないように割っている→７÷4 = あまり3  3÷4 = あまり3
+    const e = entries[idx]!; // 0~29まで一つずつの要素phraseとmean
     // Collect 3 distractors with different meanings
     const others = pickPool
-      .map((j) => entries[j]!)
+      .map((j) => entries[j]!) // e以外のmeanが違う要素を配列で取得
       .filter((x) => x !== e && x.mean && x.mean !== e.mean);
 
     const distractors: string[] = [];
+
     for (const o of others) {
       if (distractors.length >= 3) break;
       if (!distractors.includes(o.mean!)) distractors.push(o.mean!);
@@ -101,10 +112,9 @@ function shuffle<T>(arr: T[], rnd: () => number): T[] {
 // Small deterministic PRNG so choices are stable across reloads
 function mulberry32(a: number) {
   return function () {
-    let t = (a += 0x6D2B79F5);
+    let t = (a += 0x6d2b79f5);
     t = Math.imul(t ^ (t >>> 15), t | 1);
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
-
