@@ -14,11 +14,7 @@ export default function Reiwa3Page() {
         {status === "loading" && <p>データを読み込んでいます…</p>}
         {status === "ready" && (
           <>
-            <TestPageLayout
-              title="共通テスト 令和3年（データ読込サンプル）"
-              questions={questions}
-            />
-            <p>{count}</p>
+            <TestPageLayout count={count} questions={questions} />
           </>
         )}
         {status === "error" && (
