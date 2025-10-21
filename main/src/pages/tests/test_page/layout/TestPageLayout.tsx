@@ -46,7 +46,7 @@ export default function TestPageLayout({ questions }: TestPageLayoutProps) {
             <button
               onClick={() => handleClick(choice)}
               key={index}
-              className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-left transition-transform hover:-translate-y-1 hover:border-[#f2c97d] hover:bg-white/10">
+              className={`${baseClassName} ${isCorrect === true}`}>
               {choice}
             </button>
           ))}
@@ -55,3 +55,5 @@ export default function TestPageLayout({ questions }: TestPageLayoutProps) {
     </div>
   );
 }
+const baseClassName =
+  "rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-left transition-transform hover:-translate-y-1 hover:border-[#f2c97d] hover:bg-white/10";
