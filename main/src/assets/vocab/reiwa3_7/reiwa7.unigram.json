@@ -1,0 +1,1388 @@
+[
+  {
+    "phrase": "english",
+    "count": 20,
+    "onePhrase": "You are studying English at a language school in the.",
+    "mean": "英語",
+    "onePhraseJa": "市内の語学学校で英語を勉強している。"
+  },
+  {
+    "phrase": "peppers",
+    "count": 20,
+    "onePhrase": "Chili peppers add spice and color to life.",
+    "mean": "唐辛子",
+    "onePhraseJa": "チリペッパーは生活に辛味と彩りを添える。"
+  },
+  {
+    "phrase": "choose",
+    "count": 17,
+    "onePhrase": "You can choose the Economy Plan if your budget is.",
+    "mean": "選ぶ",
+    "onePhraseJa": "予算が限られているならエコノミープランを選べる。"
+  },
+  {
+    "phrase": "members",
+    "count": 12,
+    "onePhrase": "Club members demonstrate strategies and play online.",
+    "mean": "メンバー",
+    "onePhraseJa": "クラブメンバーが戦略を見せ、オンラインで対戦する。"
+  },
+  {
+    "phrase": "wasabi",
+    "count": 12,
+    "onePhrase": "Fresh sashimi is often eaten with wasabi.",
+    "mean": "わさび",
+    "onePhraseJa": "刺身は新鮮なわさびと一緒に食べることが多い。"
+  },
+  {
+    "phrase": "capsaicin",
+    "count": 12,
+    "onePhrase": "Capsaicin is the oil that makes peppers hot.",
+    "mean": "カプサイシン",
+    "onePhraseJa": "カプサイシンは唐辛子を辛くする油性成分だ。"
+  },
+  {
+    "phrase": "different",
+    "count": 11,
+    "onePhrase": "Experience different languages and new communication styles.",
+    "mean": "異なる",
+    "onePhraseJa": "異なる言語と新しいコミュニケーションを体験しよう。"
+  },
+  {
+    "phrase": "option",
+    "count": 11,
+    "onePhrase": "The cheapest option excludes certain extra services.",
+    "mean": "選択肢",
+    "onePhraseJa": "最安のプランにはいくつかの追加サービスが含まれない。"
+  },
+  {
+    "phrase": "strategy",
+    "count": 9,
+    "onePhrase": "Join the strategy g e club and learn tactics.",
+    "mean": "戦略",
+    "onePhraseJa": "ストラテジーゲームクラブに参加して戦術を学ぼう。"
+  },
+  {
+    "phrase": "kawanaka",
+    "count": 9,
+    "onePhrase": "His f ily moved to Kawanaka Town shortly before he.",
+    "mean": "川中",
+    "onePhraseJa": "彼が通い始める少し前に川中町へ引っ越した。"
+  },
+  {
+    "phrase": "called",
+    "count": 9,
+    "onePhrase": "He called Maki who offered her sympathy.",
+    "mean": "という",
+    "onePhraseJa": "彼は真木に電話をかけ、同情を寄せた。"
+  },
+  {
+    "phrase": "yentonville",
+    "count": 8,
+    "onePhrase": "Tours of Yentonville The Yentonville Tourist Office offers three city.",
+    "mean": "イェントンビル",
+    "onePhraseJa": "イエントンビル観光ツアー イエントンビル観光局では、3つの市内観光ツアーを提供している。"
+  },
+  {
+    "phrase": "experience",
+    "count": 7,
+    "onePhrase": "Gain language experience by writing simple sentences.",
+    "mean": "経験",
+    "onePhraseJa": "簡単な文を書くことで言語体験を積もう。"
+  },
+  {
+    "phrase": "support",
+    "count": 7,
+    "onePhrase": "Online support experience is necessary for this role.",
+    "mean": "サポート",
+    "onePhraseJa": "この役割にはオンラインサポートの経験が必要だ。"
+  },
+  {
+    "phrase": "likely",
+    "count": 7,
+    "onePhrase": "This club is likely suitable for students who want to.",
+    "mean": "可能性が高い",
+    "onePhraseJa": "このクラブは練習したい学生に向いている。"
+  },
+  {
+    "phrase": "classroom",
+    "count": 7,
+    "onePhrase": "We discussed what makes a great classroom environment.",
+    "mean": "教室",
+    "onePhraseJa": "良い教室環境とは何かを話し合った。"
+  },
+  {
+    "phrase": "restaurant",
+    "count": 7,
+    "onePhrase": "two customers entered her restaurant Maki s Kitchen.",
+    "mean": "レストラン",
+    "onePhraseJa": "二人の客が彼女のレストラン「マキズ・キッチン」に入った。"
+  },
+  {
+    "phrase": "business",
+    "count": 7,
+    "onePhrase": "She joined her f ily business at nineteen.",
+    "mean": "事業",
+    "onePhraseJa": "彼女は19歳で家業に加わった。"
+  },
+  {
+    "phrase": "became",
+    "count": 7,
+    "onePhrase": "He bec e more responsible when his father fell ill.",
+    "mean": "なった",
+    "onePhraseJa": "父が病気になったとき、彼はより責任感が増した。"
+  },
+  {
+    "phrase": "coffee",
+    "count": 7,
+    "onePhrase": "The restaurant should change the coffee they serve.",
+    "mean": "コーヒー",
+    "onePhraseJa": "そのレストランは提供するコーヒーを変えるべきだ。"
+  },
+  {
+    "phrase": "effects",
+    "count": 7,
+    "onePhrase": "Effects of age Time speeds up as we mature but.",
+    "mean": "効果",
+    "onePhraseJa": "年齢による影響 成熟するにつれて時間は速くなる。"
+  },
+  {
+    "phrase": "tolerance",
+    "count": 7,
+    "onePhrase": "Build spice tolerance step by step each week.",
+    "mean": "耐性",
+    "onePhraseJa": "毎週少しずつ辛さへの耐性を高めよう。"
+  },
+  {
+    "phrase": "international",
+    "count": 6,
+    "onePhrase": "Join our International Night on Friday evening.",
+    "mean": "国際",
+    "onePhraseJa": "金曜の夜に開催するインターナショナルナイトに参加しよう。"
+  },
+  {
+    "phrase": "travel",
+    "count": 6,
+    "onePhrase": "In the afternoon, travel by subway to the Yentonville Hockey.",
+    "mean": "旅行",
+    "onePhraseJa": "午後は地下鉄でイェントンビルのホッケーアリーナへ行こう。"
+  },
+  {
+    "phrase": "friends",
+    "count": 6,
+    "onePhrase": "Play online matches with club friends for practice.",
+    "mean": "友だち",
+    "onePhraseJa": "練習のためにクラブの仲間とオンライン対戦しよう。"
+  },
+  {
+    "phrase": "participants",
+    "count": 6,
+    "onePhrase": "At tourn ents I like discussing strategies with other participants.",
+    "mean": "参加者",
+    "onePhraseJa": "トーナメントでは、他の参加者と戦略を議論するのが好きだ。"
+  },
+  {
+    "phrase": "following",
+    "count": 6,
+    "onePhrase": "Which of the following is not mentioned as a club.",
+    "mean": "以下",
+    "onePhraseJa": "次のうち、クラブとして言及されていないのはどれか。"
+  },
+  {
+    "phrase": "having",
+    "count": 6,
+    "onePhrase": "Play matches with nonmembers to test new tactics.",
+    "mean": "持つこと",
+    "onePhraseJa": "新しい戦術を試すために非会員とも試合をしよう。"
+  },
+  {
+    "phrase": "playing",
+    "count": 6,
+    "onePhrase": "Challenge computer opponents and share clever strategies.",
+    "mean": "遊び",
+    "onePhraseJa": "コンピュータと対戦し、工夫した戦略を共有しよう。"
+  },
+  {
+    "phrase": "insurance",
+    "count": 6,
+    "onePhrase": "You will need travel insurance when visiting America.",
+    "mean": "保険",
+    "onePhraseJa": "アメリカを訪れるときは旅行保険が必要になる。"
+  },
+  {
+    "phrase": "university",
+    "count": 6,
+    "onePhrase": "I studied at Fairville University in California.",
+    "mean": "大学",
+    "onePhraseJa": "私はカリフォルニアのフェアヴィル大学で学んだ。"
+  },
+  {
+    "phrase": "health",
+    "count": 6,
+    "onePhrase": "Each plan includes one comprehensive health check.",
+    "mean": "健康",
+    "onePhraseJa": "どのプランにも健康診断が1回含まれている。"
+  },
+  {
+    "phrase": "classrooms",
+    "count": 6,
+    "onePhrase": "To improve classrooms, several conditions are important.",
+    "mean": "教室",
+    "onePhraseJa": "教室を改善するには、いくつかの条件が重要だ。"
+  },
+  {
+    "phrase": "naturalness",
+    "count": 6,
+    "onePhrase": "Stimulation, Individualization, and Naturalness is a useful fr ework.",
+    "mean": "自然さ",
+    "onePhraseJa": "刺激・個別化・自然さは有用な枠組みだ。"
+  },
+  {
+    "phrase": "change",
+    "count": 6,
+    "onePhrase": "We can't change the room, so let's adjust our plan.",
+    "mean": "変更",
+    "onePhraseJa": "部屋は変えられないので計画を調整しよう。"
+  },
+  {
+    "phrase": "family",
+    "count": 6,
+    "onePhrase": "Maki had joined her f ily business at the age.",
+    "mean": "家族",
+    "onePhraseJa": "槙野は、19歳のときに家業に加わった。"
+  },
+  {
+    "phrase": "timing",
+    "count": 6,
+    "onePhrase": "mental process called retrospective timing which is estimating time based.",
+    "mean": "タイミング",
+    "onePhraseJa": "レトロスペクティブ・タイミング（遡及的タイミング）と呼ばれる精神的プロセス。"
+  },
+  {
+    "phrase": "language",
+    "count": 5,
+    "onePhrase": "Study English at an American language school.",
+    "mean": "言語",
+    "onePhraseJa": "アメリカの語学学校で英語を学ぼう。"
+  },
+  {
+    "phrase": "reading",
+    "count": 5,
+    "onePhrase": "You are reading the flyer because you want in.",
+    "mean": "読書",
+    "onePhraseJa": "参加したいのでチラシを読んでいる。"
+  },
+  {
+    "phrase": "japanese",
+    "count": 5,
+    "onePhrase": "The progr offers Arabic Italian Japanese Spanish.",
+    "mean": "日本語",
+    "onePhraseJa": "プログラムではアラビア語、イタリア語、日本語、スペイン語を学べる。"
+  },
+  {
+    "phrase": "member",
+    "count": 5,
+    "onePhrase": "Please inform school staff by the end of month.",
+    "mean": "メンバー",
+    "onePhraseJa": "月末までに学校職員へ知らせてほしい。"
+  },
+  {
+    "phrase": "information",
+    "count": 5,
+    "onePhrase": "Teachers provided important information to students.",
+    "mean": "情報",
+    "onePhraseJa": "教師が生徒に重要な情報を伝えた。"
+  },
+  {
+    "phrase": "activity",
+    "count": 5,
+    "onePhrase": "This was mentioned as a possible club activity.",
+    "mean": "活動",
+    "onePhraseJa": "クラブ活動の候補として言及された。"
+  },
+  {
+    "phrase": "comment",
+    "count": 5,
+    "onePhrase": "ember's comment mentions the s e point.",
+    "mean": "コメント",
+    "onePhraseJa": "メンバーのコメントにも同じ点が述べられている。"
+  },
+  {
+    "phrase": "telephone",
+    "count": 5,
+    "onePhrase": "The plan includes smartphone apps and telephone support.",
+    "mean": "電話",
+    "onePhraseJa": "プランにはスマホアプリと電話サポートが含まれる。"
+  },
+  {
+    "phrase": "article",
+    "count": 5,
+    "onePhrase": "you are reading an article in the school newspaper written.",
+    "mean": "記事",
+    "onePhraseJa": "あなたは学校新聞の記事を読んでいる。"
+  },
+  {
+    "phrase": "island",
+    "count": 5,
+    "onePhrase": "to a South Sea Island This year for our English.",
+    "mean": "島",
+    "onePhraseJa": "今年は南洋の島へ。"
+  },
+  {
+    "phrase": "something",
+    "count": 5,
+    "onePhrase": "Sometimes we daydre about doing something different.",
+    "mean": "何か",
+    "onePhraseJa": "時には何か違うことをしたいと夢想する。"
+  },
+  {
+    "phrase": "longer",
+    "count": 5,
+    "onePhrase": "felt the time was longer while the people who saw.",
+    "mean": "もっと長い",
+    "onePhraseJa": "を見た人たちは時間が長く感じた。"
+  },
+  {
+    "phrase": "eating",
+    "count": 5,
+    "onePhrase": "bite we feel from eating chili peppers and wasabi is.",
+    "mean": "食事",
+    "onePhraseJa": "私たちが唐辛子やわさびを食べたときに感じる噛み応えは、次のようなものだ。"
+  },
+  {
+    "phrase": "dance",
+    "count": 4,
+    "onePhrase": "Watch the dance performance in the afternoon session.",
+    "mean": "ダンス",
+    "onePhraseJa": "午後の回でダンスパフォーマンスを鑑賞しよう。"
+  },
+  {
+    "phrase": "pictures",
+    "count": 4,
+    "onePhrase": "Lots of pictures flags maps textiles crafts and g es.",
+    "mean": "写真",
+    "onePhraseJa": "たくさんの写真、国旗、地図、織物、工芸品、ゲームなど。"
+  },
+  {
+    "phrase": "displayed",
+    "count": 4,
+    "onePhrase": "and g es will be displayed in the hall.",
+    "mean": "表示",
+    "onePhraseJa": "とゲームが会場に展示される。"
+  },
+  {
+    "phrase": "foreign",
+    "count": 4,
+    "onePhrase": "Read foreign short stories or try world cuisine.",
+    "mean": "海外",
+    "onePhraseJa": "外国語の短編を読んだり各国料理に挑戦したりしよう。"
+  },
+  {
+    "phrase": "opposite",
+    "count": 4,
+    "onePhrase": "Opposite the church stands the old mayor's residence.",
+    "mean": "反対",
+    "onePhraseJa": "教会の向かいには古い市長邸が立っている。"
+  },
+  {
+    "phrase": "concert",
+    "count": 4,
+    "onePhrase": "After lunch enjoy a concert across the street at the.",
+    "mean": "コンサート",
+    "onePhraseJa": "昼食後は、通りの向かいにあるコンサートホールでコンサートを楽しもう。"
+  },
+  {
+    "phrase": "several",
+    "count": 4,
+    "onePhrase": "the district was developed several years ago when new artists.",
+    "mean": "いくつか",
+    "onePhraseJa": "この地区が開発されたのは、数年前のことだった。"
+  },
+  {
+    "phrase": "created",
+    "count": 4,
+    "onePhrase": "A new sculpture park was created downtown.",
+    "mean": "作られた",
+    "onePhraseJa": "最近ダウンタウンに新しい彫刻公園ができた。"
+  },
+  {
+    "phrase": "afterwards",
+    "count": 4,
+    "onePhrase": "in their studios and afterwards wander around the park finding.",
+    "mean": "その後",
+    "onePhraseJa": "その後、公園内を散策し、自分のスタジオを見つける。"
+  },
+  {
+    "phrase": "around",
+    "count": 4,
+    "onePhrase": "studios and afterwards wander around the park finding sculptures ong.",
+    "mean": "周辺",
+    "onePhraseJa": "スタジオを見学した後、公園を散策し、彫刻を見つける。"
+  },
+  {
+    "phrase": "design",
+    "count": 4,
+    "onePhrase": "The arena is f ous for its unique design.",
+    "mean": "デザイン",
+    "onePhraseJa": "そのアリーナは独特のデザインで有名だ。"
+  },
+  {
+    "phrase": "events",
+    "count": 4,
+    "onePhrase": "learn about historic events in the city see.",
+    "mean": "イベント",
+    "onePhraseJa": "市の歴史的な出来事について学ぶ。"
+  },
+  {
+    "phrase": "actually",
+    "count": 4,
+    "onePhrase": "They are actually more than just g es.",
+    "mean": "実際に",
+    "onePhraseJa": "単なるゲームではない。"
+  },
+  {
+    "phrase": "appropriate",
+    "count": 4,
+    "onePhrase": "Prepare appropriate clothing before traveling abroad.",
+    "mean": "適切",
+    "onePhraseJa": "海外旅行の前に適切な服装を準備しよう。"
+  },
+  {
+    "phrase": "covered",
+    "count": 4,
+    "onePhrase": "The service covered the items within minutes.",
+    "mean": "対応した",
+    "onePhraseJa": "そのサービスは数分で対応を終えた。"
+  },
+  {
+    "phrase": "hospital",
+    "count": 4,
+    "onePhrase": "He needed assistance after arriving at the hospital.",
+    "mean": "病院",
+    "onePhraseJa": "彼は病院に着いて支援を必要とした。"
+  },
+  {
+    "phrase": "assistance",
+    "count": 4,
+    "onePhrase": "The plan includes phone support and weekly emails.",
+    "mean": "アシスタンス",
+    "onePhraseJa": "プランには電話サポートと週1回のメールが含まれる。"
+  },
+  {
+    "phrase": "however",
+    "count": 4,
+    "onePhrase": "However it was nice to get the optional discount because.",
+    "mean": "しかし",
+    "onePhraseJa": "しかし、オプションの割引があったのは良かった。"
+  },
+  {
+    "phrase": "writer",
+    "count": 4,
+    "onePhrase": "The writer's plan cost her quite a lot each month.",
+    "mean": "ライター",
+    "onePhraseJa": "筆者のプランは毎月かなりの費用がかかった。"
+  },
+  {
+    "phrase": "remember",
+    "count": 4,
+    "onePhrase": "Remember to take your medicine on schedule.",
+    "mean": "思い出す",
+    "onePhraseJa": "薬は決められた時間に忘れず飲もう。"
+  },
+  {
+    "phrase": "decided",
+    "count": 4,
+    "onePhrase": "As photo rally beginners, we de ed to aim for.",
+    "mean": "決定",
+    "onePhraseJa": "フォトラリー初心者の私たちは、5か所だけを目標にすることにした。"
+  },
+  {
+    "phrase": "science",
+    "count": 4,
+    "onePhrase": "Join the virtual science tour for inspiration.",
+    "mean": "科学",
+    "onePhraseJa": "刺激を得るためにバーチャル科学ツアーへ参加しよう。"
+  },
+  {
+    "phrase": "screen",
+    "count": 4,
+    "onePhrase": "The islands appeared on the large screen display.",
+    "mean": "スクリーン",
+    "onePhraseJa": "島々が大型スクリーンに映し出された。"
+  },
+  {
+    "phrase": "making",
+    "count": 4,
+    "onePhrase": "Share your ideas for de ing the final design.",
+    "mean": "作成",
+    "onePhraseJa": "最終デザインを決めるアイデアを共有しよう。"
+  },
+  {
+    "phrase": "stimulation",
+    "count": 4,
+    "onePhrase": "SIN stands for Stimulation Individualization Naturalness.",
+    "mean": "刺激",
+    "onePhraseJa": "SINは刺激・個別化・自然さの頭文字だ。"
+  },
+  {
+    "phrase": "individualization",
+    "count": 4,
+    "onePhrase": "which stands for Stimulation Individualization and Naturalness is a fr.",
+    "mean": "個別化",
+    "onePhraseJa": "これは「Stimulation Individualization」と「Naturalness」の頭文字をとったもので、フレームワークである。"
+  },
+  {
+    "phrase": "example",
+    "count": 4,
+    "onePhrase": "For ex ple a classroom that lacks colors might be.",
+    "mean": "例",
+    "onePhraseJa": "例えば、色のない教室は面白くないかもしれない。"
+  },
+  {
+    "phrase": "temperature",
+    "count": 4,
+    "onePhrase": "and artificial and the temperature of the classroom.",
+    "mean": "温度",
+    "onePhraseJa": "人工と教室の温度。"
+  },
+  {
+    "phrase": "successful",
+    "count": 4,
+    "onePhrase": "your project to a successful end.",
+    "mean": "旨い",
+    "onePhraseJa": "プロジェクトを成功に導く。"
+  },
+  {
+    "phrase": "options",
+    "count": 4,
+    "onePhrase": "Choose the best option for each case.",
+    "mean": "オプション",
+    "onePhraseJa": "各設問で最適な選択肢を選べ。"
+  },
+  {
+    "phrase": "kitchen",
+    "count": 4,
+    "onePhrase": "Maki s Kitchen Irasshai mase said Maki as two customers.",
+    "mean": "キッチン",
+    "onePhraseJa": "マキズ・キッチンいらっしゃいませ」とマキが言った。"
+  },
+  {
+    "phrase": "company",
+    "count": 4,
+    "onePhrase": "saw that a cosmetics company called Beautella was advertising for.",
+    "mean": "会社",
+    "onePhraseJa": "ボーテラという化粧品会社が広告を出していた。"
+  },
+  {
+    "phrase": "beautella",
+    "count": 4,
+    "onePhrase": "a cosmetics company called Beautella was advertising for salespeople.",
+    "mean": "ビューテラ",
+    "onePhraseJa": "ボーテラという化粧品会社が販売員を募集していた。"
+  },
+  {
+    "phrase": "mental",
+    "count": 4,
+    "onePhrase": "time so they use mental processes instead.",
+    "mean": "メンタル",
+    "onePhraseJa": "その代わりに精神的なプロセスを使う。"
+  },
+  {
+    "phrase": "psychological",
+    "count": 4,
+    "onePhrase": "This is called psychological time which everyone perceives differently.",
+    "mean": "心理的",
+    "onePhraseJa": "これは心理的な時間と呼ばれるもので、人によって感じ方が異なる。"
+  },
+  {
+    "phrase": "shapes",
+    "count": 4,
+    "onePhrase": "either simple or complex shapes for a fixed ount of.",
+    "mean": "形",
+    "onePhraseJa": "単純な形でも複雑な形でも、一定量の。"
+  },
+  {
+    "phrase": "amount",
+    "count": 4,
+    "onePhrase": "shapes for a fixed ount of time and asked to.",
+    "mean": "量",
+    "onePhraseJa": "一定時間、シェイプされ、以下のことを要求される。"
+  },
+  {
+    "phrase": "lifestyle",
+    "count": 4,
+    "onePhrase": "major lifestyle change at any age will likely make.",
+    "mean": "ライフスタイル",
+    "onePhraseJa": "何歳になっても、ライフスタイルを大きく変えることは、その可能性が高い。"
+  },
+  {
+    "phrase": "spiciness",
+    "count": 4,
+    "onePhrase": "one to wonder what spiciness actually is and to ask.",
+    "mean": "辛味",
+    "onePhraseJa": "辛さって何だろう？"
+  },
+  {
+    "phrase": "compounds",
+    "count": 4,
+    "onePhrase": "from different types of compounds.",
+    "mean": "化合物",
+    "onePhraseJa": "異なる種類の化合物から。"
+  },
+  {
+    "phrase": "scoville",
+    "count": 4,
+    "onePhrase": "is measured using the Scoville Scale which is also called.",
+    "mean": "スコヴィル",
+    "onePhraseJa": "と呼ばれるスコヴィル・スケールを用いて測定される。"
+  },
+  {
+    "phrase": "exchange",
+    "count": 3,
+    "onePhrase": "is organizing an international exchange event.",
+    "mean": "交換",
+    "onePhraseJa": "が国際交流イベントを開催。"
+  },
+  {
+    "phrase": "various",
+    "count": 3,
+    "onePhrase": "Enjoy foods from various parts of the world Have you.",
+    "mean": "いろいろ",
+    "onePhraseJa": "世界各地の料理を楽しもう。"
+  },
+  {
+    "phrase": "country",
+    "count": 3,
+    "onePhrase": "items from your home country which can be displayed at.",
+    "mean": "カントリー",
+    "onePhraseJa": "で展示できる自国のアイテム。"
+  },
+  {
+    "phrase": "participate",
+    "count": 3,
+    "onePhrase": "Participate in dance competitions across cultures.",
+    "mean": "参加する",
+    "onePhraseJa": "さまざまな文化圏でダンスコンペに参加しよう。"
+  },
+  {
+    "phrase": "offers",
+    "count": 3,
+    "onePhrase": "The Yentonville Tourist Office offers three city tours.",
+    "mean": "オファー",
+    "onePhraseJa": "イェントンビル観光局では、3つの市内観光ツアーを提供している。"
+  },
+  {
+    "phrase": "church",
+    "count": 3,
+    "onePhrase": "Patrick s Church which was built when the city was.",
+    "mean": "教会",
+    "onePhraseJa": "パトリック教会は、パトリックがこの街に住んでいた頃に建てられた。"
+  },
+  {
+    "phrase": "beautiful",
+    "count": 3,
+    "onePhrase": "the house and its beautiful garden.",
+    "mean": "美しい",
+    "onePhraseJa": "家と美しい庭。"
+  },
+  {
+    "phrase": "demonstrations",
+    "count": 3,
+    "onePhrase": "the site of many demonstrations in the s.",
+    "mean": "デモンストレーション",
+    "onePhraseJa": "年代には多くのデモが行われた。"
+  },
+  {
+    "phrase": "walking",
+    "count": 3,
+    "onePhrase": "Bruton Concert Hall before walking a short distance to the.",
+    "mean": "ウォーキング",
+    "onePhraseJa": "ブルートン・コンサートホールから少し歩いたところにある。"
+  },
+  {
+    "phrase": "artists",
+    "count": 3,
+    "onePhrase": "short distance to the Artists Avenue.",
+    "mean": "アーティスト",
+    "onePhraseJa": "アーティスト・アベニューまですぐ。"
+  },
+  {
+    "phrase": "hockey",
+    "count": 3,
+    "onePhrase": "subway to the Yentonville Hockey Arena completed last fall.",
+    "mean": "ホッケー",
+    "onePhraseJa": "昨秋完成したイェントンビル・ホッケーアリーナへの地下鉄工事。"
+  },
+  {
+    "phrase": "unique",
+    "count": 3,
+    "onePhrase": "about the arena s unique design.",
+    "mean": "ユニーク",
+    "onePhraseJa": "アリーナのユニークなデザインについて。"
+  },
+  {
+    "phrase": "skills",
+    "count": 3,
+    "onePhrase": "see people demonstrate their skills spend time both indoors.",
+    "mean": "技能",
+    "onePhraseJa": "屋内で時間を過ごす。"
+  },
+  {
+    "phrase": "thinking",
+    "count": 3,
+    "onePhrase": "learn skills such as thinking logically and deeply without distractions.",
+    "mean": "思考",
+    "onePhraseJa": "気が散ることなく、論理的に深く考えるなどのスキルを身につける。"
+  },
+  {
+    "phrase": "without",
+    "count": 3,
+    "onePhrase": "thinking logically and deeply without distractions.",
+    "mean": "なし",
+    "onePhraseJa": "雑念を排し、論理的に深く考える。"
+  },
+  {
+    "phrase": "online",
+    "count": 3,
+    "onePhrase": "by club members play online against club friends share tips.",
+    "mean": "オンライン",
+    "onePhraseJa": "クラブ会員によるオンライン対戦 クラブの友人とヒントを共有する。"
+  },
+  {
+    "phrase": "computer",
+    "count": 3,
+    "onePhrase": "g e analyse g es using computer software participate in.",
+    "mean": "コンピュータ",
+    "onePhraseJa": "コンピューターソフトウェアを使ってゲームを分析する。"
+  },
+  {
+    "phrase": "regular",
+    "count": 3,
+    "onePhrase": "local and national tourn ents Regular meetings Wednesday afternoons in.",
+    "mean": "定期的な",
+    "onePhraseJa": "地域および全国トーナメント 水曜日の午後にルームで定例会議。"
+  },
+  {
+    "phrase": "comments",
+    "count": 3,
+    "onePhrase": "Room Student Centre Member Comments My mind is clearer calmer.",
+    "mean": "コメント",
+    "onePhraseJa": "ルーム 学生センター メンバーのコメント 心が晴れやかになりました。"
+  },
+  {
+    "phrase": "focused",
+    "count": 3,
+    "onePhrase": "clearer calmer and more focused in class.",
+    "mean": "集中",
+    "onePhraseJa": "授業中も落ち着いて集中できる。"
+  },
+  {
+    "phrase": "explain",
+    "count": 3,
+    "onePhrase": "Members share Internet videos that explain practical strategies for chess.",
+    "mean": "説明する",
+    "onePhraseJa": "チェスの実践的な戦略を解説するインターネット・ビデオを会員が共有。"
+  },
+  {
+    "phrase": "joined",
+    "count": 3,
+    "onePhrase": "complete beginner when I joined and I had no problem.",
+    "mean": "参加",
+    "onePhraseJa": "入会当時はまったくの初心者だったが、何の問題もなかった。"
+  },
+  {
+    "phrase": "schools",
+    "count": 3,
+    "onePhrase": "Students from other schools can also join.",
+    "mean": "学校",
+    "onePhraseJa": "他校の生徒も参加できる。"
+  },
+  {
+    "phrase": "useful",
+    "count": 3,
+    "onePhrase": "Videos about Go offer helpful tips for members.",
+    "mean": "有用",
+    "onePhraseJa": "囲碁の動画は会員に役立つヒントを提供する。"
+  },
+  {
+    "phrase": "necessary",
+    "count": 3,
+    "onePhrase": "Online support is necessary to become a good player.",
+    "mean": "必要",
+    "onePhraseJa": "良いプレーヤーになるにはオンラインサポートが必要だ。"
+  },
+  {
+    "phrase": "improve",
+    "count": 3,
+    "onePhrase": "Strategy games help improve concentration.",
+    "mean": "改善する",
+    "onePhraseJa": "ストラテジーゲームは集中力の向上に役立つ。"
+  },
+  {
+    "phrase": "studied",
+    "count": 3,
+    "onePhrase": "female international student who studied in the US for six.",
+    "mean": "勉強した",
+    "onePhraseJa": "米国に6年間留学した女子留学生。"
+  },
+  {
+    "phrase": "months",
+    "count": 3,
+    "onePhrase": "the US for six months.",
+    "mean": "月",
+    "onePhraseJa": "米国で6ヶ月間。"
+  },
+  {
+    "phrase": "minutes",
+    "count": 3,
+    "onePhrase": "online in less than minutes and was immediately covered.",
+    "mean": "議事録",
+    "onePhraseJa": "数分もかからずにオンラインに接続し、すぐに取材を受けた。"
+  },
+  {
+    "phrase": "include",
+    "count": 3,
+    "onePhrase": "All plans include a one time health check up.",
+    "mean": "含む",
+    "onePhraseJa": "すべてのプランに1回の健康診断が含まれます。"
+  },
+  {
+    "phrase": "medical",
+    "count": 3,
+    "onePhrase": "The plan provides hour medical support through a smartphone app.",
+    "mean": "メディカル",
+    "onePhraseJa": "スマートフォンアプリで1時間医療サポートを提供するプラン。"
+  },
+  {
+    "phrase": "smartphone",
+    "count": 3,
+    "onePhrase": "medical support through a smartphone app and telephone service.",
+    "mean": "スマートフォン",
+    "onePhraseJa": "スマートフォンアプリと電話サービスによる医療サポート。"
+  },
+  {
+    "phrase": "included",
+    "count": 3,
+    "onePhrase": "hour telephone assistance and included a weekly email with tips.",
+    "mean": "付属",
+    "onePhraseJa": "時間の電話サポートと、ヒントを記載した週刊電子メールが含まれていた。"
+  },
+  {
+    "phrase": "considered",
+    "count": 3,
+    "onePhrase": "a reduced cost if considered necessary by the support center.",
+    "mean": "考慮された",
+    "onePhraseJa": "サポートセンターが必要と判断した場合、費用を減額します。"
+  },
+  {
+    "phrase": "friend",
+    "count": 3,
+    "onePhrase": "Then my friend from Brazil broke his leg while playing.",
+    "mean": "友人",
+    "onePhraseJa": "ブラジルの友人がプレー中に足を骨折したんだ。"
+  },
+  {
+    "phrase": "reason",
+    "count": 3,
+    "onePhrase": "The cheapest plan excludes hospitalization coverage.",
+    "mean": "理由",
+    "onePhraseJa": "最安プランは入院費を補償しない。"
+  },
+  {
+    "phrase": "system",
+    "count": 3,
+    "onePhrase": "They offer an Internet based registration system.",
+    "mean": "システム",
+    "onePhraseJa": "インターネットベースの登録システムを提供している。"
+  },
+  {
+    "phrase": "process",
+    "count": 3,
+    "onePhrase": "They require a few days to process the application form.",
+    "mean": "プロセス",
+    "onePhraseJa": "申請書の処理には数日を要する。"
+  },
+  {
+    "phrase": "checkpoints",
+    "count": 3,
+    "onePhrase": "only five of the checkpoints.",
+    "mean": "チェックポイント",
+    "onePhraseJa": "チェックポイントのうち5つだけ。"
+  },
+  {
+    "phrase": "enough",
+    "count": 3,
+    "onePhrase": "his English were good enough.",
+    "mean": "十分",
+    "onePhraseJa": "彼の英語力は十分だった。"
+  },
+  {
+    "phrase": "realised",
+    "count": 3,
+    "onePhrase": "way using gestures we realised we wouldn t have enough.",
+    "mean": "実現",
+    "onePhraseJa": "ジェスチャーを使った方法では、十分な情報が得られないことに気づいた。"
+  },
+  {
+    "phrase": "newspaper",
+    "count": 3,
+    "onePhrase": "article in the school newspaper written by Yuzu who took.",
+    "mean": "新聞",
+    "onePhraseJa": "校内新聞にゆずが書いた記事が掲載された。"
+  },
+  {
+    "phrase": "virtual",
+    "count": 3,
+    "onePhrase": "Virtual Field Trip to a South Sea Island This year.",
+    "mean": "バーチャル",
+    "onePhraseJa": "今年は南洋の島へバーチャル遠足。"
+  },
+  {
+    "phrase": "weather",
+    "count": 3,
+    "onePhrase": "The winter weather had been terrible so we were excited.",
+    "mean": "天候",
+    "onePhraseJa": "冬の天候は最悪だったので、私たちは興奮していた。"
+  },
+  {
+    "phrase": "creatures",
+    "count": 3,
+    "onePhrase": "the diversity of marine creatures.",
+    "mean": "生物",
+    "onePhraseJa": "海洋生物の多様性。"
+  },
+  {
+    "phrase": "number",
+    "count": 3,
+    "onePhrase": "we could count the number of creatures but there were.",
+    "mean": "番号",
+    "onePhraseJa": "我々は生き物の数を数えることができたが、そこには。"
+  },
+  {
+    "phrase": "projector",
+    "count": 3,
+    "onePhrase": "the ceiling using a projector.",
+    "mean": "プロジェクター",
+    "onePhraseJa": "プロジェクターで天井に投影。"
+  },
+  {
+    "phrase": "notice",
+    "count": 3,
+    "onePhrase": "we often don t notice things even though they re.",
+    "mean": "お知らせ",
+    "onePhraseJa": "私たちは、物事に気づかないことが多い。"
+  },
+  {
+    "phrase": "though",
+    "count": 3,
+    "onePhrase": "t notice things even though they re there.",
+    "mean": "けれども",
+    "onePhraseJa": "そこにあっても気づかない。"
+  },
+  {
+    "phrase": "results",
+    "count": 3,
+    "onePhrase": "following article and the results of a questionnaire given to.",
+    "mean": "結果",
+    "onePhraseJa": "以下の記事とアンケートの結果を参照されたい。"
+  },
+  {
+    "phrase": "questionnaire",
+    "count": 3,
+    "onePhrase": "the results of a questionnaire given to members you make.",
+    "mean": "アンケート",
+    "onePhraseJa": "会員へのアンケート結果。"
+  },
+  {
+    "phrase": "handout",
+    "count": 3,
+    "onePhrase": "members you make a handout for a group discussion.",
+    "mean": "プリント",
+    "onePhraseJa": "グループディスカッションで配布する資料を作成するメンバー。"
+  },
+  {
+    "phrase": "discussion",
+    "count": 3,
+    "onePhrase": "handout for a group discussion.",
+    "mean": "ディスカッション",
+    "onePhraseJa": "グループディスカッション用プリント。"
+  },
+  {
+    "phrase": "framework",
+    "count": 3,
+    "onePhrase": "and Naturalness is a fr ework that might be helpful.",
+    "mean": "フレームワーク",
+    "onePhraseJa": "と「自然さ」は、次のような枠組みとして役立つだろう。"
+  },
+  {
+    "phrase": "windows",
+    "count": 3,
+    "onePhrase": "S By the windows the sunlight makes it hard to.",
+    "mean": "窓",
+    "onePhraseJa": "S 窓のそばは、日差しが強くて見えにくい。"
+  },
+  {
+    "phrase": "understand",
+    "count": 3,
+    "onePhrase": "Understand how classroom factors affect performance.",
+    "mean": "理解する",
+    "onePhraseJa": "教室の要因が成績にどう影響するか理解しよう。"
+  },
+  {
+    "phrase": "presentation",
+    "count": 3,
+    "onePhrase": "You are preparing notes for your presentation.",
+    "mean": "プレゼンテーション",
+    "onePhraseJa": "プレゼンテーション用のメモを準備している。"
+  },
+  {
+    "phrase": "eventually",
+    "count": 3,
+    "onePhrase": "Eventually Maki s parents retired and she bec e the.",
+    "mean": "いずれ",
+    "onePhraseJa": "やがて真紀の両親は引退し、彼女はオーナーになった。"
+  },
+  {
+    "phrase": "started",
+    "count": 3,
+    "onePhrase": "Town shortly before he started high school.",
+    "mean": "開始",
+    "onePhraseJa": "高校入学直前の町。"
+  },
+  {
+    "phrase": "graduation",
+    "count": 3,
+    "onePhrase": "After graduation Takuya left Kawanaka to become an actor while.",
+    "mean": "卒業",
+    "onePhraseJa": "卒業後、拓也は川中を離れ、俳優の道に進んだ。"
+  },
+  {
+    "phrase": "cosmetics",
+    "count": 3,
+    "onePhrase": "and saw that a cosmetics company called Beautella was advertising.",
+    "mean": "化粧品",
+    "onePhraseJa": "ビューテラという化粧品会社が広告を出しているのを見た。"
+  },
+  {
+    "phrase": "ishijima",
+    "count": 3,
+    "onePhrase": "the big city of Ishijima.",
+    "mean": "イシジマ",
+    "onePhraseJa": "大都会石島。"
+  },
+  {
+    "phrase": "instead",
+    "count": 3,
+    "onePhrase": "they use mental processes instead.",
+    "mean": "その代わり",
+    "onePhraseJa": "代わりに精神的なプロセスを使う。"
+  },
+  {
+    "phrase": "retrospective",
+    "count": 3,
+    "onePhrase": "a mental process called retrospective timing which is estimating time.",
+    "mean": "レトロスペクティブ",
+    "onePhraseJa": "レトロスペクティブ・タイミングと呼ばれる、時間を推定する精神的プロセス。"
+  },
+  {
+    "phrase": "prospective",
+    "count": 3,
+    "onePhrase": "Another process to measure psychological time is called prospective timing.",
+    "mean": "プロスペクティブ",
+    "onePhraseJa": "心理的時間を測定するもう一つのプロセスは、プロスペクティブ・タイミングと呼ばれる。"
+  },
+  {
+    "phrase": "studies",
+    "count": 3,
+    "onePhrase": "In several studies the participants performed tasks while estimating the.",
+    "mean": "学業",
+    "onePhraseJa": "を推定しながらタスクを行った。"
+  },
+  {
+    "phrase": "boredom",
+    "count": 3,
+    "onePhrase": "cannot wait for your boredom to end.",
+    "mean": "退屈",
+    "onePhraseJa": "退屈が終わるのが待ちきれない。"
+  },
+  {
+    "phrase": "skydiving",
+    "count": 3,
+    "onePhrase": "more than people experienced skydiving for the first time.",
+    "mean": "スカイダイビング",
+    "onePhraseJa": "初めてスカイダイビングを体験した人よりも多い。"
+  },
+  {
+    "phrase": "children",
+    "count": 3,
+    "onePhrase": "Children constantly encounter new information and have new experiences which.",
+    "mean": "子供たち",
+    "onePhraseJa": "子どもたちは常に新しい情報に出会い、新しい経験をする。"
+  },
+  {
+    "phrase": "similar",
+    "count": 3,
+    "onePhrase": "for those people is similar to that for children.",
+    "mean": "同じような",
+    "onePhraseJa": "そのような人々のためのものは、子供たちのためのものと似ている。"
+  },
+  {
+    "phrase": "sensation",
+    "count": 3,
+    "onePhrase": "to avoid the painful sensation.",
+    "mean": "感覚",
+    "onePhraseJa": "痛い思いをしないために。"
+  },
+  {
+    "phrase": "stress",
+    "count": 3,
+    "onePhrase": "TRPV channels signal heat and stress.",
+    "mean": "ストレス",
+    "onePhraseJa": "TRPVチャネルは熱やストレスを感知する。"
+  },
+  {
+    "phrase": "contain",
+    "count": 3,
+    "onePhrase": "ount of capsaicin they contain.",
+    "mean": "含む",
+    "onePhraseJa": "カプサイシンの量。"
+  },
+  {
+    "phrase": "pepper",
+    "count": 3,
+    "onePhrase": "Shishito is mild, Carolina types have high SHU.",
+    "mean": "ペッパー",
+    "onePhraseJa": "シシトウは穏やかだが、カロライナ種はSHUが高い。"
+  },
+  {
+    "phrase": "benefits",
+    "count": 3,
+    "onePhrase": "been conducted into the benefits of capsaicin.",
+    "mean": "メリット",
+    "onePhraseJa": "カプサイシンの効能が研究されている。"
+  },
+  {
+    "phrase": "energy",
+    "count": 3,
+    "onePhrase": "heart rate send more energy to the muscles and convert.",
+    "mean": "エネルギー",
+    "onePhraseJa": "心拍数はより多くのエネルギーを筋肉に送り、筋肉に変換する。"
+  },
+  {
+    "phrase": "negative",
+    "count": 3,
+    "onePhrase": "Despite some negative side effects spicy foods remain popular around.",
+    "mean": "ネガティブ",
+    "onePhraseJa": "副作用があるにもかかわらず、スパイシーな食べ物は依然として世界中で人気がある。"
+  },
+  {
+    "phrase": "feeling",
+    "count": 3,
+    "onePhrase": "changing to vapor persistent feeling spicy rush Positive.",
+    "mean": "フィーリング",
+    "onePhraseJa": "蒸気への変化 持続的なフィーリング スパイシーなラッシュ シド シド ポジティブ。"
+  },
+  {
+    "phrase": "studying",
+    "count": 2,
+    "onePhrase": "You are studying English at a language school in the.",
+    "mean": "勉強",
+    "onePhraseJa": "の語学学校で英語を勉強している。"
+  },
+  {
+    "phrase": "planning",
+    "count": 2,
+    "onePhrase": "The school is planning an event.",
+    "mean": "プランニング",
+    "onePhraseJa": "学校はイベントを計画している。"
+  },
+  {
+    "phrase": "attend",
+    "count": 2,
+    "onePhrase": "You want to attend so you are reading the flyer.",
+    "mean": "出席",
+    "onePhraseJa": "参加したいからチラシを読んでいる。"
+  },
+  {
+    "phrase": "thorpe",
+    "count": 2,
+    "onePhrase": "The Thorpe English Language School International Night Friday May p.",
+    "mean": "ソープ",
+    "onePhraseJa": "ソープ・イングリッシュ・ランゲージ・スクール インターナショナル・ナイト 5月p日(金)。"
+  },
+  {
+    "phrase": "entrance",
+    "count": 2,
+    "onePhrase": "At TELS, an entrance fee applies.",
+    "mean": "エントランス",
+    "onePhraseJa": "TELSでは入会金が必要だ。"
+  },
+  {
+    "phrase": "please",
+    "count": 2,
+    "onePhrase": "Please present your student ID at the reception desk in.",
+    "mean": "お願い",
+    "onePhraseJa": "の受付にて学生証をご提示ください。"
+  },
+  {
+    "phrase": "languages",
+    "count": 2,
+    "onePhrase": "Experience different languages and new ways to communicate Write basic.",
+    "mean": "言語",
+    "onePhraseJa": "異なる言語と新しいコミュニケーション方法を体験する 基本的な文章を書く。"
+  },
+  {
+    "phrase": "communicate",
+    "count": 2,
+    "onePhrase": "and new ways to communicate Write basic expressions such as.",
+    "mean": "伝える",
+    "onePhraseJa": "などの基本的な表現を書く。"
+  },
+  {
+    "phrase": "expressions",
+    "count": 2,
+    "onePhrase": "to communicate Write basic expressions such as hello and thank.",
+    "mean": "表現",
+    "onePhraseJa": "挨拶やお礼などの基本的な表現を書く。"
+  },
+  {
+    "phrase": "cultures",
+    "count": 2,
+    "onePhrase": "how people from these cultures use facial expressions and their.",
+    "mean": "文化",
+    "onePhraseJa": "これらの文化圏の人々がどのように表情を使い、どのような表情をしているのか。"
+  },
+  {
+    "phrase": "gestures",
+    "count": 2,
+    "onePhrase": "learn about gestures in various cultures participate in.",
+    "mean": "身振り手振り",
+    "onePhraseJa": "さまざまな文化におけるジェスチャーについて学ぶ。"
+  },
+  {
+    "phrase": "dishes",
+    "count": 2,
+    "onePhrase": "( :5) try cooking international dishes ― ５ ― （２１１０―５）.",
+    "mean": "食器類",
+    "onePhraseJa": "国際色豊かな料理に挑戦しよう。あなたは留学生だ。"
+  },
+  {
+    "phrase": "provided",
+    "count": 2,
+    "onePhrase": "The teacher has provided some information.",
+    "mean": "提供",
+    "onePhraseJa": "教師はいくつかの情報を提供した。"
+  },
+  {
+    "phrase": "tourist",
+    "count": 2,
+    "onePhrase": "of Yentonville The Yentonville Tourist Office offers three city tours.",
+    "mean": "観光客",
+    "onePhraseJa": "イエントンビル観光局では、3つの市内観光ツアーを提供している。"
+  },
+  {
+    "phrase": "office",
+    "count": 2,
+    "onePhrase": "Yentonville The Yentonville Tourist Office offers three city tours.",
+    "mean": "オフィス",
+    "onePhraseJa": "イエントンビル イエントンビル観光局では、3つの市内観光ツアーを提供している。"
+  },
+  {
+    "phrase": "history",
+    "count": 2,
+    "onePhrase": "The History Tour The day will begin with a visit.",
+    "mean": "歴史",
+    "onePhraseJa": "歴史ツアー この日はまず、以下の場所を訪れる。"
+  },
+  {
+    "phrase": "finally",
+    "count": 2,
+    "onePhrase": "Finally cross the city by public bus and visit the.",
+    "mean": "ついに",
+    "onePhraseJa": "最後に、公共バスで市内を横断して。"
+  },
+  {
+    "phrase": "public",
+    "count": 2,
+    "onePhrase": "cross the city by public bus and visit the Peace.",
+    "mean": "公開",
+    "onePhraseJa": "公共バスで市内を横断し、平和公園を訪れる。"
+  },
+  {
+    "phrase": "opened",
+    "count": 2,
+    "onePhrase": "Opened soon after World War it was the site of.",
+    "mean": "オープン",
+    "onePhraseJa": "戦後間もなくオープンした。"
+  },
+  {
+    "phrase": "morning",
+    "count": 2,
+    "onePhrase": "The Arts Tour The morning will be spent in the.",
+    "mean": "朝",
+    "onePhraseJa": "アーツ・ツアー 午前中は。"
+  },
+  {
+    "phrase": "district",
+    "count": 2,
+    "onePhrase": "in the Yentonville Arts District.",
+    "mean": "地区",
+    "onePhraseJa": "イェントンヴィル・アート・ディストリクト内。"
+  },
+  {
+    "phrase": "gallery",
+    "count": 2,
+    "onePhrase": "begin in the Art Gallery where there are many paintings.",
+    "mean": "ギャラリー",
+    "onePhraseJa": "多くの絵画が展示されているアートギャラリーから始めよう。"
+  },
+  {
+    "phrase": "across",
+    "count": 2,
+    "onePhrase": "lunch enjoy a concert across the street at the Bruton.",
+    "mean": "を越えて",
+    "onePhraseJa": "昼食は向かいのブルトン・ホールでコンサートを楽しむ。"
+  },
+  {
+    "phrase": "studios",
+    "count": 2,
+    "onePhrase": "ago when new artists studios and the nearby Sculpture Park.",
+    "mean": "スタジオ",
+    "onePhraseJa": "新しいアーティスト・スタジオと近くの彫刻公園ができた頃。"
+  },
+  {
+    "phrase": "sculpture",
+    "count": 2,
+    "onePhrase": "studios and the nearby Sculpture Park were created.",
+    "mean": "彫刻",
+    "onePhraseJa": "スタジオと近くの彫刻公園が作られた。"
+  },
+  {
+    "phrase": "football",
+    "count": 2,
+    "onePhrase": "watch the Yentonville Lions football te training at their open.",
+    "mean": "フットボール",
+    "onePhraseJa": "イェントンヴィル・ライオンズのフットボール・チームの公開練習を見る。"
+  },
+  {
+    "phrase": "training",
+    "count": 2,
+    "onePhrase": "Yentonville Lions football te training at their open air facility.",
+    "mean": "トレーニング",
+    "onePhraseJa": "イェントンビル・ライオンズフットボールチームが野外施設でトレーニング。"
+  },
+  {
+    "phrase": "facility",
+    "count": 2,
+    "onePhrase": "at their open air facility in the suburbs.",
+    "mean": "施設",
+    "onePhraseJa": "郊外の野外施設にて。"
+  },
+  {
+    "phrase": "completed",
+    "count": 2,
+    "onePhrase": "the Yentonville Hockey Arena completed last fall.",
+    "mean": "完成",
+    "onePhraseJa": "昨秋完成したイェントンヴィル・ホッケー・アリーナ。"
+  }
+]
