@@ -8,38 +8,26 @@ export type VocabEntry = {
   count?: number;
 };
 
-/**
- * Load per-year vocabulary entries from bundled JSON assets.
- * Uses `new URL(..., import.meta.url)` so it works without special TS config.
- */
+import reiwa3Vocab from "../assets/vocab/reiwa3_7/reiwa3.unigram.json";
+import reiwa4Vocab from "../assets/vocab/reiwa3_7/reiwa4.unigram.json";
+import reiwa5Vocab from "../assets/vocab/reiwa3_7/reiwa5.unigram.json";
+import reiwa6Vocab from "../assets/vocab/reiwa3_7/reiwa6.unigram.json";
+import reiwa7Vocab from "../assets/vocab/reiwa3_7/reiwa7.unigram.json";
+
+const vocabByYear: Record<YearKey, VocabEntry[]> = {
+  reiwa3: reiwa3Vocab as VocabEntry[],
+  reiwa4: reiwa4Vocab as VocabEntry[],
+  reiwa5: reiwa5Vocab as VocabEntry[],
+  reiwa6: reiwa6Vocab as VocabEntry[],
+  reiwa7: reiwa7Vocab as VocabEntry[],
+};
 
 export async function loadYearVocab(year: YearKey): Promise<VocabEntry[]> {
-  const map: Record<YearKey, string> = {
-    reiwa3: "../assets/vocab/reiwa3_7/reiwa3.unigram.json",
-    reiwa4: "../assets/vocab/reiwa3_7/reiwa4.unigram.json",
-    reiwa5: "../assets/vocab/reiwa3_7/reiwa5.unigram.json",
-    reiwa6: "../assets/vocab/reiwa3_7/reiwa6.unigram.json",
-    reiwa7: "../assets/vocab/reiwa3_7/reiwa7.unigram.json",
-  };
-
-  const rel = map[year];
-  const url = new URL(rel, import.meta.url).href; // （絶対URLにしたいもの, 起点となる絶対URL
-  // ）
-  const res = await fetch(url);
-  if (!res.ok) {
-    throw new Error(`Failed to load vocab for ${year}: ${res.status}`);
+  const vocab = vocabByYear[year];
+  if (!vocab) {
+    throw new Error(`Unknown year key: ${year}`);
   }
-  const json = (await res.json()) as VocabEntry[];
-  return json;
-  /*
-   [{
-     phrase: ...;
-     mean: ...;
-     onePhrase: ...;
-     onePhraseJa: ...;
-     count: ...;
-     },
-  ]*/
+  return structuredClone(vocab);
 }
 
 /**
