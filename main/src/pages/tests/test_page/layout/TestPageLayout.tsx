@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Children, useMemo, useState } from "react";
 import { type QuizQuestion } from "../../../../data/vocabLoader";
 
 type TestPageLayoutProps = {
@@ -36,33 +36,34 @@ export default function TestPageLayout({ questions }: TestPageLayoutProps) {
       setIsCorrect(true);
       setButtonStates((prev) => ({ ...prev, [choice]: "correct" }));
 
+      // setSelectedChoice(null);
+      // setButtonStates({});
       setTimeout(() => {
-        setButtonStates({});
         setSelectedChoice(null);
+        setButtonStates({});
         setCurrentIndex((i) => i + 1);
       }, 500);
     }
   }
 
   function ButtonStyleSwitch(choice: string) {
-    if (choice === "correct") return correctButtonStyle;
-
-    if (choice === "incorrect") return incorrectButtonStyle;
+    if (buttonStates[choice] === "correct") return correctButtonStyle;
+    if (buttonStates[choice] === "incorrect") return incorrectButtonStyle;
     else return baseButtonStyle;
   }
 
   return (
     <div className=" rounded-2xl bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px]">
       <div className="bg-[#050509] [border-radius:inherit] px-6 py-8 text-white">
-        <h1 className="mb-6 text-center text-3xl font-bold text-[#f2c97d]">
+        <h1 className="mb-6 text-center text-4xl font-bold text-[#f2c97d]">
           {question.phrase}
         </h1>
-        <div className="grid grid-cols-2 gap-3 text-md text-white/80">
+        <div className="grid grid-cols-2 gap-3 text-white/80  text-bold  ">
           {shuffled.map((choice, index) => (
             <button
               onClick={() => handleClick(choice)}
               key={index}
-              className={``}>
+              className={`${ButtonStyleSwitch(choice)}`}>
               {choice}
             </button>
           ))}
@@ -72,12 +73,13 @@ export default function TestPageLayout({ questions }: TestPageLayoutProps) {
   );
 }
 const baseButtonStyle =
-  "rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-left transition-transform hover:-translate-y-1 hover:border-[#f2c97d] hover:bg-white/10";
+  "group relative rounded-xl border border-white/15 bg-[radial-gradient(circle_at_top,#1a1c26,#070811)]/90 px-5 py-4 text-left text-base font-medium tracking-wide text-white/85 shadow-[0_12px_28px_-18px_rgba(15,23,42,0.9)] transition-all duration-300 hover:-translate-y-1 hover:border-[#f2c97d]/70 hover:bg-[radial-gradient(circle_at_top,#202333,#0d101c)] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f2c97d]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
 
 const correctButtonStyle =
-  "bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200 text-slate-950 font-semibold tracking-wide shadow-[0_15px_35px_-15px_rgba(251,191,36,0.8)] border border-amber-200/80 ring-2 ring-amber-100/60 ring-offset-2 ring-offset-slate-950";
+  "rounded-xl border border-amber-200/70 bg-gradient-to-br from-amber-400 via-amber-300 to-yellow-200 px-5 py-4 text-left text-base font-semibold tracking-wide text-slate-900 shadow-[0_22px_48px_-20px_rgba(251,191,36,0.9)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_28px_55px_-18px_rgba(251,191,36,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-200/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
 
-const incorrectButtonStyle = "text-red ";
+const incorrectButtonStyle =
+  "rounded-xl border border-rose-500/60 bg-gradient-to-br from-rose-600 via-rose-500 to-rose-400 px-5 py-4 text-left text-base font-semibold tracking-wide text-rose-50 shadow-[0_18px_38px_-18px_rgba(244,63,94,0.85)] transition-all duration-300 hover:-translate-y-1 hover:border-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
 
 // A B C D base
 // clickしたボタン要素がchoice === answerChoiceならその要素だけcorrectButtonStyle
