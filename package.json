@@ -5,6 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "freq": "node scripts/freq.mjs",
+    "postinstall": "npm --prefix main install",
     "dev": "npm --prefix main run dev",
     "build": "npm --prefix main run build",
     "preview": "npm --prefix main run preview",
