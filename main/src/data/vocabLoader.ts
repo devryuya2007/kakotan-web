@@ -79,12 +79,17 @@ export function buildQuestionsFromVocab(
       .map((j) => entries[j]!) // e以外のmeanが違う要素を配列で取得
       .filter((x) => x !== e && x.mean && x.mean !== e.mean);
 
+    const shuffledOthers = shuffle([...others], rng);
     const distractors: string[] = [];
 
-    for (const o of others) {
+    for (const candidate of shuffledOthers) {
       if (distractors.length >= 3) break;
-      if (!distractors.includes(o.mean!)) distractors.push(o.mean!);
+      const meaning = candidate.mean!;
+      if (!distractors.includes(meaning)) {
+        distractors.push(meaning);
+      }
     }
+
     const allChoices = shuffle([e.mean!, ...distractors].slice(0, 4), rng);
     const answerIndex = allChoices.indexOf(e.mean!);
 
