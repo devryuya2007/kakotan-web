@@ -11,23 +11,24 @@ export default function TestPageLayout({
   count,
 }: TestPageLayoutProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  if (!questions[currentIndex]) return null;
-  const question = questions[currentIndex];
-  const answerChoice = question.choices[question.answerIndex];
-  const totalQuestions = count || questions.length || 1;
-  const progress = Math.min(((currentIndex + 1) / totalQuestions) * 100, 100);
-
-  if (!question) return null;
-
-  const shuffled = useMemo(() => {
-    return [...question.choices].sort(() => Math.random() - 0.5);
-  }, [question]);
-
   const [buttonStates, setButtonStates] = useState<
     Record<string, "base" | "correct" | "incorrect">
   >({});
 
+  const question = questions[currentIndex];
+  const shuffled = useMemo(() => {
+    if (!question) return [];
+    return [...question.choices].sort(() => Math.random() - 0.5);
+  }, [question]);
+
+  const answerChoice = question?.choices[question?.answerIndex];
+  const totalQuestions = count || questions.length || 1;
+  const progress = Math.min(((currentIndex + 1) / totalQuestions) * 100, 100);
+
+  if (!question || !answerChoice) return null;
+
   function handleClick(choice: string) {
+    if (!answerChoice) return;
     const isAnswer = choice === answerChoice;
     if (!isAnswer) {
       setButtonStates((prev) => ({ ...prev, [choice]: "incorrect" }));

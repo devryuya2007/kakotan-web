@@ -122,7 +122,7 @@ function BasicModalContent({
   return (
     <div className="space-y-3 text-left">
       <h1 className="text-xl font-semibold text-[#f2c97d]">
-        共通テスト　{yearLabel}
+        共通テスト {yearLabel}
       </h1>
       <p className="text-sm text-white/80">{description}</p>
       <p className="text-sm text-white/80">{estimatedTime}</p>
