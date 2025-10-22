@@ -2,13 +2,14 @@
   "name": "bst-1900",
   "version": "1.0.0",
   "description": "ターゲット1900　受験用　単語帳アプリ　テスト・成績機能のみの予定",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "freq": "node scripts/freq.mjs",
-    "dev": "npm --prefix home.js run dev",
-    "build": "npm --prefix home.js run build -- --outDir ../dist --emptyOutDir",
-    "preview": "npm --prefix home.js run preview"
+    "postinstall": "npm --prefix main install",
+    "dev": "npm --prefix main run dev",
+    "build": "npm --prefix main run build",
+    "preview": "npm --prefix main run preview",
+    "lint": "npm --prefix main run lint"
   },
   "repository": {
     "type": "git",
