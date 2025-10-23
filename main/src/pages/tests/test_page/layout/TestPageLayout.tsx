@@ -66,9 +66,9 @@ export default function TestPageLayout({
 
   return (
     <section>
-      <div className=" rounded-2xl bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px]">
+      <div className=" rounded-2xl bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px] animate-fadeIn">
         <div className="bg-[#050509] [border-radius:inherit] px-6 py-8 text-white">
-          <div className="sticky top-4 z-20 mb-6 rounded-xl border border-white/10 bg-[#050509]/90 px-4 py-3 backdrop-blur-sm">
+          <div className="sticky top-4 z-20 mb-6 rounded-xl border border-white/10 bg-[#050509]/90 px-4 py-3 backdrop-blur-sm ">
             <div className="flex items-center justify-between text-xs font-medium uppercase tracking-wide text-white/50">
               <span>問題 {currentIndex + 1}</span>
               <span>

@@ -54,7 +54,7 @@ export default function MenuPage() {
 
   return (
     <AppLayout>
-      <div className="my-auto w-full max-w-4xl rounded-2xl">
+      <div className="my-auto w-full max-w-4xl rounded-2xl animate-fadeIn">
         <div className="flex h-full w-full flex-col gap-8 rounded-2xl px-8 py-10 text-center sm:gap-10 sm:px-12 sm:py-12">
           <header className="space-y-8">
             <h1 className="select-none text-2xl font-semibold tracking-widest text-[#f2c97d] sm:text-3xl">
