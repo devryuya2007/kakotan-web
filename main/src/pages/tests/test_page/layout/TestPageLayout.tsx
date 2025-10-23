@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { type QuizQuestion } from "../../../../data/vocabLoader";
 
 type TestPageLayoutProps = {
@@ -14,6 +14,12 @@ export default function TestPageLayout({
   const [buttonStates, setButtonStates] = useState<
     Record<string, "base" | "correct" | "incorrect">
   >({});
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const transitionTimeoutRef =
+    useRef<ReturnType<typeof setTimeout> | null>(null);
+  const FEEDBACK_DELAY = 360;
+  const TRANSITION_DURATION = 850;
 
   const question = questions[currentIndex];
   const shuffled = useMemo(() => {
@@ -28,28 +34,48 @@ export default function TestPageLayout({
     [questions, currentIndex]
   );
 
+  useEffect(() => {
+    return () => {
+      if (feedbackTimeoutRef.current) {
+        clearTimeout(feedbackTimeoutRef.current);
+      }
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+      }
+    };
+  }, []);
+
   if (!question || !answerChoice) return null;
 
   function handleClick(choice: string) {
-    if (!answerChoice) return;
+    if (!answerChoice || isTransitioning) return;
+
     const isAnswer = choice === answerChoice;
-    if (!isAnswer) {
-      setButtonStates((prev) => ({ ...prev, [choice]: "incorrect" }));
+    setButtonStates((prev) => ({
+      ...prev,
+      [choice]: isAnswer ? "correct" : "incorrect",
+    }));
 
-      setTimeout(() => {
-        setButtonStates({});
-        setCurrentIndex((i) => i + 1);
-      }, 500);
+    if (feedbackTimeoutRef.current) {
+      clearTimeout(feedbackTimeoutRef.current);
+      feedbackTimeoutRef.current = null;
+    }
+    if (transitionTimeoutRef.current) {
+      clearTimeout(transitionTimeoutRef.current);
+      transitionTimeoutRef.current = null;
     }
 
-    if (isAnswer) {
-      setButtonStates((prev) => ({ ...prev, [choice]: "correct" }));
+    feedbackTimeoutRef.current = setTimeout(() => {
+      setIsTransitioning(true);
+      feedbackTimeoutRef.current = null;
 
-      setTimeout(() => {
+      transitionTimeoutRef.current = setTimeout(() => {
         setButtonStates({});
         setCurrentIndex((i) => i + 1);
-      }, 500);
-    }
+        setIsTransitioning(false);
+        transitionTimeoutRef.current = null;
+      }, TRANSITION_DURATION);
+    }, FEEDBACK_DELAY);
   }
 
   const baseButtonStyle =
@@ -78,17 +104,24 @@ export default function TestPageLayout({
             ((cardIndex + 1) / totalQuestions) * 100,
             100
           );
-          // const cardChoices = isActiveCard ? shuffled : cardQuestion.choices;
-          // const cardWrapperClass = isActiveCard
-          //   ? "z-30 animate-fadeIn shadow-[0_42px_85px_-48px_rgba(242,201,125,0.65)]"
-          //   : "z-20 translate-x-[-4%] translate-y-0 scale-[0.95] opacity-70 pointer-events-none";
           const cardChoices = isActiveCard ? shuffled : cardQuestion.choices;
-          const cardWrapperClass =
+          const baseWrapperClass =
             idx === 0
-              ? "z-40 animate-fadeIn shadow-[0_42px_85px_-48px_rgba(242,201,125,0.65)]"
+              ? "z-40 shadow-[0_42px_85px_-48px_rgba(242,201,125,0.65)]"
               : idx === 1
-              ? "z-30 translate-x-[-5.5%] translate-y-0 scale-[0.92] opacity-80 pointer-events-none"
-              : "z-20 translate-x-[-10%] translate-y-0 scale-[0.86] opacity-70 pointer-events-none";
+              ? "z-30 translate-x-[-5.5%] scale-[0.92] opacity-80 pointer-events-none"
+              : "z-20 translate-x-[-10%] scale-[0.86] opacity-70 pointer-events-none";
+          const entranceClass =
+            idx === 0 && !isTransitioning ? "animate-fadeIn" : "";
+          const animationClass =
+            isTransitioning && idx === 0
+              ? "animate-slideForward"
+              : isTransitioning && idx > 0
+              ? "animate-stackShift"
+              : "";
+          const cardWrapperClass = [baseWrapperClass, entranceClass, animationClass]
+            .filter(Boolean)
+            .join(" ");
 
           return (
             <div
@@ -123,7 +156,7 @@ export default function TestPageLayout({
                       onClick={
                         isActiveCard ? () => handleClick(choice) : undefined
                       }
-                      disabled={!isActiveCard}
+                      disabled={!isActiveCard || isTransitioning}
                       key={choiceIndex}
                       className={`${
                         isActiveCard

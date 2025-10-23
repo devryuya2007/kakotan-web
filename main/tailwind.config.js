@@ -14,8 +14,8 @@ export default {
           "100%": { transform: "translateX(160%)" },
         },
         stackShift: {
-          "0%": { transform: "translateX(-22%) scale(0.88)" },
-          "60%": { transform: "translateX(-8%) scale(0.95)" },
+          "0%": { transform: "translateX(-100%) scale(0.88)" },
+          "60%": { transform: "translateX(-50%) scale(0.95)" },
           "100%": { transform: "translateX(0) scale(1)" },
         },
       },
