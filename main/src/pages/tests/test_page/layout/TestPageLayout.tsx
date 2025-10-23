@@ -23,7 +23,10 @@ export default function TestPageLayout({
 
   const answerChoice = question?.choices[question?.answerIndex];
   const totalQuestions = count || questions.length || 1;
-  const progress = Math.min(((currentIndex + 1) / totalQuestions) * 100, 100);
+  const visibleCards = useMemo(
+    () => questions.slice(currentIndex, currentIndex + 3),
+    [questions, currentIndex]
+  );
 
   if (!question || !answerChoice) return null;
 
@@ -63,49 +66,79 @@ export default function TestPageLayout({
     if (buttonStates[choice] === "incorrect") return incorrectButtonStyle;
     else return baseButtonStyle;
   }
-
   return (
-    <section>
-      <div className=" rounded-2xl bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px] animate-fadeIn">
-        <div className="bg-[#050509] [border-radius:inherit] px-6 py-8 text-white">
-          <div className="sticky top-4 z-20 mb-6 rounded-xl border border-white/10 bg-[#050509]/90 px-4 py-3 backdrop-blur-sm ">
-            <div className="flex items-center justify-between text-xs font-medium uppercase tracking-wide text-white/50">
-              <span>問題 {currentIndex + 1}</span>
-              <span>
-                {currentIndex + 1} / {totalQuestions}
-              </span>
+    <section className="relative flex justify-center px-4">
+      <div className="relative min-h-[420px] w-full max-w-3xl">
+        {visibleCards.map((cardQuestion, idx) => {
+          if (!cardQuestion) return null;
+
+          const isActiveCard = idx === 0;
+          const cardIndex = currentIndex + idx;
+          const cardProgress = Math.min(
+            ((cardIndex + 1) / totalQuestions) * 100,
+            100
+          );
+          // const cardChoices = isActiveCard ? shuffled : cardQuestion.choices;
+          // const cardWrapperClass = isActiveCard
+          //   ? "z-30 animate-fadeIn shadow-[0_42px_85px_-48px_rgba(242,201,125,0.65)]"
+          //   : "z-20 translate-x-[-4%] translate-y-0 scale-[0.95] opacity-70 pointer-events-none";
+          const cardChoices = isActiveCard ? shuffled : cardQuestion.choices;
+          const cardWrapperClass =
+            idx === 0
+              ? "z-40 animate-fadeIn shadow-[0_42px_85px_-48px_rgba(242,201,125,0.65)]"
+              : idx === 1
+              ? "z-30 translate-x-[-5.5%] translate-y-0 scale-[0.92] opacity-80 pointer-events-none"
+              : "z-20 translate-x-[-10%] translate-y-0 scale-[0.86] opacity-70 pointer-events-none";
+
+          return (
+            <div
+              key={`${cardQuestion.phrase}-${cardIndex}`}
+              className={`absolute inset-0 rounded-2xl bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px] transition-all duration-500 ease-out ${cardWrapperClass}`}>
+              <div className="bg-[#050509] [border-radius:inherit] px-6 py-[72px] text-white">
+                <div className="sticky top-4 z-20 mb-6 rounded-xl border border-white/10 bg-[#050509]/90 px-4 py-3 backdrop-blur-sm ">
+                  <div className="flex items-center justify-between text-xs font-medium uppercase tracking-wide text-white/50">
+                    <span>問題 {cardIndex + 1}</span>
+                    <span>
+                      {cardIndex + 1} / {totalQuestions}
+                    </span>
+                  </div>
+                  <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10">
+                    <span
+                      aria-label={`進捗 ${cardIndex + 1} / ${totalQuestions}`}
+                      aria-valuemax={totalQuestions}
+                      aria-valuemin={0}
+                      aria-valuenow={cardIndex + 1}
+                      role="progressbar"
+                      className="block h-full rounded-full bg-gradient-to-r from-[#f2c97d] via-amber-300 to-yellow-200 transition-all duration-500"
+                      style={{ width: `${cardProgress}%` }}
+                    />
+                  </div>
+                </div>
+                <h1 className="mb-6 text-center text-4xl font-bold text-[#f2c97d]">
+                  {cardQuestion.phrase}
+                </h1>
+                <div className="grid grid-cols-2 gap-3 text-center text-white/80">
+                  {cardChoices.map((choice, choiceIndex) => (
+                    <button
+                      onClick={
+                        isActiveCard ? () => handleClick(choice) : undefined
+                      }
+                      disabled={!isActiveCard}
+                      key={choiceIndex}
+                      className={`${
+                        isActiveCard
+                          ? ButtonStyleSwitch(choice)
+                          : `${baseButtonStyle} cursor-default opacity-70`
+                      }`}>
+                      {choice}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10">
-              <span
-                aria-label={`進捗 ${currentIndex + 1} / ${totalQuestions}`}
-                aria-valuemax={totalQuestions}
-                aria-valuemin={0}
-                aria-valuenow={currentIndex + 1}
-                role="progressbar"
-                className="block h-full rounded-full bg-gradient-to-r from-[#f2c97d] via-amber-300 to-yellow-200 transition-all duration-500"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
-          <h1 className="mb-6 text-center text-4xl font-bold text-[#f2c97d]">
-            {question.phrase}
-          </h1>
-          <div className="grid grid-cols-2 gap-3 text-center text-white/80">
-            {shuffled.map((choice, index) => (
-              <button
-                onClick={() => handleClick(choice)}
-                key={index}
-                className={`${ButtonStyleSwitch(choice)}`}>
-                {choice}
-              </button>
-            ))}
-          </div>
-        </div>
+          );
+        })}
       </div>
     </section>
   );
 }
-
-// A B C D base
-// clickしたボタン要素がchoice === answerChoiceならその要素だけcorrectButtonStyle
-// clickしたボタン要素がchoice !== answerChoiceならあたりのボタンだけcorrectButtonStyleをつけて、それ以外はincorrectButtonStyleをつける
