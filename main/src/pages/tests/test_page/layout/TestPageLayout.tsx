@@ -6,6 +6,28 @@ type TestPageLayoutProps = {
   count: number;
 };
 
+function usePrefersReducedMotion() {
+  const [prefersReduced, setPrefersReduced] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !("matchMedia" in window)) {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const handleChange = () => setPrefersReduced(mediaQuery.matches);
+
+    handleChange();
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
+  }, []);
+
+  return prefersReduced;
+}
+
 export default function TestPageLayout({
   questions,
   count,
@@ -19,21 +41,35 @@ export default function TestPageLayout({
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null
   );
-  const FEEDBACK_DELAY = 0; // 回答後すぐにスライド開始
-  const TRANSITION_DURATION = 300; // 最小限でテンポ重視（約0.18s）
+  const shuffledChoicesRef = useRef<Record<string, string[]>>({});
+  const FEEDBACK_DELAY = 300; // 回答後すぐにスライド開始
+  const TRANSITION_DURATION = 800; // 最小限でテンポ重視（約0.18s）
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const effectiveTransitionDuration = prefersReducedMotion
+    ? 0
+    : TRANSITION_DURATION;
 
   const question = questions[currentIndex];
-  const shuffled = useMemo(() => {
-    if (!question) return [];
-    return [...question.choices].sort(() => Math.random() - 0.5);
-  }, [question]);
+  const getShuffledChoices = (q: QuizQuestion) => {
+    const key = q.id || q.phrase;
+    const cached = shuffledChoicesRef.current[key];
+    if (cached) return cached;
+    const randomized = [...q.choices].sort(() => Math.random() - 0.5);
+    shuffledChoicesRef.current[key] = randomized;
+    return randomized;
+  };
+  const shuffled = question ? getShuffledChoices(question) : [];
 
   const answerChoice = question?.choices[question?.answerIndex];
   const totalQuestions = count || questions.length || 1;
   const visibleCards = useMemo(
-    () => questions.slice(currentIndex, currentIndex + 3),
+    () => questions.slice(currentIndex, currentIndex + 4),
     [questions, currentIndex]
   );
+
+  useEffect(() => {
+    shuffledChoicesRef.current = {};
+  }, [questions]);
 
   useEffect(() => {
     return () => {
@@ -70,12 +106,21 @@ export default function TestPageLayout({
       setIsTransitioning(true);
       feedbackTimeoutRef.current = null;
 
-      transitionTimeoutRef.current = setTimeout(() => {
+      const finalizeTransition = () => {
         setButtonStates({});
         setCurrentIndex((i) => i + 1);
         setIsTransitioning(false);
         transitionTimeoutRef.current = null;
-      }, TRANSITION_DURATION);
+      };
+
+      if (effectiveTransitionDuration === 0) {
+        finalizeTransition();
+      } else {
+        transitionTimeoutRef.current = setTimeout(
+          finalizeTransition,
+          effectiveTransitionDuration
+        );
+      }
     }, FEEDBACK_DELAY);
   }
 
@@ -93,6 +138,30 @@ export default function TestPageLayout({
     if (buttonStates[choice] === "incorrect") return incorrectButtonStyle;
     else return baseButtonStyle;
   }
+
+  const baseLayouts = [
+    { x: 0, y: 0, scale: 1, opacity: 1, zIndex: 40 },
+    { x: -6, y: -4, scale: 0.94, opacity: 0.9, zIndex: 30 },
+    { x: -12, y: -7, scale: 0.88, opacity: 0.7, zIndex: 20 },
+    { x: -18, y: -11, scale: 0.82, opacity: 0.0, zIndex: 10 },
+  ];
+
+  const transitionLayouts = [
+    { x: 14, y: 12, scale: 1.02, opacity: 0, zIndex: 5 },
+    baseLayouts[0],
+    baseLayouts[1],
+    { x: -12, y: -7, scale: 0.88, opacity: 0.72, zIndex: 22 },
+  ];
+
+  function getCardPresentation(idx: number) {
+    const layouts =
+      isTransitioning && effectiveTransitionDuration > 0
+        ? transitionLayouts
+        : baseLayouts;
+    const clampedIndex = Math.min(idx, layouts.length - 1);
+    return layouts[clampedIndex];
+  }
+
   return (
     <section className="relative flex justify-center px-4">
       <div className="relative min-h-[420px] w-full max-w-3xl">
@@ -105,43 +174,30 @@ export default function TestPageLayout({
             ((cardIndex + 1) / totalQuestions) * 100,
             100
           );
-          const cardChoices = isActiveCard ? shuffled : cardQuestion.choices;
-          // 位置（X軸）とスケールを状態に応じて切り替えて、CSS transition で滑らかに動かす
-          const posClass =
+          const cardChoices = getShuffledChoices(cardQuestion);
+          const presentation = getCardPresentation(idx);
+          const transform = `translate3d(${presentation.x}%, ${presentation.y}%, 0) scale(${presentation.scale})`;
+          const interactive = idx === 0 && !isTransitioning;
+          const glowClass =
             idx === 0
-              ? "translate-x-0 scale-100"
+              ? "shadow-[0_42px_85px_-48px_rgba(242,201,125,0.65)]"
               : idx === 1
-              ? isTransitioning
-                ? "translate-x-0 scale-100"
-                : "translate-x-[-5.5%] scale-[0.92]"
-              : isTransitioning
-              ? "translate-x-[-5.5%] scale-[0.92]"
-              : "translate-x-[-10%] scale-[0.86]";
-
-          // レイヤー（Z軸）や操作不可の付与
-          const layerClass =
-            idx === 0
-              ? isTransitioning
-                ? "z-10 pointer-events-none"
-                : "z-40 shadow-[0_42px_85px_-48px_rgba(242,201,125,0.65)]"
-              : idx === 1
-              ? isTransitioning
-                ? "z-50"
-                : "z-30 pointer-events-none"
-              : "z-20 pointer-events-none";
-
-          // 3枚目を背景から出てくる感じに：軽いブラー/彩度で奥行き→前進でクリアに
-          const effectClass = ""; // 最低限の演出に抑える（ブラー等を排除）
-
-          const cardWrapperClass = [layerClass, posClass, effectClass]
-            .filter(Boolean)
-            .join(" ");
+              ? "shadow-[0_18px_60px_-54px_rgba(242,201,125,0.35)]"
+              : "";
 
           return (
             <div
               key={`${cardQuestion.phrase}-${cardIndex}`}
-              className={`absolute inset-0 rounded-2xl bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px] transition-transform ease-out will-change-transform ${cardWrapperClass}`}
-              style={{ transitionDuration: `${TRANSITION_DURATION}ms` }}>
+              className={`absolute inset-0 rounded-2xl bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px] transform-gpu transition-all ease-out will-change-transform will-change-opacity ${
+                interactive ? "pointer-events-auto" : "pointer-events-none"
+              } ${glowClass}`}
+              style={{
+                transform,
+                opacity: presentation.opacity,
+                zIndex: presentation.zIndex,
+                transitionDuration: `${effectiveTransitionDuration}ms`,
+                transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+              }}>
               <div className="bg-[#050509] [border-radius:inherit] px-6 py-[72px] text-white">
                 <div className="sticky top-4 z-20 mb-6 rounded-xl border border-white/10 bg-[#050509]/90 px-4 py-3 backdrop-blur-sm ">
                   <div className="flex items-center justify-between text-xs font-medium uppercase tracking-wide text-white/50">
