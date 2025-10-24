@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 // 単語テストの一問分を表す型。外部のデータローダーから入ってくる
 import { type QuizQuestion } from "../../../../data/vocabLoader";
-import ResultsPage from "@/pages/results/ResultsPage";
+import { useNavigate } from "react-router-dom";
 
 // このコンポーネントが受け取るpropsの形。questionsは問題配列、countは総数
 type TestPageLayoutProps = {
@@ -106,18 +106,12 @@ export default function TestPageLayout({
   );
 
   // すべての問題を解いたときに成績を表示させる
-
-  const [isFinished, setIsFinished] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (currentIndex >= totalQuestions) {
-      setIsFinished(true);
+      navigate("/results/mini");
     }
-  }, [currentIndex, totalQuestions]);
-
-  if (isFinished) {
-    return <ResultsPage />;
-  }
+  }, [currentIndex, totalQuestions, navigate]);
 
   // コンポーネントが壊れるときにタイマーを全部止めるためのクリーンアップ
   useEffect(() => {
