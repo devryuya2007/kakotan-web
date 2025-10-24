@@ -64,8 +64,6 @@ export default function TestPageLayout({
     shuffledChoicesRef.current[key] = randomized;
     return randomized;
   };
-  const shuffled = question ? getShuffledChoices(question) : [];
-
   const answerChoice = question?.choices[question?.answerIndex];
   const totalQuestions = count || questions.length || 1;
   const visibleCards = useMemo(
