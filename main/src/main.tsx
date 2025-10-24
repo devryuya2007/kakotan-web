@@ -5,6 +5,7 @@ import "./index.css";
 import HomePage from "./pages/home/HomePage";
 import MenuPage from "./pages/menu/MenuPage";
 import ResultsPage from "./pages/results/ResultsPage";
+import MiniResultPage from "./pages/results/MiniResultPage";
 import Reiwa3Page from "./pages/tests/test_page/Reiwa3Page";
 import Reiwa4Page from "./pages/tests/test_page/Reiwa4Page";
 import Reiwa5Page from "./pages/tests/test_page/Reiwa5Page";
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
   { path: "/", element: <HomePage /> },
   { path: "/menu", element: <MenuPage /> },
   { path: "/results", element: <ResultsPage /> },
+  { path: "/results/mini", element: <MiniResultPage /> },
   { path: "/tests/reiwa3", element: <Reiwa3Page /> },
   { path: "/tests/reiwa4", element: <Reiwa4Page /> },
   { path: "/tests/reiwa5", element: <Reiwa5Page /> },

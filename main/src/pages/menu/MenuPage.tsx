@@ -84,14 +84,7 @@ export default function MenuPage() {
             <p className="select-none text-sm text-[#f2c97d]/70">
               出題範囲を選んでください。
             </p>
-            <div className="flex justify-center pt-2">
-              <button
-                type="button"
-                onClick={handleViewResults}
-                className={SecondaryNavButtonStyle}>
-                成績を見る
-              </button>
-            </div>
+            {/* 成績ボタンは画面右下に固定で表示するのでヘッダーでは見せない */}
           </header>
 
           <section>
@@ -113,6 +106,12 @@ export default function MenuPage() {
         onClose={() => setOpenKey(null)}
         content={modalContent}
       />
+      <button
+        type="button"
+        onClick={handleViewResults}
+        className={`${SecondaryNavButtonStyle} fixed bottom-6 right-6`}>
+        成績を見る
+      </button>
     </AppLayout>
   );
 }
