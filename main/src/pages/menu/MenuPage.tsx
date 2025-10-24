@@ -24,6 +24,10 @@ const QUESTION_COUNTS: Record<MenuModalKey, number> = {
   reiwa7: 1400,
 };
 
+// 成績ページへ移動するためのボタンスタイル。落ち着いた色でサブ導線をイメージしている
+const SecondaryNavButtonStyle =
+  "w-full max-w-[220px] rounded-full border border-[#f2c97d33] px-6 py-2 text-xs font-semibold tracking-[0.3em] text-[#f2c97d] transition hover:border-[#f2c97d] hover:bg-[#1c1c2a]";
+
 export default function MenuPage() {
   const [openKey, setOpenKey] = useState<MenuModalKey | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -50,11 +54,16 @@ export default function MenuPage() {
     navigate(activeItem.path);
   };
 
+  const handleViewResults = () => {
+    // どの年度のテストに行くか決める前に、まず成績をチェックしたい場合はダッシュボードへ
+    navigate("/results");
+  };
+
   const modalContent = activeItem ? (
     <BasicModalContent
       yearLabel={activeItem.label}
       startButtonLabel="開始する"
-      description="この問題は共通テストの出題傾向から頻出語を抜粋した練習セットです。" // props化して後により詳細を柔軟に追加
+      description="この問題は共通テストの出題傾向から頻出語を抜粋した練習セットです。"
       estimatedTime="終了目安は10分です。"
       questionSummary={getQuestionSummary(activeItem)}
       onStart={handleStart}
@@ -75,6 +84,14 @@ export default function MenuPage() {
             <p className="select-none text-sm text-[#f2c97d]/70">
               出題範囲を選んでください。
             </p>
+            <div className="flex justify-center pt-2">
+              <button
+                type="button"
+                onClick={handleViewResults}
+                className={SecondaryNavButtonStyle}>
+                成績を見る
+              </button>
+            </div>
           </header>
 
           <section>
