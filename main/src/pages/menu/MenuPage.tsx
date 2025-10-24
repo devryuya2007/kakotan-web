@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../index.css";
 import { QuickStartButtonStyle } from "../../components/buttons/QuickStartButton";
@@ -26,7 +26,16 @@ const QUESTION_COUNTS: Record<MenuModalKey, number> = {
 
 export default function MenuPage() {
   const [openKey, setOpenKey] = useState<MenuModalKey | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setIsVisible(true));
+    return () => {
+      cancelAnimationFrame(raf);
+      setIsVisible(false);
+    };
+  }, []);
 
   const activeItem = openKey
     ? MENU_ITEMS.find((item) => item.modalKey === openKey)
@@ -54,7 +63,10 @@ export default function MenuPage() {
 
   return (
     <AppLayout>
-      <div className="my-auto w-full max-w-4xl rounded-2xl">
+      <div
+        className={`my-auto w-full max-w-4xl rounded-2xl transform-gpu transition-all duration-500 ease-out ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+        }`}>
         <div className="flex h-full w-full flex-col gap-8 rounded-2xl px-8 py-10 text-center sm:gap-10 sm:px-12 sm:py-12">
           <header className="space-y-8">
             <h1 className="select-none text-2xl font-semibold tracking-widest text-[#f2c97d] sm:text-3xl">
@@ -122,7 +134,7 @@ function BasicModalContent({
   return (
     <div className="space-y-3 text-left">
       <h1 className="text-xl font-semibold text-[#f2c97d]">
-        共通テスト　{yearLabel}
+        共通テスト {yearLabel}
       </h1>
       <p className="text-sm text-white/80">{description}</p>
       <p className="text-sm text-white/80">{estimatedTime}</p>
