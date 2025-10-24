@@ -16,10 +16,11 @@ export default function TestPageLayout({
   >({});
   const [isTransitioning, setIsTransitioning] = useState(false);
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const transitionTimeoutRef =
-    useRef<ReturnType<typeof setTimeout> | null>(null);
-  const FEEDBACK_DELAY = 360;
-  const TRANSITION_DURATION = 850;
+  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
+  const FEEDBACK_DELAY = 0; // 回答後すぐにスライド開始
+  const TRANSITION_DURATION = 300; // 最小限でテンポ重視（約0.18s）
 
   const question = questions[currentIndex];
   const shuffled = useMemo(() => {
@@ -105,28 +106,42 @@ export default function TestPageLayout({
             100
           );
           const cardChoices = isActiveCard ? shuffled : cardQuestion.choices;
-          const baseWrapperClass =
+          // 位置（X軸）とスケールを状態に応じて切り替えて、CSS transition で滑らかに動かす
+          const posClass =
             idx === 0
-              ? "z-40 shadow-[0_42px_85px_-48px_rgba(242,201,125,0.65)]"
+              ? "translate-x-0 scale-100"
               : idx === 1
-              ? "z-30 translate-x-[-5.5%] scale-[0.92] opacity-80 pointer-events-none"
-              : "z-20 translate-x-[-10%] scale-[0.86] opacity-70 pointer-events-none";
-          const entranceClass =
-            idx === 0 && !isTransitioning ? "animate-fadeIn" : "";
-          const animationClass =
-            isTransitioning && idx === 0
-              ? "animate-slideForward"
-              : isTransitioning && idx > 0
-              ? "animate-stackShift"
-              : "";
-          const cardWrapperClass = [baseWrapperClass, entranceClass, animationClass]
+              ? isTransitioning
+                ? "translate-x-0 scale-100"
+                : "translate-x-[-5.5%] scale-[0.92]"
+              : isTransitioning
+              ? "translate-x-[-5.5%] scale-[0.92]"
+              : "translate-x-[-10%] scale-[0.86]";
+
+          // レイヤー（Z軸）や操作不可の付与
+          const layerClass =
+            idx === 0
+              ? isTransitioning
+                ? "z-10 pointer-events-none"
+                : "z-40 shadow-[0_42px_85px_-48px_rgba(242,201,125,0.65)]"
+              : idx === 1
+              ? isTransitioning
+                ? "z-50"
+                : "z-30 pointer-events-none"
+              : "z-20 pointer-events-none";
+
+          // 3枚目を背景から出てくる感じに：軽いブラー/彩度で奥行き→前進でクリアに
+          const effectClass = ""; // 最低限の演出に抑える（ブラー等を排除）
+
+          const cardWrapperClass = [layerClass, posClass, effectClass]
             .filter(Boolean)
             .join(" ");
 
           return (
             <div
               key={`${cardQuestion.phrase}-${cardIndex}`}
-              className={`absolute inset-0 rounded-2xl bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px] transition-all duration-500 ease-out ${cardWrapperClass}`}>
+              className={`absolute inset-0 rounded-2xl bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px] transition-transform ease-out will-change-transform ${cardWrapperClass}`}
+              style={{ transitionDuration: `${TRANSITION_DURATION}ms` }}>
               <div className="bg-[#050509] [border-radius:inherit] px-6 py-[72px] text-white">
                 <div className="sticky top-4 z-20 mb-6 rounded-xl border border-white/10 bg-[#050509]/90 px-4 py-3 backdrop-blur-sm ">
                   <div className="flex items-center justify-between text-xs font-medium uppercase tracking-wide text-white/50">
