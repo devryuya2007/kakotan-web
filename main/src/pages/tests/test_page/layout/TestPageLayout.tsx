@@ -42,12 +42,18 @@ export default function TestPageLayout({
     null
   );
   const shuffledChoicesRef = useRef<Record<string, string[]>>({});
-  const FEEDBACK_DELAY = 300; // 回答後すぐにスライド開始
-  const TRANSITION_DURATION = 800; // 最小限でテンポ重視（約0.18s）
+  const cacheSourceRef = useRef<QuizQuestion[] | null>(null);
+  const FEEDBACK_DELAY = 100; // 押下直後の余白（次操作解放まで合計0.5s）
+  const TRANSITION_DURATION = 600; // アニメーション本体（FEEDBACK_DELAYと合わせて0.5s）
   const prefersReducedMotion = usePrefersReducedMotion();
   const effectiveTransitionDuration = prefersReducedMotion
     ? 0
     : TRANSITION_DURATION;
+
+  if (cacheSourceRef.current !== questions) {
+    shuffledChoicesRef.current = {};
+    cacheSourceRef.current = questions;
+  }
 
   const question = questions[currentIndex];
   const getShuffledChoices = (q: QuizQuestion) => {
@@ -66,10 +72,6 @@ export default function TestPageLayout({
     () => questions.slice(currentIndex, currentIndex + 4),
     [questions, currentIndex]
   );
-
-  useEffect(() => {
-    shuffledChoicesRef.current = {};
-  }, [questions]);
 
   useEffect(() => {
     return () => {
