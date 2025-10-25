@@ -25,37 +25,55 @@ export default function MiniResultPage() {
           <p className="text-xs uppercase tracking-[0.4em] text-[#f2c97d]/60">
             {dummyResult.title}
           </p>
-          <div className="relative flex h-40 w-40 items-center justify-center">
-            <svg
-              className="h-full w-full -rotate-90 transform text-[#1f2333]"
-              viewBox="0 0 140 140"
-              role="img"
-              aria-label={`正答率 ${accuracy}%`}>
-              <circle
-                className="text-white/10"
-                stroke="currentColor"
-                strokeWidth="12"
-                cx="70"
-                cy="70"
-                r={radius}
-                fill="transparent"
-              />
-              <circle
-                className="text-[#f2c97d]"
-                stroke="currentColor"
-                strokeWidth="12"
-                strokeLinecap="round"
-                strokeDasharray={`${circumference} ${circumference}`}
-                strokeDashoffset={progressOffset}
-                cx="70"
-                cy="70"
-                r={radius}
-                fill="transparent"
-              />
-            </svg>
-            <span className="absolute text-3xl font-semibold text-[#f2c97d]">
-              {accuracy}%
-            </span>
+          <div className="flex items-center gap-6">
+            <div className="relative flex h-40 w-40 items-center justify-center">
+              <svg
+                className="h-full w-full -rotate-90 transform text-[#1f2333]"
+                viewBox="0 0 140 140"
+                role="img"
+                aria-label={`正答率 ${accuracy}%`}>
+                <circle
+                  className="text-white/10"
+                  stroke="currentColor"
+                  strokeWidth="12"
+                  cx="70"
+                  cy="70"
+                  r={radius}
+                  fill="transparent"
+                />
+                <circle
+                  className="text-[#f2c97d]"
+                  stroke="currentColor"
+                  strokeWidth="12"
+                  strokeLinecap="round"
+                  strokeDasharray={`${circumference} ${circumference}`}
+                  strokeDashoffset={progressOffset}
+                  cx="70"
+                  cy="70"
+                  r={radius}
+                  fill="transparent"
+                />
+              </svg>
+              <span className="absolute text-3xl font-semibold text-[#f2c97d]">
+                {accuracy}%
+              </span>
+            </div>
+            <div className="p-8">
+              <section className="p-4">
+                <h1>
+                  {dummyResult.correctCount} / {dummyResult.totalCount}
+                </h1>
+                <p className="text-sm text-white/70">正答率</p>
+              </section>
+              <section className="p-4">
+                <h1>ランクA</h1>
+                <p>経験値10GET</p>
+              </section>
+              <section className="p-4">
+                <h1>タイム</h1>
+                <p>33.4秒</p>
+              </section>
+            </div>
           </div>
           <h1 className="text-3xl font-semibold text-white">
             {dummyResult.correctCount} / {dummyResult.totalCount}
