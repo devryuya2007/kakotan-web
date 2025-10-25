@@ -4,8 +4,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 export default function MiniResultPage() {
   // 仮の成績データ。後で実際のテスト結果と差し替える予定
   const dummyResult = {
-    title: "セクション成績: 動詞",
-    subtitle: "「動詞」セクションの学習進捗サマリーです。",
+    title: "RESULT",
     accuracy: 92,
     studyTime: "8h 45m",
     mistakes: 18,
@@ -73,9 +72,6 @@ export default function MiniResultPage() {
             <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
               {dummyResult.title}
             </h1>
-            <p className="text-xs text-white/70 sm:text-sm">
-              {dummyResult.subtitle}
-            </p>
           </section>
 
           <section className="grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-3">
