@@ -21,7 +21,7 @@ export default function MiniResultPage() {
   return (
     <AppLayout>
       <div className="relative flex items-center justify-center px-12">
-        <div className="flex max-w-md flex-1 flex-col items-center justify-center gap-6 rounded-2xl border border-white/10 bg-[#0b0b13]/90 p-8 text-center text-white shadow-[0_25px_55px_-40px_rgba(242,201,125,0.35)] backdrop-blur-sm">
+        <div className="flex h-[80vh] w-[80vw] flex-col items-center justify-center gap-6 rounded-2xl border border-white/10 bg-[#0b0b13]/90 p-6 text-center text-white shadow-[0_25px_55px_-40px_rgba(242,201,125,0.35)] backdrop-blur-sm sm:p-10">
           <p className="text-xs uppercase tracking-[0.4em] text-[#f2c97d]/60">
             {dummyResult.title}
           </p>
@@ -29,7 +29,7 @@ export default function MiniResultPage() {
             <div className="relative flex h-40 w-40 items-center justify-center">
               <svg
                 className="h-full w-full -rotate-90 transform text-[#1f2333]"
-                viewBox="0 0 140 140"
+                viewBox="0 140"
                 role="img"
                 aria-label={`正答率 ${accuracy}%`}>
                 <circle
