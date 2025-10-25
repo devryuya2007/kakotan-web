@@ -4,7 +4,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 export default function MiniResultPage() {
   // 仮の成績データ。後で実際のテスト結果と差し替える予定
   const dummyResult = {
-    title: "今日のミニ結果",
+    title: "RESULT",
     correctCount: 15,
     totalCount: 20,
   };
@@ -21,7 +21,7 @@ export default function MiniResultPage() {
   return (
     <AppLayout>
       <div className="relative flex items-center justify-center px-12">
-        <div className="flex h-[80vh] w-[80vw] flex-col items-center justify-center gap-6 rounded-2xl border border-white/10 bg-[#0b0b13]/90 p-6 text-center text-white shadow-[0_25px_55px_-40px_rgba(242,201,125,0.35)] backdrop-blur-sm sm:p-10">
+        <div className="flex h-[90vh] w-[90vw] flex-col items-center justify-center rounded-2xl border border-white/10 bg-[#0b0b13]/90 p-6 text-center text-white shadow-[0_25px_55px_-40px_rgba(242,201,125,0.35)] backdrop-blur-sm sm:p-10">
           <p className="text-xs uppercase tracking-[0.4em] text-[#f2c97d]/60">
             {dummyResult.title}
           </p>
@@ -29,7 +29,7 @@ export default function MiniResultPage() {
             <div className="relative flex h-40 w-40 items-center justify-center">
               <svg
                 className="h-full w-full -rotate-90 transform text-[#1f2333]"
-                viewBox="0 140"
+                viewBox="0 0 140 140"
                 role="img"
                 aria-label={`正答率 ${accuracy}%`}>
                 <circle
@@ -58,18 +58,18 @@ export default function MiniResultPage() {
                 {accuracy}%
               </span>
             </div>
-            <div className="p-8">
-              <section className="p-4">
+            <div className="grid w-full grid-cols-2 grid-rows-2 gap-4 p-8">
+              <section className="col-span-2 rounded-xl border border-white/5 bg-white/5 p-4 text-white">
                 <h1>
                   {dummyResult.correctCount} / {dummyResult.totalCount}
                 </h1>
-                <p className="text-sm text-white/70">正答率</p>
+                <p className="text-sm text-slate-200">正答率</p>
               </section>
-              <section className="p-4">
+              <section className="p-4 rounded-xl border border-white/5 bg-[#141826] text-slate-100">
                 <h1>ランクA</h1>
                 <p>経験値10GET</p>
               </section>
-              <section className="p-4">
+              <section className="p-4 rounded-xl border border-white/5 bg-[#0f1524] text-blue-100">
                 <h1>タイム</h1>
                 <p>33.4秒</p>
               </section>
