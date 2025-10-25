@@ -1,3 +1,4 @@
+import { QuickStartButton } from "@/components/buttons/QuickStartButton";
 import { AppLayout } from "@/components/layout/AppLayout";
 
 // ここではテスト直後のミニ結果カードを仮で表示しておく
@@ -40,45 +41,35 @@ export default function MiniResultPage() {
     { label: "日常会話動詞", percent: 98, tone: "bg-sky-400" },
   ];
 
-  const historyItems = [
-    {
-      date: "2025-01-24",
-      scope: "共通テスト 令和6年",
-      result: "正答率 88%",
-      time: "22m",
-      status: "完了",
-    },
-    {
-      date: "2025-01-21",
-      scope: "共通テスト 令和5年",
-      result: "正答率 91%",
-      time: "24m",
-      status: "完了",
-    },
-    {
-      date: "2025-01-19",
-      scope: "ミニテスト - 動詞",
-      result: "正答率 94%",
-      time: "12m",
-      status: "レビュー済み",
-    },
-  ];
-
   return (
     <AppLayout>
-      <div className="relative flex w-full justify-center px-4 py-6 sm:px-6 lg:px-8">
-        <div className="flex w-full max-w-[100vw] min-w-0 flex-col gap-8 overflow-y-auto text-left text-white max-h-[calc(100dvh-4rem)]">
+      <div className="relative  flex w-full justify-center px-4 py-6 sm:px-6 lg:px-8">
+        <div className="flex w-full max-w-[100vw] min-w-0 flex-col gap-8 pb-6 text-left text-white max-h-[calc(100dvh-4.5rem)]">
           <section className="w-full space-y-2">
-            <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            <h1 className="tracking-[0.5em] text-center text-xl font-bold tracking-tight text-white sm:text-3xl">
               {dummyResult.title}
             </h1>
+            <span className="inline-flex">
+              <QuickStartButton
+                onClick={() => {}}
+                label="Home"
+                className="!w-auto !px-3 !py-1 text-xs tracking-[0.2em]"
+              />
+            </span>
+            <span className="inline-flex">
+              <QuickStartButton
+                onClick={() => {}}
+                label="Grades"
+                className="!w-auto !px-3 !py-1 text-xs tracking-[0.2em]"
+              />
+            </span>
           </section>
 
           <section className="grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-3">
             {summaryCards.map(({ label, value, tone }) => (
               <div
                 key={label}
-                className="flex min-w-0 flex-col gap-2 rounded-2xl border border-white/10 bg-[#0f1524]/70 p-5">
+                className="flex min-w-0 flex-col gap-2 rounded-2xl border border-white/10 bg-[#0f1524]/70 p-4">
                 <p className="text-xs text-white/60 sm:text-sm">{label}</p>
                 <p
                   className={`text-2xl font-semibold tracking-tight sm:text-3xl ${
@@ -90,16 +81,13 @@ export default function MiniResultPage() {
             ))}
           </section>
 
-          <section className="grid w-full min-w-0 grid-cols-1 gap-6 lg:grid-cols-3">
+          <section className="grid mb-0 w-full min-w-0 grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="min-w-0 rounded-2xl border border-white/10 bg-[#0f1524]/70 p-5 lg:col-span-2">
               <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <h2 className="text-base font-semibold text-white sm:text-lg">
                     間違えた単語リスト
                   </h2>
-                  <p className="text-xs text-white/60 sm:text-sm">
-                    クリックして意味を確認・復習しましょう。
-                  </p>
                 </div>
                 <button
                   type="button"
@@ -151,26 +139,6 @@ export default function MiniResultPage() {
                   </div>
                 ))}
               </div>
-            </div>
-          </section>
-
-          <section className="w-full min-w-0 rounded-2xl border border-white/10 bg-[#0f1524]/70 p-5">
-            <h2 className="text-base font-semibold text-white sm:text-lg">
-              セクション学習履歴
-            </h2>
-            <div className="mt-4 space-y-2.5">
-              {historyItems.map(({ date, scope, result, time, status }) => (
-                <div
-                  key={`${date}-${scope}`}
-                  className="grid grid-cols-2 gap-3 rounded-xl border border-white/5 bg-[#050509]/80 px-3 py-2.5 text-xs text-white/80 sm:grid-cols-4 sm:px-4 sm:py-3 sm:text-sm">
-                  <span>{date}</span>
-                  <span>{scope}</span>
-                  <span>{result}</span>
-                  <span className="font-semibold text-[#f2c97d]">
-                    {status} · {time}
-                  </span>
-                </div>
-              ))}
             </div>
           </section>
         </div>
