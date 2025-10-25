@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html class="dark" lang="ja"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Section Results - Eigo Master</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "success": "#7ED321",
+                        "accent": "#F5A623",
+                        "danger": "#FF4D4F",
+                        "card-light": "#ffffff",
+                        "card-dark": "#18232e",
+                        "border-light": "#dbe0e6",
+                        "border-dark": "#2d3a46",
+                        "text-primary-light": "#111418",
+                        "text-primary-dark": "#f0f2f4",
+                        "text-secondary-light": "#617589",
+                        "text-secondary-dark": "#9b9b9b",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "Noto Sans JP", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px",
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+</head>
+<body class="font-display bg-background-dark text-text-primary-dark">
+<div class="flex flex-col min-h-screen">
+<main class="flex-1 p-8 pt-6 overflow-y-auto">
+<div class="max-w-7xl mx-auto">
+<div class="flex justify-between items-center mb-8">
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg text-text-secondary-dark hover:bg-card-dark hover:text-text-primary-dark transition-colors duration-200 border border-border-dark">
+<span class="material-symbols-outlined">arrow_back</span>
+<span class="text-sm font-semibold">戻る</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg text-text-secondary-dark hover:bg-card-dark hover:text-text-primary-dark transition-colors duration-200 border border-border-dark">
+<span class="material-symbols-outlined">home</span>
+<span class="text-sm font-semibold">ホーム</span>
+</button>
+</div>
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBImppO6ylQYTWqLOJ-L6LkQdMArE2Nv6y6mN5McOABCqITVjnz_zK_EfQDNjuxB2Ic0ezzkiNpsdpw18sC45fEN-v8mRBK0LUpH7M7Iy9fYLYNQLgUj-kk6UYWIIaH4n70xLaqwlQaoIwC-8SFDumGPeF9Dh2J6H3IOwF3IuJdTHFFwrykPbFYi9kZ-jWS92WhX9WjC7_UalfW_8PLY1OraJqjX1KIxcLJ-bEoXiSYw2V2mBje28RCega79IktUHTx7D1Eo-uAowc");'></div>
+<div class="flex flex-col text-right">
+<h1 class="text-base font-bold">Eigo Master</h1>
+<p class="text-sm text-text-secondary-dark">Vocabulary Master</p>
+</div>
+</div>
+</div>
+<div class="mb-8">
+<h1 class="text-4xl font-black leading-tight tracking-[-0.033em]">セクション成績: 動詞</h1>
+<p class="text-base text-text-secondary-dark">「動詞」セクションの学習進捗サマリーです。</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 bg-card-dark border border-border-dark">
+<p class="text-base font-medium text-text-secondary-dark">セクション正答率</p>
+<p class="tracking-tight text-3xl font-bold text-success">92%</p>
+</div>
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 bg-card-dark border border-border-dark">
+<p class="text-base font-medium text-text-secondary-dark">合計学習時間</p>
+<p class="tracking-tight text-3xl font-bold">8h 45m</p>
+</div>
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 bg-card-dark border border-border-dark">
+<p class="text-base font-medium text-text-secondary-dark">間違えた単語数</p>
+<p class="tracking-tight text-3xl font-bold text-danger">18</p>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+<div class="lg:col-span-2 flex flex-col gap-2 rounded-xl border border-border-dark bg-card-dark p-6">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-lg font-bold">間違えた単語リスト</p>
+<p class="text-sm text-text-secondary-dark">クリックして意味を確認・復習しましょう。</p>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg text-primary hover:bg-background-dark transition-colors duration-200 text-sm font-semibold">
+<span class="material-symbols-outlined text-base">quiz</span>
+<span>弱点克服テスト</span>
+</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="flex justify-between items-center bg-background-dark p-3 rounded-lg hover:bg-border-dark cursor-pointer transition-colors">
+<span class="font-medium">accommodate</span>
+<div class="flex items-center gap-2">
+<span class="text-xs text-text-secondary-dark">2回ミス</span>
+<span class="material-symbols-outlined text-danger text-lg">cancel</span>
+</div>
+</div>
+<div class="flex justify-between items-center bg-background-dark p-3 rounded-lg hover:bg-border-dark cursor-pointer transition-colors">
+<span class="font-medium">negotiate</span>
+<div class="flex items-center gap-2">
+<span class="text-xs text-text-secondary-dark">2回ミス</span>
+<span class="material-symbols-outlined text-danger text-lg">cancel</span>
+</div>
+</div>
+<div class="flex justify-between items-center bg-background-dark p-3 rounded-lg hover:bg-border-dark cursor-pointer transition-colors">
+<span class="font-medium">implement</span>
+<div class="flex items-center gap-2">
+<span class="text-xs text-text-secondary-dark">1回ミス</span>
+<span class="material-symbols-outlined text-accent text-lg">error</span>
+</div>
+</div>
+<div class="flex justify-between items-center bg-background-dark p-3 rounded-lg hover:bg-border-dark cursor-pointer transition-colors">
+<span class="font-medium">perceive</span>
+<div class="flex items-center gap-2">
+<span class="text-xs text-text-secondary-dark">1回ミス</span>
+<span class="material-symbols-outlined text-accent text-lg">error</span>
+</div>
+</div>
+<div class="flex justify-between items-center bg-background-dark p-3 rounded-lg hover:bg-border-dark cursor-pointer transition-colors">
+<span class="font-medium">justify</span>
+<div class="flex items-center gap-2">
+<span class="text-xs text-text-secondary-dark">1回ミス</span>
+<span class="material-symbols-outlined text-accent text-lg">error</span>
+</div>
+</div>
+<div class="flex justify-between items-center bg-background-dark p-3 rounded-lg hover:bg-border-dark cursor-pointer transition-colors">
+<span class="font-medium">emphasize</span>
+<div class="flex items-center gap-2">
+<span class="text-xs text-text-secondary-dark">1回ミス</span>
+<span class="material-symbols-outlined text-accent text-lg">error</span>
+</div>
+</div>
+</div>
+<button class="mt-4 text-sm font-semibold text-primary text-center hover:underline">
+                        さらに表示...
+                    </button>
+</div>
+<div class="flex flex-col gap-4 rounded-xl border border-border-dark bg-card-dark p-6">
+<h2 class="text-lg font-bold">弱点分野の分析</h2>
+<div class="flex flex-col gap-4">
+<div>
+<div class="flex justify-between items-center mb-1">
+<p class="text-sm font-medium text-text-primary-dark">不規則動詞</p>
+<p class="text-sm font-bold text-danger">65%</p>
+</div>
+<div class="w-full bg-background-dark rounded-full h-2.5">
+<div class="bg-danger h-2.5 rounded-full" style="width: 65%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-1">
+<p class="text-sm font-medium text-text-primary-dark">句動詞</p>
+<p class="text-sm font-bold text-accent">78%</p>
+</div>
+<div class="w-full bg-background-dark rounded-full h-2.5">
+<div class="bg-accent h-2.5 rounded-full" style="width: 78%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-1">
+<p class="text-sm font-medium text-text-primary-dark">ビジネス関連動詞</p>
+<p class="text-sm font-bold text-success">90%</p>
+</div>
+<div class="w-full bg-background-dark rounded-full h-2.5">
+<div class="bg-success h-2.5 rounded-full" style="width: 90%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-1">
+<p class="text-sm font-medium text-text-primary-dark">日常会話動詞</p>
+<p class="text-sm font-bold text-success">98%</p>
+</div>
+<div class="w-full bg-background-dark rounded-full h-2.5">
+<div class="bg-primary h-2.5 rounded-full" style="width: 98%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-card-dark border border-border-dark rounded-xl p-6">
+<h2 class="text-lg font-bold mb-4">セクション学習履歴</h2>
+<div class="space-y-3">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-center p-3 rounded-lg hover:bg-background-dark transition-colors duration-200">
+<p class="font-medium">2023-10-25</p>
+<p class="text-text-secondary-dark">動詞テスト #5</p>
+<p class="font-semibold text-success">スコア: 95%</p>
+<p class="text-text-secondary-dark">時間: 7m 12s</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-center p-3 rounded-lg hover:bg-background-dark transition-colors duration-200">
+<p class="font-medium">2023-10-23</p>
+<p class="text-text-secondary-dark">不規則動詞 復習</p>
+<p class="font-semibold text-accent">スコア: 75%</p>
+<p class="text-text-secondary-dark">時間: 10m 05s</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-center p-3 rounded-lg hover:bg-background-dark transition-colors duration-200">
+<p class="font-medium">2023-10-21</p>
+<p class="text-text-secondary-dark">動詞テスト #4</p>
+<p class="font-semibold text-success">スコア: 90%</p>
+<p class="text-text-secondary-dark">時間: 8m 30s</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>
