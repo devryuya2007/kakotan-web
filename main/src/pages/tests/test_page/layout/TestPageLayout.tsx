@@ -11,7 +11,7 @@ type TestPageLayoutProps = {
 };
 
 // OSやブラウザの「アニメーションを減らす」設定を拾って真偽値で返す自作フック
-function usePrefersReducedMotion() {
+export function usePrefersReducedMotion() {
   // prefersReducedがtrueならアニメーションを抑えたいユーザー
   const [prefersReduced, setPrefersReduced] = useState(false);
 
