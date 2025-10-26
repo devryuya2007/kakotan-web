@@ -34,12 +34,19 @@ export default function MiniResultPage() {
     { word: "emphasize", missCount: 1, accent: "text-amber-300" },
   ];
 
-  const weaknessMetrics = [
-    { label: "不規則動詞", percent: 65, tone: "bg-rose-400" },
-    { label: "句動詞", percent: 78, tone: "bg-amber-400" },
-    { label: "ビジネス関連動詞", percent: 90, tone: "bg-emerald-400" },
-    { label: "日常会話動詞", percent: 98, tone: "bg-sky-400" },
-  ];
+  const rankInfo = {
+    letter: "A",
+    title: "AURORA KNIGHT",
+    level: 15,
+    nextXp: 350,
+    gauge: 0.68,
+    recentGain: 1250,
+  };
+
+  const r = 56;
+  const circumference = 2 * Math.PI * r;
+  const progress = Math.min(Math.max(dummyResult.accuracy / 100, 0), 1);
+  const dashOffset = circumference * (1 - progress);
 
   return (
     <AppLayout>
@@ -49,17 +56,15 @@ export default function MiniResultPage() {
             <h1 className="tracking-[0.5em] text-center text-xl font-bold tracking-tight text-white sm:text-3xl">
               {dummyResult.title}
             </h1>
-            <span className="inline-flex">
+            <span>
               <QuickStartButton
                 onClick={() => {}}
-                label="Home"
-                className="!w-auto !px-3 !py-1 text-xs tracking-[0.2em]"
+                label="成績"
+                className="!w-auto !px-3  !py-1 text-xs tracking-[0.2em] !float-right"
               />
-            </span>
-            <span className="inline-flex">
               <QuickStartButton
                 onClick={() => {}}
-                label="Grades"
+                label="ホーム"
                 className="!w-auto !px-3 !py-1 text-xs tracking-[0.2em]"
               />
             </span>
@@ -117,30 +122,112 @@ export default function MiniResultPage() {
               </button>
             </div>
 
-            <div className="min-w-0 rounded-2xl border border-white/10 bg-[#0f1524]/70 p-5">
-              <h2 className="text-base font-semibold text-white sm:text-lg">
-                弱点分野の分析
-              </h2>
-              <div className="mt-4 flex flex-col gap-3.5">
-                {weaknessMetrics.map(({ label, percent, tone }) => (
-                  <div key={label} className="space-y-2">
-                    <div className="flex items-center justify-between text-xs sm:text-sm">
-                      <span className="text-white/70">{label}</span>
-                      <span className="font-semibold text-white">
-                        {percent}%
-                      </span>
-                    </div>
-                    <div className="h-2 rounded-full bg-white/10">
-                      <div
-                        className={`h-full rounded-full ${tone}`}
-                        style={{ width: `${percent}%` }}
-                      />
-                    </div>
+            <div className="relative min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[#0f1524]/70 p-5">
+              <div className="pointer-events-none absolute -right-24 -top-28 h-60 w-60 rounded-full bg-gradient-to-br from-[#f2c97d33] via-[#be8b381f] to-transparent blur-3xl" />
+              <div className="pointer-events-none absolute inset-0 opacity-50">
+                <div className="absolute inset-x-0 top-8 h-px bg-gradient-to-r from-transparent via-[#f2c97d33] to-transparent" />
+              </div>
+
+              <header className="relative mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="space-y-1">
+                  <p className="text-[11px] uppercase tracking-[0.6em] text-white/50">
+                    現在のランク
+                  </p>
+                  <h2 className="text-2xl font-semibold text-white">
+                    {rankInfo.title}
+                  </h2>
+                  <p className="text-xs text-white/60">
+                    次のランクまで{" "}
+                    <span className="font-semibold text-[#f2c97d]">
+                      {rankInfo.nextXp} XP
+                    </span>
+                  </p>
+                </div>
+                <div className="relative mx-auto flex h-20 w-20 items-center justify-center sm:mx-0">
+                  <div className="absolute inset-0  bg-gradient-to-br from-[#fdf1d7] via-[#f2c97d] to-[#b8860b] opacity-80 blur-sm" />
+                  <div className="relative flex h-full w-full items-center justify-center  border border-[#f2c97d55] bg-[#050509]/80 shadow-[0_0_28px_rgba(242,201,125,0.38)]">
+                    <span className="absolute top-[15%] right-[26%] text-[0.55rem] tracking-[0.32em] text-white/70">
+                      RANK
+                    </span>
+                    <span className="text-4xl font-black text-[#fdf1d7] drop-shadow-[0_0_12px_rgba(242,201,125,0.65)]">
+                      {rankInfo.letter}
+                    </span>
                   </div>
-                ))}
+                </div>
+              </header>
+
+              <div className="relative mx-auto flex h-44 w-44 items-center justify-center">
+                <svg
+                  className="h-full w-full -rotate-90 transform text-[#1f2333]"
+                  viewBox="0 0 140 140"
+                  role="img"
+                  aria-label={`レベル ${rankInfo.level}`}>
+                  <circle
+                    className="text-white/10 transition-opacity duration-500"
+                    stroke="currentColor"
+                    strokeWidth="12"
+                    cx="70"
+                    cy="70"
+                    r={r}
+                    fill="transparent"
+                  />
+                  <circle
+                    className="text-[#f2c97d] transition-all duration-700 ease-out"
+                    stroke="currentColor"
+                    strokeWidth="12"
+                    strokeLinecap="round"
+                    strokeDasharray={`${circumference} ${circumference}`}
+                    strokeDashoffset={dashOffset}
+                    cx="70"
+                    cy="70"
+                    r={r}
+                    fill="transparent"
+                  />
+                </svg>
+                <div className="absolute flex flex-col items-center">
+                  <span className="text-[0.6rem] tracking-[0.3em] text-white/60">
+                    LEVEL
+                  </span>
+                  <span className="text-4xl font-semibold text-[#f2c97d]">
+                    {rankInfo.level}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-6 space-y-2">
+                <div className="flex items-center justify-between text-[11px] text-white/60 sm:text-xs">
+                  <span>今月の獲得 XP</span>
+                  <span className="text-sm font-semibold text-[#f2c97d] sm:text-base">
+                    +{rankInfo.recentGain} XP
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-[11px] text-white/60 sm:text-xs">
+                  <span>次レベルまで</span>
+                  <span className="font-semibold text-[#f2c97d]">
+                    {rankInfo.nextXp} XP
+                  </span>
+                </div>
+                <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+                  <span
+                    className="block h-full rounded-full bg-gradient-to-r from-[#f2c97d] via-[#ffd28f] to-[#b8860b]"
+                    style={{ width: `${Math.min(rankInfo.gauge * 100, 100)}%` }}
+                  />
+                </div>
               </div>
             </div>
           </section>
+          <div className="mt-6 flex flex-col items-center gap-2">
+            <QuickStartButton
+              onClick={() => {}}
+              label="Home"
+              className="!w-auto !px-3 !py-1 text-xs tracking-[0.2em]"
+            />
+            <QuickStartButton
+              onClick={() => {}}
+              label="Grades"
+              className="!w-auto !px-3 !py-1 text-xs tracking-[0.2em]"
+            />
+          </div>
         </div>
       </div>
     </AppLayout>
