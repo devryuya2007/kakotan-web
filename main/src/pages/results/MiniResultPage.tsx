@@ -43,17 +43,20 @@ export default function MiniResultPage() {
     recentGain: 1250,
   };
 
-  const r = 56;
+  const r = 52;
   const circumference = 2 * Math.PI * r;
   const progress = Math.min(Math.max(dummyResult.accuracy / 100, 0), 1);
   const dashOffset = circumference * (1 - progress);
+  // 画面からはみ出さないように、モバイルでは全体レイアウトを軽く縮小している
+  const contentWrapperClass =
+    "flex w-full max-w-[100vw] min-w-0 flex-col gap-6 pb-4 text-left text-white max-h-[calc(100dvh-4.5rem)] origin-top scale-[0.94] sm:scale-100 sm:gap-8 sm:pb-6";
 
   return (
     <AppLayout>
-      <div className="relative  flex w-full justify-center px-4 py-6 sm:px-6 lg:px-8">
-        <div className="flex w-full max-w-[100vw] min-w-0 flex-col gap-8 pb-6 text-left text-white max-h-[calc(100dvh-4.5rem)]">
+      <div className="relative flex w-full justify-center px-4 sm:px-6 lg:px-8">
+        <div className={contentWrapperClass}>
           <section className="w-full space-y-2">
-            <h1 className="tracking-[0.5em] text-center text-xl font-bold tracking-tight text-white sm:text-3xl">
+            <h1 className="tracking-[0.5rem] text-center text-xl font-bold tracking-tight text-white sm:text-3xl">
               {dummyResult.title}
             </h1>
             <span>
@@ -156,7 +159,7 @@ export default function MiniResultPage() {
                 </div>
               </header>
 
-              <div className="relative mx-auto flex h-44 w-44 items-center justify-center">
+              <div className="relative mx-auto flex h-40 w-40 items-center justify-center sm:h-44 sm:w-44">
                 <svg
                   className="h-full w-full -rotate-90 transform text-[#1f2333]"
                   viewBox="0 0 140 140"
@@ -193,41 +196,8 @@ export default function MiniResultPage() {
                   </span>
                 </div>
               </div>
-
-              <div className="mt-6 space-y-2">
-                <div className="flex items-center justify-between text-[11px] text-white/60 sm:text-xs">
-                  <span>今月の獲得 XP</span>
-                  <span className="text-sm font-semibold text-[#f2c97d] sm:text-base">
-                    +{rankInfo.recentGain} XP
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-[11px] text-white/60 sm:text-xs">
-                  <span>次レベルまで</span>
-                  <span className="font-semibold text-[#f2c97d]">
-                    {rankInfo.nextXp} XP
-                  </span>
-                </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-                  <span
-                    className="block h-full rounded-full bg-gradient-to-r from-[#f2c97d] via-[#ffd28f] to-[#b8860b]"
-                    style={{ width: `${Math.min(rankInfo.gauge * 100, 100)}%` }}
-                  />
-                </div>
-              </div>
             </div>
           </section>
-          <div className="mt-6 flex flex-col items-center gap-2">
-            <QuickStartButton
-              onClick={() => {}}
-              label="Home"
-              className="!w-auto !px-3 !py-1 text-xs tracking-[0.2em]"
-            />
-            <QuickStartButton
-              onClick={() => {}}
-              label="Grades"
-              className="!w-auto !px-3 !py-1 text-xs tracking-[0.2em]"
-            />
-          </div>
         </div>
       </div>
     </AppLayout>
