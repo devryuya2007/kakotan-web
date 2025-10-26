@@ -1,6 +1,6 @@
-// Reactから使う主要なフックをまとめて呼び出している（状態管理や副作用用）
 import { useEffect, useMemo, useRef, useState } from "react";
 // 単語テストの一問分を表す型。外部のデータローダーから入ってくる
+
 import { type QuizQuestion } from "../../../../data/vocabLoader";
 import { useNavigate } from "react-router-dom";
 

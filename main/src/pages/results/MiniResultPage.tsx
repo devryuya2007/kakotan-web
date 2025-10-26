@@ -53,10 +53,10 @@ export default function MiniResultPage() {
 
   return (
     <AppLayout>
-      <div className="relative flex w-full justify-center px-4 sm:px-6 lg:px-8">
+      <div className="relative flex w-full justify-center px-4 sm:px-6 lg:px-8 select-none">
         <div className={contentWrapperClass}>
           <section className="w-full space-y-2">
-            <h1 className="tracking-[0.5rem] text-center text-xl font-bold tracking-tight text-white sm:text-3xl">
+            <h1 className="text-[#f2c97d] tracking-[1rem] text-center text-xl font-bold tracking-tight sm:text-3xl">
               {dummyResult.title}
             </h1>
             <span>
