@@ -1,5 +1,6 @@
 import { AppLayout } from "../../../components/layout/AppLayout";
 import { useYearVocab } from "../../../hooks/useYearVocab";
+import { TestResultsProvider } from "@/pages/states/TestReSultContext";
 import TestPageLayout from "./layout/TestPageLayout";
 
 export default function Reiwa3Page() {
@@ -13,9 +14,9 @@ export default function Reiwa3Page() {
         </h1>
         {status === "loading" && <p>データを読み込んでいます…</p>}
         {status === "ready" && (
-          <>
+          <TestResultsProvider>
             <TestPageLayout count={count} questions={questions} />
-          </>
+          </TestResultsProvider>
         )}
         {status === "error" && (
           <p className="text-red-400">読み込みに失敗しました: {error}</p>

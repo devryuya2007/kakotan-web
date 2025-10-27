@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 // 単語テストの一問分を表す型。外部のデータローダーから入ってくる
-
 import { type QuizQuestion } from "../../../../data/vocabLoader";
 import { useNavigate } from "react-router-dom";
+import { useTestResults } from "@/pages/states/TestReSultContext";
 
 // このコンポーネントが受け取るpropsの形。questionsは問題配列、countは総数
 type TestPageLayoutProps = {
@@ -47,6 +47,12 @@ export default function TestPageLayout({
   count,
 }: TestPageLayoutProps) {
   // いま表示している問題の配列インデックス
+  const { recordResult, reset } = useTestResults();
+
+  useEffect(() => {
+    reset();
+  }, [reset]);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   // 各選択肢が正解・不正解・未回答かを保持する
   const [buttonStates, setButtonStates] = useState<
@@ -131,7 +137,7 @@ export default function TestPageLayout({
   // 選択肢クリック時のメイン処理
   function handleClick(choice: string) {
     // 正解データがなくても、アニメーション中でも何もしない
-    if (!answerChoice || isTransitioning) return;
+    if (!answerChoice || isTransitioning || !question) return;
 
     // 正解かどうかを判定し、ボタンの見た目ステータスを更新
     const isAnswer = choice === answerChoice;
@@ -139,6 +145,9 @@ export default function TestPageLayout({
       ...prev,
       [choice]: isAnswer ? "correct" : "incorrect",
     }));
+
+    // 正解・不正解ごとの記録に追加
+    recordResult(question, isAnswer);
 
     // 前回のフィードバック用タイマーが残っていたら解除
     if (feedbackTimeoutRef.current) {
@@ -255,7 +264,6 @@ export default function TestPageLayout({
               : idx === 1
               ? "shadow-[0_18px_60px_-54px_rgba(242,201,125,0.35)]"
               : "";
-
           return (
             <div
               key={`${cardQuestion.phrase}-${cardIndex}`}

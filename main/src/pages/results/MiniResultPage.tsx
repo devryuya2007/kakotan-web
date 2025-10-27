@@ -45,7 +45,7 @@ export default function MiniResultPage() {
     },
     {
       label: "間違えた単語数",
-      value: `${dummyResult.mistakes}`,
+      value: `${dummyResult.mistakes}`, // ここに問題数を入れる 間違えた単語/全問
       tone: "negative",
     },
     {
@@ -96,7 +96,7 @@ export default function MiniResultPage() {
 
   return (
     <AppLayout>
-      <div className="relative  overflow-y-auto flex w-full justify-center px-4 sm:px-6 lg:px-8 select-none">
+      <div className="relative sm:overflow-hidden overflow-y-auto flex w-full justify-center px-4 sm:px-6 lg:px-8 select-none">
         <div className={contentWrapperClass}>
           <section className="w-full space-y-2">
             <h1 className="text-[#f2c97d] tracking-[1rem] text-center text-xl font-bold tracking-tight sm:text-3xl">
