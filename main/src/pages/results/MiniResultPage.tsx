@@ -76,8 +76,10 @@ export default function MiniResultPage() {
       const word = question.phrase;
       tally.set(word, (tally.get(word) ?? 0) + 1);
     });
+    const array = Array.from(tally.entries()); // [['単語', ミスした回数], ...]
 
-    return Array.from(tally.entries())
+    return array
+      .slice(0, 6)
       .sort((a, b) => b[1] - a[1])
       .map(([word, missCount]) => {
         let severity: ToneKey = "neutral";
@@ -191,6 +193,7 @@ export default function MiniResultPage() {
                 )}
               </div>
               <button
+                // ここにonclickでmodal
                 type="button"
                 className={`mt-4 block w-full text-sm font-semibold ${palette.accent} transition hover:text-[#f7e2bd]`}>
                 さらに表示...
