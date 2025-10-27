@@ -44,6 +44,11 @@ export default function MiniResultPage() {
       tone: "positive",
     },
     {
+      label: "間違えた単語数",
+      value: `${dummyResult.mistakes}`,
+      tone: "negative",
+    },
+    {
       label: "獲得バッジ",
       value: (
         <div className="flex flex-wrap gap-3">
@@ -56,11 +61,6 @@ export default function MiniResultPage() {
           ))}
         </div>
       ),
-    },
-    {
-      label: "間違えた単語数",
-      value: `${dummyResult.mistakes}`,
-      tone: "negative",
     },
   ];
 
