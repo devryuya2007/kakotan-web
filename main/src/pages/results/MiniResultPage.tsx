@@ -1,17 +1,12 @@
 import { QuickStartButton } from "@/components/buttons/QuickStartButton";
 import { AppLayout } from "@/components/layout/AppLayout";
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import { badges } from "../badge/badge";
+import { useTestResults } from "../states/TestReSultContext";
 
 // ここではテスト直後のミニ結果カードを仮で表示しておく
 export default function MiniResultPage() {
   // 仮の成績データ。後で実際のテスト結果と差し替える予定
-  const dummyResult = {
-    title: "RESULT",
-    accuracy: 92,
-    studyTime: "8時間45分",
-    mistakes: 18,
-  };
 
   const palette = {
     base: "text-[#f5f6ff]",
@@ -33,6 +28,13 @@ export default function MiniResultPage() {
 
   type ToneKey = keyof typeof toneStyles;
 
+  const { correct, incorrect } = useTestResults();
+
+  const totalAnswer = correct.length + incorrect.length;
+  const correctRate =
+    totalAnswer === 0 ? 0 : Math.round((correct.length / totalAnswer) * 100);
+  const incorrectNumber = incorrect.length;
+
   const summaryCards: Array<{
     label: string;
     value: ReactNode;
@@ -40,12 +42,12 @@ export default function MiniResultPage() {
   }> = [
     {
       label: "セクション正答率",
-      value: `${dummyResult.accuracy}%`,
+      value: `${correctRate}%`,
       tone: "positive",
     },
     {
       label: "間違えた単語数",
-      value: `${dummyResult.mistakes}`, // ここに問題数を入れる 間違えた単語/全問
+      value: `${incorrectNumber}`,
       tone: "negative",
     },
     {
@@ -64,18 +66,27 @@ export default function MiniResultPage() {
     },
   ];
 
-  const wrongWords: Array<{
-    word: string;
-    missCount: number;
-    severity: ToneKey;
-  }> = [
-    { word: "accommodate", missCount: 2, severity: "negative" },
-    { word: "negotiate", missCount: 2, severity: "negative" },
-    { word: "implement", missCount: 1, severity: "negative" },
-    { word: "perceive", missCount: 1, severity: "negative" },
-    { word: "justify", missCount: 1, severity: "negative" },
-    { word: "emphasize", missCount: 1, severity: "negative" },
-  ];
+  const wrongWords = useMemo<
+    Array<{ word: string; missCount: number; severity: ToneKey }>
+  >(() => {
+    if (incorrect.length === 0) return [];
+
+    const tally = new Map<string, number>();
+    incorrect.forEach((question) => {
+      const word = question.phrase;
+      tally.set(word, (tally.get(word) ?? 0) + 1);
+    });
+
+    return Array.from(tally.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([word, missCount]) => {
+        let severity: ToneKey = "neutral";
+        if (missCount >= 3) severity = "negative";
+        else if (missCount === 2) severity = "caution";
+        else severity = "neutral";
+        return { word, missCount, severity };
+      });
+  }, [incorrect]);
 
   const rankInfo = {
     letter: "A",
@@ -88,7 +99,7 @@ export default function MiniResultPage() {
 
   const r = 52;
   const circumference = 2 * Math.PI * r;
-  const progress = Math.min(Math.max(dummyResult.accuracy / 100, 0), 1);
+  const progress = Math.min(Math.max(correctRate / 100, 0), 1);
   const dashOffset = circumference * (1 - progress);
   // 画面からはみ出さないように、モバイルでは全体レイアウトを軽く縮小している
   const contentWrapperClass =
@@ -99,8 +110,8 @@ export default function MiniResultPage() {
       <div className="relative sm:overflow-hidden overflow-y-auto flex w-full justify-center px-4 sm:px-6 lg:px-8 select-none">
         <div className={contentWrapperClass}>
           <section className="w-full space-y-2">
-            <h1 className="text-[#f2c97d] tracking-[1rem] text-center text-xl font-bold tracking-tight sm:text-3xl">
-              {dummyResult.title}
+            <h1 className="text-[#f2c97d] tracking-[1.25rem] text-center text-xl font-bold tracking-tight sm:text-3xl">
+              RESULT
             </h1>
             <span>
               <QuickStartButton
@@ -153,25 +164,31 @@ export default function MiniResultPage() {
                 </button>
               </div>
               <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                {wrongWords.map(({ word, missCount, severity }) => {
-                  const severityClass =
-                    toneStyles[severity] ?? toneStyles.caution;
+                {wrongWords.length === 0 ? (
+                  <p className={`col-span-full text-sm ${palette.muted}`}>
+                    今回は間違えた単語がありません。お見事！
+                  </p>
+                ) : (
+                  wrongWords.map(({ word, missCount, severity }) => {
+                    const severityClass =
+                      toneStyles[severity] ?? toneStyles.caution;
 
-                  return (
-                    <button
-                      type="button"
-                      key={word}
-                      className="flex items-center justify-between rounded-xl border border-white/5 bg-[#050509]/80 px-3 py-2.5 text-left text-sm transition hover:border-[#f2c97d33] hover:bg-[#111424] sm:px-4 sm:py-3">
-                      <span className={`font-medium ${palette.highlight}`}>
-                        {word}
-                      </span>
-                      <span
-                        className={`text-[11px] font-semibold sm:text-xs ${severityClass}`}>
-                        {missCount}回ミス
-                      </span>
-                    </button>
-                  );
-                })}
+                    return (
+                      <button
+                        type="button"
+                        key={word}
+                        className="flex items-center justify-between rounded-xl border border-white/5 bg-[#050509]/80 px-3 py-2.5 text-left text-sm transition hover:border-[#f2c97d33] hover:bg-[#111424] sm:px-4 sm:py-3">
+                        <span className={`font-medium ${palette.highlight}`}>
+                          {word}
+                        </span>
+                        <span
+                          className={`text-[11px] font-semibold sm:text-xs ${severityClass}`}>
+                          {missCount}回ミス
+                        </span>
+                      </button>
+                    );
+                  })
+                )}
               </div>
               <button
                 type="button"

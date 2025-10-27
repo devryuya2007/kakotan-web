@@ -11,6 +11,7 @@ import Reiwa4Page from "./pages/tests/test_page/Reiwa4Page";
 import Reiwa5Page from "./pages/tests/test_page/Reiwa5Page";
 import Reiwa6Page from "./pages/tests/test_page/Reiwa6Page";
 import Reiwa7Page from "./pages/tests/test_page/Reiwa7Page";
+import { TestResultsProvider } from "./pages/states/TestReSultContext";
 
 const container = document.getElementById("root");
 
@@ -32,6 +33,8 @@ const router = createBrowserRouter([
 
 createRoot(container).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <TestResultsProvider>
+      <RouterProvider router={router} />
+    </TestResultsProvider>
   </StrictMode>
 );
