@@ -61,6 +61,7 @@ export default function MiniResultPage() {
     },
     {
       label: "獲得バッジ",
+      // TODO: badgeConditionのロジックで算出したバッジ一覧に差し替える
       value: (
         <div className="flex flex-wrap gap-3">
           {badges.map(({ key, icon }) => (
@@ -126,6 +127,7 @@ export default function MiniResultPage() {
     gauge: 0.68,
     recentGain: 1250,
   };
+  // TODO: scoringユーティリティで算出したランク・経験値情報に差し替える
 
   const r = 52;
   const circumference = 2 * Math.PI * r;
