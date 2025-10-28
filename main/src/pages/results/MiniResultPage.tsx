@@ -78,10 +78,7 @@ export default function MiniResultPage() {
   const wrongWordsAll = useMemo<WrongWordStat[]>(() => {
     if (incorrect.length === 0) return [];
 
-    const mistakeTally = new Map<
-      string,
-      { count: number; meaning: string }
-    >();
+    const mistakeTally = new Map<string, { count: number; meaning: string }>();
 
     incorrect.forEach((question) => {
       const word = question.phrase;
@@ -201,40 +198,34 @@ export default function MiniResultPage() {
                 </div>
                 <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                   {hasNoWrongWords ? (
-                    <p className={`col-span-full text-sm ${palette.muted}`}>
+                    <h1 className={`col-span-full text-sm ${palette.muted}`}>
                       今回は間違えた単語がありません。お見事！
-                    </p>
-                ) : (
-                    wrongWordsTop.map(({ word, meaning, severity }) => {
-                      const meaningClass =
-                        severity === "negative"
-                          ? toneStyles.negative
-                          : severity === "caution"
-                          ? toneStyles.caution
-                          : "text-white/70";
-
+                    </h1>
+                  ) : (
+                    wrongWordsTop.map(({ word, meaning }) => {
                       return (
-                        <button
-                          type="button"
+                        <div
                           key={word}
-                          className="flex items-center justify-between gap-3 rounded-xl border border-white/5 bg-[#050509]/80 px-3 py-2.5 text-left text-sm transition hover:border-[#f2c97d33] hover:bg-[#111424] sm:px-4 sm:py-3">
+                          className="flex items-center justify-between gap-3 rounded-xl border border-white/5 bg-[#262335] px-3 py-2.5 text-left text-sm transition  sm:px-4 sm:py-3">
                           <span className={`font-medium ${palette.highlight}`}>
                             {word}
                           </span>
-                          <span className={`truncate text-xs ${meaningClass}`}>
+                          <span className="truncate text-xs text-white/70">
                             {meaning}
                           </span>
-                        </button>
+                        </div>
                       );
                     })
                   )}
                 </div>
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  type="button"
-                  className={`mt-4 block w-full text-sm font-semibold ${palette.accent} transition hover:text-[#f7e2bd]`}>
-                  さらに表示...
-                </button>
+                {incorrect.length > 6 && (
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    type="button"
+                    className={`mt-4 block w-full text-sm font-semibold ${palette.accent} transition hover:text-[#f7e2bd]`}>
+                    さらに表示...
+                  </button>
+                )}
               </div>
 
               <div className="relative min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[#0f1524]/70 p-5">

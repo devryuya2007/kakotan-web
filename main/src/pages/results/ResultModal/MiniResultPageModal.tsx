@@ -50,12 +50,6 @@ export default function MiniResultPageModal({
     navigate("/results");
   };
 
-  const renderSeverityClass = (severity: WrongWordStat["severity"]): string => {
-    if (severity === "negative") return "text-rose-300";
-    if (severity === "caution") return "text-amber-300";
-    return "text-[#f2c97d]";
-  };
-
   return (
     <>
       <div className="fixed inset-0 z-[9998] bg-black/70 backdrop-blur-sm" />
@@ -78,14 +72,9 @@ export default function MiniResultPageModal({
               </p>
             ) : (
               <ul className="space-y-2">
-                {wrongWords.map(({ word, meaning, severity }) => (
+                {wrongWords.map(({ word, meaning }) => (
                   <li key={word} className={LIST_ITEM_CLASS}>
-                    <span
-                      className={`font-semibold ${renderSeverityClass(
-                        severity
-                      )}`}>
-                      {word}
-                    </span>
+                    <span className="font-semibold text-[#f2c97d]">{word}</span>
                     <span className="text-xs text-white/70">{meaning}</span>
                   </li>
                 ))}
