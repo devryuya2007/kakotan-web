@@ -22,7 +22,7 @@ export default function MiniResultPage() {
     muted: "text-[#c7cada]",
     subtle: "text-[#9499b1]",
     accent: "text-[#f2c97d]",
-    highlight: "text-[#f5f6ff]/80", // text-[#f7e2bd]
+    highlight: "text-[#f5f6ff]", // text-[#f7e2bd]
     positive: "text-[#9fe0c8]",
     negative: "text-[#f1a5b2]",
     caution: "text-[#f5d3a6]",
@@ -167,7 +167,7 @@ export default function MiniResultPage() {
                 return (
                   <div
                     key={label}
-                    className="flex min-w-0 flex-col gap-2 rounded-2xl border border-white/10 bg-[#0f1524]/70 p-4">
+                    className="flex min-w-0 flex-col gap-2 rounded-2xl border border-white/10 bg-[#0f1524] p-4">
                     <p className={`text-xs ${palette.muted} sm:text-sm`}>
                       {label}
                     </p>
@@ -181,7 +181,7 @@ export default function MiniResultPage() {
             </section>
 
             <section className="grid mb-0 w-full min-w-0 grid-cols-1 gap-6 lg:grid-cols-3">
-              <div className="min-w-0 rounded-2xl border border-white/10 bg-[#0f1524]/70 p-5 lg:col-span-2">
+              <div className="min-w-0 rounded-2xl border border-white/10 bg-[#0f1524] p-5 lg:col-span-2">
                 <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <h2
