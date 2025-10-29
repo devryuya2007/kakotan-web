@@ -4,6 +4,11 @@ import { useMemo, useState, type ReactNode } from "react";
 import { badges } from "../badge/badge";
 import { useTestResults } from "../states/TestReSultContext";
 import MiniResultPageModal from "./ResultModal/MiniResultPageModal";
+import {
+  calculateLevelProgress,
+  getExperiencePoints,
+  type TestSessionSnapshot,
+} from "@/features/results/scoring";
 
 export type WrongWordStat = {
   word: string;
@@ -127,11 +132,18 @@ export default function MiniResultPage() {
     gauge: 0.68,
     recentGain: 1250,
   };
-  // TODO: scoringユーティリティで算出したランク・経験値情報に差し替える
-
+  // TODO: 　ExperiencePointsにContextから累積XPを渡す
   const r = 52;
   const circumference = 2 * Math.PI * r;
-  const progress = Math.min(Math.max(correctRate / 100, 0), 1);
+
+  const totalXpPayload: TestSessionSnapshot = {
+    correct,
+    incorrect,
+    ExperiencePoints: 0,
+  };
+  const totalXp = getExperiencePoints(totalXpPayload);
+  const progress = calculateLevelProgress(totalXp).progressRatio;
+
   const dashOffset = circumference * (1 - progress);
   // 画面からはみ出さないように、モバイルでは全体レイアウトを軽く縮小している
   const contentWrapperClass =

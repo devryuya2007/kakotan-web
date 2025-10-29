@@ -73,12 +73,13 @@ export function calculateLevelProgress(
         xpTillNextLevel: 0,
         progressRatio: 1,
       };
-    }
-
+    } //if 100xp = 1レベル
+    // xpSpent　レベル単位の経験値（得た経験値が1543xpなら1500xp）　safeTotal　得てきた経験値すべて
     if (xpSpent + required > safeTotal) {
-      const xpIntoLevel = safeTotal - xpSpent;
-      const xpTillNextLevel = required - xpIntoLevel;
-      const progressRatio = required === 0 ? 1 : xpIntoLevel / required;
+      // required 次のレベルアップに必要な経験値
+      const xpIntoLevel = safeTotal - xpSpent; // レベルの途中で溜まっている分
+      const xpTillNextLevel = required - xpIntoLevel; // ユーザーが次のレベルに必要な分
+      const progressRatio = required === 0 ? 1 : xpIntoLevel / required; // 次のレベルアップまで何割進んだか
 
       return {
         level,
@@ -107,12 +108,3 @@ export function getExperiencePoints({
 
   return currentXp + gained;
 }
-
-/**
- * Example:
- * const totalXp = getExperiencePoints(sessionSnapshot);
- * const levelState = calculateLevelProgress(totalXp);
- * // `${levelState.level} / ${levelState.progressRatio * 100}%`
- */
-
-export {};

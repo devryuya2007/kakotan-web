@@ -244,10 +244,12 @@ export default function TestPageLayout({
           // 何問目かを表示するためのインデックス
           const cardIndex = currentIndex + idx;
           // プログレスバーに使う進捗率
+
           const cardProgress = Math.min(
             ((cardIndex + 1) / totalQuestions) * 100,
             100
           );
+
           // 固定化された順番の選択肢配列
           const cardChoices = getShuffledChoices(cardQuestion);
           // カードの位置や透明度などの設定
