@@ -42,7 +42,7 @@ export default function MiniResultPage() {
 
   type ToneKey = keyof typeof toneStyles;
 
-  const { correct, incorrect } = useTestResults();
+  const { correct, incorrect, applyXp, totalXp } = useTestResults();
 
   const totalAnswer = correct.length + incorrect.length;
   const correctRate =
@@ -141,8 +141,8 @@ export default function MiniResultPage() {
     incorrect,
     ExperiencePoints: 0,
   };
-  const totalXp = getExperiencePoints(totalXpPayload);
-  const progress = calculateLevelProgress(totalXp).progressRatio;
+  const Exp = getExperiencePoints(totalXpPayload);
+  const progress = calculateLevelProgress(Exp).progressRatio;
 
   const dashOffset = circumference * (1 - progress);
   // 画面からはみ出さないように、モバイルでは全体レイアウトを軽く縮小している
