@@ -1,6 +1,6 @@
 import { QuickStartButton } from "@/components/buttons/QuickStartButton";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { badges } from "../badge/badge";
 import { useTestResults } from "../states/TestReSultContext";
 import MiniResultPageModal from "./ResultModal/MiniResultPageModal";
@@ -21,6 +21,7 @@ export type WrongWordStat = {
 export default function MiniResultPage() {
   // 仮の成績データ。後で実際のテスト結果と差し替える予定
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const appliedXpRef = useRef(false);
 
   const palette = {
     base: "text-[#f5f6ff]",
@@ -136,20 +137,30 @@ export default function MiniResultPage() {
   const r = 52;
   const circumference = 2 * Math.PI * r;
 
-  const totalXpPayload: TestSessionSnapshot = {
-    correct,
-    incorrect,
-    ExperiencePoints: 0,
-  };
-  const Exp = getExperiencePoints(totalXpPayload);
-  const progress = calculateLevelProgress(Exp).progressRatio;
-
-  const dashOffset = circumference * (1 - progress);
   // 画面からはみ出さないように、モバイルでは全体レイアウトを軽く縮小している
   const contentWrapperClass =
     "flex w-full max-w-[100vw] min-w-0 flex-col gap-6 pb-4 text-left text-[#f5f6ff] max-h-[calc(100dvh-4.5rem)] origin-top scale-[0.94] sm:scale-100 sm:gap-8 sm:pb-6";
 
   const hasNoWrongWords = wrongWordsTop.length === 0;
+
+  const updatedTotalXp = useMemo(() => {
+    const payload: TestSessionSnapshot = {
+      correct,
+      incorrect,
+      ExperiencePoints: totalXp,
+    };
+    return getExperiencePoints(payload);
+  }, [correct, incorrect, totalXp]); // 今回獲得した分を足した累積XP
+
+  useEffect(() => {
+    if (appliedXpRef.current) return;
+    const gainedXp = updatedTotalXp - totalXp;
+    if (gainedXp !== 0) applyXp(gainedXp);
+    appliedXpRef.current = true;
+  }, [updatedTotalXp, totalXp, applyXp]);
+
+  const progress = calculateLevelProgress(updatedTotalXp).progressRatio;
+  const dashOffset = circumference * (1 - progress);
 
   return (
     <>
