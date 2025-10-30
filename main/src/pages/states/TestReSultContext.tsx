@@ -24,7 +24,8 @@ type TestResultsContextValue = {
   reset: () => void;
 };
 
-const STORAGE_KEY_PREFIX = "test-results";
+const RESULTS_STORAGE_PREFIX = "test-results:session";
+const XP_STORAGE_KEY = "test-results:xp";
 
 const TestResultsContext = createContext<TestResultsContextValue | undefined>(
   undefined
@@ -36,20 +37,18 @@ const createEmptySnapshot = (): StoredSnapshot => ({
   totalXp: 0,
 });
 
-const getStorageKey = (testId: string) => `${STORAGE_KEY_PREFIX}:${testId}`;
+const getResultsStorageKey = (testId: string) =>
+  `${RESULTS_STORAGE_PREFIX}:${testId}`;
 
-const loadSnapshot = (testId: string): StoredSnapshot => {
+const loadResults = (testId: string) => {
   if (typeof window === "undefined") {
-    return createEmptySnapshot();
+    return { correct: [], incorrect: [] };
   }
 
   try {
-    const raw = window.localStorage.getItem(getStorageKey(testId));
-    if (!raw) {
-      return createEmptySnapshot();
-    }
-
-    const parsed = JSON.parse(raw) as Partial<StoredSnapshot>;
+    const raw = window.localStorage.getItem(getResultsStorageKey(testId));
+    if (!raw) return { correct: [], incorrect: [] };
+    const parsed = JSON.parse(raw);
 
     return {
       correct: Array.isArray(parsed.correct)
@@ -58,12 +57,40 @@ const loadSnapshot = (testId: string): StoredSnapshot => {
       incorrect: Array.isArray(parsed.incorrect)
         ? (parsed.incorrect as QuizQuestion[])
         : [],
-      totalXp: typeof parsed.totalXp === "number" ? parsed.totalXp : 0,
     };
   } catch (error) {
-    console.warn("Failed to load test results from storage", error);
+    console.warn("Failed to load results from storage", error);
+    return { correct: [], incorrect: [] };
+  }
+};
+
+const loadTotalXp = () => {
+  if (typeof window === "undefined") return 0;
+
+  try {
+    const raw = window.localStorage.getItem(XP_STORAGE_KEY);
+    if (!raw) return 0;
+    const parsed = JSON.parse(raw) as { totalXp?: number };
+    return typeof parsed.totalXp === "number" ? parsed.totalXp : 0;
+  } catch (error) {
+    console.warn("Failed to load total XP from storage", error);
+    return 0;
+  }
+};
+
+const loadSnapshot = (testId: string): StoredSnapshot => {
+  if (typeof window === "undefined") {
     return createEmptySnapshot();
   }
+
+  const { correct, incorrect } = loadResults(testId);
+  const totalXp = loadTotalXp();
+
+  return {
+    correct,
+    incorrect,
+    totalXp,
+  };
 };
 
 export function TestResultsProvider({
@@ -76,6 +103,7 @@ export function TestResultsProvider({
   const [snapshot, setSnapshot] = useState<StoredSnapshot>(() =>
     loadSnapshot(testId)
   );
+
   const { correct, incorrect, totalXp } = snapshot;
 
   useEffect(() => {
@@ -83,8 +111,13 @@ export function TestResultsProvider({
 
     try {
       window.localStorage.setItem(
-        getStorageKey(testId),
+        getResultsStorageKey(testId),
         JSON.stringify(snapshot)
+      );
+
+      window.localStorage.setItem(
+        XP_STORAGE_KEY,
+        JSON.stringify({ totalXp: snapshot.totalXp })
       );
     } catch (error) {
       console.warn("Failed to persist test results", error);
@@ -117,7 +150,11 @@ export function TestResultsProvider({
   }, []);
 
   const reset = useCallback(() => {
-    setSnapshot(createEmptySnapshot());
+    setSnapshot((prev) => ({
+      ...prev,
+      correct: [],
+      incorrect: [],
+    }));
   }, []);
 
   const value = useMemo<TestResultsContextValue>(
