@@ -15,7 +15,7 @@ const RESULTS_BUTTON_CLASS =
   "rounded-xl border border-[#f2c97d55] px-5 py-2 text-sm font-semibold text-[#f2c97d] transition hover:border-[#f2c97d] hover:text-[#f6dda5]";
 
 const LIST_ITEM_CLASS =
-  "flex flex-col gap-1 rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3";
+  "flex flex-col gap-1 rounded-xl border border-white/10  px-4 py-3 bg-[#262335]";
 
 export default function MiniResultPageModal({
   isOpen,
@@ -74,7 +74,9 @@ export default function MiniResultPageModal({
               <ul className="space-y-2">
                 {wrongWords.map(({ word, meaning }) => (
                   <li key={word} className={LIST_ITEM_CLASS}>
-                    <span className="font-semibold text-[#f2c97d]">{word}</span>
+                    <span className="font-semibold text-[#f1a5b2] ">
+                      {word}
+                    </span>
                     <span className="text-xs text-white/70">{meaning}</span>
                   </li>
                 ))}

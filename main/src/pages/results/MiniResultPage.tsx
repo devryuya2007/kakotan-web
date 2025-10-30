@@ -9,6 +9,7 @@ import {
   getExperiencePoints,
   type TestSessionSnapshot,
 } from "@/features/results/scoring";
+import { useNavigate } from "react-router-dom";
 
 export type WrongWordStat = {
   word: string;
@@ -24,10 +25,10 @@ export default function MiniResultPage() {
 
   const palette = {
     base: "text-[#f5f6ff]",
-    muted: "text-[#c7cada]",
+    muted: "text-[#f2c97d]",
     subtle: "text-[#9499b1]",
     accent: "text-[#f2c97d]",
-    highlight: "text-[#f5f6ff]", // text-[#f7e2bd]
+    highlight: "text-[#f2c97d]", // text-[#f7e2bd]
     positive: "text-[#9fe0c8]",
     negative: "text-[#f1a5b2]",
     caution: "text-[#f5d3a6]",
@@ -142,7 +143,7 @@ export default function MiniResultPage() {
     level: level,
     nextXp: xpTillNextLevel,
   };
-  // TODO: 　ExperiencePointsにContextから累積XPを渡す
+
   const r = 52;
   const circumference = 2 * Math.PI * r;
 
@@ -164,6 +165,16 @@ export default function MiniResultPage() {
   const progress = calculateLevelProgress(updatedTotalXp).progressRatio;
   const dashOffset = circumference * (1 - progress);
 
+  const navigate = useNavigate();
+
+  const home = () => {
+    navigate("/");
+  };
+
+  const results = () => {
+    navigate("/results");
+  };
+
   return (
     <>
       <AppLayout>
@@ -175,12 +186,12 @@ export default function MiniResultPage() {
               </h1>
               <span>
                 <QuickStartButton
-                  onClick={() => {}}
+                  onClick={() => results()}
                   label="成績"
                   className="!w-auto !px-3  !py-1 text-xs tracking-[0.2em] !float-right"
                 />
                 <QuickStartButton
-                  onClick={() => {}}
+                  onClick={() => home()}
                   label="ホーム"
                   className="!w-auto !px-3 !py-1 text-xs tracking-[0.2em]"
                 />
@@ -234,7 +245,7 @@ export default function MiniResultPage() {
                         <div
                           key={word}
                           className="flex items-center justify-between gap-3 rounded-xl border border-white/5 bg-[#262335] px-3 py-2.5 text-left text-sm transition  sm:px-4 sm:py-3">
-                          <span className={`font-medium ${palette.highlight}`}>
+                          <span className={`font-medium ${palette.negative}`}>
                             {word}
                           </span>
                           <span className="truncate text-xs text-white/70">
