@@ -1,6 +1,6 @@
 import { QuickStartButton } from "@/components/buttons/QuickStartButton";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { badges } from "../badge/badge";
 import { useTestResults } from "../states/TestReSultContext";
 import MiniResultPageModal from "./ResultModal/MiniResultPageModal";
@@ -21,7 +21,6 @@ export type WrongWordStat = {
 export default function MiniResultPage() {
   // 仮の成績データ。後で実際のテスト結果と差し替える予定
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const appliedXpRef = useRef(false);
 
   const palette = {
     base: "text-[#f5f6ff]",
@@ -43,7 +42,7 @@ export default function MiniResultPage() {
 
   type ToneKey = keyof typeof toneStyles;
 
-  const { correct, incorrect, applyXp, totalXp } = useTestResults();
+  const { correct, incorrect, totalXp } = useTestResults();
 
   const totalAnswer = correct.length + incorrect.length;
   const correctRate =
@@ -125,13 +124,23 @@ export default function MiniResultPage() {
     return topEntries;
   }, [wrongWordsAll]);
 
+  const { level, xpTillNextLevel } = calculateLevelProgress(totalXp);
+
+  function letterCalculate() {
+    if (level === 99) return "SS";
+    else if (level >= 90) return "S";
+    else if (level >= 70) return "A";
+    else if (level >= 50) return "B";
+    else if (level >= 30) return "C";
+    else if (level >= 10) return "D";
+    else return "E";
+  }
+
   const rankInfo = {
-    letter: "A",
+    letter: letterCalculate(),
     title: "AURORA KNIGHT",
-    level: 15,
-    nextXp: 350,
-    gauge: 0.68,
-    recentGain: 1250,
+    level: level,
+    nextXp: xpTillNextLevel,
   };
   // TODO: 　ExperiencePointsにContextから累積XPを渡す
   const r = 52;
@@ -151,13 +160,6 @@ export default function MiniResultPage() {
     };
     return getExperiencePoints(payload);
   }, [correct, incorrect, totalXp]); // 今回獲得した分を足した累積XP
-
-  useEffect(() => {
-    if (appliedXpRef.current) return;
-    const gainedXp = updatedTotalXp - totalXp;
-    if (gainedXp !== 0) applyXp(gainedXp);
-    appliedXpRef.current = true;
-  }, [updatedTotalXp, totalXp, applyXp]);
 
   const progress = calculateLevelProgress(updatedTotalXp).progressRatio;
   const dashOffset = circumference * (1 - progress);

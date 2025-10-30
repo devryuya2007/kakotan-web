@@ -53,7 +53,7 @@ export default function TestPageLayout({
 
   useEffect(() => {
     reset();
-  }, [reset]);
+  }, []);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   // 各選択肢が正解・不正解・未回答かを保持する
@@ -118,16 +118,27 @@ export default function TestPageLayout({
     const updatedTotalXp = getExperiencePoints(snapshot);
     const gained = updatedTotalXp - totalXp; // 得た経験値を含めた累計　- 累計　= 今回得た経験値
     applyXp(gained);
-  }, [correct, incorrect, totalXp, applyXp]);
+  }, [correct, incorrect, totalXp]);
+
+  const hasFinishedRef = useRef(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (currentIndex < totalQuestions) return;
+    if (hasFinishedRef.current) return;
+
+    hasFinishedRef.current = true;
+    finishTest();
+    navigate("/results/mini");
+  }, [currentIndex, totalQuestions, finishTest, navigate]);
 
   // すべての問題を解いたときに成績を表示させる
-  const navigate = useNavigate();
   useEffect(() => {
     if (currentIndex >= totalQuestions) {
       finishTest;
       navigate("/results/mini");
     }
-  }, [currentIndex, totalQuestions, navigate, finishTest]);
+  }, []);
 
   // コンポーネントが壊れるときにタイマーを全部止めるためのクリーンアップ
   useEffect(() => {
