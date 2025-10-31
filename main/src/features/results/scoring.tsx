@@ -32,8 +32,8 @@ export type LevelProgress = {
 
 // デフォルトの経験値カーブ設定
 export const defaultLevelConfig: LevelSystemConfig = {
-  baseRequiredXp: 100,
-  growthRate: 1.2,
+  baseRequiredXp: 1000, // レベル１→２に必要なXP
+  growthRate: 1.1, // レベルが１上がるごとに必要なXPを何倍にするか
   maxLevel: 99,
 };
 
@@ -97,14 +97,23 @@ export function calculateLevelProgress(
 }
 
 // correct/incorrect: 問題ごとの正誤リスト, ExperiencePoints: 既存の累積XP -> 新しい累積XPを返す
+export interface ExperienceGainResult {
+  currentXp: number; // テスト前の持っていたXP
+  gainedXp: number; // 今回得たXP
+  correctXp: number; // 正解分で稼いだXP
+  incorrectXp: number; // 不正解分で稼いだXP
+  nextTotalXp: number; // 累計XP
+}
+
 export function getExperiencePoints({
   correct,
   incorrect,
   ExperiencePoints: currentXp,
-}: TestSessionSnapshot): number {
-  const correctXp = correct.length * 10;
-  const incorrectPenalty = incorrect.length * 3;
-  const gained = Math.max(0, correctXp - incorrectPenalty);
+}: TestSessionSnapshot): ExperienceGainResult {
+  const correctXp = correct.length * 90;
+  const incorrectXp = incorrect.length * 40;
+  const gainedXp = Math.max(0, correctXp + incorrectXp);
+  const nextTotalXp = currentXp + gainedXp;
 
-  return currentXp + gained;
+  return { currentXp, gainedXp, correctXp, incorrectXp, nextTotalXp };
 }

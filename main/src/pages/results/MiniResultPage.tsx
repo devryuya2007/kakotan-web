@@ -4,12 +4,8 @@ import { useMemo, useState, type ReactNode } from "react";
 import { badges } from "../badge/badge";
 import { useTestResults } from "../states/TestReSultContext";
 import MiniResultPageModal from "./ResultModal/MiniResultPageModal";
-import {
-  calculateLevelProgress,
-  getExperiencePoints,
-  type TestSessionSnapshot,
-} from "@/features/results/scoring";
-import { useNavigate } from "react-router-dom";
+import { calculateLevelProgress } from "@/features/results/scoring";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export type WrongWordStat = {
   word: string;
@@ -125,8 +121,6 @@ export default function MiniResultPage() {
     return topEntries;
   }, [wrongWordsAll]);
 
-  const { level, xpTillNextLevel } = calculateLevelProgress(totalXp);
-
   function letterCalculate() {
     if (level === 99) return "SS";
     else if (level >= 90) return "S";
@@ -137,13 +131,6 @@ export default function MiniResultPage() {
     else return "E";
   }
 
-  const rankInfo = {
-    letter: letterCalculate(),
-    title: "AURORA KNIGHT",
-    level: level,
-    nextXp: xpTillNextLevel,
-  };
-
   const r = 52;
   const circumference = 2 * Math.PI * r;
 
@@ -153,16 +140,13 @@ export default function MiniResultPage() {
 
   const hasNoWrongWords = wrongWordsTop.length === 0;
 
-  const updatedTotalXp = useMemo(() => {
-    const payload: TestSessionSnapshot = {
-      correct,
-      incorrect,
-      ExperiencePoints: totalXp,
-    };
-    return getExperiencePoints(payload);
-  }, [correct, incorrect, totalXp]); // 今回獲得した分を足した累積XP
+  const location = useLocation();
+  const cariiedXp = location.state?.updatedTotalXp; // 得た経験値を含めた累計
+  const effectuveTotalXp = cariiedXp ?? totalXp;
+  const progress = calculateLevelProgress(effectuveTotalXp).progressRatio;
 
-  const progress = calculateLevelProgress(updatedTotalXp).progressRatio;
+  const { level, xpTillNextLevel } = calculateLevelProgress(effectuveTotalXp);
+
   const dashOffset = circumference * (1 - progress);
 
   const navigate = useNavigate();
@@ -173,6 +157,13 @@ export default function MiniResultPage() {
 
   const results = () => {
     navigate("/results");
+  };
+
+  const rankInfo = {
+    letter: letterCalculate(),
+    title: "AURORA KNIGHT",
+    level: level,
+    nextXp: xpTillNextLevel,
   };
 
   return (

@@ -115,30 +115,27 @@ export default function TestPageLayout({
 
   const finishTest = useCallback(() => {
     const snapshot = { correct, incorrect, ExperiencePoints: totalXp };
-    const updatedTotalXp = getExperiencePoints(snapshot);
-    const gained = updatedTotalXp - totalXp; // 得た経験値を含めた累計　- 累計　= 今回得た経験値
+    const { gainedXp, nextTotalXp } = getExperiencePoints(snapshot);
+    const gained = gainedXp; // 得た経験値を含めた累計　- 累計　= 今回得た経験値
     applyXp(gained);
-  }, [correct, incorrect, totalXp]);
+    const updatedTotalXp = nextTotalXp;
+
+    return { gained, updatedTotalXp };
+  }, [correct, incorrect, totalXp, applyXp]);
 
   const hasFinishedRef = useRef(false);
   const navigate = useNavigate();
 
+  // すべての問題を解いたときに成績を表示させる
   useEffect(() => {
     if (currentIndex < totalQuestions) return;
     if (hasFinishedRef.current) return;
 
-    hasFinishedRef.current = true;
-    finishTest();
-    navigate("/results/mini");
-  }, [currentIndex, totalQuestions, finishTest, navigate]);
+    const { gained, updatedTotalXp } = finishTest();
 
-  // すべての問題を解いたときに成績を表示させる
-  useEffect(() => {
-    if (currentIndex >= totalQuestions) {
-      finishTest;
-      navigate("/results/mini");
-    }
-  }, []);
+    hasFinishedRef.current = true;
+    navigate("/results/mini", { state: { gained, updatedTotalXp } });
+  }, [currentIndex, totalQuestions, finishTest, navigate]);
 
   // コンポーネントが壊れるときにタイマーを全部止めるためのクリーンアップ
   useEffect(() => {
@@ -159,6 +156,7 @@ export default function TestPageLayout({
   function handleClick(choice: string) {
     // 正解データがなくても、アニメーション中でも何もしない
     if (!answerChoice || isTransitioning || !question) return;
+    setIsTransitioning(true); // 問題を連打して加算水増しを防ぐ。
 
     // 正解かどうかを判定し、ボタンの見た目ステータスを更新
     const isAnswer = choice === answerChoice;
@@ -183,7 +181,6 @@ export default function TestPageLayout({
 
     // 少し待ってからカードを動かし始める
     feedbackTimeoutRef.current = setTimeout(() => {
-      setIsTransitioning(true);
       feedbackTimeoutRef.current = null;
 
       // カードの整理が終わったら次の問題へ進める

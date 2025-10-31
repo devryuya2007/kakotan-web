@@ -1,3 +1,10 @@
+import { AppLayout } from "@/components/layout/AppLayout";
+
 export default function ResultsPage() {
-  return <div>ResultsPage</div>;
+  return (
+    <AppLayout>
+      <div></div>
+    </AppLayout>
+  );
 }
+// #f2c97d  #b8860b #fdf1d7
