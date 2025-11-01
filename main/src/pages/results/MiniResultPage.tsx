@@ -1,6 +1,6 @@
 import { QuickStartButton } from "@/components/buttons/QuickStartButton";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { badges } from "../badge/badge";
 import { useTestResults } from "../states/TestReSultContext";
 import MiniResultPageModal from "./ResultModal/MiniResultPageModal";
@@ -147,10 +147,19 @@ export default function MiniResultPage() {
 
   const { level, xpTillNextLevel } = calculateLevelProgress(effectuveTotalXp);
 
-  const dashOffset = circumference * (1 - progress);
-
   const navigate = useNavigate();
+  const [displayProgress, setDisplayProgress] = useState(0);
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setDisplayProgress(progress);
+    }, 300);
 
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [progress]);
+
+  const dashOffset = circumference * (1 - displayProgress);
   const home = () => {
     navigate("/");
   };

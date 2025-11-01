@@ -37,6 +37,9 @@ export const defaultLevelConfig: LevelSystemConfig = {
   maxLevel: 99,
 };
 
+export const XP_PER_CORRECT = 90;
+export const XP_PER_INCORRECT = 40;
+
 // level: 計算したいレベル番号, config: 使用するカーブ設定 -> 次レベルまでに必要な経験値を返す
 export function requiredXpForLevel(
   level: number,
@@ -110,8 +113,8 @@ export function getExperiencePoints({
   incorrect,
   ExperiencePoints: currentXp,
 }: TestSessionSnapshot): ExperienceGainResult {
-  const correctXp = correct.length * 90;
-  const incorrectXp = incorrect.length * 40;
+  const correctXp = correct.length * XP_PER_CORRECT;
+  const incorrectXp = incorrect.length * XP_PER_INCORRECT;
   const gainedXp = Math.max(0, correctXp + incorrectXp);
   const nextTotalXp = currentXp + gainedXp;
 

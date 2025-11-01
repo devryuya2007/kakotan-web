@@ -1,9 +1,21 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type MouseEvent,
+} from "react";
 // 単語テストの一問分を表す型。外部のデータローダーから入ってくる
 import { type QuizQuestion } from "../../../../data/vocabLoader";
 import { useNavigate } from "react-router-dom";
 import { useTestResults } from "@/pages/states/TestReSultContext";
-import { getExperiencePoints } from "@/features/results/scoring";
+import {
+  getExperiencePoints,
+  XP_PER_CORRECT,
+  XP_PER_INCORRECT,
+} from "@/features/results/scoring";
 
 // このコンポーネントが受け取るpropsの形。questionsは問題配列、countは総数
 type TestPageLayoutProps = {
@@ -62,6 +74,14 @@ export default function TestPageLayout({
   >({});
   // カード切り替え中かどうか。trueになっている間はボタン操作を無効化する
   const [isTransitioning, setIsTransitioning] = useState(false);
+  // 獲得XPのトースト表示に使うstate
+  const [gainToast, setGainToast] = useState<{
+    amount: number;
+    key: number;
+    position: { top: number; left: number };
+  } | null>(null);
+  // セクション要素の位置を参照してトーストの表示座標に使う
+  const sectionRef = useRef<HTMLElement | null>(null);
   // 解答直後の待ち時間を制御するためのタイマー参照
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // カードアニメーション終了待ち用タイマーの参照
@@ -149,11 +169,23 @@ export default function TestPageLayout({
     };
   }, []);
 
+  useEffect(() => {
+    if (!gainToast) return;
+
+    const timeoutId = window.setTimeout(() => {
+      setGainToast(null);
+    }, 500); // 次問題へのアニメーション時間と関係してくるので注意
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [gainToast]);
+
   // 問題や正解が存在しない場合は何も描画しない
   if (!question || !answerChoice) return null;
 
   // 選択肢クリック時のメイン処理
-  function handleClick(choice: string) {
+  function handleClick(choice: string, event: MouseEvent<HTMLButtonElement>) {
     // 正解データがなくても、アニメーション中でも何もしない
     if (!answerChoice || isTransitioning || !question) return;
     setIsTransitioning(true); // 問題を連打して加算水増しを防ぐ。
@@ -164,6 +196,22 @@ export default function TestPageLayout({
       ...prev,
       [choice]: isAnswer ? "correct" : "incorrect",
     }));
+
+    const buttonRect = event.currentTarget.getBoundingClientRect();
+    const sectionRect = sectionRef.current?.getBoundingClientRect();
+    const relativeTop = sectionRect
+      ? buttonRect.top - sectionRect.top + buttonRect.height / 2
+      : buttonRect.top + buttonRect.height / 2;
+    const relativeLeft = sectionRect
+      ? buttonRect.left - sectionRect.left + buttonRect.width / 2
+      : buttonRect.left + buttonRect.width / 2;
+
+    const gainAmount = isAnswer ? XP_PER_CORRECT : XP_PER_INCORRECT;
+    setGainToast({
+      amount: gainAmount,
+      key: Date.now(),
+      position: { top: relativeTop, left: relativeLeft },
+    });
 
     // 正解・不正解ごとの記録に追加
     recordResult(question, isAnswer);
@@ -249,9 +297,35 @@ export default function TestPageLayout({
     return layouts[clampedIndex];
   }
 
+  const toastBaseClass =
+    "absolute z-50 rounded-full border px-4 py-2 text-sm font-semibold shadow-lg transition pointer-events-none";
+
+  const correctToastClass =
+    "border-amber-200/60 bg-amber-300/20 text-amber-100";
+  const incorrectToastClass = "border-rose-200/60 bg-rose-300/20 text-rose-100";
+  const toastVariantClass =
+    gainToast?.amount === XP_PER_CORRECT
+      ? correctToastClass
+      : incorrectToastClass;
+  const toastPositionStyle: CSSProperties | undefined = gainToast
+    ? {
+        top: gainToast.position.top,
+        left: gainToast.position.left,
+        transform: "translate(-50%, -120%)",
+      }
+    : undefined;
+
   return (
     // カードスタック全体の外枠。センタリングと余白を担当
-    <section className="relative flex justify-center px-4">
+    <section className="relative flex justify-center px-4" ref={sectionRef}>
+      {gainToast && (
+        <div
+          className={`${toastBaseClass} ${toastVariantClass}`}
+          style={toastPositionStyle}
+          key={gainToast.key}>
+          {`+${gainToast.amount} XP`}
+        </div>
+      )}
       <div className="relative min-h-[420px] w-full max-w-3xl">
         {/* 表示対象となるカード一枚ごとに描画 */}
         {visibleCards.map((cardQuestion, idx) => {
@@ -335,7 +409,7 @@ export default function TestPageLayout({
                     <button
                       // アクティブなカードだけクリック可にする
                       onClick={
-                        isActiveCard ? () => handleClick(choice) : undefined
+                        isActiveCard ? (e) => handleClick(choice, e) : undefined
                       }
                       disabled={!isActiveCard || isTransitioning}
                       key={choiceIndex}
