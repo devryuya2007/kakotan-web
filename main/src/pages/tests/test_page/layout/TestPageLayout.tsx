@@ -74,6 +74,7 @@ export default function TestPageLayout({
   >({});
   // カード切り替え中かどうか。trueになっている間はボタン操作を無効化する
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isSlideActive, setIsSlideActive] = useState(false);
   // 獲得XPのトースト表示に使うstate
   const [gainToast, setGainToast] = useState<{
     amount: number;
@@ -82,6 +83,7 @@ export default function TestPageLayout({
   } | null>(null);
   // セクション要素の位置を参照してトーストの表示座標に使う
   const sectionRef = useRef<HTMLElement | null>(null);
+  const toastDelayTimeoutRef = useRef<number | null>(null);
   // 解答直後の待ち時間を制御するためのタイマー参照
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // カードアニメーション終了待ち用タイマーの参照
@@ -93,9 +95,11 @@ export default function TestPageLayout({
   // どのquestion配列をキャッシュに使っているかを覚えておく
   const cacheSourceRef = useRef<QuizQuestion[] | null>(null);
   // ボタンを押した直後の「考え中」っぽい間
-  const FEEDBACK_DELAY = 100; // 押下直後の余白（次操作解放まで合計0.5s）
+  const FEEDBACK_DELAY = 1000; // 押下直後の余白（次操作解放まで合計0.5s）
   // 実際のカードスライドにかける時間
-  const TRANSITION_DURATION = 600; // アニメーション本体（FEEDBACK_DELAYと合わせて0.5s）
+  const TRANSITION_DURATION = 400; // アニメーション本体（FEEDBACK_DELAYと合わせて0.5s）
+  const TOAST_DELAY = 0;
+  const TOAST_DURATION = 1000;
   // アクセシビリティ設定を反映した結果の真偽値
   const prefersReducedMotion = usePrefersReducedMotion();
   // 設定によってはアニメーション時間をゼロにする
@@ -160,6 +164,9 @@ export default function TestPageLayout({
   // コンポーネントが壊れるときにタイマーを全部止めるためのクリーンアップ
   useEffect(() => {
     return () => {
+      if (toastDelayTimeoutRef.current) {
+        clearTimeout(toastDelayTimeoutRef.current);
+      }
       if (feedbackTimeoutRef.current) {
         clearTimeout(feedbackTimeoutRef.current);
       }
@@ -174,7 +181,7 @@ export default function TestPageLayout({
 
     const timeoutId = window.setTimeout(() => {
       setGainToast(null);
-    }, 500); // 次問題へのアニメーション時間と関係してくるので注意
+    }, TOAST_DURATION); // 次問題へのアニメーション時間と関係してくるので注意
 
     return () => {
       clearTimeout(timeoutId);
@@ -188,7 +195,7 @@ export default function TestPageLayout({
   function handleClick(choice: string, event: MouseEvent<HTMLButtonElement>) {
     // 正解データがなくても、アニメーション中でも何もしない
     if (!answerChoice || isTransitioning || !question) return;
-    setIsTransitioning(true); // 問題を連打して加算水増しを防ぐ。
+    setIsTransitioning(true); // 問題を連打して加算水増しを防ぐ
 
     // 正解かどうかを判定し、ボタンの見た目ステータスを更新
     const isAnswer = choice === answerChoice;
@@ -199,19 +206,26 @@ export default function TestPageLayout({
 
     const buttonRect = event.currentTarget.getBoundingClientRect();
     const sectionRect = sectionRef.current?.getBoundingClientRect();
+
     const relativeTop = sectionRect
-      ? buttonRect.top - sectionRect.top + buttonRect.height / 2
+      ? buttonRect.top - sectionRect.top + buttonRect.height / 2 // カードの上からボタンの中心までの距離
       : buttonRect.top + buttonRect.height / 2;
     const relativeLeft = sectionRect
       ? buttonRect.left - sectionRect.left + buttonRect.width / 2
       : buttonRect.left + buttonRect.width / 2;
 
     const gainAmount = isAnswer ? XP_PER_CORRECT : XP_PER_INCORRECT;
-    setGainToast({
-      amount: gainAmount,
-      key: Date.now(),
-      position: { top: relativeTop, left: relativeLeft },
-    });
+    if (toastDelayTimeoutRef.current) {
+      clearTimeout(toastDelayTimeoutRef.current);
+    }
+    toastDelayTimeoutRef.current = window.setTimeout(() => {
+      setGainToast({
+        amount: gainAmount,
+        key: Date.now(),
+        position: { top: relativeTop, left: relativeLeft },
+      });
+      toastDelayTimeoutRef.current = null;
+    }, TOAST_DELAY);
 
     // 正解・不正解ごとの記録に追加
     recordResult(question, isAnswer);
@@ -236,6 +250,7 @@ export default function TestPageLayout({
         setButtonStates({});
         setCurrentIndex((i) => i + 1);
         setIsTransitioning(false);
+        setIsSlideActive(false);
         transitionTimeoutRef.current = null;
       };
 
@@ -243,6 +258,7 @@ export default function TestPageLayout({
       if (effectiveTransitionDuration === 0) {
         finalizeTransition();
       } else {
+        setIsSlideActive(true);
         // そうでなければアニメーション時間だけ待ってから完了処理へ
         transitionTimeoutRef.current = setTimeout(
           finalizeTransition,
@@ -290,7 +306,7 @@ export default function TestPageLayout({
   // 表示するカードのindexから適切なレイアウト情報を引き出す
   function getCardPresentation(idx: number) {
     const layouts =
-      isTransitioning && effectiveTransitionDuration > 0
+      isSlideActive && effectiveTransitionDuration > 0
         ? transitionLayouts
         : baseLayouts;
     const clampedIndex = Math.min(idx, layouts.length - 1);
@@ -303,6 +319,7 @@ export default function TestPageLayout({
   const correctToastClass =
     "border-amber-200/60 bg-amber-300/20 text-amber-100";
   const incorrectToastClass = "border-rose-200/60 bg-rose-300/20 text-rose-100";
+
   const toastVariantClass =
     gainToast?.amount === XP_PER_CORRECT
       ? correctToastClass
