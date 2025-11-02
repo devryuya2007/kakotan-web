@@ -75,6 +75,7 @@ export default function TestPageLayout({
   // カード切り替え中かどうか。trueになっている間はボタン操作を無効化する
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isSlideActive, setIsSlideActive] = useState(false);
+  const [isToastVisible, setIsToastVisible] = useState(false);
   // 獲得XPのトースト表示に使うstate
   const [gainToast, setGainToast] = useState<{
     amount: number;
@@ -95,11 +96,11 @@ export default function TestPageLayout({
   // どのquestion配列をキャッシュに使っているかを覚えておく
   const cacheSourceRef = useRef<QuizQuestion[] | null>(null);
   // ボタンを押した直後の「考え中」っぽい間
-  const FEEDBACK_DELAY = 1000; // 押下直後の余白（次操作解放まで合計0.5s）
+  const FEEDBACK_DELAY = 800; // 押下直後の余白（次操作解放まで合計0.5s）
   // 実際のカードスライドにかける時間
   const TRANSITION_DURATION = 400; // アニメーション本体（FEEDBACK_DELAYと合わせて0.5s）
   const TOAST_DELAY = 0;
-  const TOAST_DURATION = 1000;
+  const TOAST_DURATION = 800;
   // アクセシビリティ設定を反映した結果の真偽値
   const prefersReducedMotion = usePrefersReducedMotion();
   // 設定によってはアニメーション時間をゼロにする
@@ -177,16 +178,25 @@ export default function TestPageLayout({
   }, []);
 
   useEffect(() => {
-    if (!gainToast) return;
+    if (!gainToast) {
+      setIsToastVisible(false);
+      return;
+    }
+
+    const showId = window.requestAnimationFrame(() => {
+      setIsToastVisible(true);
+    });
 
     const timeoutId = window.setTimeout(() => {
+      setIsToastVisible(false);
       setGainToast(null);
-    }, TOAST_DURATION); // 次問題へのアニメーション時間と関係してくるので注意
+    }, TOAST_DURATION);
 
     return () => {
+      window.cancelAnimationFrame(showId);
       clearTimeout(timeoutId);
     };
-  }, [gainToast]);
+  }, [gainToast, TOAST_DURATION]);
 
   // 問題や正解が存在しない場合は何も描画しない
   if (!question || !answerChoice) return null;
@@ -270,15 +280,15 @@ export default function TestPageLayout({
 
   // まだ判定が付いていない選択肢ボタンの共通スタイル
   const baseButtonStyle =
-    "group relative rounded-xl border border-white/15 bg-[radial-gradient(circle_at_top,#1a1c26,#070811)]/90 px-5 py-4 text-center text-base font-medium tracking-wide text-white/85 shadow-[0_12px_28px_-18px_rgba(15,23,42,0.9)] transition-all duration-300 hover:-translate-y-1 hover:border-[#f2c97d]/70 hover:bg-[radial-gradient(circle_at_top,#202333,#0d101c)] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f2c97d]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
+    "group relative w-full rounded-xl border border-white/15 bg-[radial-gradient(circle_at_top,#1a1c26,#070811)]/90 px-5 py-4 text-center text-base font-medium tracking-wide text-white/85 shadow-[0_12px_28px_-18px_rgba(15,23,42,0.9)] transition-all duration-300 hover:-translate-y-1 hover:border-[#f2c97d]/70 hover:bg-[radial-gradient(circle_at_top,#202333,#0d101c)] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f2c97d]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
 
   // 正解ボタン用の見た目（ゴールド系）
   const correctButtonStyle =
-    "rounded-xl border border-amber-200/70 bg-gradient-to-br from-amber-400 via-amber-300 to-yellow-200 px-5 py-4 text-center text-base font-semibold tracking-wide text-slate-900 shadow-[0_22px_48px_-20px_rgba(251,191,36,0.9)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_28px_55px_-18px_rgba(251,191,36,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-200/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
+    "w-full rounded-xl border border-amber-200/70 bg-gradient-to-br from-amber-400 via-amber-300 to-yellow-200 px-5 py-4 text-center text-base font-semibold tracking-wide text-slate-900 shadow-[0_22px_48px_-20px_rgba(251,191,36,0.9)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_28px_55px_-18px_rgba(251,191,36,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-200/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
 
   // 不正解ボタン用の見た目（赤系）
   const incorrectButtonStyle =
-    "rounded-xl border border-rose-500/60 bg-gradient-to-br from-rose-600 via-rose-500 to-rose-400 px-5 py-4 text-center text-base font-semibold tracking-wide text-rose-50 shadow-[0_18px_38px_-18px_rgba(244,63,94,0.85)] transition-all duration-300 hover:-translate-y-1 hover:border-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
+    "w-full rounded-xl border border-rose-500/60 bg-gradient-to-br from-rose-600 via-rose-500 to-rose-400 px-5 py-4 text-center text-base font-semibold tracking-wide text-rose-50 shadow-[0_18px_38px_-18px_rgba(244,63,94,0.85)] transition-all duration-300 hover:-translate-y-1 hover:border-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
 
   // 選択肢ごとの状態に合わせてスタイルを出し分ける小さなヘルパー
   function ButtonStyleSwitch(choice: string) {
@@ -314,11 +324,12 @@ export default function TestPageLayout({
   }
 
   const toastBaseClass =
-    "absolute z-50 rounded-full border px-4 py-2 text-sm font-semibold shadow-lg transition pointer-events-none";
+    "absolute z-50 flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-lg pointer-events-none transition-all duration-200 ease-out opacity-0 -translate-y-4";
 
   const correctToastClass =
-    "border-amber-200/60 bg-amber-300/20 text-amber-100";
-  const incorrectToastClass = "border-rose-200/60 bg-rose-300/20 text-rose-100";
+    "border-emerald-200 bg-emerald-500 text-emerald-50 shadow-[0_18px_36px_-16px_rgba(16,185,129,0.75)]";
+  const incorrectToastClass =
+    "border-rose-200 bg-rose-500 text-rose-50 shadow-[0_18px_36px_-16px_rgba(244,63,94,0.75)]";
 
   const toastVariantClass =
     gainToast?.amount === XP_PER_CORRECT
@@ -331,13 +342,16 @@ export default function TestPageLayout({
         transform: "translate(-50%, -120%)",
       }
     : undefined;
+  const toastVisibilityClass = isToastVisible
+    ? "opacity-100 translate-y-0"
+    : "opacity-0 -translate-y-3";
 
   return (
     // カードスタック全体の外枠。センタリングと余白を担当
     <section className="relative flex justify-center px-4" ref={sectionRef}>
-      {gainToast && (
+      {gainToast && gainToast.amount === XP_PER_CORRECT && (
         <div
-          className={`${toastBaseClass} ${toastVariantClass}`}
+          className={`${toastBaseClass} ${toastVariantClass} ${toastVisibilityClass}`}
           style={toastPositionStyle}
           key={gainToast.key}>
           {`+${gainToast.amount} XP`}
@@ -421,26 +435,41 @@ export default function TestPageLayout({
                   {cardQuestion.phrase}
                 </h1>
                 {/* 選択肢ボタンのグリッド */}
-                <div className="grid grid-cols-2 gap-3 text-center text-white/80">
-                  {cardChoices.map((choice, choiceIndex) => (
-                    <button
-                      // アクティブなカードだけクリック可にする
-                      onClick={
-                        isActiveCard ? (e) => handleClick(choice, e) : undefined
-                      }
-                      disabled={!isActiveCard || isTransitioning}
-                      key={choiceIndex}
-                      className={`${
-                        // 今のカードなら状態に応じた色を使う。後ろのカードは半透明＋カーソル無効
-                        isActiveCard
-                          ? ButtonStyleSwitch(choice)
-                          : `${baseButtonStyle} cursor-default opacity-70`
-                      }`}>
-                      {/* 選択肢の文字列（意味や単語） */}
-                      {choice}
-                    </button>
-                  ))}
-                </div>
+                <ul className="grid grid-cols-2 gap-3 text-center text-white/80 list-none p-0 m-0">
+                  {cardChoices.map((choice, choiceIndex) => {
+                    const state = buttonStates[choice];
+                    const isWrong = state === "incorrect";
+
+                    return (
+                      <li
+                        key={choiceIndex}
+                        className="relative flex justify-center">
+                        {isWrong && (
+                          <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-4xl text-rose-200/70">
+                            ✖
+                          </span>
+                        )}
+                        <button
+                          // アクティブなカードだけクリック可にする
+                          onClick={
+                            isActiveCard
+                              ? (e) => handleClick(choice, e)
+                              : undefined
+                          }
+                          disabled={!isActiveCard || isTransitioning}
+                          className={`${
+                            // 今のカードなら状態に応じた色を使う。後ろのカードは半透明＋カーソル無効
+                            isActiveCard
+                              ? ButtonStyleSwitch(choice)
+                              : `${baseButtonStyle} cursor-default opacity-70`
+                          }`}>
+                          {/* 選択肢の文字列（意味や単語） */}
+                          {choice}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
             </div>
           );
