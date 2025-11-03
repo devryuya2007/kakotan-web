@@ -1,8 +1,21 @@
-// Reactから使う主要なフックをまとめて呼び出している（状態管理や副作用用）
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type MouseEvent,
+} from "react";
 // 単語テストの一問分を表す型。外部のデータローダーから入ってくる
 import { type QuizQuestion } from "../../../../data/vocabLoader";
 import { useNavigate } from "react-router-dom";
+import { useTestResults } from "@/pages/states/TestReSultContext";
+import {
+  getExperiencePoints,
+  XP_PER_CORRECT,
+  XP_PER_INCORRECT,
+} from "@/features/results/scoring";
 
 // このコンポーネントが受け取るpropsの形。questionsは問題配列、countは総数
 type TestPageLayoutProps = {
@@ -47,6 +60,13 @@ export default function TestPageLayout({
   count,
 }: TestPageLayoutProps) {
   // いま表示している問題の配列インデックス
+  const { correct, incorrect, recordResult, totalXp, applyXp, reset } =
+    useTestResults();
+
+  useEffect(() => {
+    reset();
+  }, []);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   // 各選択肢が正解・不正解・未回答かを保持する
   const [buttonStates, setButtonStates] = useState<
@@ -54,6 +74,17 @@ export default function TestPageLayout({
   >({});
   // カード切り替え中かどうか。trueになっている間はボタン操作を無効化する
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isSlideActive, setIsSlideActive] = useState(false);
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  // 獲得XPのトースト表示に使うstate
+  const [gainToast, setGainToast] = useState<{
+    amount: number;
+    key: number;
+    position: { top: number; left: number };
+  } | null>(null);
+  // セクション要素の位置を参照してトーストの表示座標に使う
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const toastDelayTimeoutRef = useRef<number | null>(null);
   // 解答直後の待ち時間を制御するためのタイマー参照
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // カードアニメーション終了待ち用タイマーの参照
@@ -65,9 +96,11 @@ export default function TestPageLayout({
   // どのquestion配列をキャッシュに使っているかを覚えておく
   const cacheSourceRef = useRef<QuizQuestion[] | null>(null);
   // ボタンを押した直後の「考え中」っぽい間
-  const FEEDBACK_DELAY = 100; // 押下直後の余白（次操作解放まで合計0.5s）
+  const FEEDBACK_DELAY = 800; // 押下直後の余白（次操作解放まで合計0.5s）
   // 実際のカードスライドにかける時間
-  const TRANSITION_DURATION = 600; // アニメーション本体（FEEDBACK_DELAYと合わせて0.5s）
+  const TRANSITION_DURATION = 400; // アニメーション本体（FEEDBACK_DELAYと合わせて0.5s）
+  const TOAST_DELAY = 0;
+  const TOAST_DURATION = 800;
   // アクセシビリティ設定を反映した結果の真偽値
   const prefersReducedMotion = usePrefersReducedMotion();
   // 設定によってはアニメーション時間をゼロにする
@@ -105,17 +138,36 @@ export default function TestPageLayout({
     [questions, currentIndex]
   );
 
-  // すべての問題を解いたときに成績を表示させる
+  const finishTest = useCallback(() => {
+    const snapshot = { correct, incorrect, ExperiencePoints: totalXp };
+    const { gainedXp, nextTotalXp } = getExperiencePoints(snapshot);
+    const gained = gainedXp; // 得た経験値を含めた累計　- 累計　= 今回得た経験値
+    applyXp(gained);
+    const updatedTotalXp = nextTotalXp;
+
+    return { gained, updatedTotalXp };
+  }, [correct, incorrect, totalXp, applyXp]);
+
+  const hasFinishedRef = useRef(false);
   const navigate = useNavigate();
+
+  // すべての問題を解いたときに成績を表示させる
   useEffect(() => {
-    if (currentIndex >= totalQuestions) {
-      navigate("/results/mini");
-    }
-  }, [currentIndex, totalQuestions, navigate]);
+    if (currentIndex < totalQuestions) return;
+    if (hasFinishedRef.current) return;
+
+    const { gained, updatedTotalXp } = finishTest();
+
+    hasFinishedRef.current = true;
+    navigate("/results/mini", { state: { gained, updatedTotalXp } });
+  }, [currentIndex, totalQuestions, finishTest, navigate]);
 
   // コンポーネントが壊れるときにタイマーを全部止めるためのクリーンアップ
   useEffect(() => {
     return () => {
+      if (toastDelayTimeoutRef.current) {
+        clearTimeout(toastDelayTimeoutRef.current);
+      }
       if (feedbackTimeoutRef.current) {
         clearTimeout(feedbackTimeoutRef.current);
       }
@@ -125,13 +177,35 @@ export default function TestPageLayout({
     };
   }, []);
 
+  useEffect(() => {
+    if (!gainToast) {
+      setIsToastVisible(false);
+      return;
+    }
+
+    const showId = window.requestAnimationFrame(() => {
+      setIsToastVisible(true);
+    });
+
+    const timeoutId = window.setTimeout(() => {
+      setIsToastVisible(false);
+      setGainToast(null);
+    }, TOAST_DURATION);
+
+    return () => {
+      window.cancelAnimationFrame(showId);
+      clearTimeout(timeoutId);
+    };
+  }, [gainToast, TOAST_DURATION]);
+
   // 問題や正解が存在しない場合は何も描画しない
   if (!question || !answerChoice) return null;
 
   // 選択肢クリック時のメイン処理
-  function handleClick(choice: string) {
+  function handleClick(choice: string, event: MouseEvent<HTMLButtonElement>) {
     // 正解データがなくても、アニメーション中でも何もしない
-    if (!answerChoice || isTransitioning) return;
+    if (!answerChoice || isTransitioning || !question) return;
+    setIsTransitioning(true); // 問題を連打して加算水増しを防ぐ
 
     // 正解かどうかを判定し、ボタンの見た目ステータスを更新
     const isAnswer = choice === answerChoice;
@@ -139,6 +213,32 @@ export default function TestPageLayout({
       ...prev,
       [choice]: isAnswer ? "correct" : "incorrect",
     }));
+
+    const buttonRect = event.currentTarget.getBoundingClientRect();
+    const sectionRect = sectionRef.current?.getBoundingClientRect();
+
+    const relativeTop = sectionRect
+      ? buttonRect.top - sectionRect.top + buttonRect.height / 2 // カードの上からボタンの中心までの距離
+      : buttonRect.top + buttonRect.height / 2;
+    const relativeLeft = sectionRect
+      ? buttonRect.left - sectionRect.left + buttonRect.width / 2
+      : buttonRect.left + buttonRect.width / 2;
+
+    const gainAmount = isAnswer ? XP_PER_CORRECT : XP_PER_INCORRECT;
+    if (toastDelayTimeoutRef.current) {
+      clearTimeout(toastDelayTimeoutRef.current);
+    }
+    toastDelayTimeoutRef.current = window.setTimeout(() => {
+      setGainToast({
+        amount: gainAmount,
+        key: Date.now(),
+        position: { top: relativeTop, left: relativeLeft },
+      });
+      toastDelayTimeoutRef.current = null;
+    }, TOAST_DELAY);
+
+    // 正解・不正解ごとの記録に追加
+    recordResult(question, isAnswer);
 
     // 前回のフィードバック用タイマーが残っていたら解除
     if (feedbackTimeoutRef.current) {
@@ -153,7 +253,6 @@ export default function TestPageLayout({
 
     // 少し待ってからカードを動かし始める
     feedbackTimeoutRef.current = setTimeout(() => {
-      setIsTransitioning(true);
       feedbackTimeoutRef.current = null;
 
       // カードの整理が終わったら次の問題へ進める
@@ -161,6 +260,7 @@ export default function TestPageLayout({
         setButtonStates({});
         setCurrentIndex((i) => i + 1);
         setIsTransitioning(false);
+        setIsSlideActive(false);
         transitionTimeoutRef.current = null;
       };
 
@@ -168,6 +268,7 @@ export default function TestPageLayout({
       if (effectiveTransitionDuration === 0) {
         finalizeTransition();
       } else {
+        setIsSlideActive(true);
         // そうでなければアニメーション時間だけ待ってから完了処理へ
         transitionTimeoutRef.current = setTimeout(
           finalizeTransition,
@@ -179,15 +280,15 @@ export default function TestPageLayout({
 
   // まだ判定が付いていない選択肢ボタンの共通スタイル
   const baseButtonStyle =
-    "group relative rounded-xl border border-white/15 bg-[radial-gradient(circle_at_top,#1a1c26,#070811)]/90 px-5 py-4 text-center text-base font-medium tracking-wide text-white/85 shadow-[0_12px_28px_-18px_rgba(15,23,42,0.9)] transition-all duration-300 hover:-translate-y-1 hover:border-[#f2c97d]/70 hover:bg-[radial-gradient(circle_at_top,#202333,#0d101c)] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f2c97d]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
+    "group relative w-full rounded-xl border border-white/15 bg-[radial-gradient(circle_at_top,#1a1c26,#070811)]/90 px-5 py-4 text-center text-base font-medium tracking-wide text-white/85 shadow-[0_12px_28px_-18px_rgba(15,23,42,0.9)] transition-all duration-300 hover:-translate-y-1 hover:border-[#f2c97d]/70 hover:bg-[radial-gradient(circle_at_top,#202333,#0d101c)] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f2c97d]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
 
   // 正解ボタン用の見た目（ゴールド系）
   const correctButtonStyle =
-    "rounded-xl border border-amber-200/70 bg-gradient-to-br from-amber-400 via-amber-300 to-yellow-200 px-5 py-4 text-center text-base font-semibold tracking-wide text-slate-900 shadow-[0_22px_48px_-20px_rgba(251,191,36,0.9)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_28px_55px_-18px_rgba(251,191,36,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-200/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
+    "w-full rounded-xl border border-amber-200/70 bg-gradient-to-br from-amber-400 via-amber-300 to-yellow-200 px-5 py-4 text-center text-base font-semibold tracking-wide text-slate-900 shadow-[0_22px_48px_-20px_rgba(251,191,36,0.9)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_28px_55px_-18px_rgba(251,191,36,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-200/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
 
   // 不正解ボタン用の見た目（赤系）
   const incorrectButtonStyle =
-    "rounded-xl border border-rose-500/60 bg-gradient-to-br from-rose-600 via-rose-500 to-rose-400 px-5 py-4 text-center text-base font-semibold tracking-wide text-rose-50 shadow-[0_18px_38px_-18px_rgba(244,63,94,0.85)] transition-all duration-300 hover:-translate-y-1 hover:border-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
+    "w-full rounded-xl border border-rose-500/60 bg-gradient-to-br from-rose-600 via-rose-500 to-rose-400 px-5 py-4 text-center text-base font-semibold tracking-wide text-rose-50 shadow-[0_18px_38px_-18px_rgba(244,63,94,0.85)] transition-all duration-300 hover:-translate-y-1 hover:border-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
 
   // 選択肢ごとの状態に合わせてスタイルを出し分ける小さなヘルパー
   function ButtonStyleSwitch(choice: string) {
@@ -215,16 +316,47 @@ export default function TestPageLayout({
   // 表示するカードのindexから適切なレイアウト情報を引き出す
   function getCardPresentation(idx: number) {
     const layouts =
-      isTransitioning && effectiveTransitionDuration > 0
+      isSlideActive && effectiveTransitionDuration > 0
         ? transitionLayouts
         : baseLayouts;
     const clampedIndex = Math.min(idx, layouts.length - 1);
     return layouts[clampedIndex];
   }
 
+  const toastBaseClass =
+    "absolute z-50 flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-lg pointer-events-none transition-all duration-200 ease-out opacity-0 -translate-y-4";
+
+  const correctToastClass =
+    "border-emerald-200 bg-emerald-500 text-emerald-50 shadow-[0_18px_36px_-16px_rgba(16,185,129,0.75)]";
+  const incorrectToastClass =
+    "border-rose-200 bg-rose-500 text-rose-50 shadow-[0_18px_36px_-16px_rgba(244,63,94,0.75)]";
+
+  const toastVariantClass =
+    gainToast?.amount === XP_PER_CORRECT
+      ? correctToastClass
+      : incorrectToastClass;
+  const toastPositionStyle: CSSProperties | undefined = gainToast
+    ? {
+        top: gainToast.position.top,
+        left: gainToast.position.left,
+        transform: "translate(-50%, -120%)",
+      }
+    : undefined;
+  const toastVisibilityClass = isToastVisible
+    ? "opacity-100 translate-y-0"
+    : "opacity-0 -translate-y-3";
+
   return (
     // カードスタック全体の外枠。センタリングと余白を担当
-    <section className="relative flex justify-center px-4">
+    <section className="relative flex justify-center px-4" ref={sectionRef}>
+      {gainToast && gainToast.amount === XP_PER_CORRECT && (
+        <div
+          className={`${toastBaseClass} ${toastVariantClass} ${toastVisibilityClass}`}
+          style={toastPositionStyle}
+          key={gainToast.key}>
+          {`+${gainToast.amount} XP`}
+        </div>
+      )}
       <div className="relative min-h-[420px] w-full max-w-3xl">
         {/* 表示対象となるカード一枚ごとに描画 */}
         {visibleCards.map((cardQuestion, idx) => {
@@ -235,10 +367,12 @@ export default function TestPageLayout({
           // 何問目かを表示するためのインデックス
           const cardIndex = currentIndex + idx;
           // プログレスバーに使う進捗率
+
           const cardProgress = Math.min(
             ((cardIndex + 1) / totalQuestions) * 100,
             100
           );
+
           // 固定化された順番の選択肢配列
           const cardChoices = getShuffledChoices(cardQuestion);
           // カードの位置や透明度などの設定
@@ -255,7 +389,6 @@ export default function TestPageLayout({
               : idx === 1
               ? "shadow-[0_18px_60px_-54px_rgba(242,201,125,0.35)]"
               : "";
-
           return (
             <div
               key={`${cardQuestion.phrase}-${cardIndex}`}
@@ -302,26 +435,41 @@ export default function TestPageLayout({
                   {cardQuestion.phrase}
                 </h1>
                 {/* 選択肢ボタンのグリッド */}
-                <div className="grid grid-cols-2 gap-3 text-center text-white/80">
-                  {cardChoices.map((choice, choiceIndex) => (
-                    <button
-                      // アクティブなカードだけクリック可にする
-                      onClick={
-                        isActiveCard ? () => handleClick(choice) : undefined
-                      }
-                      disabled={!isActiveCard || isTransitioning}
-                      key={choiceIndex}
-                      className={`${
-                        // 今のカードなら状態に応じた色を使う。後ろのカードは半透明＋カーソル無効
-                        isActiveCard
-                          ? ButtonStyleSwitch(choice)
-                          : `${baseButtonStyle} cursor-default opacity-70`
-                      }`}>
-                      {/* 選択肢の文字列（意味や単語） */}
-                      {choice}
-                    </button>
-                  ))}
-                </div>
+                <ul className="grid grid-cols-2 gap-3 text-center text-white/80 list-none p-0 m-0">
+                  {cardChoices.map((choice, choiceIndex) => {
+                    const state = buttonStates[choice];
+                    const isWrong = state === "incorrect";
+
+                    return (
+                      <li
+                        key={choiceIndex}
+                        className="relative flex justify-center">
+                        {isWrong && (
+                          <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-4xl text-rose-200/70">
+                            ✖
+                          </span>
+                        )}
+                        <button
+                          // アクティブなカードだけクリック可にする
+                          onClick={
+                            isActiveCard
+                              ? (e) => handleClick(choice, e)
+                              : undefined
+                          }
+                          disabled={!isActiveCard || isTransitioning}
+                          className={`${
+                            // 今のカードなら状態に応じた色を使う。後ろのカードは半透明＋カーソル無効
+                            isActiveCard
+                              ? ButtonStyleSwitch(choice)
+                              : `${baseButtonStyle} cursor-default opacity-70`
+                          }`}>
+                          {/* 選択肢の文字列（意味や単語） */}
+                          {choice}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
             </div>
           );
