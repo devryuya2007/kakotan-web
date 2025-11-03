@@ -6,6 +6,7 @@ import { useTestResults } from "../states/TestReSultContext";
 import MiniResultPageModal from "./ResultModal/MiniResultPageModal";
 import { calculateLevelProgress } from "@/features/results/scoring";
 import { useLocation, useNavigate } from "react-router-dom";
+import badgeRule from "@/features/results/badgeCondition";
 
 export type WrongWordStat = {
   word: string;
@@ -46,6 +47,25 @@ export default function MiniResultPage() {
     totalAnswer === 0 ? 0 : Math.round((correct.length / totalAnswer) * 100);
   const incorrectNumber = incorrect.length;
 
+  interface ResultLocationState {
+    gained?: number;
+    updateTotalXp?: number;
+  }
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const carriedXp = location.state as ResultLocationState | undefined;
+  const effectiveTotalXp = carriedXp?.updateTotalXp ?? totalXp;
+  const {
+    level,
+    xpTillNextLevel,
+    progressRatio: progress,
+  } = calculateLevelProgress(effectiveTotalXp);
+  const shouldShowBadge = badgeRule({
+    totalXp: effectiveTotalXp,
+    level,
+  });
+
   const summaryCards: Array<{
     label: string;
     value: ReactNode;
@@ -63,16 +83,17 @@ export default function MiniResultPage() {
     },
     {
       label: "獲得バッジ",
-      // TODO: badgeConditionのロジックで算出したバッジ一覧に差し替える
       value: (
         <div className="flex flex-wrap gap-3">
-          {badges.map(({ key, icon }) => (
-            <span
-              key={key}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/5 bg-white/5">
-              {icon}
-            </span>
-          ))}
+          {shouldShowBadge && // badge獲得条件 現状非表示 badgeCondition.ts
+            // x
+            badges.map(({ key, icon }) => (
+              <span
+                key={key}
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/5 bg-white/5">
+                {icon}
+              </span>
+            ))}
         </div>
       ),
     },
@@ -139,21 +160,6 @@ export default function MiniResultPage() {
     "flex w-full max-w-[100vw] min-w-0 flex-col gap-6 pb-4 text-left text-[#f5f6ff] max-h-[calc(100dvh-4.5rem)] origin-top scale-[0.94] sm:scale-100 sm:gap-8 sm:pb-6";
 
   const hasNoWrongWords = wrongWordsTop.length === 0;
-
-  interface ResultLocationState {
-    gained?: number;
-    updateTotalXp?: number;
-  }
-
-  const location = useLocation();
-  const cariiedXp = location.state as ResultLocationState | undefined; // 得た経験値を含めた累計
-  const effectuveTotalXp = cariiedXp?.updateTotalXp ?? totalXp;
-
-  const progress = calculateLevelProgress(effectuveTotalXp).progressRatio;
-
-  const { level, xpTillNextLevel } = calculateLevelProgress(effectuveTotalXp);
-
-  const navigate = useNavigate();
   const [displayProgress, setDisplayProgress] = useState(0);
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -233,12 +239,12 @@ export default function MiniResultPage() {
                       間違えた単語リスト
                     </h2>
                   </div>
-                  <button
+                  {/* <button
                     type="button"
                     className={`inline-flex items-center gap-2 rounded-xl border border-[#f2c97d33] px-3 py-1.5 text-xs font-semibold ${palette.accent} transition hover:border-[#f2c97d] hover:text-[#f7e2bd] sm:px-4 sm:py-2 sm:text-sm`}>
                     <span aria-hidden="true">★</span>
                     弱点克服テスト
-                  </button>
+                  </button> */}
                 </div>
                 <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                   {hasNoWrongWords ? (

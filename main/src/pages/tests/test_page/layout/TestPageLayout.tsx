@@ -96,7 +96,8 @@ export default function TestPageLayout({
   // どのquestion配列をキャッシュに使っているかを覚えておく
   const cacheSourceRef = useRef<QuizQuestion[] | null>(null);
   // ボタンを押した直後の「考え中」っぽい間
-  const FEEDBACK_DELAY = 800; // 押下直後の余白（次操作解放まで合計0.5s）
+  const FEEDBACK_DELAY = 0; // 押下直後の余白（次操作解放まで合計0.5s）
+  const REVIEW_DURATION = 800;
   // 実際のカードスライドにかける時間
   const TRANSITION_DURATION = 400; // アニメーション本体（FEEDBACK_DELAYと合わせて0.5s）
   const TOAST_DELAY = 0;
@@ -275,7 +276,7 @@ export default function TestPageLayout({
           effectiveTransitionDuration
         );
       }
-    }, FEEDBACK_DELAY);
+    }, REVIEW_DURATION);
   }
 
   // まだ判定が付いていない選択肢ボタンの共通スタイル
