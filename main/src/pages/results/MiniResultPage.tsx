@@ -140,9 +140,15 @@ export default function MiniResultPage() {
 
   const hasNoWrongWords = wrongWordsTop.length === 0;
 
+  interface ResultLocationState {
+    gained?: number;
+    updateTotalXp?: number;
+  }
+
   const location = useLocation();
-  const cariiedXp = location.state?.updatedTotalXp; // 得た経験値を含めた累計
-  const effectuveTotalXp = cariiedXp ?? totalXp;
+  const cariiedXp = location.state as ResultLocationState | undefined; // 得た経験値を含めた累計
+  const effectuveTotalXp = cariiedXp?.updateTotalXp ?? totalXp;
+
   const progress = calculateLevelProgress(effectuveTotalXp).progressRatio;
 
   const { level, xpTillNextLevel } = calculateLevelProgress(effectuveTotalXp);
