@@ -445,11 +445,6 @@ export default function TestPageLayout({
                       <li
                         key={choiceIndex}
                         className="relative flex justify-center">
-                        {isWrong && (
-                          <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-4xl text-rose-200/70">
-                            ✖
-                          </span>
-                        )}
                         <button
                           // アクティブなカードだけクリック可にする
                           onClick={
