@@ -50,6 +50,7 @@ export default function MiniResultPage() {
   interface ResultLocationState {
     gained?: number;
     updateTotalXp?: number;
+    durationMs?: number;
   }
 
   const location = useLocation();
@@ -161,6 +162,7 @@ export default function MiniResultPage() {
 
   const hasNoWrongWords = wrongWordsTop.length === 0;
   const [displayProgress, setDisplayProgress] = useState(0);
+
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
       setDisplayProgress(progress);

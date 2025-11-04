@@ -9,19 +9,28 @@ import {
   type ReactNode,
 } from "react";
 
+export interface SessionRecord {
+  startedAt: number;
+  finishedAt: number;
+  durationMs: number;
+}
+
 type StoredSnapshot = {
   correct: QuizQuestion[];
   incorrect: QuizQuestion[];
   totalXp: number;
+  sessionHistory: SessionRecord[];
 };
 
 type TestResultsContextValue = {
   correct: QuizQuestion[];
   incorrect: QuizQuestion[];
   totalXp: number;
+  sessionHistory: SessionRecord[];
   recordResult: (question: QuizQuestion, isCorrect: boolean) => void;
   applyXp: (gainedXp: number) => void;
   reset: () => void;
+  addSession: (session: SessionRecord) => void;
 };
 
 const RESULTS_STORAGE_PREFIX = "test-results:session";
@@ -35,6 +44,7 @@ const createEmptySnapshot = (): StoredSnapshot => ({
   correct: [],
   incorrect: [],
   totalXp: 0,
+  sessionHistory: [],
 });
 
 const getResultsStorageKey = (testId: string) =>
@@ -42,12 +52,17 @@ const getResultsStorageKey = (testId: string) =>
 
 const loadResults = (testId: string) => {
   if (typeof window === "undefined") {
-    return { correct: [], incorrect: [] };
+    return { correct: [], incorrect: [], sessionHistory: [] };
   }
 
   try {
     const raw = window.localStorage.getItem(getResultsStorageKey(testId));
-    if (!raw) return { correct: [], incorrect: [] };
+    if (!raw)
+      return {
+        correct: [],
+        incorrect: [],
+        sessionHistory: [],
+      };
     const parsed = JSON.parse(raw);
 
     return {
@@ -57,10 +72,13 @@ const loadResults = (testId: string) => {
       incorrect: Array.isArray(parsed.incorrect)
         ? (parsed.incorrect as QuizQuestion[])
         : [],
+      sessionHistory: Array.isArray(parsed.sessionHistory)
+        ? (parsed.sessionHistory as SessionRecord[])
+        : [],
     };
   } catch (error) {
     console.warn("Failed to load results from storage", error);
-    return { correct: [], incorrect: [] };
+    return { correct: [], incorrect: [], sessionHistory: [] };
   }
 };
 
@@ -83,13 +101,14 @@ const loadSnapshot = (testId: string): StoredSnapshot => {
     return createEmptySnapshot();
   }
 
-  const { correct, incorrect } = loadResults(testId);
+  const { correct, incorrect, sessionHistory } = loadResults(testId);
   const totalXp = loadTotalXp();
 
   return {
     correct,
     incorrect,
     totalXp,
+    sessionHistory,
   };
 };
 
@@ -104,7 +123,14 @@ export function TestResultsProvider({
     loadSnapshot(testId)
   );
 
-  const { correct, incorrect, totalXp } = snapshot;
+  const { correct, incorrect, totalXp, sessionHistory } = snapshot;
+
+  const addSession = useCallback((session: SessionRecord) => {
+    setSnapshot((prev) => ({
+      ...prev,
+      sessionHistory: [...prev.sessionHistory, session],
+    }));
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -162,11 +188,22 @@ export function TestResultsProvider({
       correct,
       incorrect,
       totalXp,
+      sessionHistory,
       recordResult,
       applyXp,
       reset,
+      addSession,
     }),
-    [correct, incorrect, totalXp, recordResult, applyXp, reset]
+    [
+      correct,
+      incorrect,
+      totalXp,
+      sessionHistory,
+      recordResult,
+      applyXp,
+      reset,
+      addSession,
+    ]
   );
 
   return (

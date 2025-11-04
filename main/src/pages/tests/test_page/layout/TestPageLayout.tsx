@@ -60,12 +60,19 @@ export default function TestPageLayout({
   count,
 }: TestPageLayoutProps) {
   // いま表示している問題の配列インデックス
-  const { correct, incorrect, recordResult, totalXp, applyXp, reset } =
+  const { correct, incorrect, recordResult, totalXp, applyXp, reset, addSession } =
     useTestResults();
+
+  const sessionStartRef = useRef<number | null>(null);
 
   useEffect(() => {
     reset();
-  }, []);
+    sessionStartRef.current = Date.now();
+
+    return () => {
+      sessionStartRef.current = null;
+    };
+  }, [reset]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   // 各選択肢が正解・不正解・未回答かを保持する
@@ -146,8 +153,20 @@ export default function TestPageLayout({
     applyXp(gained);
     const updatedTotalXp = nextTotalXp;
 
-    return { gained, updatedTotalXp };
-  }, [correct, incorrect, totalXp, applyXp]);
+    const finishedAt = Date.now();
+    const startedAt = sessionStartRef.current;
+    let durationMs: number | undefined;
+
+    if (typeof startedAt === "number") {
+      durationMs = Math.max(0, finishedAt - startedAt);
+      if (durationMs > 0) {
+        addSession({ startedAt, finishedAt, durationMs });
+      }
+      sessionStartRef.current = null;
+    }
+
+    return { gained, updatedTotalXp, durationMs };
+  }, [correct, incorrect, totalXp, applyXp, addSession]);
 
   const hasFinishedRef = useRef(false);
   const navigate = useNavigate();
@@ -157,10 +176,10 @@ export default function TestPageLayout({
     if (currentIndex < totalQuestions) return;
     if (hasFinishedRef.current) return;
 
-    const { gained, updatedTotalXp } = finishTest();
+    const { gained, updatedTotalXp, durationMs } = finishTest();
 
     hasFinishedRef.current = true;
-    navigate("/results/mini", { state: { gained, updatedTotalXp } });
+    navigate("/results/mini", { state: { gained, updatedTotalXp, durationMs } });
   }, [currentIndex, totalQuestions, finishTest, navigate]);
 
   // コンポーネントが壊れるときにタイマーを全部止めるためのクリーンアップ
