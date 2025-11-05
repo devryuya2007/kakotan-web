@@ -13,6 +13,10 @@ export interface SessionRecord {
   startedAt: number;
   finishedAt: number;
   durationMs: number;
+  sectionId: string;
+  correctCount: number;
+  incorrectCount: number;
+  gainedXp: number;
 }
 
 type StoredSnapshot = {
@@ -72,8 +76,17 @@ const loadResults = (testId: string) => {
       incorrect: Array.isArray(parsed.incorrect)
         ? (parsed.incorrect as QuizQuestion[])
         : [],
+      // 以前のバージョンで保存された履歴は新しいフィールドが欠けていることがあるため、ここで補完してから返す
       sessionHistory: Array.isArray(parsed.sessionHistory)
-        ? (parsed.sessionHistory as SessionRecord[])
+        ? (parsed.sessionHistory as Array<Partial<SessionRecord>>).map((raw) => ({
+            startedAt: raw.startedAt ?? 0,
+            finishedAt: raw.finishedAt ?? raw.startedAt ?? 0,
+            durationMs: raw.durationMs ?? 0,
+            sectionId: raw.sectionId ?? "unknown",
+            correctCount: raw.correctCount ?? 0,
+            incorrectCount: raw.incorrectCount ?? 0,
+            gainedXp: raw.gainedXp ?? 0,
+          }))
         : [],
     };
   } catch (error) {

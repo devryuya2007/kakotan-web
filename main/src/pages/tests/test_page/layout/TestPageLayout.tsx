@@ -21,6 +21,7 @@ import {
 type TestPageLayoutProps = {
   questions: QuizQuestion[];
   count: number;
+  sectionId: string;
 };
 
 // OSやブラウザの「アニメーションを減らす」設定を拾って真偽値で返す自作フック
@@ -58,10 +59,18 @@ export function usePrefersReducedMotion() {
 export default function TestPageLayout({
   questions,
   count,
+  sectionId,
 }: TestPageLayoutProps) {
   // いま表示している問題の配列インデックス
-  const { correct, incorrect, recordResult, totalXp, applyXp, reset, addSession } =
-    useTestResults();
+  const {
+    correct,
+    incorrect,
+    recordResult,
+    totalXp,
+    applyXp,
+    reset,
+    addSession,
+  } = useTestResults();
 
   const sessionStartRef = useRef<number | null>(null);
 
@@ -102,8 +111,6 @@ export default function TestPageLayout({
   const shuffledChoicesRef = useRef<Record<string, string[]>>({});
   // どのquestion配列をキャッシュに使っているかを覚えておく
   const cacheSourceRef = useRef<QuizQuestion[] | null>(null);
-  // ボタンを押した直後の「考え中」っぽい間
-  const FEEDBACK_DELAY = 0; // 押下直後の余白（次操作解放まで合計0.5s）
   const REVIEW_DURATION = 800;
   // 実際のカードスライドにかける時間
   const TRANSITION_DURATION = 400; // アニメーション本体（FEEDBACK_DELAYと合わせて0.5s）
@@ -149,23 +156,33 @@ export default function TestPageLayout({
   const finishTest = useCallback(() => {
     const snapshot = { correct, incorrect, ExperiencePoints: totalXp };
     const { gainedXp, nextTotalXp } = getExperiencePoints(snapshot);
-    const gained = gainedXp; // 得た経験値を含めた累計　- 累計　= 今回得た経験値
-    applyXp(gained);
+    applyXp(gainedXp); // 得た経験値を含めた累計　- 累計　= 今回得た経験値
     const updatedTotalXp = nextTotalXp;
 
     const finishedAt = Date.now();
     const startedAt = sessionStartRef.current;
     let durationMs: number | undefined;
+    const correctCount = correct.length;
+    const incorrectCount = incorrect.length;
 
     if (typeof startedAt === "number") {
       durationMs = Math.max(0, finishedAt - startedAt);
       if (durationMs > 0) {
-        addSession({ startedAt, finishedAt, durationMs });
+        // セッション履歴は集計に使うので、テスト毎のメタ情報を丸ごと残しておく
+        addSession({
+          startedAt,
+          finishedAt,
+          durationMs,
+          sectionId,
+          correctCount,
+          incorrectCount,
+          gainedXp,
+        });
       }
       sessionStartRef.current = null;
     }
 
-    return { gained, updatedTotalXp, durationMs };
+    return { gainedXp, updatedTotalXp, durationMs };
   }, [correct, incorrect, totalXp, applyXp, addSession]);
 
   const hasFinishedRef = useRef(false);
@@ -176,10 +193,12 @@ export default function TestPageLayout({
     if (currentIndex < totalQuestions) return;
     if (hasFinishedRef.current) return;
 
-    const { gained, updatedTotalXp, durationMs } = finishTest();
+    const { gainedXp, updatedTotalXp, durationMs } = finishTest();
 
     hasFinishedRef.current = true;
-    navigate("/results/mini", { state: { gained, updatedTotalXp, durationMs } });
+    navigate("/results/mini", {
+      state: { gainedXp, updatedTotalXp, durationMs },
+    });
   }, [currentIndex, totalQuestions, finishTest, navigate]);
 
   // コンポーネントが壊れるときにタイマーを全部止めるためのクリーンアップ
@@ -457,9 +476,6 @@ export default function TestPageLayout({
                 {/* 選択肢ボタンのグリッド */}
                 <ul className="grid grid-cols-2 gap-3 text-center text-white/80 list-none p-0 m-0">
                   {cardChoices.map((choice, choiceIndex) => {
-                    const state = buttonStates[choice];
-                    const isWrong = state === "incorrect";
-
                     return (
                       <li
                         key={choiceIndex}

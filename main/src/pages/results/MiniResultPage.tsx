@@ -48,7 +48,7 @@ export default function MiniResultPage() {
   const incorrectNumber = incorrect.length;
 
   interface ResultLocationState {
-    gained?: number;
+    gainedXp?: number;
     updateTotalXp?: number;
     durationMs?: number;
   }

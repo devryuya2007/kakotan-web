@@ -13,7 +13,7 @@ export default function Reiwa3Page() {
         </h1>
         {status === "loading" && <p>データを読み込んでいます…</p>}
         {status === "ready" && (
-          <TestPageLayout count={count} questions={questions} />
+          <TestPageLayout count={count} questions={questions} sectionId="令和５年"/>
         )}
         {status === "error" && (
           <p className="text-red-400">読み込みに失敗しました: {error}</p>
