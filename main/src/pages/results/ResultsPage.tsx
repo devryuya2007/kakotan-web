@@ -116,6 +116,39 @@ export default function ResultsPage() {
   const ringCircumference = 2 * Math.PI * ringRadius;
   const strokeDashoffset = ringCircumference * (1 - progressRatio);
 
+  const renderCount = 10;
+
+  const getThisYear = () => new Date().getFullYear();
+  const formatDateWithYear = (date: Date, includeYear: boolean) =>
+    `${includeYear ? `${date.getFullYear()}年` : ""}${
+      date.getMonth() + 1
+    }月${date.getDate()}日`;
+
+  const currentYear = getThisYear();
+
+  const recentSessions = [...sessionHistory]
+    .slice()
+    .sort((a, b) => b.startedAt - a.startedAt)
+    .slice(0, renderCount);
+
+  const recentSessionLabels: Array<{ key: number; label: string }> = [];
+
+  recentSessions.forEach((session) => {
+    const startDate = new Date(session.startedAt);
+    const endDate = new Date(session.finishedAt);
+    const startLabel = formatDateWithYear(
+      startDate,
+      startDate.getFullYear() !== currentYear
+    );
+    const endLabel = formatDateWithYear(
+      endDate,
+      endDate.getFullYear() !== currentYear
+    );
+    const label =
+      startLabel === endLabel ? startLabel : `${startLabel}〜${endLabel}`;
+    recentSessionLabels.push({ key: session.startedAt, label });
+  });
+
   return (
     <AppLayout>
       <section className="bg-blue-500">
@@ -231,7 +264,9 @@ export default function ResultsPage() {
         <div>
           <h1>最近の学習</h1>
           <ul>
-            <li></li>
+            {recentSessionLabels.map((session) => (
+              <li key={session.key}>{session.label}</li>
+            ))}
           </ul>
         </div>
       </section>
