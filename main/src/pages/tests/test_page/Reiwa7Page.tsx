@@ -1,10 +1,22 @@
 import { AppLayout } from "../../../components/layout/AppLayout";
 import { useYearVocab } from "../../../hooks/useYearVocab";
 import TestPageLayout from "./layout/TestPageLayout";
+import { yearsConfig } from "./yearsConfig";
 
-export default function Reiwa3Page() {
-  const { status, count, error, questions } = useYearVocab("reiwa7", 20);
+const reiwa7 = yearsConfig.reiwa7.sectionId;
+const maxCount = yearsConfig.reiwa7.maxCount;
 
+export const reiwa7Config = {
+  key: reiwa7,
+  maxCount: maxCount,
+};
+
+export function useReiwa7Vocab() {
+  return useYearVocab(reiwa7, maxCount);
+}
+
+export default function Reiwa7Page() {
+  const { status, count, error, questions } = useReiwa7Vocab();
   return (
     <AppLayout>
       <div className="my-auto w-full max-w-3xl rounded-2xl px-6 py-8">

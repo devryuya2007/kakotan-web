@@ -1,9 +1,17 @@
 import { AppLayout } from "../../../components/layout/AppLayout";
 import { useYearVocab } from "../../../hooks/useYearVocab";
 import TestPageLayout from "./layout/TestPageLayout";
+import { yearsConfig } from "./yearsConfig";
+
+const reiwa4 = yearsConfig.reiwa4.sectionId;
+const maxCount = yearsConfig.reiwa4.maxCount;
+
+export function useReiwa4Vocab() {
+  return useYearVocab(reiwa4, maxCount);
+}
 
 export default function Reiwa3Page() {
-  const { status, count, error, questions } = useYearVocab("reiwa4", 20);
+  const { status, count, error, questions } = useReiwa4Vocab();
 
   return (
     <AppLayout>
@@ -13,7 +21,11 @@ export default function Reiwa3Page() {
         </h1>
         {status === "loading" && <p>データを読み込んでいます…</p>}
         {status === "ready" && (
-          <TestPageLayout count={count} questions={questions} sectionId="令和４年"/>
+          <TestPageLayout
+            count={count}
+            questions={questions}
+            sectionId="令和４年"
+          />
         )}
         {status === "error" && (
           <p className="text-red-400">読み込みに失敗しました: {error}</p>
