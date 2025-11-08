@@ -131,9 +131,16 @@ export default function ResultsPage() {
     .sort((a, b) => b.startedAt - a.startedAt)
     .slice(0, renderCount);
 
-  const recentSessionLabels: Array<{ key: number; label: string }> = [];
+  const recentSessionLabels: Array<{
+    key: number;
+    label: string;
+    sectionId: string;
+    gainedXp: number;
+  }> = [];
 
   recentSessions.forEach((session) => {
+    const gainedXp = session.gainedXp;
+    const sectionId = session.sectionId;
     const startDate = new Date(session.startedAt);
     const endDate = new Date(session.finishedAt);
     const startLabel = formatDateWithYear(
@@ -142,11 +149,17 @@ export default function ResultsPage() {
     );
     const endLabel = formatDateWithYear(
       endDate,
+
       endDate.getFullYear() !== currentYear
     );
     const label =
       startLabel === endLabel ? startLabel : `${startLabel}〜${endLabel}`;
-    recentSessionLabels.push({ key: session.startedAt, label });
+    recentSessionLabels.push({
+      key: session.startedAt,
+      label,
+      sectionId: sectionId,
+      gainedXp: gainedXp,
+    });
   });
 
   return (
@@ -265,7 +278,11 @@ export default function ResultsPage() {
           <h1>最近の学習</h1>
           <ul>
             {recentSessionLabels.map((session) => (
-              <li key={session.key}>{session.label}</li>
+              <li key={session.key}>
+                {session.label}
+                {session.sectionId}
+                {session.gainedXp}xp
+              </li>
             ))}
           </ul>
         </div>
