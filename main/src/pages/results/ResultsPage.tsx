@@ -324,7 +324,7 @@ export default function ResultsPage() {
 
   return (
     <AppLayout>
-      <section className="bg-[radial-gradient(circle_at_top,_#141830,_#05060d)] text-white overflow-scroll w-full  ">
+      <section className=" bg-[radial-gradient(circle_at_top,_#141830,_#05060d)] text-white overflow-scroll w-full">
         <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-10 sm:px-8">
           <header className="text-center">
             <p className="text-xs uppercase tracking-[0.65em] text-[#f2c97d]/80">
@@ -338,11 +338,11 @@ export default function ResultsPage() {
             </p>
           </header>
 
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
+          <div className="flex w-[50%] gap-6 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur lg:grid-cols-3">
+            <div className="flex flex-col gap-6 lg:col-span-2 lg:flex-row lg:items-center">
               <div className="flex items-center justify-center">
                 <div
-                  className="rounded-full border border-white/10 bg-[#050917]/70 p-4"
+                  className=" flex rounded-full border border-white/10 bg-[#050917]/70 p-4"
                   style={{ width: ringSize + 16, height: ringSize + 16 }}>
                   <svg
                     width={ringSize}
@@ -407,8 +407,9 @@ export default function ResultsPage() {
                   </svg>
                 </div>
               </div>
+          
 
-              <div className="flex-1 space-y-3 text-left">
+              <div className="flex flex-col items-center justify-center space-y-3 text-center lg:items-start lg:text-left">
                 <p className="text-xs uppercase tracking-[0.6em] text-[#f2c97d]/80">
                   MAIN QUEST
                 </p>
@@ -419,7 +420,7 @@ export default function ResultsPage() {
                   正解できた単語をコツコツ積み重ね中。コンプリート率は{" "}
                   <span className="text-[#f2c97d]">{progress}%</span> だよ。
                 </p>
-                <div className="flex flex-wrap gap-3 text-xs text-white/70">
+                <div className="flex flex-wrap justify-center gap-3 text-xs text-white/70 lg:justify-start">
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
                     正解済: {solvedWords.toLocaleString()}語
                   </span>
@@ -434,8 +435,7 @@ export default function ResultsPage() {
               </div>
             </div>
           </div>
-
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="flex flex-col gap-4 md:grid-cols-2 xl:grid-cols-1">
             {summaryCards.map(({ icon, title, value, caption }) => (
               <div
                 key={title}
@@ -465,6 +465,7 @@ export default function ResultsPage() {
               </div>
             ))}
           </div>
+        
 
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_25px_40px_-30px_rgba(5,8,20,0.9)]">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
@@ -528,6 +529,7 @@ export default function ResultsPage() {
               ))}
             </ul>
           </div>
+          
         </div>
       </section>
     </AppLayout>
