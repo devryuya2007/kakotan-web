@@ -9,6 +9,27 @@ import { useReiwa4Vocab } from "../tests/test_page/Reiwa4Page";
 import { useReiwa5Vocab } from "../tests/test_page/Reiwa5Page";
 import { useReiwa6Vocab } from "../tests/test_page/Reiwa6Page";
 import { useReiwa7Vocab } from "../tests/test_page/Reiwa7Page";
+import { Line } from "react-chartjs-2";
+import {
+  Chart,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+  type ChartData,
+  type ChartOptions,
+} from "chart.js";
+
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend
+);
 
 export default function ResultsPage() {
   const { sessionHistory, correct } = useTestResults();
@@ -136,6 +157,7 @@ export default function ResultsPage() {
     label: string;
     sectionId: string;
     gainedXp: number;
+    accuracyRate: number;
   }> = [];
 
   recentSessions.forEach((session) => {
@@ -154,17 +176,108 @@ export default function ResultsPage() {
     );
     const label =
       startLabel === endLabel ? startLabel : `${startLabel}〜${endLabel}`;
+
+    const answerTotal = session.correctCount + session.incorrectCount;
+    const accuracyRate =
+      answerTotal === 0
+        ? 0
+        : Math.round((session.correctCount / answerTotal) * 100);
+
     recentSessionLabels.push({
       key: session.startedAt,
       label,
       sectionId: sectionId,
       gainedXp: gainedXp,
+      accuracyRate: accuracyRate,
     });
   });
 
+  const computeDailyStudySeries = (
+    history: typeof sessionHistory,
+    days = 7
+  ) => {
+    const minutesPerDay = new Map<number, number>();
+
+    history.forEach((session) => {
+      const day = new Date(session.startedAt); // 例：Mon Apr 01 2024 21:00:00 GMT+0900
+      day.setHours(0, 0, 0, 0); // TODO:startOfDayにする
+      const dayKey = day.getTime();
+      const minutes = Math.round(session.durationMs / minutesMs);
+      minutesPerDay.set(dayKey, (minutesPerDay.get(dayKey) ?? 0) + minutes);
+    });
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const labels: string[] = [];
+    const data: number[] = [];
+
+    for (let i = days - 1; i >= 0; i -= 1) {
+      const date = new Date(today); // 今日
+      date.setDate(date.getDate() - i);
+      const dayKey = date.getTime(); // ミリ秒に直す
+      labels.push(`${date.getMonth() + 1}/${date.getDate()}`);
+      data.push(minutesPerDay.get(dayKey) ?? 0);
+    }
+
+    return { labels, data };
+  };
+
+  const dailySeries = computeDailyStudySeries(sessionHistory);
+  const maxDailyMinutes =
+    dailySeries.data.length > 0 ? Math.max(...dailySeries.data) : 0;
+  const yAxisMax = Math.max(60, Math.ceil(maxDailyMinutes * 1.2));
+
+  const lineChartData: ChartData<"line"> = {
+    labels: dailySeries.labels,
+    datasets: [
+      {
+        label: "学習時間（分）",
+        data: dailySeries.data,
+        borderColor: "#38bdf8",
+        backgroundColor: "rgba(56, 189, 248, 0.25)",
+        borderWidth: 2,
+        pointRadius: 1,
+        pointBackgroundColor: "#b8860b",
+        pointBorderColor: "#f2c97d",
+        tension: 0.35,
+        fill: true,
+      },
+    ],
+  };
+
+  const lineChartOptions: ChartOptions<"line"> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        labels: { color: "#fff" },
+      },
+      tooltip: {
+        mode: "index",
+        intersect: false,
+      },
+    },
+    scales: {
+      x: {
+        ticks: { color: "#0f172a" },
+        grid: { display: false },
+      },
+      y: {
+        beginAtZero: true,
+        suggestedMax: yAxisMax,
+        ticks: { color: "#0f172a" },
+        grid: {
+          color: "rgba(15, 23, 42, 0.1)",
+        },
+      },
+    },
+  };
+
   return (
     <AppLayout>
-      <section className="bg-blue-500">
+      <section className="bg-blue-500 overflow-scroll">
         <div>
           <p></p>
           <h1>すべての問題を正解するまで</h1>
@@ -274,14 +387,31 @@ export default function ResultsPage() {
           <p>過去７日間+13%</p>
         </div>
 
+        <div className="mt-8 rounded-xl bg-white/20 p-4 text-white shadow-lg backdrop-blur">
+          <h2 className="mb-2 text-lg font-semibold">週間の学習時間</h2>
+          <div className="h-64">
+            <Line data={lineChartData} options={lineChartOptions} />
+          </div>
+          <p className="mt-2 text-xs text-white/80">
+            ※現状は仮データ。実測値に入れ替えるとグラフも連動するよ。
+          </p>
+        </div>
+
         <div>
           <h1>最近の学習</h1>
-          <ul>
+          <ul className="divide-y divide-gray-300">
+            <li className="text-black">
+              <span>日付</span>
+              <span>セクション</span>
+              <span>獲得したXP</span>
+              <span>正答率</span>
+            </li>
             {recentSessionLabels.map((session) => (
-              <li key={session.key}>
+              <li key={session.key} className="text-black ">
                 {session.label}
                 {session.sectionId}
                 {session.gainedXp}xp
+                {session.accuracyRate}%
               </li>
             ))}
           </ul>
