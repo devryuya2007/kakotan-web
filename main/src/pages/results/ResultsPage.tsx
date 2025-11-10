@@ -161,8 +161,8 @@ export default function ResultsPage() {
   }> = [];
 
   recentSessions.forEach((session) => {
-    const gainedXp = session.gainedXp;
-    const sectionId = session.sectionId;
+    const gainedXp = session.gainedXp ?? 0;
+    const sectionId = session.sectionId || "unknown";
     const startDate = new Date(session.startedAt);
     const endDate = new Date(session.finishedAt);
     const startLabel = formatDateWithYear(
@@ -227,6 +227,52 @@ export default function ResultsPage() {
   const maxDailyMinutes =
     dailySeries.data.length > 0 ? Math.max(...dailySeries.data) : 0;
   const yAxisMax = Math.max(60, Math.ceil(maxDailyMinutes * 1.2));
+  const averageDailyMinutes =
+    dailySeries.data.length > 0
+      ? Math.round(
+          dailySeries.data.reduce((sum, value) => sum + value, 0) /
+            dailySeries.data.length
+        )
+      : 0;
+  const solvedWords = correctQuestionsSet.size;
+  const totalWords = allQuestionsSet.size;
+  const masteredDisplay =
+    totalWords === 0
+      ? "0単語"
+      : `${solvedWords.toLocaleString()}/${totalWords.toLocaleString()}語`;
+  const masteredCaption =
+    totalWords === 0 ? "問題セット読込中" : `${progress}% コンプリート`;
+  const formattedTotalStudyTime =
+    totalHours === 0
+      ? `${totalMinutes}分`
+      : `${totalHours}時間 ${totalMinutes}分`;
+
+  const summaryCards = [
+    {
+      icon: TimeElapsedIcon,
+      title: "総合学習時間",
+      value: formattedTotalStudyTime,
+      caption: `${sessionHistory.length}セッション`,
+    },
+    {
+      icon: AchievementIcon,
+      title: "平均正答率",
+      value: `${totalCorrectRate}%`,
+      caption: `${totalAnswered}問中`,
+    },
+    {
+      icon: StreakIcon,
+      title: "連続学習日数",
+      value: `${streak}日`,
+      caption: streak > 0 ? "休まず継続中" : "本日スタート",
+    },
+    {
+      icon: null,
+      title: "学習の進捗",
+      value: masteredDisplay,
+      caption: masteredCaption,
+    },
+  ];
 
   const lineChartData: ChartData<"line"> = {
     labels: dailySeries.labels,
@@ -237,9 +283,10 @@ export default function ResultsPage() {
         borderColor: "#38bdf8",
         backgroundColor: "rgba(56, 189, 248, 0.25)",
         borderWidth: 2,
-        pointRadius: 1,
-        pointBackgroundColor: "#b8860b",
-        pointBorderColor: "#f2c97d",
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        pointBackgroundColor: "#f2c97d",
+        pointBorderColor: "transparent",
         tension: 0.35,
         fill: true,
       },
@@ -252,7 +299,7 @@ export default function ResultsPage() {
     plugins: {
       legend: {
         display: true,
-        labels: { color: "#fff" },
+        labels: { color: "#f5f5ff" },
       },
       tooltip: {
         mode: "index",
@@ -261,15 +308,15 @@ export default function ResultsPage() {
     },
     scales: {
       x: {
-        ticks: { color: "#0f172a" },
+        ticks: { color: "#f5f5ff" },
         grid: { display: false },
       },
       y: {
         beginAtZero: true,
         suggestedMax: yAxisMax,
-        ticks: { color: "#0f172a" },
+        ticks: { color: "#f5f5ff" },
         grid: {
-          color: "rgba(15, 23, 42, 0.1)",
+          color: "rgba(148, 163, 184, 0.2)",
         },
       },
     },
@@ -277,144 +324,210 @@ export default function ResultsPage() {
 
   return (
     <AppLayout>
-      <section className="bg-blue-500 overflow-scroll">
-        <div>
-          <p></p>
-          <h1>すべての問題を正解するまで</h1>
-          <p></p>
+      <section className="bg-[radial-gradient(circle_at_top,_#141830,_#05060d)] text-white overflow-scroll w-full  ">
+        <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-10 sm:px-8">
+          <header className="text-center">
+            <p className="text-xs uppercase tracking-[0.65em] text-[#f2c97d]/80">
+              STUDY ARCHIVE
+            </p>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+              積み上げログ
+            </h1>
+            <p className="mt-2 text-sm text-white/70">
+              MiniResultPageと同じトーンで、最近の学習データをまとめたダッシュボードだよ。
+            </p>
+          </header>
 
-          <div style={{ width: ringSize, height: ringSize }}>
-            <svg
-              width={ringSize}
-              height={ringSize}
-              viewBox={`0 0 ${ringSize} ${ringSize}`}
-              role="img"
-              aria-label="経験値プログレス">
-              <defs>
-                <linearGradient
-                  id="xp-gradient"
-                  x1="0%"
-                  y1="0%"
-                  x2="100%"
-                  y2="100%">
-                  <stop offset="0%" stopColor="#d8ff9c" stopOpacity="0.9" />
-                  <stop offset="50%" stopColor="#b6ff6e" />
-                  <stop offset="100%" stopColor="#7ed957" />
-                </linearGradient>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-                  <feMerge>
-                    <feMergeNode in="coloredBlur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-              <circle
-                cx={ringSize / 2}
-                cy={ringSize / 2}
-                r={ringRadius}
-                fill="none"
-                stroke="#1b1f2b"
-                strokeWidth={6}
-                opacity={0.4}
-              />
-              <circle
-                cx={ringSize / 2}
-                cy={ringSize / 2}
-                r={ringRadius}
-                fill="none"
-                stroke="url(#xp-gradient)"
-                strokeWidth={6}
-                strokeLinecap="round"
-                strokeDasharray={ringCircumference}
-                strokeDashoffset={strokeDashoffset}
-                transform={`rotate(-90 ${ringSize / 2} ${ringSize / 2})`}
-                filter="url(#glow)"
-              />
-              <text
-                x="50%"
-                y="50%"
-                textAnchor="middle"
-                dominantBaseline="central"
-                fill="#d8ff9c"
-                fontSize="14">
-                {progress}%
-              </text>
-            </svg>
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
+              <div className="flex items-center justify-center">
+                <div
+                  className="rounded-full border border-white/10 bg-[#050917]/70 p-4"
+                  style={{ width: ringSize + 16, height: ringSize + 16 }}>
+                  <svg
+                    width={ringSize}
+                    height={ringSize}
+                    viewBox={`0 0 ${ringSize} ${ringSize}`}
+                    role="img"
+                    aria-label="経験値プログレス">
+                    <defs>
+                      <linearGradient
+                        id="xp-gradient"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="100%">
+                        <stop
+                          offset="0%"
+                          stopColor="#f2c97d"
+                          stopOpacity="0.9"
+                        />
+                        <stop offset="50%" stopColor="#f6dda5" />
+                        <stop offset="100%" stopColor="#f2c97d" />
+                      </linearGradient>
+                      <filter id="glow">
+                        <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+                        <feMerge>
+                          <feMergeNode in="coloredBlur" />
+                          <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                      </filter>
+                    </defs>
+                    <circle
+                      cx={ringSize / 2}
+                      cy={ringSize / 2}
+                      r={ringRadius}
+                      fill="none"
+                      stroke="#1b1f2b"
+                      strokeWidth={6}
+                      opacity={0.35}
+                    />
+                    <circle
+                      cx={ringSize / 2}
+                      cy={ringSize / 2}
+                      r={ringRadius}
+                      fill="none"
+                      stroke="url(#xp-gradient)"
+                      strokeWidth={6}
+                      strokeLinecap="round"
+                      strokeDasharray={ringCircumference}
+                      strokeDashoffset={strokeDashoffset}
+                      transform={`rotate(-90 ${ringSize / 2} ${ringSize / 2})`}
+                      filter="url(#glow)"
+                    />
+                    <text
+                      x="50%"
+                      y="50%"
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      fill="#f2c97d"
+                      fontSize="14">
+                      {progress}%
+                    </text>
+                  </svg>
+                </div>
+              </div>
+
+              <div className="flex-1 space-y-3 text-left">
+                <p className="text-xs uppercase tracking-[0.6em] text-[#f2c97d]/80">
+                  MAIN QUEST
+                </p>
+                <h2 className="text-2xl font-semibold">
+                  すべての問題を正解するまで
+                </h2>
+                <p className="text-sm text-white/70">
+                  正解できた単語をコツコツ積み重ね中。コンプリート率は{" "}
+                  <span className="text-[#f2c97d]">{progress}%</span> だよ。
+                </p>
+                <div className="flex flex-wrap gap-3 text-xs text-white/70">
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+                    正解済: {solvedWords.toLocaleString()}語
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+                    総問題数: {totalWords.toLocaleString()}語
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+                    残り:{" "}
+                    {Math.max(totalWords - solvedWords, 0).toLocaleString()}語
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div>
-          <img
-            src={TimeElapsedIcon}
-            alt="時間経過アイコン"
-            width={iconSize}
-            height={iconSize}
-          />
-          <p>総合学習時間</p>
-          <h1>
-            {totalHours === 0
-              ? `${totalMinutes}分`
-              : `${totalHours}時間
-          ${totalMinutes}分`}
-          </h1>
-          <p></p>
-        </div>
-        <div>
-          <img
-            src={AchievementIcon}
-            alt="達成度アイコン"
-            width={iconSize}
-            height={iconSize}
-          />
-          <p>平均正答率</p>
-          <h1>{totalCorrectRate}%</h1>
-          <p></p>
-        </div>
-        <div>
-          <img
-            src={StreakIcon}
-            alt="連続学習アイコン"
-            width={iconSize}
-            height={iconSize}
-          />
-          <p>連続学習日数</p>
-          <h1>{streak}</h1>
-          <p></p>
-        </div>
-        <div>
-          <p>学習の進捗</p>
-          <h1>８０単語</h1>
-          <p>過去７日間+13%</p>
-        </div>
 
-        <div className="mt-8 rounded-xl bg-white/20 p-4 text-white shadow-lg backdrop-blur">
-          <h2 className="mb-2 text-lg font-semibold">週間の学習時間</h2>
-          <div className="h-64">
-            <Line data={lineChartData} options={lineChartOptions} />
-          </div>
-          <p className="mt-2 text-xs text-white/80">
-            ※現状は仮データ。実測値に入れ替えるとグラフも連動するよ。
-          </p>
-        </div>
-
-        <div>
-          <h1>最近の学習</h1>
-          <ul className="divide-y divide-gray-300">
-            <li className="text-black">
-              <span>日付</span>
-              <span>セクション</span>
-              <span>獲得したXP</span>
-              <span>正答率</span>
-            </li>
-            {recentSessionLabels.map((session) => (
-              <li key={session.key} className="text-black ">
-                {session.label}
-                {session.sectionId}
-                {session.gainedXp}xp
-                {session.accuracyRate}%
-              </li>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {summaryCards.map(({ icon, title, value, caption }) => (
+              <div
+                key={title}
+                className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_30px_-24px_rgba(2,6,23,0.9)] transition hover:-translate-y-1 hover:border-[#f2c97d]/60 hover:bg-white/10">
+                <div className="flex items-center gap-3">
+                  {icon ? (
+                    <img
+                      src={icon}
+                      alt={`${title}アイコン`}
+                      width={iconSize}
+                      height={iconSize}
+                      className="rounded-full border border-white/10 bg-[#050917] p-2"
+                    />
+                  ) : (
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#f2c97d]/60 bg-[#1b1420] text-xs font-semibold text-[#f2c97d]">
+                      XP
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.3em] text-white/60">
+                      {title}
+                    </p>
+                    <p className="text-2xl font-semibold text-white">{value}</p>
+                  </div>
+                </div>
+                <p className="mt-3 text-sm text-white/60">{caption}</p>
+              </div>
             ))}
-          </ul>
+          </div>
+
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_25px_40px_-30px_rgba(5,8,20,0.9)]">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.5em] text-[#f2c97d]/80">
+                  WEEKLY PULSE
+                </p>
+                <h2 className="text-xl font-semibold">週間の学習時間</h2>
+              </div>
+              <p className="text-sm text-white/70">
+                1日平均 {averageDailyMinutes} 分
+              </p>
+            </div>
+            <div className="mt-4 h-64">
+              <Line data={lineChartData} options={lineChartOptions} />
+            </div>
+            <p className="mt-2 text-xs text-white/60">
+              sessionHistory から直近7日のトレンドを描画しているよ。
+            </p>
+          </div>
+
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_25px_40px_-30px_rgba(5,8,20,0.9)]">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.5em] text-[#f2c97d]/80">
+                  RECENT LOG
+                </p>
+                <h2 className="text-xl font-semibold">最近の学習</h2>
+              </div>
+              <p className="text-sm text-white/70">
+                直近 {recentSessionLabels.length} 件を表示
+              </p>
+            </div>
+            <ul className="mt-4 divide-y divide-white/10 text-sm">
+              <li className="grid grid-cols-[1.4fr,1fr,0.8fr,0.8fr] gap-2 pb-3 text-xs uppercase tracking-[0.2em] text-white/50">
+                <span>日付</span>
+                <span>セクション</span>
+                <span>獲得XP</span>
+                <span>正答率</span>
+              </li>
+              {recentSessionLabels.length === 0 && (
+                <li className="py-6 text-center text-white/60">
+                  学習履歴がまだありません。
+                </li>
+              )}
+              {recentSessionLabels.map((session) => (
+                <li
+                  key={session.key}
+                  className="grid grid-cols-[1.4fr,1fr,0.8fr,0.8fr] items-center gap-2 py-3 text-white/90">
+                  <span className="font-semibold text-white">
+                    {session.label}
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-center text-xs uppercase tracking-wide text-white/70">
+                    {session.sectionId}
+                  </span>
+                  <span className="font-semibold text-[#f2c97d]">
+                    {session.gainedXp} XP
+                  </span>
+                  <span>{session.accuracyRate}%</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
     </AppLayout>
