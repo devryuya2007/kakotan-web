@@ -20,7 +20,22 @@ import {
   Legend,
   type ChartData,
   type ChartOptions,
+  type Plugin,
 } from "chart.js";
+
+const lineGlowPlugin: Plugin<"line"> = {
+  id: "line-glow",
+  beforeDatasetsDraw: (chart) => {
+    const { ctx } = chart;
+    ctx.save();
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = "rgba(242, 201, 125, 0.35)";
+    ctx.globalAlpha = 1;
+  },
+  afterDatasetsDraw: (chart) => {
+    chart.ctx.restore();
+  },
+};
 
 Chart.register(
   CategoryScale,
@@ -28,7 +43,8 @@ Chart.register(
   PointElement,
   LineElement,
   Tooltip,
-  Legend
+  Legend,
+  lineGlowPlugin
 );
 
 export default function ResultsPage() {
@@ -132,7 +148,7 @@ export default function ResultsPage() {
   }
 
   const iconSize = 36;
-  const ringSize = 72;
+  const ringSize = 200;
   const ringRadius = (ringSize - 12) / 2;
   const ringCircumference = 2 * Math.PI * ringRadius;
   const strokeDashoffset = ringCircumference * (1 - progressRatio);
@@ -147,7 +163,7 @@ export default function ResultsPage() {
 
   const currentYear = getThisYear();
 
-  const recentSessions = [...sessionHistory]
+      const recentSessions = [...sessionHistory]
     .slice()
     .sort((a, b) => b.startedAt - a.startedAt)
     .slice(0, renderCount);
@@ -321,10 +337,9 @@ export default function ResultsPage() {
       },
     },
   };
-
   return (
-    <AppLayout>
-      <section className=" bg-[radial-gradient(circle_at_top,_#141830,_#05060d)] text-white overflow-scroll w-full">
+    <AppLayout> 
+      <section className=" text-white overflow-scroll w-full">
         <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-10 sm:px-8">
           <header className="text-center">
             <p className="text-xs uppercase tracking-[0.65em] text-[#f2c97d]/80">
@@ -337,12 +352,12 @@ export default function ResultsPage() {
               MiniResultPageと同じトーンで、最近の学習データをまとめたダッシュボードだよ。
             </p>
           </header>
-
-          <div className="flex w-[50%] gap-6 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur lg:grid-cols-3">
+<div className="flex gap-8">
+          <div className="flex w-400 gap-6  rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur lg:grid-cols-3">
             <div className="flex flex-col gap-6 lg:col-span-2 lg:flex-row lg:items-center">
               <div className="flex items-center justify-center">
                 <div
-                  className=" flex rounded-full border border-white/10 bg-[#050917]/70 p-4"
+                  className=" flex rounded-full p-4"
                   style={{ width: ringSize + 16, height: ringSize + 16 }}>
                   <svg
                     width={ringSize}
@@ -360,10 +375,30 @@ export default function ResultsPage() {
                         <stop
                           offset="0%"
                           stopColor="#f2c97d"
-                          stopOpacity="0.9"
-                        />
-                        <stop offset="50%" stopColor="#f6dda5" />
-                        <stop offset="100%" stopColor="#f2c97d" />
+                          stopOpacity="0.9">
+                          <animate
+                            attributeName="stop-color"
+                            values="#f2c97d;#fff4cf;#f2c97d"
+                            dur="3s"
+                            repeatCount="indefinite"
+                          />
+                        </stop>
+                        <stop offset="50%" stopColor="#f6dda5">
+                          <animate
+                            attributeName="stop-color"
+                            values="#f6dda5;#ffe7b0;#f6dda5"
+                            dur="3s"
+                            repeatCount="indefinite"
+                          />
+                        </stop>
+                        <stop offset="100%" stopColor="#f2c97d">
+                          <animate
+                            attributeName="stop-color"
+                            values="#f2c97d;#ffd68f;#f2c97d"
+                            dur="3s"
+                            repeatCount="indefinite"
+                          />
+                        </stop>
                       </linearGradient>
                       <filter id="glow">
                         <feGaussianBlur stdDeviation="2" result="coloredBlur" />
@@ -378,9 +413,9 @@ export default function ResultsPage() {
                       cy={ringSize / 2}
                       r={ringRadius}
                       fill="none"
-                      stroke="#1b1f2b"
+                      stroke="dimgray"
                       strokeWidth={6}
-                      opacity={0.35}
+                      opacity={0.85}
                     />
                     <circle
                       cx={ringSize / 2}
@@ -394,6 +429,7 @@ export default function ResultsPage() {
                       strokeDashoffset={strokeDashoffset}
                       transform={`rotate(-90 ${ringSize / 2} ${ringSize / 2})`}
                       filter="url(#glow)"
+                      className="transition-all duration-300 ease-out"
                     />
                     <text
                       x="50%"
@@ -401,7 +437,7 @@ export default function ResultsPage() {
                       textAnchor="middle"
                       dominantBaseline="central"
                       fill="#f2c97d"
-                      fontSize="14">
+                      fontSize="20">
                       {progress}%
                     </text>
                   </svg>
@@ -435,12 +471,12 @@ export default function ResultsPage() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-4 md:grid-cols-2 xl:grid-cols-1">
+          <div className=" w-auto grid grid-cols-2 grid-rows-2 justify-center  gap-4 md:grid-cols-2 xl:grid-cols-1">
             {summaryCards.map(({ icon, title, value, caption }) => (
               <div
                 key={title}
                 className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_30px_-24px_rgba(2,6,23,0.9)] transition hover:-translate-y-1 hover:border-[#f2c97d]/60 hover:bg-white/10">
-                <div className="flex items-center gap-3">
+                <div className=" flex items-center gap-3">
                   {icon ? (
                     <img
                       src={icon}
@@ -464,6 +500,7 @@ export default function ResultsPage() {
                 <p className="mt-3 text-sm text-white/60">{caption}</p>
               </div>
             ))}
+          </div>
           </div>
         
 
