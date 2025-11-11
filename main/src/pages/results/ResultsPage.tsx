@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { differenceInCalendarDays, startOfDay } from "date-fns";
 import TimeElapsedIcon from "@/assets/iconSvg/時間経過のアイコン .svg";
 import AchievementIcon from "@/assets/iconSvg/業績アイコン.svg";
@@ -89,6 +90,41 @@ export default function ResultsPage() {
 
   const progress = judgementProgress() ?? 0; // TODO: replace with actual experience progress
   const progressRatio = progress / 100;
+  const [displayProgress, setDisplayProgress] = useState(progress);
+  const lastProgressRef = useRef(progress);
+
+  useEffect(() => {
+    const startValue = lastProgressRef.current;
+    const targetValue = progress;
+    const duration = 1000;
+
+    if (startValue === targetValue) {
+      setDisplayProgress(targetValue);
+      return;
+    }
+
+    let startTime: number | null = null;
+    let animationFrame: number;
+
+    // requestAnimationFrameは描画するタイミングの絶対時間をtimestampとして返す
+    const animate = (timestamp: number) => {
+      if (startTime === null) startTime = timestamp;
+      const elapsed = timestamp - startTime; // アニメ開始からどれくらい経ったか
+      const animationProgress = Math.min(elapsed / duration, 1); // 16/900,32/900,48/900...
+      const easedValue =
+        startValue + (targetValue - startValue) * animationProgress; //　前回まで + 割合
+      setDisplayProgress(Math.round(easedValue));// requestAnimationFrameのタイミングに合わせて
+
+      if (animationProgress < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+    lastProgressRef.current = targetValue;
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [progress]);
 
   // startedAt: number;
   // finishedAt: number;
@@ -263,7 +299,7 @@ export default function ResultsPage() {
   const summaryCards = [
     {
       icon: TimeElapsedIcon,
-      title: "Total study time",
+      title: "Total studytime",
       value: formattedTotalStudyTime,
       caption: `${sessionHistory.length} ${sessionCountLabel}`,
     },
@@ -334,16 +370,13 @@ export default function ResultsPage() {
       <section className=" text-white overflow-scroll w-full">
         <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-10 sm:px-8">
           <header className="text-center">
-            <p className="text-xs uppercase tracking-[0.65em] text-[#f2c97d]/80 subheading-display">
-              STUDY ARCHIVE
-            </p>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight heading-display sm:text-4xl">
+            
+            <h1 className="text-[#f2c97d] mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
               Progress Log
+
             </h1>
-            <p className="mt-2 text-sm text-white/70">
-              Keeping the MiniResultPage vibe, this dashboard rounds up your latest study data.
-            </p>
-          </header>
+            <button></button>
+            </header>
 <div className="flex gap-8">
           <div className="flex w-400 gap-6  rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur lg:grid-cols-3">
             <div className="flex flex-col gap-6 lg:col-span-2 lg:flex-row lg:items-center">
@@ -421,7 +454,7 @@ export default function ResultsPage() {
                       strokeDashoffset={strokeDashoffset}
                       transform={`rotate(-90 ${ringSize / 2} ${ringSize / 2})`}
                       filter="url(#glow)"
-                      className="transition-all duration-300 ease-out"
+                      className="transition-all duration-1000 ease-out"
                     />
                     <text
                       x="50%"
@@ -430,7 +463,7 @@ export default function ResultsPage() {
                       dominantBaseline="central"
                       fill="#f2c97d"
                       fontSize="20">
-                      {progress}%
+                      {displayProgress}%
                     </text>
                   </svg>
                 </div>
@@ -438,10 +471,10 @@ export default function ResultsPage() {
           
 
               <div className="flex flex-col items-center justify-center space-y-3 text-center lg:items-start lg:text-left">
-                <p className="text-xs uppercase tracking-[0.6em] text-[#f2c97d]/80 subheading-display">
+                <p className="text-xs uppercase tracking-[0.6em] text-[#f2c97d]/80">
                   MAIN QUEST
                 </p>
-                <h2 className="text-2xl font-semibold heading-display">
+                <h2 className="text-2xl font-semibold">
                   On track to clear every question
                 </h2>
                 <p className="text-sm text-white/70">
@@ -463,33 +496,35 @@ export default function ResultsPage() {
               </div>
             </div>
           </div>
-          <div className=" w-auto grid grid-cols-2 justify-center gap-4 md:grid-cols-2 xl:grid-cols-1">
+          <div className=" w-auto grid grid-cols-2 justify-center gap-6 md:grid-cols-2 xl:grid-cols-1">
             {summaryCards.map(({ icon, title, value, caption, fullSpan }) => (
               <div
                 key={title}
-                className={`rounded-2xl border border-white/10 bg-[#0f1524] p-4 shadow-[0_18px_30px_-24px_rgba(2,6,23,0.9)] transition hover:-translate-y-1 hover:border-[#f2c97d]/60 hover:bg-[#141b2d] ${fullSpan ? "col-span-2 xl:col-span-1" : ""}`}>
-                <div className=" flex items-center gap-3">
-                  {icon ? (
+                className={`justyfy-center rounded-2xl border border-white/10 bg-[#0f1524] p-4 shadow-[0_18px_30px_-24px_rgba(2,6,23,0.9)] transition hover:-translate-y-1 hover:border-[#f2c97d]/60 hover:bg-[#141b2d] ${fullSpan ? "col-span-2 xl:col-span-1" : ""}`}>
+                <div className=" flex items-center justify-center gap-3">
+                  {
                     <img
                       src={icon}
                       alt={`${title} icon`}
                       width={iconSize}
                       height={iconSize}
-                      className="rounded-full border border-white/10 bg-[#050917] p-2"
+                      className=" rounded-full border border-white/10 bg-[#050917] p-2"
                     />
-                  ) : (
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#f2c97d]/60 bg-[#1b1420] text-xs font-semibold text-[#f2c97d]">
-                      XP
-                    </div>
-                  )}
+                  // )  (
+                  //   <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#f2c97d]/60 bg-[#1b1420] text-xs font-semibold text-[#f2c97d]">
+                  //     XP
+                  //   </div>
+                  
+                   }
                   <div>
-                    <p className="text-xs uppercase tracking-[0.3em] text-white/60">
+                    <p className="py-2 text-xs uppercase tracking-[0.3em] text-white/60">
                       {title}
                     </p>
                     <p className="text-2xl font-semibold text-white">{value}</p>
                   </div>
+                   
                 </div>
-                <p className="mt-3 text-sm text-white/60">{caption}</p>
+               <p className=" text-center pl-4 mt-3 text-sm text-white/60">{caption}</p>
               </div>
             ))}
           </div>
@@ -499,10 +534,10 @@ export default function ResultsPage() {
           <div className="rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_25px_40px_-30px_rgba(5,8,20,0.9)]">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.5em] text-[#f2c97d]/80 subheading-display">
+                <p className="text-xs uppercase tracking-[0.5em] text-[#f2c97d]/80">
                   WEEKLY PULSE
                 </p>
-                <h2 className="text-xl font-semibold heading-display">Weekly study time</h2>
+                <h2 className="text-xl font-semibold">Weekly study time</h2>
               </div>
               <p className="text-sm text-white/70">
                 Daily avg {averageDailyMinutes} min
@@ -519,10 +554,10 @@ export default function ResultsPage() {
           <div className="rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_25px_40px_-30px_rgba(5,8,20,0.9)]">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.5em] text-[#f2c97d]/80 subheading-display">
+                <p className="text-xs uppercase tracking-[0.5em] text-[#f2c97d]/80">
                   RECENT LOG
                 </p>
-                <h2 className="text-xl font-semibold heading-display">Recent study log</h2>
+                <h2 className="text-xl font-semibold">Recent study log</h2>
                                         </div>
               <p className="text-sm text-white/70">
                 Showing the latest {recentSessionLabels.length} entries

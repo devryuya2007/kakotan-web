@@ -16,6 +16,11 @@
   box-sizing: border-box;
 }
 
+body {
+  font-family: "Space Grotesk", "Helvetica Neue", Arial, system-ui,
+    -apple-system, sans-serif;
+}
+
 .btn-text-glow {
   text-shadow: 0 0 10px var(--accent-color);
 }
@@ -28,4 +33,15 @@
 .subheading-display {
   font-family: "Space Grotesk", "Playfair Display", system-ui, -apple-system,
     sans-serif;
+}
+
+h1,
+h2 {
+  font-family: "Playfair Display", "Space Grotesk", system-ui, -apple-system,
+    sans-serif;
+}
+
+.subheading {
+  font-family: "Space Grotesk", "Helvetica Neue", Arial, system-ui,
+    -apple-system, sans-serif;
 }

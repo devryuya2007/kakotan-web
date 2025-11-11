@@ -2,6 +2,16 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    fontFamily: {
+      sans: [
+        "Space Grotesk",
+        "Helvetica Neue",
+        "Arial",
+        "system-ui",
+        "-apple-system",
+        "sans-serif",
+      ],
+    },
     extend: {
       // 一時的にアニメーション定義を無効化（コメントアウト）
       keyframes: {
