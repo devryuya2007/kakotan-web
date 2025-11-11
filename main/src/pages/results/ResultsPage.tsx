@@ -147,7 +147,7 @@ export default function ResultsPage() {
     break; // 一日以上空いたら終了
   }
 
-  const iconSize = 36;
+  const iconSize = 72;
   const ringSize = 200;
   const ringRadius = (ringSize - 12) / 2;
   const ringCircumference = 2 * Math.PI * ringRadius;
@@ -157,9 +157,9 @@ export default function ResultsPage() {
 
   const getThisYear = () => new Date().getFullYear();
   const formatDateWithYear = (date: Date, includeYear: boolean) =>
-    `${includeYear ? `${date.getFullYear()}年` : ""}${
-      date.getMonth() + 1
-    }月${date.getDate()}日`;
+    `${includeYear ? `${date.getFullYear()} ` : ""}${date.getMonth() + 1}/${
+      date.getDate()
+    }`;
 
   const currentYear = getThisYear();
 
@@ -252,41 +252,33 @@ export default function ResultsPage() {
       : 0;
   const solvedWords = correctQuestionsSet.size;
   const totalWords = allQuestionsSet.size;
-  const masteredDisplay =
-    totalWords === 0
-      ? "0単語"
-      : `${solvedWords.toLocaleString()}/${totalWords.toLocaleString()}語`;
-  const masteredCaption =
-    totalWords === 0 ? "問題セット読込中" : `${progress}% コンプリート`;
   const formattedTotalStudyTime =
     totalHours === 0
-      ? `${totalMinutes}分`
-      : `${totalHours}時間 ${totalMinutes}分`;
+      ? `${totalMinutes} min`
+      : `${totalHours} h ${totalMinutes} min`;
+  const sessionCountLabel =
+    sessionHistory.length === 1 ? "session" : "sessions";
+  const streakDayLabel = streak === 1 ? "day" : "days";
 
   const summaryCards = [
     {
       icon: TimeElapsedIcon,
-      title: "総合学習時間",
+      title: "Total study time",
       value: formattedTotalStudyTime,
-      caption: `${sessionHistory.length}セッション`,
+      caption: `${sessionHistory.length} ${sessionCountLabel}`,
     },
     {
       icon: AchievementIcon,
-      title: "平均正答率",
+      title: "Average accuracy",
       value: `${totalCorrectRate}%`,
-      caption: `${totalAnswered}問中`,
+      caption: `Across ${totalAnswered} questions`,
     },
     {
       icon: StreakIcon,
-      title: "連続学習日数",
-      value: `${streak}日`,
-      caption: streak > 0 ? "休まず継続中" : "本日スタート",
-    },
-    {
-      icon: null,
-      title: "学習の進捗",
-      value: masteredDisplay,
-      caption: masteredCaption,
+      title: "Study streak",
+      value: `${streak} ${streakDayLabel}`,
+      caption: streak > 0 ? "Still going strong" : "Starting today",
+      fullSpan: true,
     },
   ];
 
@@ -294,7 +286,7 @@ export default function ResultsPage() {
     labels: dailySeries.labels,
     datasets: [
       {
-        label: "学習時間（分）",
+        label: "Study time (min)",
         data: dailySeries.data,
         borderColor: "#38bdf8",
         backgroundColor: "rgba(56, 189, 248, 0.25)",
@@ -342,18 +334,18 @@ export default function ResultsPage() {
       <section className=" text-white overflow-scroll w-full">
         <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-10 sm:px-8">
           <header className="text-center">
-            <p className="text-xs uppercase tracking-[0.65em] text-[#f2c97d]/80">
+            <p className="text-xs uppercase tracking-[0.65em] text-[#f2c97d]/80 subheading-display">
               STUDY ARCHIVE
             </p>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-              積み上げログ
+            <h1 className="mt-2 text-3xl font-bold tracking-tight heading-display sm:text-4xl">
+              Progress Log
             </h1>
             <p className="mt-2 text-sm text-white/70">
-              MiniResultPageと同じトーンで、最近の学習データをまとめたダッシュボードだよ。
+              Keeping the MiniResultPage vibe, this dashboard rounds up your latest study data.
             </p>
           </header>
 <div className="flex gap-8">
-          <div className="flex w-400 gap-6  rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur lg:grid-cols-3">
+          <div className="flex w-400 gap-6  rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur lg:grid-cols-3">
             <div className="flex flex-col gap-6 lg:col-span-2 lg:flex-row lg:items-center">
               <div className="flex items-center justify-center">
                 <div
@@ -364,7 +356,7 @@ export default function ResultsPage() {
                     height={ringSize}
                     viewBox={`0 0 ${ringSize} ${ringSize}`}
                     role="img"
-                    aria-label="経験値プログレス">
+                    aria-label="XP progress ring">
                     <defs>
                       <linearGradient
                         id="xp-gradient"
@@ -446,41 +438,41 @@ export default function ResultsPage() {
           
 
               <div className="flex flex-col items-center justify-center space-y-3 text-center lg:items-start lg:text-left">
-                <p className="text-xs uppercase tracking-[0.6em] text-[#f2c97d]/80">
+                <p className="text-xs uppercase tracking-[0.6em] text-[#f2c97d]/80 subheading-display">
                   MAIN QUEST
                 </p>
-                <h2 className="text-2xl font-semibold">
-                  すべての問題を正解するまで
+                <h2 className="text-2xl font-semibold heading-display">
+                  On track to clear every question
                 </h2>
                 <p className="text-sm text-white/70">
-                  正解できた単語をコツコツ積み重ね中。コンプリート率は{" "}
-                  <span className="text-[#f2c97d]">{progress}%</span> だよ。
+                  We keep stacking every word you solved. Completion rate is{" "}
+                  <span className="text-[#f2c97d]">{progress}%</span>.
                 </p>
                 <div className="flex flex-wrap justify-center gap-3 text-xs text-white/70 lg:justify-start">
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-                    正解済: {solvedWords.toLocaleString()}語
+                    Solved: {solvedWords.toLocaleString()} words
                   </span>
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-                    総問題数: {totalWords.toLocaleString()}語
+                    Total questions: {totalWords.toLocaleString()} words
                   </span>
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-                    残り:{" "}
-                    {Math.max(totalWords - solvedWords, 0).toLocaleString()}語
+                    Remaining:{" "}
+                    {Math.max(totalWords - solvedWords, 0).toLocaleString()} words
                   </span>
                 </div>
               </div>
             </div>
           </div>
-          <div className=" w-auto grid grid-cols-2 grid-rows-2 justify-center  gap-4 md:grid-cols-2 xl:grid-cols-1">
-            {summaryCards.map(({ icon, title, value, caption }) => (
+          <div className=" w-auto grid grid-cols-2 justify-center gap-4 md:grid-cols-2 xl:grid-cols-1">
+            {summaryCards.map(({ icon, title, value, caption, fullSpan }) => (
               <div
                 key={title}
-                className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_30px_-24px_rgba(2,6,23,0.9)] transition hover:-translate-y-1 hover:border-[#f2c97d]/60 hover:bg-white/10">
+                className={`rounded-2xl border border-white/10 bg-[#0f1524] p-4 shadow-[0_18px_30px_-24px_rgba(2,6,23,0.9)] transition hover:-translate-y-1 hover:border-[#f2c97d]/60 hover:bg-[#141b2d] ${fullSpan ? "col-span-2 xl:col-span-1" : ""}`}>
                 <div className=" flex items-center gap-3">
                   {icon ? (
                     <img
                       src={icon}
-                      alt={`${title}アイコン`}
+                      alt={`${title} icon`}
                       width={iconSize}
                       height={iconSize}
                       className="rounded-full border border-white/10 bg-[#050917] p-2"
@@ -504,58 +496,58 @@ export default function ResultsPage() {
           </div>
         
 
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_25px_40px_-30px_rgba(5,8,20,0.9)]">
+          <div className="rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_25px_40px_-30px_rgba(5,8,20,0.9)]">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.5em] text-[#f2c97d]/80">
+                <p className="text-xs uppercase tracking-[0.5em] text-[#f2c97d]/80 subheading-display">
                   WEEKLY PULSE
                 </p>
-                <h2 className="text-xl font-semibold">週間の学習時間</h2>
+                <h2 className="text-xl font-semibold heading-display">Weekly study time</h2>
               </div>
               <p className="text-sm text-white/70">
-                1日平均 {averageDailyMinutes} 分
+                Daily avg {averageDailyMinutes} min
               </p>
             </div>
             <div className="mt-4 h-64">
               <Line data={lineChartData} options={lineChartOptions} />
             </div>
             <p className="mt-2 text-xs text-white/60">
-              sessionHistory から直近7日のトレンドを描画しているよ。
+              Plotting the latest 7-day trend from sessionHistory.
             </p>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_25px_40px_-30px_rgba(5,8,20,0.9)]">
+          <div className="rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_25px_40px_-30px_rgba(5,8,20,0.9)]">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.5em] text-[#f2c97d]/80">
+                <p className="text-xs uppercase tracking-[0.5em] text-[#f2c97d]/80 subheading-display">
                   RECENT LOG
                 </p>
-                <h2 className="text-xl font-semibold">最近の学習</h2>
-              </div>
+                <h2 className="text-xl font-semibold heading-display">Recent study log</h2>
+                                        </div>
               <p className="text-sm text-white/70">
-                直近 {recentSessionLabels.length} 件を表示
+                Showing the latest {recentSessionLabels.length} entries
               </p>
             </div>
             <ul className="mt-4 divide-y divide-white/10 text-sm">
               <li className="grid grid-cols-[1.4fr,1fr,0.8fr,0.8fr] gap-2 pb-3 text-xs uppercase tracking-[0.2em] text-white/50">
-                <span>日付</span>
-                <span>セクション</span>
-                <span>獲得XP</span>
-                <span>正答率</span>
+                <span>Date</span>
+                <span>Section</span>
+                <span>XP gained</span>
+                <span>Accuracy</span>
               </li>
               {recentSessionLabels.length === 0 && (
                 <li className="py-6 text-center text-white/60">
-                  学習履歴がまだありません。
+                  No study history yet.
                 </li>
               )}
               {recentSessionLabels.map((session) => (
                 <li
                   key={session.key}
-                  className="grid grid-cols-[1.4fr,1fr,0.8fr,0.8fr] items-center gap-2 py-3 text-white/90">
+                  className="grid grid-cols-[1.4fr,1.4fr,0.8fr,0.8fr] items-center gap-2 py-3 text-white/90">
                   <span className="font-semibold text-white">
                     {session.label}
                   </span>
-                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-center text-xs uppercase tracking-wide text-white/70">
+                  <span className="justify-self-start px-24 rounded-full border border-white/10 bg-white/5  py-2 text-center text-xs uppercase tracking-wide text-white/70">
                     {session.sectionId}
                   </span>
                   <span className="font-semibold text-[#f2c97d]">
