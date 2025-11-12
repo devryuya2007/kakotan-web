@@ -1,19 +1,6 @@
 import { AppLayout } from "../../../components/layout/AppLayout";
-import { useYearVocab } from "../../../hooks/useYearVocab";
 import TestPageLayout from "./layout/TestPageLayout";
-import { yearsConfig } from "./yearsConfig";
-
-const reiwa7 = yearsConfig.reiwa7.sectionId;
-const maxCount = yearsConfig.reiwa7.maxCount;
-
-export const reiwa7Config = {
-  key: reiwa7,
-  maxCount: maxCount,
-};
-
-export function useReiwa7Vocab() {
-  return useYearVocab(reiwa7, maxCount);
-}
+import { useReiwa7Vocab } from "./hooks/useReiwaVocab";
 
 export default function Reiwa7Page() {
   const { status, count, error, questions } = useReiwa7Vocab();

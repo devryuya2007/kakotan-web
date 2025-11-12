@@ -7,15 +7,16 @@ import {
   type CSSProperties,
   type MouseEvent,
 } from "react";
+import { useNavigate } from "react-router-dom";
 // 単語テストの一問分を表す型。外部のデータローダーから入ってくる
 import { type QuizQuestion } from "../../../../data/vocabLoader";
-import { useNavigate } from "react-router-dom";
-import { useTestResults } from "@/pages/states/TestReSultContext";
+import { useTestResults } from "@/pages/states/useTestResults";
 import {
   getExperiencePoints,
   XP_PER_CORRECT,
   XP_PER_INCORRECT,
 } from "@/features/results/scoring";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 // このコンポーネントが受け取るpropsの形。questionsは問題配列、countは総数
 type TestPageLayoutProps = {
@@ -23,38 +24,6 @@ type TestPageLayoutProps = {
   count: number;
   sectionId: string;
 };
-
-// OSやブラウザの「アニメーションを減らす」設定を拾って真偽値で返す自作フック
-export function usePrefersReducedMotion() {
-  // prefersReducedがtrueならアニメーションを抑えたいユーザー
-  const [prefersReduced, setPrefersReduced] = useState(false);
-
-  // コンポーネント生成時に一度だけ設定を確認し、変更があれば値を更新する
-  useEffect(() => {
-    // SSRなどwindowがない環境では何もしないように早期return
-    if (typeof window === "undefined" || !("matchMedia" in window)) {
-      return;
-    }
-
-    // ブラウザ設定「prefers-reduced-motion」を監視
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    // 現在の設定に合わせてstateを更新する関数
-    const handleChange = () => setPrefersReduced(mediaQuery.matches);
-
-    // 初期値をセット
-    handleChange();
-    // 設定変更を監視
-    mediaQuery.addEventListener("change", handleChange);
-
-    // クリーンアップでイベントリスナーを外す
-    return () => {
-      mediaQuery.removeEventListener("change", handleChange);
-    };
-  }, []);
-
-  // 呼び出し元に現在の設定を返す
-  return prefersReduced;
-}
 
 export default function TestPageLayout({
   questions,
@@ -156,7 +125,7 @@ export default function TestPageLayout({
   const finishTest = useCallback(() => {
     const snapshot = { correct, incorrect, ExperiencePoints: totalXp };
     const { gainedXp, nextTotalXp } = getExperiencePoints(snapshot);
-    applyXp(gainedXp); // 得た経験値を含めた累計　- 累計　= 今回得た経験値
+    applyXp(gainedXp); // 得た経験値を含めた累計 - 累計 = 今回得た経験値
     const updatedTotalXp = nextTotalXp;
 
     const finishedAt = Date.now();
@@ -183,7 +152,7 @@ export default function TestPageLayout({
     }
 
     return { gainedXp, updatedTotalXp, durationMs };
-  }, [correct, incorrect, totalXp, applyXp, addSession]);
+  }, [correct, incorrect, totalXp, applyXp, addSession, sectionId]);
 
   const hasFinishedRef = useRef(false);
   const navigate = useNavigate();

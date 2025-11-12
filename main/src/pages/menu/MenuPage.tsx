@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../index.css";
-import { QuickStartButtonStyle } from "../../components/buttons/QuickStartButton";
+import {
+  QuickStartButton,
+  QuickStartButtonStyle,
+} from "../../components/buttons/QuickStartButton";
 import { AppLayout } from "../../components/layout/AppLayout";
 import { Modal } from "../../components/modal/Modal";
 
 const MENU_ITEMS = [
-  { label: "令和３年", path: "/tests/reiwa3", modalKey: "reiwa3" },
-  { label: "令和４年", path: "/tests/reiwa4", modalKey: "reiwa4" },
-  { label: "令和５年", path: "/tests/reiwa5", modalKey: "reiwa5" },
-  { label: "令和６年", path: "/tests/reiwa6", modalKey: "reiwa6" },
-  { label: "令和７年", path: "/tests/reiwa7", modalKey: "reiwa7" },
+  { label: "Reiwa 3", path: "/tests/reiwa3", modalKey: "reiwa3" },
+  { label: "Reiwa 4", path: "/tests/reiwa4", modalKey: "reiwa4" },
+  { label: "Reiwa 5", path: "/tests/reiwa5", modalKey: "reiwa5" },
+  { label: "Reiwa 6", path: "/tests/reiwa6", modalKey: "reiwa6" },
+  { label: "Reiwa 7", path: "/tests/reiwa7", modalKey: "reiwa7" },
 ] as const;
 
 type MenuItem = (typeof MENU_ITEMS)[number];
@@ -23,10 +26,6 @@ const QUESTION_COUNTS: Record<MenuModalKey, number> = {
   reiwa6: 1300,
   reiwa7: 1400,
 };
-
-// 成績ページへ移動するためのボタンスタイル。落ち着いた色でサブ導線をイメージしている
-const SecondaryNavButtonStyle =
-  "w-full max-w-[220px] rounded-full border border-[#f2c97d33] px-6 py-2 text-xs font-semibold tracking-[0.3em] text-[#f2c97d] transition hover:border-[#f2c97d] hover:bg-[#1c1c2a]";
 
 export default function MenuPage() {
   const [openKey, setOpenKey] = useState<MenuModalKey | null>(null);
@@ -54,17 +53,12 @@ export default function MenuPage() {
     navigate(activeItem.path);
   };
 
-  const handleViewResults = () => {
-    // どの年度のテストに行くか決める前に、まず成績をチェックしたい場合はダッシュボードへ
-    navigate("/results");
-  };
-
   const modalContent = activeItem ? (
     <BasicModalContent
       yearLabel={activeItem.label}
-      startButtonLabel="開始する"
-      description="この問題は共通テストの出題傾向から頻出語を抜粋した練習セットです。"
-      estimatedTime="終了目安は10分です。"
+      startButtonLabel="Start practice"
+      description="This set pulls high-frequency words from recent Common Test trends."
+      estimatedTime="Estimated time: about 10 minutes."
       questionSummary={getQuestionSummary(activeItem)}
       onStart={handleStart}
     />
@@ -82,9 +76,9 @@ export default function MenuPage() {
               SELECT
             </h1>
             <p className="select-none text-sm text-[#f2c97d]/70">
-              出題範囲を選んでください。
+              Pick the test set you want to practice.
             </p>
-            {/* 成績ボタンは画面右下に固定で表示するのでヘッダーでは見せない */}
+            {/* Results button stays fixed on the bottom-right, so we don't show it here */}
           </header>
 
           <section>
@@ -106,14 +100,13 @@ export default function MenuPage() {
         onClose={() => setOpenKey(null)}
         content={modalContent}
       />
-      <button
-        type="button"
-        onClick={handleViewResults}
-        className={`${SecondaryNavButtonStyle} fixed bottom-6 right-6`}>
-        成績を見る
-      </button>
+      <div className="fixed bottom-6 right-6 w-[6rem] ">
+        <QuickStartButton onClick={() => navigate("/")} label="Home" />
+      </div>
     </AppLayout>
   );
+
+
 }
 
 type MenuButtonProps = {
@@ -138,7 +131,7 @@ type BasicModalContentProps = {
   questionSummary: string | null;
 };
 
-// Modalを直接作ってpropsで中身を変えられる
+// Basic modal layout that swaps content via props
 function BasicModalContent({
   yearLabel,
   description,
@@ -150,7 +143,7 @@ function BasicModalContent({
   return (
     <div className="space-y-3 text-left">
       <h1 className="text-xl font-semibold text-[#f2c97d]">
-        共通テスト {yearLabel}
+        Common Test {yearLabel}
       </h1>
       <p className="text-sm text-white/80">{description}</p>
       <p className="text-sm text-white/80">{estimatedTime}</p>
@@ -175,5 +168,5 @@ function getQuestionSummary(item: MenuItem): string | null {
     return null;
   }
 
-  return `総問題数は${count}問です。`;
+  return `Total questions: ${count}.`;
 }

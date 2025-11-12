@@ -1,15 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { differenceInCalendarDays, startOfDay } from "date-fns";
 import TimeElapsedIcon from "@/assets/iconSvg/時間経過のアイコン .svg";
 import AchievementIcon from "@/assets/iconSvg/業績アイコン.svg";
 import StreakIcon from "@/assets/iconSvg/火の玉のアイコン.svg";
 import { AppLayout } from "../../components/layout/AppLayout";
-import { useTestResults } from "../states/TestReSultContext";
-import { useReiwa3Vocab } from "../tests/test_page/Reiwa3Page";
-import { useReiwa4Vocab } from "../tests/test_page/Reiwa4Page";
-import { useReiwa5Vocab } from "../tests/test_page/Reiwa5Page";
-import { useReiwa6Vocab } from "../tests/test_page/Reiwa6Page";
-import { useReiwa7Vocab } from "../tests/test_page/Reiwa7Page";
+import { useTestResults } from "../states/useTestResults";
+import {
+  useReiwa3Vocab,
+  useReiwa4Vocab,
+  useReiwa5Vocab,
+  useReiwa6Vocab,
+  useReiwa7Vocab,
+} from "../tests/test_page/hooks/useReiwaVocab";
 import { Line } from "react-chartjs-2";
 import {
   Chart,
@@ -19,10 +21,13 @@ import {
   LineElement,
   Tooltip,
   Legend,
+  Filler,
   type ChartData,
   type ChartOptions,
   type Plugin,
 } from "chart.js";
+import { QuickStartButton } from "@/components/buttons/QuickStartButton";
+import { useNavigate } from "react-router-dom";
 
 const lineGlowPlugin: Plugin<"line"> = {
   id: "line-glow",
@@ -45,57 +50,97 @@ Chart.register(
   LineElement,
   Tooltip,
   Legend,
+  Filler,
   lineGlowPlugin
 );
 
 export default function ResultsPage() {
-  const { sessionHistory, correct } = useTestResults();
-  const { questions: reiwa3Questions } = useReiwa3Vocab();
-  const { questions: reiwa4Questions } = useReiwa4Vocab();
-  const { questions: reiwa5Questions } = useReiwa5Vocab();
-  const { questions: reiwa6Questions } = useReiwa6Vocab();
-  const { questions: reiwa7Questions } = useReiwa7Vocab();
+  const { sessionHistory, solvedPhrases } = useTestResults();
+  const { questions: reiwa3Questions, status: statusReiwa3 } =
+    useReiwa3Vocab();
+  const { questions: reiwa4Questions, status: statusReiwa4 } =
+    useReiwa4Vocab();
+  const { questions: reiwa5Questions, status: statusReiwa5 } =
+    useReiwa5Vocab();
+  const { questions: reiwa6Questions, status: statusReiwa6 } =
+    useReiwa6Vocab();
+  const { questions: reiwa7Questions, status: statusReiwa7 } =
+    useReiwa7Vocab();
 
-  let allQuestions: any = [];
-  let correctQuestions: any = [];
+  const vocabReady = [
+    statusReiwa3,
+    statusReiwa4,
+    statusReiwa5,
+    statusReiwa6,
+    statusReiwa7,
+  ].every((status) => status === "ready");
 
-  for (const question of reiwa3Questions) allQuestions.push(question.phrase);
+  console.log("[ResultsPage] vocabReady:", vocabReady, {
+    statusReiwa3,
+    statusReiwa4,
+    statusReiwa5,
+    statusReiwa6,
+    statusReiwa7,
+  });
 
-  for (const question of reiwa4Questions) allQuestions.push(question.phrase);
+  const allQuestions = useMemo(() => {
+    if (!vocabReady) return [];
+    return [
+      ...reiwa3Questions,
+      ...reiwa4Questions,
+      ...reiwa5Questions,
+      ...reiwa6Questions,
+      ...reiwa7Questions,
+    ].map((question) => question.phrase);
+  }, [
+    vocabReady,
+    reiwa3Questions,
+    reiwa4Questions,
+    reiwa5Questions,
+    reiwa6Questions,
+    reiwa7Questions,
+  ]);
 
-  for (const question of reiwa5Questions) allQuestions.push(question.phrase);
+  const correctQuestions = useMemo(
+    () => solvedPhrases.map((question) => question.phrase),
+    [solvedPhrases]
+  );
 
-  for (const question of reiwa6Questions) allQuestions.push(question.phrase);
+  console.log("[ResultsPage] allQuestions length:", allQuestions.length);
+  console.log("[ResultsPage] correctQuestions length:", correctQuestions.length);
 
-  for (const question of reiwa7Questions) allQuestions.push(question.phrase);
+  const allQuestionsSet = useMemo(
+    () => new Set(allQuestions),
+    [allQuestions]
+  );
+  const correctQuestionsSet = useMemo(
+    () => new Set(correctQuestions),
+    [correctQuestions]
+  );
 
-  for (const question of correct) correctQuestions.push(question.phrase);
-
-  const allQuestionsSet = new Set<string>(allQuestions);
-  const correctQuestionsSet = new Set<string>(correctQuestions);
-
-  const judgementProgress = () => {
-    if (!allQuestionsSet || !correctQuestionsSet) return 0;
-
-    const solvedCount = Array.from(allQuestionsSet).filter((a) =>
-      correctQuestionsSet.has(a)
-    ).length;
+  const progress = useMemo(() => {
+    if (!vocabReady) return null;
 
     const totalCount = allQuestionsSet.size;
-    if (totalCount === 0) return 0;
+    if (totalCount === 0) return null;
+
+    const solvedCount = Array.from(allQuestionsSet).filter((phrase) =>
+      correctQuestionsSet.has(phrase)
+    ).length;
+
     if (solvedCount === totalCount) return 100;
-
     return Math.round((solvedCount / totalCount) * 100);
-  };
+  }, [vocabReady, allQuestionsSet, correctQuestionsSet]);
 
-  const progress = judgementProgress() ?? 0; // TODO: replace with actual experience progress
-  const progressRatio = progress / 100;
-  const [displayProgress, setDisplayProgress] = useState(progress);
-  const lastProgressRef = useRef(progress);
+  console.log("[ResultsPage] progress value:", progress);
 
+  const progressValue = progress ?? 0;
+  const progressRatio = progressValue / 100;
+  const [displayProgress, setDisplayProgress] = useState(progressValue);
+  const lastProgressRef = useRef(progressValue);
   useEffect(() => {
     const startValue = lastProgressRef.current;
-    const targetValue = progress;
+    const targetValue = progressValue;
     const duration = 1000;
 
     if (startValue === targetValue) {
@@ -112,9 +157,8 @@ export default function ResultsPage() {
       const elapsed = timestamp - startTime; // アニメ開始からどれくらい経ったか
       const animationProgress = Math.min(elapsed / duration, 1); // 16/900,32/900,48/900...
       const easedValue =
-        startValue + (targetValue - startValue) * animationProgress; //　前回まで + 割合
-      setDisplayProgress(Math.round(easedValue));// requestAnimationFrameのタイミングに合わせて
-
+        startValue + (targetValue - startValue) * animationProgress; // 前回まで + 割合
+      setDisplayProgress(Math.round(easedValue)); // requestAnimationFrameのタイミングに合わせて
       if (animationProgress < 1) {
         animationFrame = requestAnimationFrame(animate);
       }
@@ -124,7 +168,7 @@ export default function ResultsPage() {
     lastProgressRef.current = targetValue;
 
     return () => cancelAnimationFrame(animationFrame);
-  }, [progress]);
+  }, [progressValue]);
 
   // startedAt: number;
   // finishedAt: number;
@@ -365,6 +409,9 @@ export default function ResultsPage() {
       },
     },
   };
+
+
+  const navigate = useNavigate();
   return (
     <AppLayout> 
       <section className=" text-white overflow-scroll w-full">
@@ -375,7 +422,9 @@ export default function ResultsPage() {
               Progress Log
 
             </h1>
-            <button></button>
+            <div className="fixed bottom-6 right-6 w-[6rem] ">
+              <QuickStartButton onClick={() => navigate("/")} label="Home"/>
+            </div>
             </header>
 <div className="flex gap-8">
           <div className="flex w-400 gap-6  rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur lg:grid-cols-3">
@@ -479,7 +528,7 @@ export default function ResultsPage() {
                 </h2>
                 <p className="text-sm text-white/70">
                   We keep stacking every word you solved. Completion rate is{" "}
-                  <span className="text-[#f2c97d]">{progress}%</span>.
+                  <span className="text-[#f2c97d]">{progress === 0 ? "Loading..." : progress}%</span>.
                 </p>
                 <div className="flex flex-wrap justify-center gap-3 text-xs text-white/70 lg:justify-start">
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">

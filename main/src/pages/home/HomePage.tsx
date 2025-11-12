@@ -4,7 +4,7 @@ import { BrainBookIcon } from "../../components/icons/BrainBookIcon";
 import { PromoCard } from "../../components/promo/PromoCard";
 import { QuickStartButton } from "../../components/buttons/QuickStartButton";
 
-// 成績を見るボタン用のスタイル。QuickStartと雰囲気をそろえて少し落ち着かせた色味にしている
+// Secondary CTA style for the “View Results” button.
 const SecondaryButtonStyle =
   "w-full rounded-full border border-[#f2c97d33] bg-transparent px-6 py-3 text-sm font-semibold tracking-[0.3em] text-[#f2c97d] shadow-[0_0_25px_rgba(242,201,125,0.15)] transition hover:border-[#f2c97d] hover:bg-[#1c1c2a] hover:shadow-[0_0_35px_rgba(242,201,125,0.25)]";
 
@@ -12,12 +12,12 @@ export default function HomePage() {
   const nav = useNavigate();
 
   const handleQuickStart = () => {
-    // すぐに練習を始めたい場合はメニューへジャンプ
+    // Take the user straight to the practice menu.
     nav("/menu");
   };
 
   const handleViewResults = () => {
-    // これまでの成績を確認したい場合はダッシュボードへ移動
+    // Send the user to the results dashboard.
     nav("/results");
   };
 
@@ -36,7 +36,7 @@ export default function HomePage() {
               type="button"
               className={SecondaryButtonStyle}
               onClick={handleViewResults}>
-              成績を見る
+              View Results
             </button>
           </div>
         }
