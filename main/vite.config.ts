@@ -1,6 +1,11 @@
 import { fileURLToPath, URL } from "node:url";
-import { defineConfig } from "vite";
+import { defineConfig, type UserConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import type { UserConfig as VitestUserConfig } from "vitest/config";
+
+type ExtendedViteConfig = UserConfig & {
+  test?: VitestUserConfig["test"];
+};
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -26,4 +31,4 @@ export default defineConfig({
       tsconfig: "./tsconfig.vitest.json",
     },
   },
-});
+} as ExtendedViteConfig);
