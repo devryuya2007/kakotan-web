@@ -1,40 +1,30 @@
 import { type QuizQuestion } from "@/data/vocabLoader";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+  TestResultsContext,
+  type SessionRecord,
+  type TestResultsContextValue,
+} from "./TestReSultContext.shared";
 
 type StoredSnapshot = {
   correct: QuizQuestion[];
   incorrect: QuizQuestion[];
   totalXp: number;
-};
-
-type TestResultsContextValue = {
-  correct: QuizQuestion[];
-  incorrect: QuizQuestion[];
-  totalXp: number;
-  recordResult: (question: QuizQuestion, isCorrect: boolean) => void;
-  applyXp: (gainedXp: number) => void;
-  reset: () => void;
+  sessionHistory: SessionRecord[];
+  solvedPhrases: QuizQuestion[];
+  missedPhrases: QuizQuestion[];
 };
 
 const RESULTS_STORAGE_PREFIX = "test-results:session";
 const XP_STORAGE_KEY = "test-results:xp";
 
-const TestResultsContext = createContext<TestResultsContextValue | undefined>(
-  undefined
-);
-
 const createEmptySnapshot = (): StoredSnapshot => ({
   correct: [],
   incorrect: [],
   totalXp: 0,
+  sessionHistory: [],
+  solvedPhrases: [],
+  missedPhrases: [],
 });
 
 const getResultsStorageKey = (testId: string) =>
@@ -42,12 +32,25 @@ const getResultsStorageKey = (testId: string) =>
 
 const loadResults = (testId: string) => {
   if (typeof window === "undefined") {
-    return { correct: [], incorrect: [] };
+    return {
+      correct: [],
+      incorrect: [],
+      sessionHistory: [],
+      solvedPhrases: [],
+      missedPhrases: [],
+    };
   }
 
   try {
     const raw = window.localStorage.getItem(getResultsStorageKey(testId));
-    if (!raw) return { correct: [], incorrect: [] };
+    if (!raw)
+      return {
+        correct: [],
+        incorrect: [],
+        sessionHistory: [],
+        solvedPhrases: [],
+        missedPhrases: [],
+      };
     const parsed = JSON.parse(raw);
 
     return {
@@ -57,10 +60,34 @@ const loadResults = (testId: string) => {
       incorrect: Array.isArray(parsed.incorrect)
         ? (parsed.incorrect as QuizQuestion[])
         : [],
+      solvedPhrases: Array.isArray(parsed.solvedPhrases)
+        ? (parsed.solvedPhrases as QuizQuestion[])
+        : [],
+      missedPhrases: Array.isArray(parsed.missedPhrases)
+        ? (parsed.missedPhrases as QuizQuestion[])
+        : [],
+      // 以前のバージョンで保存された履歴は新しいフィールドが欠けていることがあるため、ここで補完してから返す
+      sessionHistory: Array.isArray(parsed.sessionHistory)
+        ? (parsed.sessionHistory as Array<Partial<SessionRecord>>).map((raw) => ({
+            startedAt: raw.startedAt ?? 0,
+            finishedAt: raw.finishedAt ?? raw.startedAt ?? 0,
+            durationMs: raw.durationMs ?? 0,
+            sectionId: raw.sectionId ?? "unknown",
+            correctCount: raw.correctCount ?? 0,
+            incorrectCount: raw.incorrectCount ?? 0,
+            gainedXp: raw.gainedXp ?? 0,
+          }))
+        : [],
     };
   } catch (error) {
     console.warn("Failed to load results from storage", error);
-    return { correct: [], incorrect: [] };
+    return {
+      correct: [],
+      incorrect: [],
+      sessionHistory: [],
+      solvedPhrases: [],
+      missedPhrases: [],
+    };
   }
 };
 
@@ -83,13 +110,16 @@ const loadSnapshot = (testId: string): StoredSnapshot => {
     return createEmptySnapshot();
   }
 
-  const { correct, incorrect } = loadResults(testId);
+  const { correct, incorrect, sessionHistory,solvedPhrases,missedPhrases } = loadResults(testId);
   const totalXp = loadTotalXp();
 
   return {
     correct,
     incorrect,
     totalXp,
+    sessionHistory,
+    solvedPhrases,
+    missedPhrases,
   };
 };
 
@@ -104,7 +134,14 @@ export function TestResultsProvider({
     loadSnapshot(testId)
   );
 
-  const { correct, incorrect, totalXp } = snapshot;
+  const { correct, incorrect, totalXp, sessionHistory,solvedPhrases,missedPhrases } = snapshot;
+
+  const addSession = useCallback((session: SessionRecord) => {
+    setSnapshot((prev) => ({
+      ...prev,
+      sessionHistory: [...prev.sessionHistory, session],
+    }));
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -128,14 +165,17 @@ export function TestResultsProvider({
     (question: QuizQuestion, isCorrect: boolean) => {
       setSnapshot((prev) => {
         if (isCorrect) {
+          
           return {
             ...prev,
             correct: [...prev.correct, question],
+            solvedPhrases: [...prev.solvedPhrases,question],
           };
         }
         return {
           ...prev,
           incorrect: [...prev.incorrect, question],
+          missedPhrases:[...prev.missedPhrases,question],
         };
       });
     },
@@ -148,6 +188,9 @@ export function TestResultsProvider({
       totalXp: Math.max(0, prev.totalXp + gainedXp),
     }));
   }, []);
+
+
+  
 
   const reset = useCallback(() => {
     setSnapshot((prev) => ({
@@ -162,11 +205,26 @@ export function TestResultsProvider({
       correct,
       incorrect,
       totalXp,
+      solvedPhrases,
+      missedPhrases,
+      sessionHistory,
       recordResult,
       applyXp,
       reset,
+      addSession,
     }),
-    [correct, incorrect, totalXp, recordResult, applyXp, reset]
+    [
+      correct,
+      incorrect,
+      totalXp,
+      solvedPhrases,
+      missedPhrases,
+      sessionHistory,
+      recordResult,
+      applyXp,
+      reset,
+      addSession,
+    ]
   );
 
   return (
@@ -174,12 +232,4 @@ export function TestResultsProvider({
       {children}
     </TestResultsContext.Provider>
   );
-}
-
-export function useTestResults() {
-  const context = useContext(TestResultsContext);
-  if (!context) {
-    throw new Error("useTestResults は TestResultsProvider の内側で使ってね");
-  }
-  return context;
 }

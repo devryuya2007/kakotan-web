@@ -7,65 +7,50 @@ import {
   type CSSProperties,
   type MouseEvent,
 } from "react";
+import { useNavigate } from "react-router-dom";
 // 単語テストの一問分を表す型。外部のデータローダーから入ってくる
 import { type QuizQuestion } from "../../../../data/vocabLoader";
-import { useNavigate } from "react-router-dom";
-import { useTestResults } from "@/pages/states/TestReSultContext";
+import { useTestResults } from "@/pages/states/useTestResults";
 import {
   getExperiencePoints,
   XP_PER_CORRECT,
   XP_PER_INCORRECT,
 } from "@/features/results/scoring";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 // このコンポーネントが受け取るpropsの形。questionsは問題配列、countは総数
 type TestPageLayoutProps = {
   questions: QuizQuestion[];
   count: number;
+  sectionId: string;
 };
-
-// OSやブラウザの「アニメーションを減らす」設定を拾って真偽値で返す自作フック
-export function usePrefersReducedMotion() {
-  // prefersReducedがtrueならアニメーションを抑えたいユーザー
-  const [prefersReduced, setPrefersReduced] = useState(false);
-
-  // コンポーネント生成時に一度だけ設定を確認し、変更があれば値を更新する
-  useEffect(() => {
-    // SSRなどwindowがない環境では何もしないように早期return
-    if (typeof window === "undefined" || !("matchMedia" in window)) {
-      return;
-    }
-
-    // ブラウザ設定「prefers-reduced-motion」を監視
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    // 現在の設定に合わせてstateを更新する関数
-    const handleChange = () => setPrefersReduced(mediaQuery.matches);
-
-    // 初期値をセット
-    handleChange();
-    // 設定変更を監視
-    mediaQuery.addEventListener("change", handleChange);
-
-    // クリーンアップでイベントリスナーを外す
-    return () => {
-      mediaQuery.removeEventListener("change", handleChange);
-    };
-  }, []);
-
-  // 呼び出し元に現在の設定を返す
-  return prefersReduced;
-}
 
 export default function TestPageLayout({
   questions,
   count,
+  sectionId,
 }: TestPageLayoutProps) {
   // いま表示している問題の配列インデックス
-  const { correct, incorrect, recordResult, totalXp, applyXp, reset } =
-    useTestResults();
+  const {
+    correct,
+    incorrect,
+    recordResult,
+    totalXp,
+    applyXp,
+    reset,
+    addSession,
+  } = useTestResults();
+
+  const sessionStartRef = useRef<number | null>(null);
 
   useEffect(() => {
     reset();
-  }, []);
+    sessionStartRef.current = Date.now();
+
+    return () => {
+      sessionStartRef.current = null;
+    };
+  }, [reset]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   // 各選択肢が正解・不正解・未回答かを保持する
@@ -95,8 +80,7 @@ export default function TestPageLayout({
   const shuffledChoicesRef = useRef<Record<string, string[]>>({});
   // どのquestion配列をキャッシュに使っているかを覚えておく
   const cacheSourceRef = useRef<QuizQuestion[] | null>(null);
-  // ボタンを押した直後の「考え中」っぽい間
-  const FEEDBACK_DELAY = 800; // 押下直後の余白（次操作解放まで合計0.5s）
+  const REVIEW_DURATION = 800;
   // 実際のカードスライドにかける時間
   const TRANSITION_DURATION = 400; // アニメーション本体（FEEDBACK_DELAYと合わせて0.5s）
   const TOAST_DELAY = 0;
@@ -141,12 +125,34 @@ export default function TestPageLayout({
   const finishTest = useCallback(() => {
     const snapshot = { correct, incorrect, ExperiencePoints: totalXp };
     const { gainedXp, nextTotalXp } = getExperiencePoints(snapshot);
-    const gained = gainedXp; // 得た経験値を含めた累計　- 累計　= 今回得た経験値
-    applyXp(gained);
+    applyXp(gainedXp); // 得た経験値を含めた累計 - 累計 = 今回得た経験値
     const updatedTotalXp = nextTotalXp;
 
-    return { gained, updatedTotalXp };
-  }, [correct, incorrect, totalXp, applyXp]);
+    const finishedAt = Date.now();
+    const startedAt = sessionStartRef.current;
+    let durationMs: number | undefined;
+    const correctCount = correct.length;
+    const incorrectCount = incorrect.length;
+
+    if (typeof startedAt === "number") {
+      durationMs = Math.max(0, finishedAt - startedAt);
+      if (durationMs > 0) {
+        // セッション履歴は集計に使うので、テスト毎のメタ情報を丸ごと残しておく
+        addSession({
+          startedAt,
+          finishedAt,
+          durationMs,
+          sectionId,
+          correctCount,
+          incorrectCount,
+          gainedXp,
+        });
+      }
+      sessionStartRef.current = null;
+    }
+
+    return { gainedXp, updatedTotalXp, durationMs };
+  }, [correct, incorrect, totalXp, applyXp, addSession, sectionId]);
 
   const hasFinishedRef = useRef(false);
   const navigate = useNavigate();
@@ -156,10 +162,12 @@ export default function TestPageLayout({
     if (currentIndex < totalQuestions) return;
     if (hasFinishedRef.current) return;
 
-    const { gained, updatedTotalXp } = finishTest();
+    const { gainedXp, updatedTotalXp, durationMs } = finishTest();
 
     hasFinishedRef.current = true;
-    navigate("/results/mini", { state: { gained, updatedTotalXp } });
+    navigate("/results/mini", {
+      state: { gainedXp, updatedTotalXp, durationMs },
+    });
   }, [currentIndex, totalQuestions, finishTest, navigate]);
 
   // コンポーネントが壊れるときにタイマーを全部止めるためのクリーンアップ
@@ -275,7 +283,7 @@ export default function TestPageLayout({
           effectiveTransitionDuration
         );
       }
-    }, FEEDBACK_DELAY);
+    }, REVIEW_DURATION);
   }
 
   // まだ判定が付いていない選択肢ボタンの共通スタイル
@@ -437,18 +445,10 @@ export default function TestPageLayout({
                 {/* 選択肢ボタンのグリッド */}
                 <ul className="grid grid-cols-2 gap-3 text-center text-white/80 list-none p-0 m-0">
                   {cardChoices.map((choice, choiceIndex) => {
-                    const state = buttonStates[choice];
-                    const isWrong = state === "incorrect";
-
                     return (
                       <li
                         key={choiceIndex}
                         className="relative flex justify-center">
-                        {isWrong && (
-                          <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-4xl text-rose-200/70">
-                            ✖
-                          </span>
-                        )}
                         <button
                           // アクティブなカードだけクリック可にする
                           onClick={

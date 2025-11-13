@@ -76,8 +76,8 @@ export function calculateLevelProgress(
         xpTillNextLevel: 0,
         progressRatio: 1,
       };
-    } //if 100xp = 1レベル
-    // xpSpent　レベル単位の経験値（得た経験値が1543xpなら1500xp）　safeTotal　得てきた経験値すべて
+    } // if 100xp = 1レベル
+    // xpSpent: レベル単位の経験値（得た経験値が1543xpなら1500xp）、safeTotal: 得てきた経験値すべて
     if (xpSpent + required > safeTotal) {
       // required 次のレベルアップに必要な経験値
       const xpIntoLevel = safeTotal - xpSpent; // レベルの途中で溜まっている分

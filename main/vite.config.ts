@@ -1,9 +1,14 @@
 import { fileURLToPath, URL } from "node:url";
-import { defineConfig } from "vite";
+import { defineConfig, type UserConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import type { UserConfig as VitestUserConfig } from "vitest/config";
+
+type ExtendedViteConfig = UserConfig & {
+  test?: VitestUserConfig["test"];
+};
 
 // https://vite.dev/config/
-const config = {
+export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
@@ -26,6 +31,4 @@ const config = {
       tsconfig: "./tsconfig.vitest.json",
     },
   },
-} as const;
-
-export default defineConfig(config as any);
+} as ExtendedViteConfig);

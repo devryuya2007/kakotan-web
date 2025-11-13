@@ -2,10 +2,11 @@ import { QuickStartButton } from "@/components/buttons/QuickStartButton";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { badges } from "../badge/badge";
-import { useTestResults } from "../states/TestReSultContext";
+import { useTestResults } from "../states/useTestResults";
 import MiniResultPageModal from "./ResultModal/MiniResultPageModal";
 import { calculateLevelProgress } from "@/features/results/scoring";
 import { useLocation, useNavigate } from "react-router-dom";
+import badgeRule from "@/features/results/badgeCondition";
 
 export type WrongWordStat = {
   word: string;
@@ -13,10 +14,10 @@ export type WrongWordStat = {
   meaning: string;
   severity: "neutral" | "caution" | "negative";
 };
-// ここではテスト直後のミニ結果カードを仮で表示しておく
+// Temporary mini result card shown right after a test
 
 export default function MiniResultPage() {
-  // 仮の成績データ。後で実際のテスト結果と差し替える予定
+  // Placeholder stats; replace with real test results later
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const palette = {
@@ -46,33 +47,54 @@ export default function MiniResultPage() {
     totalAnswer === 0 ? 0 : Math.round((correct.length / totalAnswer) * 100);
   const incorrectNumber = incorrect.length;
 
+  interface ResultLocationState {
+    gainedXp?: number;
+    updatedTotalXp?: number;
+    durationMs?: number;
+  }
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const carriedXp = location.state as ResultLocationState | undefined;
+  const effectiveTotalXp = carriedXp?.updatedTotalXp ?? totalXp;
+  const {
+    level,
+    xpTillNextLevel,
+    progressRatio: progress,
+  } = calculateLevelProgress(effectiveTotalXp);
+  const shouldShowBadge = badgeRule({
+    totalXp: effectiveTotalXp,
+    level,
+  });
+
   const summaryCards: Array<{
     label: string;
     value: ReactNode;
     tone?: ToneKey;
   }> = [
     {
-      label: "セクション正答率",
+      label: "Section accuracy",
       value: `${correctRate}%`,
       tone: "positive",
     },
     {
-      label: "間違えた単語数",
+      label: "Missed words",
       value: `${incorrectNumber}`,
       tone: "negative",
     },
     {
-      label: "獲得バッジ",
-      // TODO: badgeConditionのロジックで算出したバッジ一覧に差し替える
+      label: "Badges earned",
       value: (
         <div className="flex flex-wrap gap-3">
-          {badges.map(({ key, icon }) => (
-            <span
-              key={key}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/5 bg-white/5">
-              {icon}
-            </span>
-          ))}
+          {shouldShowBadge && // Badge unlock rule (currently hidden, see badgeCondition.ts)
+            // x
+            badges.map(({ key, icon }) => (
+              <span
+                key={key}
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/5 bg-white/5">
+                {icon}
+              </span>
+            ))}
         </div>
       ),
     },
@@ -85,7 +107,7 @@ export default function MiniResultPage() {
 
     incorrect.forEach((question) => {
       const word = question.phrase;
-      const meaning = question.mean ?? "意味データなし";
+      const meaning = question.mean ?? "Meaning unavailable";
       const tally = mistakeTally.get(word);
 
       if (tally) {
@@ -134,27 +156,13 @@ export default function MiniResultPage() {
   const r = 52;
   const circumference = 2 * Math.PI * r;
 
-  // 画面からはみ出さないように、モバイルでは全体レイアウトを軽く縮小している
+  // Slightly scale the layout down on mobile to keep it within the viewport
   const contentWrapperClass =
     "flex w-full max-w-[100vw] min-w-0 flex-col gap-6 pb-4 text-left text-[#f5f6ff] max-h-[calc(100dvh-4.5rem)] origin-top scale-[0.94] sm:scale-100 sm:gap-8 sm:pb-6";
 
   const hasNoWrongWords = wrongWordsTop.length === 0;
-
-  interface ResultLocationState {
-    gained?: number;
-    updateTotalXp?: number;
-  }
-
-  const location = useLocation();
-  const cariiedXp = location.state as ResultLocationState | undefined; // 得た経験値を含めた累計
-  const effectuveTotalXp = cariiedXp?.updateTotalXp ?? totalXp;
-
-  const progress = calculateLevelProgress(effectuveTotalXp).progressRatio;
-
-  const { level, xpTillNextLevel } = calculateLevelProgress(effectuveTotalXp);
-
-  const navigate = useNavigate();
   const [displayProgress, setDisplayProgress] = useState(0);
+
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
       setDisplayProgress(progress);
@@ -166,9 +174,6 @@ export default function MiniResultPage() {
   }, [progress]);
 
   const dashOffset = circumference * (1 - displayProgress);
-  const home = () => {
-    navigate("/");
-  };
 
   const results = () => {
     navigate("/results");
@@ -184,24 +189,24 @@ export default function MiniResultPage() {
   return (
     <>
       <AppLayout>
-        <div className="relative sm:overflow-hidden overflow-y-auto flex w-full justify-center px-4 sm:px-6 lg:px-8 select-none">
+         
+        <div className="relative sm:overflow-hidden overflow-y-auto flex w-full justify-center px-4 sm:px-6 lg:px-8 ">
+          <div className="fixed bottom-6 right-6 w-[6rem] z-20">
+              <QuickStartButton onClick={() => navigate("/")} label="Home"/>
+            </div>
           <div className={contentWrapperClass}>
-            <section className="w-full space-y-2">
-              <h1 className="text-[#f2c97d] tracking-[1.25rem] text-center text-xl font-bold tracking-tight sm:text-3xl">
+            
+            <section className="relative w-full space-y-2">
+              <h1 className="text-center text-xl font-bold tracking-tight text-[#f2c97d] sm:text-3xl">
                 RESULT
               </h1>
-              <span>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2">
                 <QuickStartButton
                   onClick={() => results()}
-                  label="成績"
-                  className="!w-auto !px-3  !py-1 text-xs tracking-[0.2em] !float-right"
+                  label="Results"
+                  className="!w-[6rem] !px-3 !py-1 text-xs tracking-[0.2em]"
                 />
-                <QuickStartButton
-                  onClick={() => home()}
-                  label="ホーム"
-                  className="!w-auto !px-3 !py-1 text-xs tracking-[0.2em]"
-                />
-              </span>
+              </div>
             </section>
 
             <section className="grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-3">
@@ -230,20 +235,20 @@ export default function MiniResultPage() {
                   <div>
                     <h2
                       className={`text-base font-semibold ${palette.highlight} sm:text-lg`}>
-                      間違えた単語リスト
+                      Missed words list
                     </h2>
                   </div>
-                  <button
+                  {/* <button
                     type="button"
                     className={`inline-flex items-center gap-2 rounded-xl border border-[#f2c97d33] px-3 py-1.5 text-xs font-semibold ${palette.accent} transition hover:border-[#f2c97d] hover:text-[#f7e2bd] sm:px-4 sm:py-2 sm:text-sm`}>
                     <span aria-hidden="true">★</span>
-                    弱点克服テスト
-                  </button>
+                    Targeted practice
+                  </button> */}
                 </div>
                 <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                   {hasNoWrongWords ? (
                     <h1 className={`col-span-full text-sm ${palette.muted}`}>
-                      今回は間違えた単語がありません。お見事！
+                      No missed words this time. Nice work!
                     </h1>
                   ) : (
                     wrongWordsTop.map(({ word, meaning }) => {
@@ -267,7 +272,7 @@ export default function MiniResultPage() {
                     onClick={() => setIsModalOpen(true)}
                     type="button"
                     className={`mt-4 block w-full text-sm font-semibold ${palette.accent} transition hover:text-[#f7e2bd]`}>
-                    さらに表示...
+                    View more...
                   </button>
                 )}
               </div>
@@ -282,14 +287,14 @@ export default function MiniResultPage() {
                   <div className="space-y-1">
                     <p
                       className={`text-[11px] uppercase tracking-[0.6em] ${palette.subtle}`}>
-                      現在のランク
+                      Current rank
                     </p>
                     <h2
                       className={`text-2xl font-semibold ${palette.highlight}`}>
                       {rankInfo.title}
                     </h2>
                     <p className={`text-xs ${palette.muted}`}>
-                      次のランクまで{" "}
+                      To next rank{" "}
                       <span className={`font-semibold ${palette.accent}`}>
                         {rankInfo.nextXp} XP
                       </span>
@@ -315,7 +320,7 @@ export default function MiniResultPage() {
                     className="h-full w-full -rotate-90 transform text-[#1f2333]"
                     viewBox="0 0 140 140"
                     role="img"
-                    aria-label={`レベル ${rankInfo.level}`}>
+                    aria-label={`Level ${rankInfo.level}`}>
                     <circle
                       className="text-white/10 transition-opacity duration-500"
                       stroke="currentColor"
