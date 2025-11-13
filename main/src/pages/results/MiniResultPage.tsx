@@ -49,14 +49,14 @@ export default function MiniResultPage() {
 
   interface ResultLocationState {
     gainedXp?: number;
-    updateTotalXp?: number;
+    updatedTotalXp?: number;
     durationMs?: number;
   }
 
   const location = useLocation();
   const navigate = useNavigate();
   const carriedXp = location.state as ResultLocationState | undefined;
-  const effectiveTotalXp = carriedXp?.updateTotalXp ?? totalXp;
+  const effectiveTotalXp = carriedXp?.updatedTotalXp ?? totalXp;
   const {
     level,
     xpTillNextLevel,
