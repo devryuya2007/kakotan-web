@@ -321,12 +321,46 @@ export default function TestPageLayout({
     { x: -12, y: -7, scale: 0.88, opacity: 0.72, zIndex: 22 },
   ];
 
+  const smallBaseLayouts = [
+    { x: 0, y: 0, scale: 1, opacity: 1, zIndex: 40 },
+    { x: 0, y: -4, scale: 0.94, opacity: 0.9, zIndex: 30 },
+    { x: 0, y: -7, scale: 0.88, opacity: 0.7, zIndex: 20 },
+    { x: 0, y: -11, scale: 0.82, opacity: 0.0, zIndex: 10 },
+  ];
+  const smallTransitionLayouts = [
+    { x: 0, y: 12, scale: 1.02, opacity: 0, zIndex: 5 },
+    smallBaseLayouts[0],
+    smallBaseLayouts[1],
+    smallBaseLayouts[2],
+  ];
+  const [isSmall, setIsSmall] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 640px)").matches
+      : false
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mediaQuery = window.matchMedia("(max-width: 640px)");
+    const handleChange = (event: MediaQueryListEvent) => {
+      setIsSmall(event.matches);
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
   // 表示するカードのindexから適切なレイアウト情報を引き出す
   function getCardPresentation(idx: number) {
-    const layouts =
+    const desktopLayouts =
       isSlideActive && effectiveTransitionDuration > 0
         ? transitionLayouts
         : baseLayouts;
+    const mobileLayouts =
+      isSlideActive && effectiveTransitionDuration > 0
+        ? smallTransitionLayouts
+        : smallBaseLayouts;
+    const layouts = isSmall ? mobileLayouts : desktopLayouts;
     const clampedIndex = Math.min(idx, layouts.length - 1);
     return layouts[clampedIndex];
   }
@@ -356,7 +390,9 @@ export default function TestPageLayout({
 
   return (
     // カードスタック全体の外枠。センタリングと余白を担当
-    <section className="relative flex justify-center px-4" ref={sectionRef}>
+    <section
+      className="relative flex w-full justify-center px-0 sm:px-4 lg:px-8"
+      ref={sectionRef}>
       {gainToast && gainToast.amount === XP_PER_CORRECT && (
         <div
           className={`${toastBaseClass} ${toastVariantClass} ${toastVisibilityClass}`}
@@ -365,7 +401,7 @@ export default function TestPageLayout({
           {`+${gainToast.amount} XP`}
         </div>
       )}
-      <div className="relative min-h-[420px] w-full max-w-3xl">
+        <div className="relative h-full w-full max-w-none rounded-none px-0 sm:min-h-[420px] sm:max-w-3xl sm:rounded-3xl sm:px-6 lg:px-8">
         {/* 表示対象となるカード一枚ごとに描画 */}
         {visibleCards.map((cardQuestion, idx) => {
           if (!cardQuestion) return null;
@@ -400,7 +436,7 @@ export default function TestPageLayout({
           return (
             <div
               key={`${cardQuestion.phrase}-${cardIndex}`}
-              className={`absolute inset-0 rounded-2xl bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px] transform-gpu transition-all ease-out will-change-transform will-change-opacity ${
+              className={` absolute inset-0 rounded-2xl bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px] transform-gpu transition-all ease-out will-change-transform will-change-opacity ${
                 interactive ? "pointer-events-auto" : "pointer-events-none"
               } ${glowClass}`}
               style={{
@@ -443,7 +479,7 @@ export default function TestPageLayout({
                   {cardQuestion.phrase}
                 </h1>
                 {/* 選択肢ボタンのグリッド */}
-                <ul className="grid grid-cols-2 gap-3 text-center text-white/80 list-none p-0 m-0">
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-center text-white/80 list-none p-0 m-0">
                   {cardChoices.map((choice, choiceIndex) => {
                     return (
                       <li
