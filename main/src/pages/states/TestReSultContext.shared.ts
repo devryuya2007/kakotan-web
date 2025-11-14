@@ -1,5 +1,6 @@
-import { createContext } from "react";
-import { type QuizQuestion } from "@/data/vocabLoader";
+import {createContext} from 'react';
+
+import {type QuizQuestion} from '@/data/vocabLoader';
 
 export interface SessionRecord {
   startedAt: number;

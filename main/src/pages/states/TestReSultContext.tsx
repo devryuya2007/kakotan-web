@@ -1,10 +1,12 @@
-import { type QuizQuestion } from "@/data/vocabLoader";
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import {type ReactNode, useCallback, useEffect, useMemo, useState} from 'react';
+
+import {type QuizQuestion} from '@/data/vocabLoader';
+
 import {
-  TestResultsContext,
   type SessionRecord,
+  TestResultsContext,
   type TestResultsContextValue,
-} from "./TestReSultContext.shared";
+} from './TestReSultContext.shared';
 
 type StoredSnapshot = {
   correct: QuizQuestion[];
@@ -15,8 +17,8 @@ type StoredSnapshot = {
   missedPhrases: QuizQuestion[];
 };
 
-const RESULTS_STORAGE_PREFIX = "test-results:session";
-const XP_STORAGE_KEY = "test-results:xp";
+const RESULTS_STORAGE_PREFIX = 'test-results:session';
+const XP_STORAGE_KEY = 'test-results:xp';
 
 const createEmptySnapshot = (): StoredSnapshot => ({
   correct: [],
@@ -31,7 +33,7 @@ const getResultsStorageKey = (testId: string) =>
   `${RESULTS_STORAGE_PREFIX}:${testId}`;
 
 const loadResults = (testId: string) => {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     return {
       correct: [],
       incorrect: [],
@@ -68,19 +70,21 @@ const loadResults = (testId: string) => {
         : [],
       // 以前のバージョンで保存された履歴は新しいフィールドが欠けていることがあるため、ここで補完してから返す
       sessionHistory: Array.isArray(parsed.sessionHistory)
-        ? (parsed.sessionHistory as Array<Partial<SessionRecord>>).map((raw) => ({
-            startedAt: raw.startedAt ?? 0,
-            finishedAt: raw.finishedAt ?? raw.startedAt ?? 0,
-            durationMs: raw.durationMs ?? 0,
-            sectionId: raw.sectionId ?? "unknown",
-            correctCount: raw.correctCount ?? 0,
-            incorrectCount: raw.incorrectCount ?? 0,
-            gainedXp: raw.gainedXp ?? 0,
-          }))
+        ? (parsed.sessionHistory as Array<Partial<SessionRecord>>).map(
+            (raw) => ({
+              startedAt: raw.startedAt ?? 0,
+              finishedAt: raw.finishedAt ?? raw.startedAt ?? 0,
+              durationMs: raw.durationMs ?? 0,
+              sectionId: raw.sectionId ?? 'unknown',
+              correctCount: raw.correctCount ?? 0,
+              incorrectCount: raw.incorrectCount ?? 0,
+              gainedXp: raw.gainedXp ?? 0,
+            }),
+          )
         : [],
     };
   } catch (error) {
-    console.warn("Failed to load results from storage", error);
+    console.warn('Failed to load results from storage', error);
     return {
       correct: [],
       incorrect: [],
@@ -92,25 +96,26 @@ const loadResults = (testId: string) => {
 };
 
 const loadTotalXp = () => {
-  if (typeof window === "undefined") return 0;
+  if (typeof window === 'undefined') return 0;
 
   try {
     const raw = window.localStorage.getItem(XP_STORAGE_KEY);
     if (!raw) return 0;
-    const parsed = JSON.parse(raw) as { totalXp?: number };
-    return typeof parsed.totalXp === "number" ? parsed.totalXp : 0;
+    const parsed = JSON.parse(raw) as {totalXp?: number};
+    return typeof parsed.totalXp === 'number' ? parsed.totalXp : 0;
   } catch (error) {
-    console.warn("Failed to load total XP from storage", error);
+    console.warn('Failed to load total XP from storage', error);
     return 0;
   }
 };
 
 const loadSnapshot = (testId: string): StoredSnapshot => {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     return createEmptySnapshot();
   }
 
-  const { correct, incorrect, sessionHistory,solvedPhrases,missedPhrases } = loadResults(testId);
+  const {correct, incorrect, sessionHistory, solvedPhrases, missedPhrases} =
+    loadResults(testId);
   const totalXp = loadTotalXp();
 
   return {
@@ -125,16 +130,23 @@ const loadSnapshot = (testId: string): StoredSnapshot => {
 
 export function TestResultsProvider({
   children,
-  testId = "global",
+  testId = 'global',
 }: {
   children: ReactNode;
   testId?: string;
 }) {
   const [snapshot, setSnapshot] = useState<StoredSnapshot>(() =>
-    loadSnapshot(testId)
+    loadSnapshot(testId),
   );
 
-  const { correct, incorrect, totalXp, sessionHistory,solvedPhrases,missedPhrases } = snapshot;
+  const {
+    correct,
+    incorrect,
+    totalXp,
+    sessionHistory,
+    solvedPhrases,
+    missedPhrases,
+  } = snapshot;
 
   const addSession = useCallback((session: SessionRecord) => {
     setSnapshot((prev) => ({
@@ -144,20 +156,20 @@ export function TestResultsProvider({
   }, []);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
 
     try {
       window.localStorage.setItem(
         getResultsStorageKey(testId),
-        JSON.stringify(snapshot)
+        JSON.stringify(snapshot),
       );
 
       window.localStorage.setItem(
         XP_STORAGE_KEY,
-        JSON.stringify({ totalXp: snapshot.totalXp })
+        JSON.stringify({totalXp: snapshot.totalXp}),
       );
     } catch (error) {
-      console.warn("Failed to persist test results", error);
+      console.warn('Failed to persist test results', error);
     }
   }, [snapshot, testId]);
 
@@ -165,21 +177,20 @@ export function TestResultsProvider({
     (question: QuizQuestion, isCorrect: boolean) => {
       setSnapshot((prev) => {
         if (isCorrect) {
-          
           return {
             ...prev,
             correct: [...prev.correct, question],
-            solvedPhrases: [...prev.solvedPhrases,question],
+            solvedPhrases: [...prev.solvedPhrases, question],
           };
         }
         return {
           ...prev,
           incorrect: [...prev.incorrect, question],
-          missedPhrases:[...prev.missedPhrases,question],
+          missedPhrases: [...prev.missedPhrases, question],
         };
       });
     },
-    []
+    [],
   );
 
   const applyXp = useCallback((gainedXp: number) => {
@@ -188,9 +199,6 @@ export function TestResultsProvider({
       totalXp: Math.max(0, prev.totalXp + gainedXp),
     }));
   }, []);
-
-
-  
 
   const reset = useCallback(() => {
     setSnapshot((prev) => ({
@@ -224,7 +232,7 @@ export function TestResultsProvider({
       applyXp,
       reset,
       addSession,
-    ]
+    ],
   );
 
   return (

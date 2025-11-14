@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -17,8 +17,13 @@
 }
 
 body {
-  font-family: "Space Grotesk", "Helvetica Neue", Arial, system-ui,
-    -apple-system, sans-serif;
+  font-family:
+    'Space Grotesk',
+    'Helvetica Neue',
+    Arial,
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 .btn-text-glow {
@@ -26,22 +31,39 @@ body {
 }
 
 .heading-display {
-  font-family: "Playfair Display", "Space Grotesk", system-ui, -apple-system,
+  font-family:
+    'Playfair Display',
+    'Space Grotesk',
+    system-ui,
+    -apple-system,
     sans-serif;
 }
 
 .subheading-display {
-  font-family: "Space Grotesk", "Playfair Display", system-ui, -apple-system,
+  font-family:
+    'Space Grotesk',
+    'Playfair Display',
+    system-ui,
+    -apple-system,
     sans-serif;
 }
 
 h1,
 h2 {
-  font-family: "Playfair Display", "Space Grotesk", system-ui, -apple-system,
+  font-family:
+    'Playfair Display',
+    'Space Grotesk',
+    system-ui,
+    -apple-system,
     sans-serif;
 }
 
 .subheading {
-  font-family: "Space Grotesk", "Helvetica Neue", Arial, system-ui,
-    -apple-system, sans-serif;
+  font-family:
+    'Space Grotesk',
+    'Helvetica Neue',
+    Arial,
+    system-ui,
+    -apple-system,
+    sans-serif;
 }

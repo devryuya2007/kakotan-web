@@ -1,15 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     fontFamily: {
       sans: [
-        "Space Grotesk",
-        "Helvetica Neue",
-        "Arial",
-        "system-ui",
-        "-apple-system",
-        "sans-serif",
+        'Space Grotesk',
+        'Helvetica Neue',
+        'Arial',
+        'system-ui',
+        '-apple-system',
+        'sans-serif',
       ],
     },
     extend: {

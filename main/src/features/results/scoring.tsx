@@ -3,8 +3,7 @@
  * React から独立した純粋関数としてエクスポートし、コンテキストや
  * コンポーネントが共通利用できるようにする。
  */
-
-import { type QuizQuestion } from "../../data/vocabLoader";
+import {type QuizQuestion} from '../../data/vocabLoader';
 
 // クイズ結果と既存の累積経験値をまとめたスナップショット
 export type TestSessionSnapshot = {
@@ -43,7 +42,7 @@ export const XP_PER_INCORRECT = 40;
 // level: 計算したいレベル番号, config: 使用するカーブ設定 -> 次レベルまでに必要な経験値を返す
 export function requiredXpForLevel(
   level: number,
-  config: LevelSystemConfig = defaultLevelConfig
+  config: LevelSystemConfig = defaultLevelConfig,
 ): number {
   if (level <= 1) {
     return Math.round(config.baseRequiredXp);
@@ -56,7 +55,7 @@ export function requiredXpForLevel(
 // totalXp: 累積経験値, config: 使用するカーブ設定 -> 現在のレベル進捗情報を返す
 export function calculateLevelProgress(
   totalXp: number,
-  config: LevelSystemConfig = defaultLevelConfig
+  config: LevelSystemConfig = defaultLevelConfig,
 ): LevelProgress {
   const safeTotal = Math.max(0, totalXp);
   let level = 1;
@@ -65,7 +64,7 @@ export function calculateLevelProgress(
   while (true) {
     const required = requiredXpForLevel(level, config);
     const reachedMax =
-      typeof config.maxLevel === "number" && level >= config.maxLevel;
+      typeof config.maxLevel === 'number' && level >= config.maxLevel;
 
     if (reachedMax) {
       return {
@@ -118,5 +117,5 @@ export function getExperiencePoints({
   const gainedXp = Math.max(0, correctXp + incorrectXp);
   const nextTotalXp = currentXp + gainedXp;
 
-  return { currentXp, gainedXp, correctXp, incorrectXp, nextTotalXp };
+  return {currentXp, gainedXp, correctXp, incorrectXp, nextTotalXp};
 }

@@ -24,7 +24,7 @@
   ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
-  "tailwindConfig": "./tailwind.config.js",
+  "tailwindConfig": "./main/tailwind.config.js",
   "overrides": [
     {
       "files": "*.{json,md,yml,yaml}",

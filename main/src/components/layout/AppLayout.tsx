@@ -1,11 +1,12 @@
-import { useEffect, useState, type ReactNode } from "react";
-import { BackgroundGlow } from "./BackgroundGlow";
+import {type ReactNode, useEffect, useState} from 'react';
+
+import {BackgroundGlow} from './BackgroundGlow';
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
-export function AppLayout({ children }: AppLayoutProps) {
+export function AppLayout({children}: AppLayoutProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -17,13 +18,14 @@ export function AppLayout({ children }: AppLayoutProps) {
   }, []);
 
   return (
-    <div className="relative min-h-dvh bg-[#050509] text-white overflow-hidden m-auto">
+    <div className='relative m-auto min-h-dvh overflow-hidden bg-[#050509] text-white'>
       <BackgroundGlow />
 
       <main
-        className={`relative z-10 flex h-dvh w-full  justify-center px-4 sm:px-8 m-auto transform-gpu transition-all duration-500 ease-out ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-        }`}>
+        className={`relative z-10 m-auto flex h-dvh w-full transform-gpu justify-center px-4 transition-all duration-500 ease-out sm:px-8 ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+        }`}
+      >
         {children}
       </main>
     </div>
