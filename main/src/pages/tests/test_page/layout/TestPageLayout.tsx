@@ -407,7 +407,8 @@ export default function TestPageLayout({
           {`+${gainToast.amount} XP`}
         </div>
       )}
-      <div className='!m-0 w-full max-w-none rounded-2xl px-0 sm:min-h-[420px] sm:w-full sm:max-w-3xl sm:rounded-3xl sm:px-6 lg:px-8'>
+      {/* デスクトップではカードを重ねるために絶対配置を使うので、この囲いをrelativeにして境界を固定化 */}
+      <div className='relative !m-0 w-full max-w-none rounded-2xl px-0 sm:min-h-[420px] sm:w-full sm:max-w-3xl sm:rounded-3xl sm:px-6 lg:px-8'>
         {/* 表示対象となるカード一枚ごとに描画 */}
         {visibleCards.map((cardQuestion, idx) => {
           if (!cardQuestion) return null;
@@ -428,9 +429,12 @@ export default function TestPageLayout({
           // カードの位置や透明度などの設定
           const presentation = getCardPresentation(idx);
           // transformスタイルに使う文字列を組み立てる
-          const translateX = isSmall ? presentation.x * 1 : presentation.x;
-          const translateY = isSmall ? presentation.y * 1 : presentation.y;
-          const transform = `translate3d(${translateX}%, ${translateY}%, 0) scale(${presentation.scale})`;
+          const translateX = presentation.x;
+          const translateY = presentation.y;
+          const baseTransform = `translate3d(${translateX}%, ${translateY}%, 0) scale(${presentation.scale})`;
+          const transform = isSmall
+            ? `translate(-50%, -50%) ${baseTransform}`
+            : baseTransform;
           // アクティブカードのみクリック可能にするためのフラグ
           const interactive = idx === 0 && !isTransitioning;
           // 影の強さをカードの前後関係で変える
@@ -441,12 +445,9 @@ export default function TestPageLayout({
               : idx === 1
                 ? 'shadow-[0_18px_60px_-54px_rgba(242,201,125,0.35)]'
                 : '';
-          // const cardShellClass = isSmall
-          //   ? "absolute left-1/2 top-0 w-[90%] -translate-x-1/2 rounded-2xl"
-          //   : "absolute inset-0 rounded-2xl";
 
           const cardShellClass = isSmall
-            ? ' rounded-2xl'
+            ? 'absolute left-1/2 top-1/2 w-full  rounded-2xl'
             : 'absolute inset-0 rounded-2xl';
 
           return (
@@ -475,7 +476,7 @@ export default function TestPageLayout({
                 }`}
               >
                 {/* 問題番号やプログレスバーなどのヘッダー */}
-                <div className='sticky top-4 z-20 mb-6 rounded-xl border border-white/10 bg-[#050509]/90 px-4 py-3 backdrop-blur-sm'>
+                <div className='sticky top-4 z-20 mb-6 rounded-xl bg-[#050509]/90 px-4 py-3 backdrop-blur-sm'>
                   <div className='flex items-center justify-between text-xs font-medium uppercase tracking-wide text-white/50'>
                     <span>問題 {cardIndex + 1}</span>
                     <span>

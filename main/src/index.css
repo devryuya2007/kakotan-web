@@ -6,6 +6,7 @@
 
 /* Optional custom styles for the starter UI */
 :root {
+  min-height: 100%;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -14,16 +15,25 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* ブラウザに「このサイトはダーク背景前提だよ」と伝えてUI chromeも暗くする */
+  color-scheme: dark;
 }
 
 body {
+  min-height: 100%;
   font-family:
     'Space Grotesk',
     'Helvetica Neue',
     Arial,
     system-ui,
     -apple-system,
-    sans-serif;
+  sans-serif;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+}
+
+#root {
+  min-height: 100vh;
 }
 
 .btn-text-glow {
