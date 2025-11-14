@@ -43,6 +43,38 @@ export default function TestPageLayout({
 
   const sessionStartRef = useRef<number | null>(null);
 
+  const [isSmall, setIsSmall] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 640px)").matches
+      : false
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mediaQuery = window.matchMedia("(max-width: 640px)");
+    const handleChange = (event: MediaQueryListEvent) => {
+      setIsSmall(event.matches);
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  // 表示するカードのindexから適切なレイアウト情報を引き出す
+  function getCardPresentation(idx: number) {
+    const desktopLayouts =
+      isSlideActive && effectiveTransitionDuration > 0
+        ? transitionLayouts
+        : baseLayouts;
+    const mobileLayouts =
+      isSlideActive && effectiveTransitionDuration > 0
+        ? smallTransitionLayouts
+        : smallBaseLayouts;
+    const layouts = isSmall ? mobileLayouts : desktopLayouts;
+    const clampedIndex = Math.min(idx, layouts.length - 1);
+    return layouts[clampedIndex];
+  }
+
   useEffect(() => {
     reset();
     sessionStartRef.current = Date.now();
@@ -323,9 +355,9 @@ export default function TestPageLayout({
 
   const smallBaseLayouts = [
     { x: 0, y: 0, scale: 1, opacity: 1, zIndex: 40 },
-    { x: 0, y: -4, scale: 0.94, opacity: 0.9, zIndex: 30 },
-    { x: 0, y: -7, scale: 0.88, opacity: 0.7, zIndex: 20 },
-    { x: 0, y: -11, scale: 0.82, opacity: 0.0, zIndex: 10 },
+    { x: 0, y: 0, scale: 0.94, opacity: 0.9, zIndex: 30 },
+    { x: 0, y: 0, scale: 0.88, opacity: 0.7, zIndex: 20 },
+    { x: 0, y: 0, scale: 0.82, opacity: 0.0, zIndex: 10 },
   ];
   const smallTransitionLayouts = [
     { x: 0, y: 12, scale: 1.02, opacity: 0, zIndex: 5 },
@@ -333,37 +365,6 @@ export default function TestPageLayout({
     smallBaseLayouts[1],
     smallBaseLayouts[2],
   ];
-  const [isSmall, setIsSmall] = useState(() =>
-    typeof window !== "undefined"
-      ? window.matchMedia("(max-width: 640px)").matches
-      : false
-  );
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const mediaQuery = window.matchMedia("(max-width: 640px)");
-    const handleChange = (event: MediaQueryListEvent) => {
-      setIsSmall(event.matches);
-    };
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
-
-  // 表示するカードのindexから適切なレイアウト情報を引き出す
-  function getCardPresentation(idx: number) {
-    const desktopLayouts =
-      isSlideActive && effectiveTransitionDuration > 0
-        ? transitionLayouts
-        : baseLayouts;
-    const mobileLayouts =
-      isSlideActive && effectiveTransitionDuration > 0
-        ? smallTransitionLayouts
-        : smallBaseLayouts;
-    const layouts = isSmall ? mobileLayouts : desktopLayouts;
-    const clampedIndex = Math.min(idx, layouts.length - 1);
-    return layouts[clampedIndex];
-  }
 
   const toastBaseClass =
     "absolute z-50 flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-lg pointer-events-none transition-all duration-200 ease-out opacity-0 -translate-y-4";
@@ -391,7 +392,7 @@ export default function TestPageLayout({
   return (
     // カードスタック全体の外枠。センタリングと余白を担当
     <section
-      className="relative flex w-full justify-center px-0 sm:px-4 lg:px-8"
+      className="relative flex w-full justify-center px-0 py-6 sm:px-4 sm:py-8 lg:px-12"
       ref={sectionRef}>
       {gainToast && gainToast.amount === XP_PER_CORRECT && (
         <div
@@ -401,7 +402,7 @@ export default function TestPageLayout({
           {`+${gainToast.amount} XP`}
         </div>
       )}
-        <div className="relative h-full w-full max-w-none rounded-none px-0 sm:min-h-[420px] sm:max-w-3xl sm:rounded-3xl sm:px-6 lg:px-8">
+        <div className="relative w-full max-w-none rounded-none px-0 sm:min-h-[420px] sm:max-w-3xl sm:rounded-3xl sm:px-6 lg:px-8">
         {/* 表示対象となるカード一枚ごとに描画 */}
         {visibleCards.map((cardQuestion, idx) => {
           if (!cardQuestion) return null;
@@ -433,10 +434,13 @@ export default function TestPageLayout({
               : idx === 1
               ? "shadow-[0_18px_60px_-54px_rgba(242,201,125,0.35)]"
               : "";
+          const cardShellClass = isSmall
+            ? "relative w-full rounded-none"
+            : "absolute inset-0 rounded-2xl";
           return (
             <div
               key={`${cardQuestion.phrase}-${cardIndex}`}
-              className={` absolute inset-0 rounded-2xl bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px] transform-gpu transition-all ease-out will-change-transform will-change-opacity ${
+              className={`${cardShellClass} bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px] transform-gpu transition-all ease-out will-change-transform will-change-opacity ${
                 interactive ? "pointer-events-auto" : "pointer-events-none"
               } ${glowClass}`}
               style={{
@@ -452,7 +456,10 @@ export default function TestPageLayout({
                 transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
               }}>
               {/* カード本体。外枠のゴールドから内側はダークな背景 */}
-              <div className="bg-[#050509] [border-radius:inherit] px-6 py-[72px] text-white">
+              <div
+                className={`bg-[#050509] [border-radius:inherit] text-white ${
+                  isSmall ? "px-4 py-10" : "px-6 py-[72px]"
+                }`}>
                 {/* 問題番号やプログレスバーなどのヘッダー */}
                 <div className="sticky top-4 z-20 mb-6 rounded-xl border border-white/10 bg-[#050509]/90 px-4 py-3 backdrop-blur-sm ">
                   <div className="flex items-center justify-between text-xs font-medium uppercase tracking-wide text-white/50">
