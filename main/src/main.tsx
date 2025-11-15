@@ -13,6 +13,7 @@ import Reiwa4Page from './pages/tests/test_page/Reiwa4Page';
 import Reiwa5Page from './pages/tests/test_page/Reiwa5Page';
 import Reiwa6Page from './pages/tests/test_page/Reiwa6Page';
 import Reiwa7Page from './pages/tests/test_page/Reiwa7Page';
+import UserConfig from './pages/userConfig/userConfig';
 
 import './index.css';
 
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
   {path: '/tests/reiwa5', element: <Reiwa5Page />},
   {path: '/tests/reiwa6', element: <Reiwa6Page />},
   {path: '/tests/reiwa7', element: <Reiwa7Page />},
+  {path: '/pages/user-config', element: <UserConfig />},
 ]);
 
 createRoot(container).render(
