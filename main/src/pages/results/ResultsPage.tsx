@@ -409,8 +409,8 @@ export default function ResultsPage() {
   const navigate = useNavigate();
   return (
     <AppLayout>
-      <section className='w-full overflow-scroll text-white'>
-        <div className='mx-auto flex max-w-6xl flex-col gap-10 px-4 py-10 sm:px-8'>
+      <section className='w-full overflow-x-hidden text-white'>
+        <div className='mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-8 sm:px-6 lg:px-12'>
           <header className='text-center'>
             <h1 className='mt-2 text-3xl font-bold tracking-tight text-[#f2c97d] sm:text-4xl'>
               Progress Log
@@ -419,9 +419,9 @@ export default function ResultsPage() {
               <QuickStartButton onClick={() => navigate('/')} label='Home' />
             </div>
           </header>
-          <div className='flex gap-8'>
-            <div className='w-400 flex gap-6 rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur lg:grid-cols-3'>
-              <div className='flex flex-col gap-6 lg:col-span-2 lg:flex-row lg:items-center'>
+          <div className='flex flex-col gap-8'>
+            <div className='rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur'>
+              <div className='flex flex-col gap-8 lg:flex-row lg:items-center'>
                 <div className='flex items-center justify-center'>
                   <div
                     className='flex rounded-full p-4'
@@ -533,7 +533,7 @@ export default function ResultsPage() {
                     </span>
                     .
                   </p>
-                  <div className='flex flex-wrap justify-center gap-3 text-xs text-white/70 lg:justify-start'>
+                  <div className='flex justify-center gap-2 text-xs text-white/70 sm:flex-wrap sm:gap-3 lg:justify-start'>
                     <span className='rounded-full border border-white/10 bg-white/5 px-3 py-1'>
                       Solved: {solvedWords.toLocaleString()} words
                     </span>
@@ -549,14 +549,14 @@ export default function ResultsPage() {
                 </div>
               </div>
             </div>
-            <div className='grid w-auto grid-cols-2 justify-center gap-6 md:grid-cols-2 xl:grid-cols-1'>
-              {summaryCards.map(({icon, title, value, caption, fullSpan}) => (
-                <div
-                  key={title}
-                  className={`justyfy-center rounded-2xl border border-white/10 bg-[#0f1524] p-4 shadow-[0_18px_30px_-24px_rgba(2,6,23,0.9)] transition hover:-translate-y-1 hover:border-[#f2c97d]/60 hover:bg-[#141b2d] ${fullSpan ? 'col-span-2 xl:col-span-1' : ''}`}
-                >
-                  <div className='flex items-center justify-center gap-3'>
-                    {
+            <div className='grid grid-cols-1 gap-8 lg:grid-cols-[1.1fr_1.4fr]'>
+              <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1'>
+                {summaryCards.map(({icon, title, value, caption, fullSpan}) => (
+                  <div
+                    key={title}
+                    className={`rounded-2xl border border-white/10 bg-[#0f1524] p-4 shadow-[0_18px_30px_-24px_rgba(2,6,23,0.9)] transition hover:-translate-y-1 hover:border-[#f2c97d]/60 hover:bg-[#141b2d] ${fullSpan ? 'sm:col-span-2 lg:col-span-1' : ''}`}
+                  >
+                    <div className='flex items-center justify-center gap-3'>
                       <img
                         src={icon}
                         alt={`${title} icon`}
@@ -564,46 +564,41 @@ export default function ResultsPage() {
                         height={iconSize}
                         className='rounded-full border border-white/10 bg-[#050917] p-2'
                       />
-                      // )  (
-                      //   <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#f2c97d]/60 bg-[#1b1420] text-xs font-semibold text-[#f2c97d]">
-                      //     XP
-                      //   </div>
-                    }
-                    <div>
-                      <p className='py-2 text-xs uppercase tracking-[0.3em] text-white/60'>
-                        {title}
-                      </p>
-                      <p className='text-2xl font-semibold text-white'>
-                        {value}
-                      </p>
+                      <div>
+                        <p className='py-2 text-xs uppercase tracking-[0.3em] text-white/60'>
+                          {title}
+                        </p>
+                        <p className='text-2xl font-semibold text-white'>
+                          {value}
+                        </p>
+                      </div>
                     </div>
+                    <p className='mt-3 pl-4 text-center text-sm text-white/60'>
+                      {caption}
+                    </p>
                   </div>
-                  <p className='mt-3 pl-4 text-center text-sm text-white/60'>
-                    {caption}
+                ))}
+              </div>
+              <div className='rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_25px_40px_-30px_rgba(5,8,20,0.9)]'>
+                <div className='flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between'>
+                  <div>
+                    <p className='text-xs uppercase tracking-[0.5em] text-[#f2c97d]/80'>
+                      WEEKLY PULSE
+                    </p>
+                    <h2 className='text-xl font-semibold'>Weekly study time</h2>
+                  </div>
+                  <p className='text-sm text-white/70'>
+                    Daily avg {averageDailyMinutes} min
                   </p>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div className='rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_25px_40px_-30px_rgba(5,8,20,0.9)]'>
-            <div className='flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between'>
-              <div>
-                <p className='text-xs uppercase tracking-[0.5em] text-[#f2c97d]/80'>
-                  WEEKLY PULSE
+                <div className='mt-4 h-64 min-h-[18rem] sm:min-h-[20rem] lg:min-h-[22rem]'>
+                  <Line data={lineChartData} options={lineChartOptions} />
+                </div>
+                <p className='mt-2 text-xs text-white/60'>
+                  Plotting the latest 7-day trend from sessionHistory.
                 </p>
-                <h2 className='text-xl font-semibold'>Weekly study time</h2>
               </div>
-              <p className='text-sm text-white/70'>
-                Daily avg {averageDailyMinutes} min
-              </p>
             </div>
-            <div className='mt-4 h-64'>
-              <Line data={lineChartData} options={lineChartOptions} />
-            </div>
-            <p className='mt-2 text-xs text-white/60'>
-              Plotting the latest 7-day trend from sessionHistory.
-            </p>
           </div>
 
           <div className='rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_25px_40px_-30px_rgba(5,8,20,0.9)]'>
@@ -618,35 +613,62 @@ export default function ResultsPage() {
                 Showing the latest {recentSessionLabels.length} entries
               </p>
             </div>
-            <ul className='mt-4 divide-y divide-white/10 text-sm'>
+            <div className='mt-4 flex snap-x snap-mandatory flex-col gap-4 overflow-auto pb-4 sm:hidden'>
+              {recentSessionLabels.length === 0 && (
+                <div className='min-w-[260px] snap-center rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-white/60'>
+                  No study history yet.
+                </div>
+              )}
+              {recentSessionLabels.map((session) => (
+                <div
+                  key={`card-${session.key}`}
+                  className='min-w-[260px] snap-center rounded-2xl border border-white/10 bg-[#0b101d] p-4 text-white/90'
+                >
+                  <p className='text-xs uppercase tracking-[0.3em] text-white/50'>
+                    {session.sectionId}
+                  </p>
+                  <p className='mt-2 text-lg font-semibold text-white'>
+                    {session.label}
+                  </p>
+                  <p className='mt-4 text-sm text-[#f2c97d]'>
+                    {session.gainedXp} XP
+                  </p>
+                  <p className='text-sm text-white/70'>
+                    Accuracy {session.accuracyRate}%
+                  </p>
+                </div>
+              ))}
+            </div>
+            <ul className='mt-4 hidden divide-y divide-white/10 text-sm sm:block'>
               <li className='grid grid-cols-[1.4fr,1fr,0.8fr,0.8fr] gap-2 pb-3 text-xs uppercase tracking-[0.2em] text-white/50'>
                 <span>Date</span>
                 <span>Section</span>
                 <span>XP gained</span>
                 <span>Accuracy</span>
               </li>
-              {recentSessionLabels.length === 0 && (
+              {recentSessionLabels.length === 0 ? (
                 <li className='py-6 text-center text-white/60'>
                   No study history yet.
                 </li>
+              ) : (
+                recentSessionLabels.map((session) => (
+                  <li
+                    key={session.key}
+                    className='grid grid-cols-[1.4fr,1.4fr,0.8fr,0.8fr] items-center gap-2 py-3 text-white/90'
+                  >
+                    <span className='font-semibold text-white'>
+                      {session.label}
+                    </span>
+                    <span className='justify-self-start rounded-full border border-white/10 bg-white/5 px-6 py-2 text-center text-xs uppercase tracking-wide text-white/70'>
+                      {session.sectionId}
+                    </span>
+                    <span className='font-semibold text-[#f2c97d]'>
+                      {session.gainedXp} XP
+                    </span>
+                    <span>{session.accuracyRate}%</span>
+                  </li>
+                ))
               )}
-              {recentSessionLabels.map((session) => (
-                <li
-                  key={session.key}
-                  className='grid grid-cols-[1.4fr,1.4fr,0.8fr,0.8fr] items-center gap-2 py-3 text-white/90'
-                >
-                  <span className='font-semibold text-white'>
-                    {session.label}
-                  </span>
-                  <span className='justify-self-start rounded-full border border-white/10 bg-white/5 px-24 py-2 text-center text-xs uppercase tracking-wide text-white/70'>
-                    {session.sectionId}
-                  </span>
-                  <span className='font-semibold text-[#f2c97d]'>
-                    {session.gainedXp} XP
-                  </span>
-                  <span>{session.accuracyRate}%</span>
-                </li>
-              ))}
             </ul>
           </div>
         </div>
