@@ -1,23 +1,26 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../../index.css";
 import {
   QuickStartButton,
   QuickStartButtonStyle,
-} from "../../components/buttons/QuickStartButton";
-import { AppLayout } from "../../components/layout/AppLayout";
-import { Modal } from "../../components/modal/Modal";
+} from '../../components/buttons/QuickStartButton';
+import {AppLayout} from '../../components/layout/AppLayout';
+import {Modal} from '../../components/modal/Modal';
+
+import {useEffect, useState} from 'react';
+
+import {useNavigate} from 'react-router-dom';
+
+import '../../index.css';
 
 const MENU_ITEMS = [
-  { label: "Reiwa 3", path: "/tests/reiwa3", modalKey: "reiwa3" },
-  { label: "Reiwa 4", path: "/tests/reiwa4", modalKey: "reiwa4" },
-  { label: "Reiwa 5", path: "/tests/reiwa5", modalKey: "reiwa5" },
-  { label: "Reiwa 6", path: "/tests/reiwa6", modalKey: "reiwa6" },
-  { label: "Reiwa 7", path: "/tests/reiwa7", modalKey: "reiwa7" },
+  {label: 'Reiwa 3', path: '/tests/reiwa3', modalKey: 'reiwa3'},
+  {label: 'Reiwa 4', path: '/tests/reiwa4', modalKey: 'reiwa4'},
+  {label: 'Reiwa 5', path: '/tests/reiwa5', modalKey: 'reiwa5'},
+  {label: 'Reiwa 6', path: '/tests/reiwa6', modalKey: 'reiwa6'},
+  {label: 'Reiwa 7', path: '/tests/reiwa7', modalKey: 'reiwa7'},
 ] as const;
 
 type MenuItem = (typeof MENU_ITEMS)[number];
-type MenuModalKey = MenuItem["modalKey"];
+type MenuModalKey = MenuItem['modalKey'];
 
 const QUESTION_COUNTS: Record<MenuModalKey, number> = {
   reiwa3: 1000,
@@ -56,9 +59,9 @@ export default function MenuPage() {
   const modalContent = activeItem ? (
     <BasicModalContent
       yearLabel={activeItem.label}
-      startButtonLabel="Start practice"
-      description="This set pulls high-frequency words from recent Common Test trends."
-      estimatedTime="Estimated time: about 10 minutes."
+      startButtonLabel='Start practice'
+      description='This set pulls high-frequency words from recent Common Test trends.'
+      estimatedTime='Estimated time: about 10 minutes.'
       questionSummary={getQuestionSummary(activeItem)}
       onStart={handleStart}
     />
@@ -67,23 +70,24 @@ export default function MenuPage() {
   return (
     <AppLayout>
       <div
-        className={`my-auto w-full max-w-4xl rounded-2xl transform-gpu transition-all duration-500 ease-out ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-        }`}>
-        <div className="flex h-full w-full flex-col gap-8 rounded-2xl px-8 py-10 text-center sm:gap-10 sm:px-12 sm:py-12">
-          <header className="space-y-8">
-            <h1 className="select-none text-2xl font-semibold tracking-widest text-[#f2c97d] sm:text-3xl">
+        className={`my-auto w-full max-w-4xl transform-gpu rounded-2xl transition-all duration-500 ease-out ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+        }`}
+      >
+        <div className='flex h-full w-full flex-col gap-8 rounded-2xl px-8 py-10 text-center sm:gap-10 sm:px-12 sm:py-12'>
+          <header className='space-y-8'>
+            <h1 className='select-none text-2xl font-semibold tracking-widest text-[#f2c97d] sm:text-3xl'>
               SELECT
             </h1>
-            <p className="select-none text-sm text-[#f2c97d]/70">
+            <p className='select-none text-sm text-[#f2c97d]/70'>
               Pick the test set you want to practice.
             </p>
             {/* Results button stays fixed on the bottom-right, so we don't show it here */}
           </header>
 
           <section>
-            <div className="grid grid-cols-3 gap-4 sm:gap-6">
-              {MENU_ITEMS.map(({ label, modalKey }) => (
+            <div className='grid grid-cols-3 gap-4 sm:gap-6'>
+              {MENU_ITEMS.map(({label, modalKey}) => (
                 <MenuButton
                   key={modalKey}
                   label={label}
@@ -100,13 +104,11 @@ export default function MenuPage() {
         onClose={() => setOpenKey(null)}
         content={modalContent}
       />
-      <div className="fixed bottom-6 right-6 w-[6rem] ">
-        <QuickStartButton onClick={() => navigate("/")} label="Home" />
+      <div className='fixed bottom-6 right-6 w-[6rem]'>
+        <QuickStartButton onClick={() => navigate('/')} label='Home' />
       </div>
     </AppLayout>
   );
-
-
 }
 
 type MenuButtonProps = {
@@ -114,9 +116,9 @@ type MenuButtonProps = {
   onSelect: () => void;
 };
 
-function MenuButton({ label, onSelect }: MenuButtonProps) {
+function MenuButton({label, onSelect}: MenuButtonProps) {
   return (
-    <button type="button" onClick={onSelect} className={QuickStartButtonStyle}>
+    <button type='button' onClick={onSelect} className={QuickStartButtonStyle}>
       {label}
     </button>
   );
@@ -141,20 +143,21 @@ function BasicModalContent({
   questionSummary,
 }: BasicModalContentProps) {
   return (
-    <div className="space-y-3 text-left">
-      <h1 className="text-xl font-semibold text-[#f2c97d]">
+    <div className='space-y-3 text-left'>
+      <h1 className='text-xl font-semibold text-[#f2c97d]'>
         Common Test {yearLabel}
       </h1>
-      <p className="text-sm text-white/80">{description}</p>
-      <p className="text-sm text-white/80">{estimatedTime}</p>
+      <p className='text-sm text-white/80'>{description}</p>
+      <p className='text-sm text-white/80'>{estimatedTime}</p>
       {questionSummary ? (
-        <p className="text-sm text-white/80">{questionSummary}</p>
+        <p className='text-sm text-white/80'>{questionSummary}</p>
       ) : null}
-      <div className="pt-2 text-right">
+      <div className='pt-2 text-right'>
         <button
-          type="button"
+          type='button'
           className={QuickStartButtonStyle}
-          onClick={onStart}>
+          onClick={onStart}
+        >
           {startButtonLabel}
         </button>
       </div>

@@ -1,4 +1,10 @@
-export type YearKey = "reiwa3" | "reiwa4" | "reiwa5" | "reiwa6" | "reiwa7";
+import reiwa3Vocab from '../assets/vocab/reiwa3_7/reiwa3.unigram.json';
+import reiwa4Vocab from '../assets/vocab/reiwa3_7/reiwa4.unigram.json';
+import reiwa5Vocab from '../assets/vocab/reiwa3_7/reiwa5.unigram.json';
+import reiwa6Vocab from '../assets/vocab/reiwa3_7/reiwa6.unigram.json';
+import reiwa7Vocab from '../assets/vocab/reiwa3_7/reiwa7.unigram.json';
+
+export type YearKey = 'reiwa3' | 'reiwa4' | 'reiwa5' | 'reiwa6' | 'reiwa7';
 
 export type VocabEntry = {
   phrase: string;
@@ -7,12 +13,6 @@ export type VocabEntry = {
   onePhraseJa?: string;
   count?: number;
 };
-
-import reiwa3Vocab from "../assets/vocab/reiwa3_7/reiwa3.unigram.json";
-import reiwa4Vocab from "../assets/vocab/reiwa3_7/reiwa4.unigram.json";
-import reiwa5Vocab from "../assets/vocab/reiwa3_7/reiwa5.unigram.json";
-import reiwa6Vocab from "../assets/vocab/reiwa3_7/reiwa6.unigram.json";
-import reiwa7Vocab from "../assets/vocab/reiwa3_7/reiwa7.unigram.json";
 
 const vocabByYear: Record<YearKey, VocabEntry[]> = {
   reiwa3: reiwa3Vocab as VocabEntry[],
@@ -48,7 +48,7 @@ export interface QuizQuestion {
 
 export function buildQuestionsFromVocab(
   vocab: VocabEntry[],
-  maxCount = 20
+  maxCount = 20,
 ): QuizQuestion[] {
   const entries = vocab.filter((e) => !!e.phrase && !!e.mean);
   const take = Math.min(maxCount, entries.length);

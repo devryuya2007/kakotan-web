@@ -5,6 +5,6 @@ export type UserProgress = {
 };
 
 // TODO: userの状況を見て解放すべきバッジ一覧を返す処理を実装する
-export default function badgeRule({ level }: UserProgress): boolean {
+export default function badgeRule({level}: UserProgress): boolean {
   return level >= 5;
 }

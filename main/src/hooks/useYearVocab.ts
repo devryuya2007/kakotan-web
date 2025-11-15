@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
-import { buildQuestionsFromVocab, loadYearVocab } from "../data/vocabLoader";
-import type { QuizQuestion, YearKey } from "../data/vocabLoader";
+import {buildQuestionsFromVocab, loadYearVocab} from '../data/vocabLoader';
+import type {QuizQuestion, YearKey} from '../data/vocabLoader';
+
+import {useEffect, useState} from 'react';
 
 export type UseYearVocabResult = {
-  status: "idle" | "loading" | "ready" | "error";
+  status: 'idle' | 'loading' | 'ready' | 'error';
   questions: QuizQuestion[];
   count: number;
   error: string | null;
@@ -11,10 +12,10 @@ export type UseYearVocabResult = {
 
 export function useYearVocab(
   year: YearKey,
-  maxCount: number
+  maxCount: number,
 ): UseYearVocabResult {
-  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">(
-    "idle"
+  const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>(
+    'idle',
   );
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +25,7 @@ export function useYearVocab(
 
     const run = async () => {
       try {
-        setStatus("loading");
+        setStatus('loading');
         setError(null);
 
         const vocab = await loadYearVocab(year);
@@ -32,11 +33,11 @@ export function useYearVocab(
 
         const nextQuestions = buildQuestionsFromVocab(vocab, maxCount);
         setQuestions(nextQuestions);
-        setStatus("ready");
+        setStatus('ready');
       } catch (e) {
         if (cancelled) return;
         setError(e instanceof Error ? e.message : String(e));
-        setStatus("error");
+        setStatus('error');
       }
     };
 

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,6 +6,7 @@
 
 /* Optional custom styles for the starter UI */
 :root {
+  min-height: 100%;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -14,11 +15,25 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* ブラウザに「このサイトはダーク背景前提だよ」と伝えてUI chromeも暗くする */
+  color-scheme: dark;
 }
 
 body {
-  font-family: "Space Grotesk", "Helvetica Neue", Arial, system-ui,
-    -apple-system, sans-serif;
+  min-height: 100%;
+  font-family:
+    'Space Grotesk',
+    'Helvetica Neue',
+    Arial,
+    system-ui,
+    -apple-system,
+  sans-serif;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+}
+
+#root {
+  min-height: 100vh;
 }
 
 .btn-text-glow {
@@ -26,22 +41,39 @@ body {
 }
 
 .heading-display {
-  font-family: "Playfair Display", "Space Grotesk", system-ui, -apple-system,
+  font-family:
+    'Playfair Display',
+    'Space Grotesk',
+    system-ui,
+    -apple-system,
     sans-serif;
 }
 
 .subheading-display {
-  font-family: "Space Grotesk", "Playfair Display", system-ui, -apple-system,
+  font-family:
+    'Space Grotesk',
+    'Playfair Display',
+    system-ui,
+    -apple-system,
     sans-serif;
 }
 
 h1,
 h2 {
-  font-family: "Playfair Display", "Space Grotesk", system-ui, -apple-system,
+  font-family:
+    'Playfair Display',
+    'Space Grotesk',
+    system-ui,
+    -apple-system,
     sans-serif;
 }
 
 .subheading {
-  font-family: "Space Grotesk", "Helvetica Neue", Arial, system-ui,
-    -apple-system, sans-serif;
+  font-family:
+    'Space Grotesk',
+    'Helvetica Neue',
+    Arial,
+    system-ui,
+    -apple-system,
+    sans-serif;
 }

@@ -1,15 +1,11 @@
 {
-  "$schema": "https://json.schemastore.org/prettierrc",
   "printWidth": 80,
   "tabWidth": 2,
-  "useTabs": false,
-  "semi": true,
   "singleQuote": true,
   "jsxSingleQuote": true,
   "trailingComma": "all",
   "bracketSpacing": false,
   "arrowParens": "always",
-  "proseWrap": "always",
   "endOfLine": "lf",
   "plugins": [
     "@trivago/prettier-plugin-sort-imports",
@@ -24,15 +20,5 @@
   ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
-  "tailwindConfig": "./main/tailwind.config.js",
-  "overrides": [
-    {
-      "files": "*.{json,md,yml,yaml}",
-      "options": {
-        "trailingComma": "none",
-        "proseWrap": "always",
-        "singleQuote": false
-      }
-    }
-  ]
+  "tailwindConfig": "./main/tailwind.config.js"
 }
