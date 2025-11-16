@@ -1,4 +1,5 @@
-import {initialUserConfig, useUserConfig} from '../userConfigContext';
+import {initialUserConfig} from '../initialUserConfig';
+import {useUserConfig} from './useUserConfig';
 
 import {useYearVocab} from '@/hooks/useYearVocab';
 

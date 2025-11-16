@@ -1,33 +1,14 @@
+import {type ReactNode, useEffect, useMemo, useState} from 'react';
+
+import {initialUserConfig} from './initialUserConfig';
 import {
-  type ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+  type UserConfigContextValue,
+  type UserConfigState,
+  type YearKey,
+  UserConfigContext,
+} from './userConfigStore';
 
 const USER_CONFIG_STORAGE_KEY = 'user-config:max-count';
-
-export const initialUserConfig = {
-  reiwa3: {maxCount: 20, sectionId: 'reiwa3'},
-  reiwa4: {maxCount: 20, sectionId: 'reiwa4'},
-  reiwa5: {maxCount: 20, sectionId: 'reiwa5'},
-  reiwa6: {maxCount: 20, sectionId: 'reiwa6'},
-  reiwa7: {maxCount: 20, sectionId: 'reiwa7'},
-} as const;
-
-type UserConfigState = typeof initialUserConfig;
-type YearKey = keyof UserConfigState;
-
-type UserConfigContextValue = {
-  config: UserConfigState;
-  setMaxCount: (year: YearKey, value: number) => void;
-};
-
-const UserConfigContext = createContext<UserConfigContextValue | undefined>(
-  undefined,
-);
 
 const loadStoredConfig = (): UserConfigState => {
   if (typeof window === 'undefined') return initialUserConfig;
@@ -82,12 +63,4 @@ export function UserConfigProvider({children}: {children: ReactNode}) {
       {children}
     </UserConfigContext.Provider>
   );
-}
-
-export function useUserConfig() {
-  const context = useContext(UserConfigContext);
-  if (!context) {
-    throw new Error('useUserConfig must be used inside a UserConfigProvider');
-  }
-  return context;
 }

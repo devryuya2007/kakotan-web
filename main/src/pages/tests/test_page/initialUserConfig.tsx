@@ -1,4 +1,4 @@
-export const yearsConfig = {
+export const initialUserConfig = {
   reiwa3: {maxCount: 20, sectionId: 'reiwa3'},
   reiwa4: {maxCount: 20, sectionId: 'reiwa4'},
   reiwa5: {maxCount: 20, sectionId: 'reiwa5'},
