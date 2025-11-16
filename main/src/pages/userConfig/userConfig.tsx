@@ -18,7 +18,7 @@ export default function UserConfig() {
 
   return (
     <AppLayout>
-      <section className='flex h-full w-full flex-col gap-6 py-6'>
+      <section className='flex h-full w-full select-none flex-col justify-center gap-6 py-6'>
         <header className='space-y-1'>
           <h1 className='text-[#f2c97d]'>Setting Your Exam</h1>
           <p className='text-sm text-white/60'>developing......</p>
@@ -44,7 +44,7 @@ export default function UserConfig() {
                 <Slider.Track className='relative h-1 flex-1 rounded-full bg-white/10'>
                   <Slider.Range className='absolute h-full rounded-full bg-[#f2c97d]' />
                 </Slider.Track>
-                <Slider.Thumb className='ml-4 block h-4 w-4 rounded-full border border-white/30 bg-[#0f1524] shadow-[0_4px_14px_rgba(0,0,0,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2c97d]' />
+                <Slider.Thumb className='ml-4 block h-8 w-8 rounded-full border border-white/30 bg-[#0f1524] shadow-[0_4px_14px_rgba(0,0,0,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2c97d]' />
               </Slider.Root>
             </div>
           ))}
