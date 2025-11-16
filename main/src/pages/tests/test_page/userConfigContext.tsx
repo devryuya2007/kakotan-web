@@ -1,7 +1,7 @@
 import {
+  type ReactNode,
   createContext,
   useContext,
-  type ReactNode,
   useEffect,
   useMemo,
   useState,
@@ -9,7 +9,7 @@ import {
 
 const USER_CONFIG_STORAGE_KEY = 'user-config:max-count';
 
-const initialUserConfig = {
+export const initialUserConfig = {
   reiwa3: {maxCount: 20, sectionId: 'reiwa3'},
   reiwa4: {maxCount: 20, sectionId: 'reiwa4'},
   reiwa5: {maxCount: 20, sectionId: 'reiwa5'},
@@ -46,7 +46,9 @@ const loadStoredConfig = (): UserConfigState => {
 };
 
 export function UserConfigProvider({children}: {children: ReactNode}) {
-  const [config, setConfig] = useState<UserConfigState>(() => loadStoredConfig());
+  const [config, setConfig] = useState<UserConfigState>(() =>
+    loadStoredConfig(),
+  );
 
   useEffect(() => {
     if (typeof window === 'undefined') return;

@@ -1,12 +1,15 @@
-import {yearsConfig} from '../yearsConfig';
+import {initialUserConfig, useUserConfig} from '../userConfigContext';
 
 import {useYearVocab} from '@/hooks/useYearVocab';
 
-type YearKey = keyof typeof yearsConfig;
+type YearKey = keyof typeof initialUserConfig;
 
 const createYearVocabHook = (year: YearKey) => {
-  const {sectionId, maxCount} = yearsConfig[year];
-  return () => useYearVocab(sectionId, maxCount);
+  return () => {
+    const {config} = useUserConfig();
+    const {sectionId, maxCount} = config[year];
+    return useYearVocab(sectionId, maxCount);
+  };
 };
 
 export const useReiwa3Vocab = createYearVocabHook('reiwa3');
