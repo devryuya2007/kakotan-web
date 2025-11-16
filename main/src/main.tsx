@@ -8,6 +8,7 @@ import MenuPage from './pages/menu/MenuPage';
 import MiniResultPage from './pages/results/MiniResultPage';
 import ResultsPage from './pages/results/ResultsPage';
 import {TestResultsProvider} from './pages/states/TestReSultContext';
+import {UserConfigProvider} from './pages/tests/test_page/userConfigContext';
 import Reiwa3Page from './pages/tests/test_page/Reiwa3Page';
 import Reiwa4Page from './pages/tests/test_page/Reiwa4Page';
 import Reiwa5Page from './pages/tests/test_page/Reiwa5Page';
@@ -38,8 +39,10 @@ const router = createBrowserRouter([
 
 createRoot(container).render(
   <StrictMode>
-    <TestResultsProvider>
-      <RouterProvider router={router} />
-    </TestResultsProvider>
+    <UserConfigProvider>
+      <TestResultsProvider>
+        <RouterProvider router={router} />
+      </TestResultsProvider>
+    </UserConfigProvider>
   </StrictMode>,
 );
