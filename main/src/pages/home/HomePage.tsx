@@ -40,7 +40,9 @@ export default function HomePage() {
               type='button'
               className={SecondaryButtonStyle}
               onClick={handleSettingConfig}
-            ></button>
+            >
+              Setting
+            </button>
             <QuickStartButton onClick={handleQuickStart} />
             <button
               type='button'
