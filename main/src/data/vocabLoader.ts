@@ -53,32 +53,22 @@ export function buildQuestionsFromVocab(
   const entries = vocab.filter((e) => !!e.phrase && !!e.mean);
   const take = Math.min(maxCount, entries.length);
 
-  const rng = mulberry32(0xc0ffee); // 適当に整数入れてランダムな整数を返す
-  const shuffledIdx = shuffle([...entries.keys()], rng); // entriesのインデックス配列とランダムな整数 ["0","1","2"...]
-
-  const pickPool = shuffledIdx.slice(0, Math.max(40, take * 3));
   const result: QuizQuestion[] = [];
 
   for (let i = 0; i < take; i++) {
-    const idx = pickPool[i % pickPool.length]!; // pickpoolをiが超えないように割っている→７÷4 = あまり3  3÷4 = あまり3
-    const e = entries[idx]!; // 0~29まで一つずつの要素phraseとmean
-    // Collect 3 distractors with different meanings
-    const others = pickPool
-      .map((j) => entries[j]!) // e以外のmeanが違う要素を配列で取得
-      .filter((x) => x !== e && x.mean && x.mean !== e.mean);
-
-    const shuffledOthers = shuffle([...others], rng);
+    const e = entries[i]!;
+    // Collect up to 3 distractors by順番に参照する
     const distractors: string[] = [];
-
-    for (const candidate of shuffledOthers) {
-      if (distractors.length >= 3) break;
-      const meaning = candidate.mean!;
-      if (!distractors.includes(meaning)) {
-        distractors.push(meaning);
-      }
+    let offset = 1;
+    while (distractors.length < 3 && offset < entries.length) {
+      const candidate = entries[(i + offset) % entries.length]!;
+      offset++;
+      if (!candidate.mean || candidate.mean === e.mean) continue;
+      if (distractors.includes(candidate.mean)) continue;
+      distractors.push(candidate.mean);
     }
 
-    const allChoices = shuffle([e.mean!, ...distractors].slice(0, 4), rng);
+    const allChoices = [e.mean!, ...distractors].slice(0, 4);
     const answerIndex = allChoices.indexOf(e.mean!);
 
     result.push({
@@ -94,22 +84,4 @@ export function buildQuestionsFromVocab(
   }
 
   return result;
-}
-
-export function shuffle<T>(arr: T[], rnd: () => number): T[] {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(rnd() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-// Small deterministic PRNG so choices are stable across reloads
-export function mulberry32(a: number) {
-  return function () {
-    let t = (a += 0x6d2b79f5);
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
 }

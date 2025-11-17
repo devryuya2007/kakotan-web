@@ -89,14 +89,6 @@ npm --prefix main run test -- run
   </video>
 </p>
 
-### 結果画面デモ
-
-<p align="center">
-  <video src="docs/results.mp4" width="480" controls>
-    Your browser does not support the video tag.
-  </video>
-</p>
-
 ## コントリビュート
 
 - Issue や Pull Request は日本語で歓迎です。
