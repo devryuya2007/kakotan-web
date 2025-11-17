@@ -3,7 +3,9 @@ import {useUserConfig} from '../tests/test_page/hooks/useUserConfig';
 import {useMemo} from 'react';
 
 import * as Slider from '@radix-ui/react-slider';
+import {useNavigate} from 'react-router-dom';
 
+import {QuickStartButton} from '@/components/buttons/QuickStartButton';
 import {AppLayout} from '@/components/layout/AppLayout';
 
 export default function UserConfig() {
@@ -15,9 +17,12 @@ export default function UserConfig() {
       >,
     [config],
   );
-
+  const navigate = useNavigate();
   return (
     <AppLayout>
+      <div className='fixed bottom-6 right-6 z-50 w-[6rem]'>
+        <QuickStartButton onClick={() => navigate('/')} label='Home' />
+      </div>
       <div className='flex h-full w-full flex-col gap-8 overflow-y-auto px-4 py-6 sm:flex-row sm:items-start sm:gap-12 sm:overflow-hidden sm:px-8'>
         <section className='flex w-full flex-col gap-6 sm:w-1/2 sm:overflow-visible'>
           <header className='space-y-1'>
