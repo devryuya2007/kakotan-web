@@ -13,6 +13,7 @@ import {
 
 import {useNavigate} from 'react-router-dom';
 
+import {QuickStartButton} from '@/components/buttons/QuickStartButton';
 import {
   XP_PER_CORRECT,
   XP_PER_INCORRECT,
@@ -393,148 +394,153 @@ export default function TestPageLayout({
     : 'opacity-0 -translate-y-3';
 
   return (
-    // カードスタック全体の外枠。センタリングと余白を担当
-    <section
-      className='relative flex w-full justify-center px-0 py-6 sm:px-4 sm:py-8 lg:px-12'
-      ref={sectionRef}
-    >
-      {gainToast && gainToast.amount === XP_PER_CORRECT && (
-        <div
-          className={`${toastBaseClass} ${toastVariantClass} ${toastVisibilityClass}`}
-          style={toastPositionStyle}
-          key={gainToast.key}
-        >
-          {`+${gainToast.amount} XP`}
-        </div>
-      )}
-      {/* デスクトップではカードを重ねるために絶対配置を使うので、この囲いをrelativeにして境界を固定化 */}
-      <div className='relative !m-0 w-full max-w-none rounded-2xl px-0 sm:min-h-[420px] sm:w-full sm:max-w-3xl sm:rounded-3xl sm:px-6 lg:px-8'>
-        {/* 表示対象となるカード一枚ごとに描画 */}
-        {visibleCards.map((cardQuestion, idx) => {
-          if (!cardQuestion) return null;
-
-          // 先頭カードかどうか。ボタンの有効化などで使う
-          const isActiveCard = idx === 0;
-          // 何問目かを表示するためのインデックス
-          const cardIndex = currentIndex + idx;
-          // プログレスバーに使う進捗率
-
-          const cardProgress = Math.min(
-            ((cardIndex + 1) / totalQuestions) * 100,
-            100,
-          );
-
-          // 固定化された順番の選択肢配列
-          const cardChoices = getShuffledChoices(cardQuestion);
-          // カードの位置や透明度などの設定
-          const presentation = getCardPresentation(idx);
-          // transformスタイルに使う文字列を組み立てる
-          const translateX = presentation.x;
-          const translateY = presentation.y;
-          const baseTransform = `translate3d(${translateX}%, ${translateY}%, 0) scale(${presentation.scale})`;
-          const transform = isSmall
-            ? `translate(-50%, -50%) ${baseTransform}`
-            : baseTransform;
-          // アクティブカードのみクリック可能にするためのフラグ
-          const interactive = idx === 0 && !isTransitioning;
-          // 影の強さをカードの前後関係で変える
-
-          const glowClass =
-            idx === 0
-              ? 'shadow-[0_42px_85px_-48px_rgba(242,201,125,0.65)]'
-              : idx === 1
-                ? 'shadow-[0_18px_60px_-54px_rgba(242,201,125,0.35)]'
-                : '';
-
-          const cardShellClass = isSmall
-            ? 'absolute left-1/2 top-1/2 w-full  rounded-2xl'
-            : 'absolute inset-0 rounded-2xl';
-
-          return (
-            <div
-              key={`${cardQuestion.phrase}-${cardIndex}`}
-              className={`${cardShellClass} will-change-opacity transform-gpu bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px] transition-all ease-out will-change-transform ${
-                interactive ? 'pointer-events-auto' : 'pointer-events-none'
-              } ${glowClass}`}
-              style={{
-                // 位置と拡大率を反映
-                transform,
-                // 後ろのカードほど透けさせて奥行きを演出
-                opacity: presentation.opacity,
-                // 前後関係の制御
-                zIndex: presentation.zIndex,
-                // アニメーション時間（ユーザー設定に応じて変更済み）
-                transitionDuration: `${effectiveTransitionDuration}ms`,
-                // ちょっと伸びのある動き方になるイージング
-                transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
-              }}
-            >
-              {/* カード本体。外枠のゴールドから内側はダークな背景 */}
-              <div
-                className={`bg-[#050509] text-white [border-radius:inherit] ${
-                  isSmall ? 'px-4 py-10' : 'px-6 py-[72px]'
-                }`}
-              >
-                {/* 問題番号やプログレスバーなどのヘッダー */}
-                <div className='sticky top-4 z-20 mb-6 rounded-xl bg-[#050509]/90 px-4 py-3 backdrop-blur-sm'>
-                  <div className='flex items-center justify-between text-xs font-medium uppercase tracking-wide text-white/50'>
-                    <span>問題 {cardIndex + 1}</span>
-                    <span>
-                      {cardIndex + 1} / {totalQuestions}
-                    </span>
-                  </div>
-                  <div className='mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10'>
-                    <span
-                      // アクセシビリティ用のaria属性で進捗を伝える
-                      aria-label={`進捗 ${cardIndex + 1} / ${totalQuestions}`}
-                      aria-valuemax={totalQuestions}
-                      aria-valuemin={0}
-                      aria-valuenow={cardIndex + 1}
-                      role='progressbar'
-                      className='block h-full rounded-full bg-gradient-to-r from-[#f2c97d] via-amber-300 to-yellow-200 transition-all duration-500'
-                      style={{width: `${cardProgress}%`}}
-                    />
-                  </div>
-                </div>
-                {/* 出題中の単語 */}
-                <h1 className='mb-6 text-center text-4xl font-bold text-[#f2c97d]'>
-                  {cardQuestion.phrase}
-                </h1>
-                {/* 選択肢ボタンのグリッド */}
-                <ul className='m-0 grid list-none grid-cols-1 gap-3 p-0 text-center text-white/80 sm:grid-cols-2'>
-                  {cardChoices.map((choice, choiceIndex) => {
-                    return (
-                      <li
-                        key={choiceIndex}
-                        className='relative flex justify-center'
-                      >
-                        <button
-                          // アクティブなカードだけクリック可にする
-                          onClick={
-                            isActiveCard
-                              ? (e) => handleClick(choice, e)
-                              : undefined
-                          }
-                          disabled={!isActiveCard || isTransitioning}
-                          className={`${
-                            // 今のカードなら状態に応じた色を使う。後ろのカードは半透明＋カーソル無効
-                            isActiveCard
-                              ? ButtonStyleSwitch(choice)
-                              : `${baseButtonStyle} cursor-default opacity-70`
-                          }`}
-                        >
-                          {/* 選択肢の文字列（意味や単語） */}
-                          {choice}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            </div>
-          );
-        })}
+    <>
+      <div className='fixed bottom-6 right-6 z-20 w-[6rem]'>
+        <QuickStartButton onClick={() => navigate('/')} label='Home' />
       </div>
-    </section>
+      <section
+        // カードスタック全体の外枠。センタリングと余白を担当
+        className='relative flex w-full justify-center px-0 py-6 sm:px-4 sm:py-8 lg:px-12'
+        ref={sectionRef}
+      >
+        {gainToast && gainToast.amount === XP_PER_CORRECT && (
+          <div
+            className={`${toastBaseClass} ${toastVariantClass} ${toastVisibilityClass}`}
+            style={toastPositionStyle}
+            key={gainToast.key}
+          >
+            {`+${gainToast.amount} XP`}
+          </div>
+        )}
+        {/* デスクトップではカードを重ねるために絶対配置を使うので、この囲いをrelativeにして境界を固定化 */}
+        <div className='relative !m-0 w-full max-w-none rounded-2xl px-0 sm:min-h-[420px] sm:w-full sm:max-w-3xl sm:rounded-3xl sm:px-6 lg:px-8'>
+          {/* 表示対象となるカード一枚ごとに描画 */}
+          {visibleCards.map((cardQuestion, idx) => {
+            if (!cardQuestion) return null;
+
+            // 先頭カードかどうか。ボタンの有効化などで使う
+            const isActiveCard = idx === 0;
+            // 何問目かを表示するためのインデックス
+            const cardIndex = currentIndex + idx;
+            // プログレスバーに使う進捗率
+
+            const cardProgress = Math.min(
+              ((cardIndex + 1) / totalQuestions) * 100,
+              100,
+            );
+
+            // 固定化された順番の選択肢配列
+            const cardChoices = getShuffledChoices(cardQuestion);
+            // カードの位置や透明度などの設定
+            const presentation = getCardPresentation(idx);
+            // transformスタイルに使う文字列を組み立てる
+            const translateX = presentation.x;
+            const translateY = presentation.y;
+            const baseTransform = `translate3d(${translateX}%, ${translateY}%, 0) scale(${presentation.scale})`;
+            const transform = isSmall
+              ? `translate(-50%, -50%) ${baseTransform}`
+              : baseTransform;
+            // アクティブカードのみクリック可能にするためのフラグ
+            const interactive = idx === 0 && !isTransitioning;
+            // 影の強さをカードの前後関係で変える
+
+            const glowClass =
+              idx === 0
+                ? 'shadow-[0_42px_85px_-48px_rgba(242,201,125,0.65)]'
+                : idx === 1
+                  ? 'shadow-[0_18px_60px_-54px_rgba(242,201,125,0.35)]'
+                  : '';
+
+            const cardShellClass = isSmall
+              ? 'absolute left-1/2 top-1/2 w-full  rounded-2xl'
+              : 'absolute inset-0 rounded-2xl';
+
+            return (
+              <div
+                key={`${cardQuestion.phrase}-${cardIndex}`}
+                className={`${cardShellClass} will-change-opacity transform-gpu bg-gradient-to-b from-[#b8860b] to-[#f2c97d] p-[2px] transition-all ease-out will-change-transform ${
+                  interactive ? 'pointer-events-auto' : 'pointer-events-none'
+                } ${glowClass}`}
+                style={{
+                  // 位置と拡大率を反映
+                  transform,
+                  // 後ろのカードほど透けさせて奥行きを演出
+                  opacity: presentation.opacity,
+                  // 前後関係の制御
+                  zIndex: presentation.zIndex,
+                  // アニメーション時間（ユーザー設定に応じて変更済み）
+                  transitionDuration: `${effectiveTransitionDuration}ms`,
+                  // ちょっと伸びのある動き方になるイージング
+                  transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
+                }}
+              >
+                {/* カード本体。外枠のゴールドから内側はダークな背景 */}
+                <div
+                  className={`bg-[#050509] text-white [border-radius:inherit] ${
+                    isSmall ? 'px-4 py-10' : 'px-6 py-[72px]'
+                  }`}
+                >
+                  {/* 問題番号やプログレスバーなどのヘッダー */}
+                  <div className='sticky top-4 z-20 mb-6 rounded-xl bg-[#050509]/90 px-4 py-3 backdrop-blur-sm'>
+                    <div className='flex items-center justify-between text-xs font-medium uppercase tracking-wide text-white/50'>
+                      <span>問題 {cardIndex + 1}</span>
+                      <span>
+                        {cardIndex + 1} / {totalQuestions}
+                      </span>
+                    </div>
+                    <div className='mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10'>
+                      <span
+                        // アクセシビリティ用のaria属性で進捗を伝える
+                        aria-label={`進捗 ${cardIndex + 1} / ${totalQuestions}`}
+                        aria-valuemax={totalQuestions}
+                        aria-valuemin={0}
+                        aria-valuenow={cardIndex + 1}
+                        role='progressbar'
+                        className='block h-full rounded-full bg-gradient-to-r from-[#f2c97d] via-amber-300 to-yellow-200 transition-all duration-500'
+                        style={{width: `${cardProgress}%`}}
+                      />
+                    </div>
+                  </div>
+                  {/* 出題中の単語 */}
+                  <h1 className='mb-6 text-center text-4xl font-bold text-[#f2c97d]'>
+                    {cardQuestion.phrase}
+                  </h1>
+                  {/* 選択肢ボタンのグリッド */}
+                  <ul className='m-0 grid list-none grid-cols-1 gap-3 p-0 text-center text-white/80 sm:grid-cols-2'>
+                    {cardChoices.map((choice, choiceIndex) => {
+                      return (
+                        <li
+                          key={choiceIndex}
+                          className='relative flex justify-center'
+                        >
+                          <button
+                            // アクティブなカードだけクリック可にする
+                            onClick={
+                              isActiveCard
+                                ? (e) => handleClick(choice, e)
+                                : undefined
+                            }
+                            disabled={!isActiveCard || isTransitioning}
+                            className={`${
+                              // 今のカードなら状態に応じた色を使う。後ろのカードは半透明＋カーソル無効
+                              isActiveCard
+                                ? ButtonStyleSwitch(choice)
+                                : `${baseButtonStyle} cursor-default opacity-70`
+                            }`}
+                          >
+                            {/* 選択肢の文字列（意味や単語） */}
+                            {choice}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    </>
   );
 }

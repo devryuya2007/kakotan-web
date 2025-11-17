@@ -22,6 +22,10 @@ export default function HomePage() {
     nav('/results');
   };
 
+  const handleSettingConfig = () => {
+    nav('/pages/user-config');
+  };
+
   return (
     <AppLayout>
       <PromoCard
@@ -32,6 +36,11 @@ export default function HomePage() {
         icon={<BrainBookIcon className='h-16 w-16' />}
         action={
           <div className='flex w-full flex-col gap-3 sm:flex-row sm:justify-center'>
+            <button
+              type='button'
+              className={SecondaryButtonStyle}
+              onClick={handleSettingConfig}
+            ></button>
             <QuickStartButton onClick={handleQuickStart} />
             <button
               type='button'
