@@ -96,5 +96,3 @@ npm --prefix main run test -- run
 - PR にはできればスクリーンショットと、`npm run lint` / `npm --prefix main run test -- run` の実行結果を添えてもらえると助かります。
 
 ## ライセンス
-
-著作権のあるデータを含んでいるため　 Private
