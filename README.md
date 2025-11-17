@@ -105,4 +105,4 @@ npm --prefix main run test -- run
 
 ## ライセンス
 
-このリポジトリは `MIT` ライセンスです（詳細は `package.json` を参照してください）。
+著作権のあるデータを含んでいるため　 Private
