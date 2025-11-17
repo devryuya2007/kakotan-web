@@ -1,12 +1,12 @@
+# カコタン
+
+このアプリは令和３~7年度までの共通テスト英語リーディングから特に頻出な英単語を、日本語訳４択式で学習できる英単語アプリです。
+
 アプリURL: https://bst-1900.pages.dev/
 
 <p align="center">
   <img src="docs/main.png" alt="カコタン ホーム画面" width="480" />
 </p>
-
-# カコタン
-
-このアプリは令和３~7年度までの共通テスト英語リーディングから特に頻出な英単語を、日本語訳４択式で学習できる英単語アプリです。
 
 ## 主な機能
 
@@ -50,7 +50,7 @@ npm run lint
   - `src/components/` … 共通 UI コンポーネント
   - `src/hooks/` … 共通ロジック（単語ロード用のカスタムフックなど）
 - `phrase/` … 本番用の語彙データ
-- `data/` … 生データと頻度解析用のスクリプト入力
+- `data/` … 生データと語彙生成のための元資料
 - `docs/` … デザインやスクリーンショットなどの資料
 
 ## テスト
@@ -81,8 +81,21 @@ npm --prefix main run test -- run
 
 ## デモ動画
 
-- テスト画面デモ: [docs/test.mp4](docs/test.mp4)
-- 結果画面デモ: [docs/results.mp4](docs/results.mp4)
+### テスト画面デモ
+
+<p align="center">
+  <video src="docs/test.mp4" width="480" controls>
+    Your browser does not support the video tag.
+  </video>
+</p>
+
+### 結果画面デモ
+
+<p align="center">
+  <video src="docs/results.mp4" width="480" controls>
+    Your browser does not support the video tag.
+  </video>
+</p>
 
 ## コントリビュート
 
