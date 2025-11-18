@@ -514,6 +514,7 @@ export default function TestPageLayout({
                           className='relative flex justify-center'
                         >
                           <button
+                            aria-label='正誤判定'
                             // アクティブなカードだけクリック可にする
                             onClick={
                               isActiveCard
