@@ -23,6 +23,23 @@ vi.mock('@/pages/states/useTestResults', () => {
   };
 });
 
+const multiQuestions: QuizQuestion[] = [
+  {
+    id: 'q1',
+    phrase: 'apple',
+    mean: 'りんご',
+    choices: ['apple', 'orange', 'banana', 'grape'],
+    answerIndex: 0,
+  },
+  {
+    id: 'q2',
+    phrase: 'banana',
+    mean: 'バナナ',
+    choices: ['melon', 'banana', 'berry', 'peach'],
+    answerIndex: 1,
+  },
+];
+
 const createMatchMediaStub = () => ({
   matches: false,
   media: '(max-width: 640px)',
@@ -39,6 +56,14 @@ beforeAll(() => {
     writable: true,
     value: vi.fn().mockImplementation(createMatchMediaStub),
   });
+});
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
+afterEach(() => {
+  vi.useRealTimers();
 });
 
 const sampleQuestions: QuizQuestion[] = [
@@ -62,7 +87,7 @@ const renderLayout = () =>
     </MemoryRouter>,
   );
 
-describe('TestPageLayout', () => {
+describe('テストページ', () => {
   test('ホームボタンが描画される', () => {
     renderLayout();
 
@@ -95,10 +120,107 @@ describe('TestPageLayout', () => {
   test('選択肢をクリックするとrecordResultが呼ばれる', async () => {
     renderLayout();
     const user = userEvent.setup();
-    const choices = screen.getAllByRole('button', {name: '正誤判定'});
-    const {answerIndex} = sampleQuestions[0];
-    await user.click(choices[answerIndex]);
+    const buttons = screen.getAllByRole('button', {name: '正誤判定'});
+    const {answerIndex, choices} = sampleQuestions[0];
+    const correctLabel = choices[answerIndex];
+    const correctButton = buttons.find((button) =>
+      button.textContent?.includes(correctLabel),
+    );
+    if (!correctButton) {
+      throw new Error('正解の選択肢が見つかりません');
+    }
+    await user.click(correctButton);
 
     expect(recorResultsMook).toHaveBeenCalledWith(sampleQuestions[0], true);
+  });
+  test('正解の選択肢を押すとスタイルが変わる', async () => {
+    renderLayout();
+
+    const currentStyle =
+      'w-full rounded-xl border border-amber-200/70 bg-gradient-to-br from-amber-400 via-amber-300 to-yellow-200 px-5 py-4 text-center text-base font-semibold tracking-wide text-slate-900 shadow-[0_22px_48px_-20px_rgba(251,191,36,0.9)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_28px_55px_-18px_rgba(251,191,36,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-200/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950';
+
+    const user = userEvent.setup();
+    const currentButton = screen.getByTestId('correct-choice');
+
+    await user.click(currentButton);
+
+    expect(currentButton).toHaveClass(currentStyle);
+  });
+  test('不正解の選択肢を押すとスタイルが変わる', async () => {
+    renderLayout();
+
+    const incorrectButtons = screen.getAllByTestId('incorrect-choice');
+    const incorrectButtonStyle =
+      'w-full rounded-xl border border-rose-500/60 bg-gradient-to-br from-rose-600 via-rose-500 to-rose-400 px-5 py-4 text-center text-base font-semibold tracking-wide text-rose-50 shadow-[0_18px_38px_-18px_rgba(244,63,94,0.85)] transition-all duration-300 hover:-translate-y-1 hover:border-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950';
+    const user = userEvent.setup();
+    await user.click(incorrectButtons[0]);
+
+    expect(incorrectButtons[0]).toHaveClass(incorrectButtonStyle);
+  });
+
+  test('問題データが無いときはエラーを表示できているか', () => {
+    render(
+      <MemoryRouter>
+        <TestPageLayout questions={[]} count={0} sectionId='null' />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByLabelText('data-error')).toHaveTextContent(
+      '問題データが取得できませんでした',
+    );
+  });
+  test('正誤に応じてrecordResultの引数（true/false）が変わっているか', async () => {
+    const user = userEvent.setup();
+    const firstRender = render(
+      <MemoryRouter>
+        <TestPageLayout questions={[multiQuestions[0]]} count={1} sectionId='q1' />
+      </MemoryRouter>,
+    );
+
+    const firstButtons = screen.getAllByRole('button', {name: '正誤判定'});
+    const firstCorrectLabel =
+      multiQuestions[0].choices[multiQuestions[0].answerIndex];
+    const firstCorrectButton = firstButtons.find((button) =>
+      button.textContent?.includes(firstCorrectLabel),
+    );
+    if (!firstCorrectButton) {
+      throw new Error('正解の選択肢が見つかりません');
+    }
+    await user.click(firstCorrectButton);
+
+    expect(recorResultsMook).toHaveBeenNthCalledWith(
+      1,
+      multiQuestions[0],
+      true,
+    );
+
+    firstRender.unmount();
+
+    render(
+      <MemoryRouter>
+        <TestPageLayout questions={[multiQuestions[1]]} count={1} sectionId='q2' />
+      </MemoryRouter>,
+    );
+
+    const secondButtons = screen.getAllByRole('button', {name: '正誤判定'});
+    const secondIncorrectLabel = multiQuestions[1].choices.find(
+      (_, index) => index !== multiQuestions[1].answerIndex,
+    );
+    if (!secondIncorrectLabel) {
+      throw new Error('不正解の選択肢が見つかりません');
+    }
+    const secondIncorrectButton = secondButtons.find((button) =>
+      button.textContent?.includes(secondIncorrectLabel),
+    );
+    if (!secondIncorrectButton) {
+      throw new Error('不正解の選択肢が見つかりません');
+    }
+    await user.click(secondIncorrectButton);
+
+    expect(recorResultsMook).toHaveBeenNthCalledWith(
+      2,
+      multiQuestions[1],
+      false,
+    );
   });
 });
