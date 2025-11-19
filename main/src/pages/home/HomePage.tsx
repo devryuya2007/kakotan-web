@@ -33,21 +33,23 @@ export default function HomePage() {
         title='UNIVERSITY ENTRANCE ENGLISH'
         subtitle='Vocabulary Mastery'
         description='Master 2,000 essential words with quick daily drills. Perfect for commuters and study breaks—always ready, even offline.'
-        icon={<BrainBookIcon className='h-16 w-16' />}
+        icon={<BrainBookIcon dataTestid='BrainIcon' className='h-16 w-16' />}
         action={
           <div className='flex w-full flex-col gap-3 sm:flex-row sm:justify-center'>
             <button
               type='button'
               className={SecondaryButtonStyle}
               onClick={handleSettingConfig}
+              aria-label='setting'
             >
               Setting
             </button>
-            <QuickStartButton onClick={handleQuickStart} />
+            <QuickStartButton onClick={handleQuickStart} aria-label='test' />
             <button
               type='button'
               className={SecondaryButtonStyle}
               onClick={handleViewResults}
+              aria-label='results'
             >
               View Results
             </button>

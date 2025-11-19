@@ -1,10 +1,12 @@
 interface BrainBookIconProps {
   className?: string;
+  dataTestid: string;
 }
 
-export function BrainBookIcon({className}: BrainBookIconProps) {
+export function BrainBookIcon({dataTestid, className}: BrainBookIconProps) {
   return (
     <svg
+      data-testid={dataTestid}
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 256 256'
       className={className}
