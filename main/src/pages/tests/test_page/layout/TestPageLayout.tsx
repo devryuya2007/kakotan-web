@@ -243,7 +243,8 @@ export default function TestPageLayout({
   }, [gainToast, TOAST_DURATION]);
 
   // 問題や正解が存在しない場合は何も描画しない
-  if (!question || !answerChoice) return null;
+  if (!question || !answerChoice)
+    return <p aria-label='data-error'>問題データが取得できませんでした</p>;
 
   // 選択肢クリック時のメイン処理
   function handleClick(choice: string, event: MouseEvent<HTMLButtonElement>) {
@@ -415,6 +416,7 @@ export default function TestPageLayout({
         {/* デスクトップではカードを重ねるために絶対配置を使うので、この囲いをrelativeにして境界を固定化 */}
         <div className='relative !m-0 w-full max-w-none rounded-2xl px-0 sm:min-h-[420px] sm:w-full sm:max-w-3xl sm:rounded-3xl sm:px-6 lg:px-8'>
           {/* 表示対象となるカード一枚ごとに描画 */}
+
           {visibleCards.map((cardQuestion, idx) => {
             if (!cardQuestion) return null;
 
@@ -514,6 +516,12 @@ export default function TestPageLayout({
                           className='relative flex justify-center'
                         >
                           <button
+                            aria-label='正誤判定'
+                            data-testid={
+                              choice === answerChoice
+                                ? 'correct-choice'
+                                : 'incorrect-choice'
+                            }
                             // アクティブなカードだけクリック可にする
                             onClick={
                               isActiveCard

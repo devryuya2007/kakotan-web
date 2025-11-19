@@ -37,7 +37,7 @@ export async function loadYearVocab(year: YearKey): Promise<VocabEntry[]> {
 
 export interface QuizQuestion {
   id: string;
-  prompt: string; // e.g. 日本語の意味は？
+  prompt?: string; // e.g. 日本語の意味は？
   choices: string[]; // 表示用選択肢
   answerIndex: number; // 正解のchoicesインデックス
   phrase: string; // 英単語（正解の本体）
