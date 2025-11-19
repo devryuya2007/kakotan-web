@@ -75,14 +75,14 @@ describe('メインメニュー', () => {
     const {container} = renderPromoCard();
     const div = container.querySelector('div');
 
-    expect(div).toBeInTheDocument;
+    expect(div).toBeInTheDocument();
   });
 
   test('アイコンがあるか', () => {
     renderHomePage();
 
     const icon = screen.getByTestId('BrainIcon');
-    expect(icon).toBeInTheDocument;
+    expect(icon).toBeInTheDocument();
     expect(icon).toHaveClass('h-16 w-16');
   });
 });
