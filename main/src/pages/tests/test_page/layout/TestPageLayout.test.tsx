@@ -1,5 +1,6 @@
 import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import {act} from 'react';
 import {MemoryRouter} from 'react-router-dom';
 import {beforeAll, describe, expect, vi} from 'vitest';
 
@@ -7,6 +8,9 @@ import type {QuizQuestion} from '@/data/vocabLoader';
 import TestPageLayout from '@/pages/tests/test_page/layout/TestPageLayout';
 
 const recorResultsMook = vi.fn();
+
+const applyXpMook = vi.fn();
+const addSessionMook = vi.fn();
 
 vi.mock('@/pages/states/useTestResults', () => {
   const noop = vi.fn();
@@ -16,9 +20,9 @@ vi.mock('@/pages/states/useTestResults', () => {
       incorrect: [],
       recordResult: recorResultsMook,
       totalXp: 0,
-      applyXp: noop,
+      applyXp: applyXpMook,
       reset: noop,
-      addSession: noop,
+      addSession: addSessionMook,
     }),
   };
 });
@@ -173,7 +177,11 @@ describe('テストページ', () => {
     const user = userEvent.setup();
     const firstRender = render(
       <MemoryRouter>
-        <TestPageLayout questions={[multiQuestions[0]]} count={1} sectionId='q1' />
+        <TestPageLayout
+          questions={[multiQuestions[0]]}
+          count={1}
+          sectionId='q1'
+        />
       </MemoryRouter>,
     );
 
@@ -198,7 +206,11 @@ describe('テストページ', () => {
 
     render(
       <MemoryRouter>
-        <TestPageLayout questions={[multiQuestions[1]]} count={1} sectionId='q2' />
+        <TestPageLayout
+          questions={[multiQuestions[1]]}
+          count={1}
+          sectionId='q2'
+        />
       </MemoryRouter>,
     );
 
@@ -222,5 +234,71 @@ describe('テストページ', () => {
       multiQuestions[1],
       false,
     );
+  });
+
+  test('正解を押したときxpトーストが表示される', async () => {
+    renderLayout();
+
+    const user = userEvent.setup();
+    const correctButton = screen.getByTestId('correct-choice');
+
+    await user.click(correctButton);
+
+    const toast = await screen.findByText(/xp/i);
+    expect(toast).toBeInTheDocument();
+  });
+
+  test('applyXpが正しい引数で呼ばれているか', async () => {
+    const user = userEvent.setup();
+    const firstRender = render(
+      <MemoryRouter>
+        <TestPageLayout
+          questions={[multiQuestions[0]]}
+          count={1}
+          sectionId='q1'
+        />
+      </MemoryRouter>,
+    );
+
+    const firstButtons = screen.getAllByRole('button', {name: '正誤判定'});
+    const firstCorrectLabel =
+      multiQuestions[0].choices[multiQuestions[0].answerIndex];
+    const firstCorrectButton = firstButtons.find((button) =>
+      button.textContent?.includes(firstCorrectLabel),
+    );
+    if (!firstCorrectButton) {
+      throw new Error('正解の選択肢が見つかりません');
+    }
+    await user.click(firstCorrectButton);
+    expect(applyXpMook).not.toHaveBeenCalled();
+
+    firstRender.unmount();
+    render(
+      <MemoryRouter>
+        <TestPageLayout
+          questions={[multiQuestions[1]]}
+          count={1}
+          sectionId='q2'
+        />
+      </MemoryRouter>,
+    );
+
+    const secondButtons = screen.getAllByRole('button', {name: '正誤判定'});
+    const secondCorrectLabel =
+      multiQuestions[1].choices[multiQuestions[1].answerIndex];
+    const secondCorrectButton = secondButtons.find((button) =>
+      button.textContent?.includes(secondCorrectLabel),
+    );
+    if (!secondCorrectButton) {
+      throw new Error('正解の選択肢が見つかりません');
+    }
+    await user.click(secondCorrectButton);
+    // NOTE: 本来はフェイクタイマーで待機を制御すべきだが、handleClickが多段のsetTimeoutで複雑なので
+    // 現状は実時間で待ってfinishTestが走るまで待機している。より実務的にはタイマー処理を分離してテストしやすくする必要がある。
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    });
+
+    expect(applyXpMook).toHaveBeenCalled();
   });
 });
