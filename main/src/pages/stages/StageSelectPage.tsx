@@ -163,23 +163,6 @@ export default function StageSelectPage() {
                   height: `${flowLayout.mapHeight}px`,
                 }}
               >
-                {/* タイルをつなぐパス（ヘビの道） */}
-                <svg
-                  className="absolute inset-0"
-                  viewBox={`0 0 ${flowLayout.mapWidth} ${flowLayout.mapHeight}`}
-                  aria-hidden="true"
-                >
-                  <polyline
-                    points={flowLayout.polylinePoints}
-                    fill="none"
-                    stroke={primaryColor}
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    opacity="0.25"
-                  />
-                </svg>
-
                 {/* ステージタイルを横並びで折り返し配置する */}
                 {stages.map((stage, index) => {
                   const stageProgressEntry = stageProgress[stage.stageId];
@@ -375,7 +358,11 @@ function StageTile({
       />
       <span
         className={`mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] ${
-          isLocked ? "text-[#f2c97d]/50" : "text-[#f2c97d]"
+          isCleared
+            ? "text-emerald-300"
+            : isLocked
+              ? "text-[#f2c97d]/50"
+              : "text-[#f2c97d]"
         }`}
       >
         {label}
@@ -412,8 +399,11 @@ function StageIcon({
   const isCleared = variant === "cleared";
   const lockedBase = "#b19662";
   const lockedDeep = "#8a6f42";
-  const fillBase = isLocked ? lockedBase : primaryColor;
-  const fillDeep = isLocked ? lockedDeep : primaryDeep;
+  const clearedBase = "#8fe3b3";
+  const clearedDeep = "#4fbf7d";
+  const fillBase = isCleared ? clearedBase : isLocked ? lockedBase : primaryColor;
+  const fillDeep = isCleared ? clearedDeep : isLocked ? lockedDeep : primaryDeep;
+  const glowColor = isCleared ? "rgba(112, 230, 176, 0.55)" : primaryGlow;
 
   return (
     <svg
@@ -440,8 +430,8 @@ function StageIcon({
           </feMerge>
         </filter>
         <radialGradient id={glowId} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor={primaryGlow} stopOpacity="0.8" />
-          <stop offset="100%" stopColor={primaryGlow} stopOpacity="0" />
+          <stop offset="0%" stopColor={glowColor} stopOpacity="0.8" />
+          <stop offset="100%" stopColor={glowColor} stopOpacity="0" />
         </radialGradient>
       </defs>
 
