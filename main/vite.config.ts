@@ -22,10 +22,8 @@ export default defineConfig({
     setupFiles: './src/setupTests.ts',
     css: true,
     pool: 'forks',
-    poolOptions: {
-      forks: {
-        singleFork: true,
-      },
+    forks: {
+      singleFork: true,
     },
     typecheck: {
       tsconfig: './tsconfig.vitest.json',

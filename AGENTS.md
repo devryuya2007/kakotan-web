@@ -1,36 +1,88 @@
-# Repository Guidelines
+# Codex 用ガイドライン
 
-## Project Structure & Module Organization
-- `main/` hosts the React 19 + Vite frontend; group UI under `components/`, routes in `pages/`, hooks in `hooks/`, shared JSON in `data/`, and assetsやテスト周りを`assets/`と`setupTests.ts`にまとめる。
-- Top-level `phrase/` contains production vocabulary exports, while `data/` holds raw sources for tooling such as frequency analysis.
-- Generated builds land in `main/dist/` and root `dist/`; treat them as read-only. Keep design shots and references in `docs/`.
+## 基本手順
 
-## Build, Test, and Development Commands
-- `npm install` (root) runs the `postinstall` hook that bootstraps `main/`.
-- `npm run dev` launches Vite at `localhost:5173`; `npm run build` performs the TypeScript build and emits production bundles to `main/dist/`.
-- `npm run lint` runs ESLint with the repository rule set; fix offences before committing.
-- `npm --prefix main run test` starts Vitest in watch mode; append `-- run` for a single pass. `npm run freq` converts `data/extracted/*.txt` into word-frequency CSV for analysis.
+1. 依存パッケージが無い場合は `npm install` を実行する
+2. 指示を受ける。
+3. `git status`を実行しブランチが最新か確認し、必要であれば`git pull`や`git revert`を行う。
+4. `使用可能ツール`を使う必要があるか確認する（優先的に使用する）
+5. 指示に従って実装する(GitHubMCPを活用しissueに実装内容についての記述が無いか探す。ない場合は作成してから実装に取り掛かる)
+6. `npm run lint`が通るまで修正を繰り返す
+7. `git add .`を実行
+8. `git commit -m ""`でコミットメッセージを考えてcommit.
+9. issue内容が完璧に実装できた場合close。
 
-## Coding Style & Naming Conventions
-- Use TypeScript, React function components, and Tailwind; keep presentational code in `components/` and route state in `pages/`.
-- Follow the ESLint configuration: 2-space indentation, double quotes, trailing semicolons, and idiomatic React hooks usage.
-- Name React components in PascalCase (`MiniResultPage.tsx`), hooks in `useCamelCase`, and Tailwind class collections via descriptive constants when reused.
-- Keep JSON/CSV resources lowercase with underscores, matching the existing `phrase/vocab_list_part*.json` pattern.
+## コーディングルール
 
-## Testing Guidelines
-- Vitest with React Testing Library is preconfigured; import utilities from `@testing-library/react` and rely on `setupTests.ts` for automatic cleanup.
-- Co-locate tests either as `Component.test.tsx` siblings or inside `__tests__` folders (see `main/src/pages/tests/...` scaffold) to mirror runtime structure.
-- Aim to cover new UI states and routing flows; exercise hooks in isolation with mocked DOM via `jsdom`.
+- インデントは 2 スペース、行末にセミコロンを付ける
+- 日本語コメントを多めに入れて、処理内容を初心者にも分かりやすく説明する
+- オブジェクトの型付けは interface で統一
+- キャメルケースを使用
+- React Testing Library でテストしやすいコンポーネント指向
+- console.log などのデバックコンソールを残さない
+- React 　 TypeScript Tailwind css をベースにその他 UI ライブラリを使い、HTML CSS バニラ JS などはできるだけ避ける
+- test 　 build lint などが通らずに 2 回以上再帰的に試行している場合打ち止めてユーザーの意向を伺う
+- シングルクォートではなく、ダブルクオートを優先的に使う。
+- コメントはコードの 30% くらいを目安に入れて、何をしているか・どんな役割かを丁寧に説明する。特にメソッドには「何のための処理か」「どんな入力からどういう出力を出すのか」など、作業の意味が一見してわかるような記述を補う。
+- `~/.codex/skills/`から最適だと思われるskillを使って実装する。skillは指示の次に優先する
+- 実装の後コミットする前に`~/.codex/skills/`からTestGrardrailを実行する
 
-## Commit & Pull Request Guidelines
-- Mirror the current history: concise Japanese summaries that describe the change outcome (e.g., `結果カードに仮テキストを追加。`), avoiding English prefixes or ticket IDs.
-- Keep related work in a single commit when feasible; otherwise, rebase before opening the PR.
-- Pull requests should include: a plain-language overview, screenshots or GIFs for UI changes, affected vocab data files, testing notes (`npm --prefix main run test`, `npm run lint`), and any follow-up todos.
-- Link GitHub issues when available and tag reviewers familiar with the touched feature area (results, tests, or data ingestion).
+## PR ルール
 
-## コミュニケーション & PR 方針
-- `AGENTS.md`に沿う会話やコメントは全部日本語で、高校生っぽいタメ口を基本にそろえてね。
-- 実装はオブジェクト指向で組みつつ、初心者でも読めるようにコメントを多めに残す。プログラミング未経験の相手に教えるつもりで説明や構成を考える。
-- Pull Request も日本語で作成し、テンプレがあればそれに沿って記入する。
-- レビュー依頼・対応も日本語で行い、質問や確認もタメ口でやさしくフォローすること。
-- コードの実装や編集は、ユーザーが「実装して」と明示的に言ったときだけ行う。それ以外は案内・説明に徹すること。
+- タイトル・本文ともに日本語で記述
+- 何を変更したか、動作確認方法、今後の TODO を簡潔にまとめる
+
+## issue タグルール
+
+- issue 作成時には目的に沿ったタグをつける（例: `story`, `animation`, `ux`, `client-ui`, `gameflow`）。
+- 必要なタグがなければ新たに作成し、説明を添える。
+- タグ付けも issue 作成の一部として扱う。
+
+## issueルール
+
+- 目的、現状、手順、期待の順で記述
+- 日本語で記述する
+- 具体的なコードスニペットを提示する
+- タスクの重要度が高い場合は `priority-high` ラベルを付ける（必要に応じて他の優先度ラベルを追加）
+- `- [ ]` 形式でチェックリスト項目を用意し、作業内容を細かく可視化する
+- 対応するPRでは `Fixes #123` のように Issue 番号を明記して、自動クローズを活用する
+
+## 応答ルール
+
+- 日本語で会話する。高校生男子らしい口調
+- 必ず小学生でも理解できる言葉で実装内容や懸念点、提案などをステップ・バイ・ステップで説明する。
+- 実装したあとは`npm run lint`を実行し、`npm run test`は基本スキップでOK。テスト内容を変えるときは必ず打診する。
+
+## テスト実行ポリシー（環境依存エラー時）
+
+- `npm run test`はユーザーからの指示がない場合実行しない、テストが落ちたら詳細を説明する
+- 必要に応じて実行オプション（例: 並列数変更など）を相談し、それでも不可なら無理に再試行せずユーザーに判断を仰ぐ。
+
+## ユーザーの好み（デザイン）
+
+- タブごとに色を分けたメリハリのあるUIが好き（例: 財務=ミント系、会社ステータス=ブルー×オレンジ、ブランド=パープル×シアン）。
+- グラデーションがゆっくり光るアニメをアクセントに入れるのが好み（枠やバッジの外側を光らせるなど、うるさ過ぎない程度に）。
+- 角丸・余白多めで安心感のあるレイアウト。重要数値を上に、コメントを下に置く視線誘導を重視。
+- ゲームっぽい先進感と読みやすさのバランスを取りたい。
+
+## 使用可能ツール
+
+- GitHubMCP
+- playwrightMCP
+- chrome devtoolMCP　
+
+　
+
+## コミットルール
+
+- コミットメッセージは日本語で行う
+- `feat`,`fix`,`perf`,`refector`,`docs`などのその他有名タグを使用すること。
+  　例：`feat: 履歴機能を追加`など
+
+## テストルール
+
+- `it`ではなく`test`を使う
+- テスト名は日本語で記述する
+- カバレッジ100%を維持し、できてない場合は都度提案する
+
+
