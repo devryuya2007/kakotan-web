@@ -1,37 +1,25 @@
 import {
   QuickStartButton,
   QuickStartButtonStyle,
-} from '../../components/buttons/QuickStartButton';
-import {AppLayout} from '../../components/layout/AppLayout';
-import {Modal} from '../../components/modal/Modal';
+} from "../../components/buttons/QuickStartButton";
+import {AppLayout} from "../../components/layout/AppLayout";
 
-import {useEffect, useState} from 'react';
+import {useEffect, useState} from "react";
 
-import {useNavigate} from 'react-router-dom';
+import {useNavigate} from "react-router-dom";
 
-import '../../index.css';
+import "../../index.css";
 
+// 年度ごとのステージ一覧へ進むためのメニュー
 const MENU_ITEMS = [
-  {label: 'Reiwa 3', path: '/tests/reiwa3', modalKey: 'reiwa3'},
-  {label: 'Reiwa 4', path: '/tests/reiwa4', modalKey: 'reiwa4'},
-  {label: 'Reiwa 5', path: '/tests/reiwa5', modalKey: 'reiwa5'},
-  {label: 'Reiwa 6', path: '/tests/reiwa6', modalKey: 'reiwa6'},
-  {label: 'Reiwa 7', path: '/tests/reiwa7', modalKey: 'reiwa7'},
+  {label: "Reiwa 3", path: "/stages/reiwa3"},
+  {label: "Reiwa 4", path: "/stages/reiwa4"},
+  {label: "Reiwa 5", path: "/stages/reiwa5"},
+  {label: "Reiwa 6", path: "/stages/reiwa6"},
+  {label: "Reiwa 7", path: "/stages/reiwa7"},
 ] as const;
 
-type MenuItem = (typeof MENU_ITEMS)[number];
-type MenuModalKey = MenuItem['modalKey'];
-
-const QUESTION_COUNTS: Record<MenuModalKey, number> = {
-  reiwa3: 1000,
-  reiwa4: 1200,
-  reiwa5: 1100,
-  reiwa6: 1300,
-  reiwa7: 1400,
-};
-
 export default function MenuPage() {
-  const [openKey, setOpenKey] = useState<MenuModalKey | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -43,133 +31,61 @@ export default function MenuPage() {
     };
   }, []);
 
-  const activeItem = openKey
-    ? MENU_ITEMS.find((item) => item.modalKey === openKey)
-    : undefined;
-
-  const handleStart = () => {
-    if (!activeItem) {
-      return;
-    }
-
-    setOpenKey(null);
-    navigate(activeItem.path);
+  // メニューからステージ一覧へ遷移する
+  const handleSelect = (path: string) => {
+    navigate(path);
   };
-
-  const modalContent = activeItem ? (
-    <BasicModalContent
-      yearLabel={activeItem.label}
-      startButtonLabel='Start practice'
-      description='This set pulls high-frequency words from recent Common Test trends.'
-      estimatedTime='Estimated time: about 10 minutes.'
-      questionSummary={getQuestionSummary(activeItem)}
-      onStart={handleStart}
-    />
-  ) : null;
 
   return (
     <AppLayout>
       <div
         className={`my-auto w-full max-w-4xl transform-gpu rounded-2xl transition-all duration-500 ease-out ${
-          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+          isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
         }`}
       >
-        <div className='flex h-full w-full flex-col gap-8 rounded-2xl px-8 py-10 text-center sm:gap-10 sm:px-12 sm:py-12'>
-          <header className='space-y-8'>
-            <h1 className='select-none text-2xl font-semibold tracking-widest text-[#f2c97d] sm:text-3xl'>
+        <div className="flex h-full w-full flex-col gap-8 rounded-2xl px-8 py-10 text-center sm:gap-10 sm:px-12 sm:py-12">
+          <header className="space-y-8">
+            <h1 className="select-none text-2xl font-semibold tracking-widest text-[#f2c97d] sm:text-3xl">
               SELECT
             </h1>
-            <p className='select-none text-sm text-[#f2c97d]/70'>
-              Pick the test set you want to practice.
+            <p className="select-none text-sm text-[#f2c97d]/70">
+              年度を選んで、ステージへ進もう。
             </p>
-            {/* Results button stays fixed on the bottom-right, so we don't show it here */}
+            {/* Resultsボタンは右下固定なのでここでは表示しない */}
           </header>
 
+          {/* 年度ごとのステージ入口 */}
           <section>
-            <div className='grid grid-cols-3 gap-4 sm:gap-6'>
-              {MENU_ITEMS.map(({label, modalKey}) => (
+            <div className="grid grid-cols-3 gap-4 sm:gap-6">
+              {MENU_ITEMS.map(({label, path}) => (
                 <MenuButton
-                  key={modalKey}
+                  key={label}
                   label={label}
-                  onSelect={() => setOpenKey(modalKey)}
+                  onSelect={() => handleSelect(path)}
                 />
               ))}
             </div>
           </section>
         </div>
       </div>
-
-      <Modal
-        open={Boolean(activeItem)}
-        onClose={() => setOpenKey(null)}
-        content={modalContent}
-      />
-      <div className='fixed bottom-6 right-6 w-[6rem]'>
-        <QuickStartButton onClick={() => navigate('/')} label='Home' />
+      <div className="fixed bottom-6 right-6 w-[6rem]">
+        <QuickStartButton onClick={() => navigate("/")} label="Home" />
       </div>
     </AppLayout>
   );
 }
 
-type MenuButtonProps = {
+interface MenuButtonProps {
   label: string;
   onSelect: () => void;
-};
+}
 
 function MenuButton({label, onSelect}: MenuButtonProps) {
   return (
-    <button type='button' onClick={onSelect} className={QuickStartButtonStyle}>
+    <button type="button" onClick={onSelect} className={QuickStartButtonStyle}>
       {label}
     </button>
   );
 }
 
-type BasicModalContentProps = {
-  yearLabel: string;
-  description: string;
-  estimatedTime: string;
-  startButtonLabel: string;
-  onStart: () => void;
-  questionSummary: string | null;
-};
-
-// Basic modal layout that swaps content via props
-function BasicModalContent({
-  yearLabel,
-  description,
-  estimatedTime,
-  startButtonLabel,
-  onStart,
-  questionSummary,
-}: BasicModalContentProps) {
-  return (
-    <div className='space-y-3 text-left'>
-      <h1 className='text-xl font-semibold text-[#f2c97d]'>
-        Common Test {yearLabel}
-      </h1>
-      <p className='text-sm text-white/80'>{description}</p>
-      <p className='text-sm text-white/80'>{estimatedTime}</p>
-      {questionSummary ? (
-        <p className='text-sm text-white/80'>{questionSummary}</p>
-      ) : null}
-      <div className='pt-2 text-right'>
-        <button
-          type='button'
-          className={QuickStartButtonStyle}
-          onClick={onStart}
-        >
-          {startButtonLabel}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function getQuestionSummary(item: MenuItem): string | null {
-  const count = QUESTION_COUNTS[item.modalKey];
-  if (!count) {
-    return null;
-  }
-
-  return `Total questions: ${count}.`;
-}
+// モーダルはステージ一覧側で出すので、メニューは移動だけにする

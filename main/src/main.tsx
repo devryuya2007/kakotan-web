@@ -7,6 +7,8 @@ import HomePage from './pages/home/HomePage';
 import MenuPage from './pages/menu/MenuPage';
 import MiniResultPage from './pages/results/MiniResultPage';
 import ResultsPage from './pages/results/ResultsPage';
+import StageSelectPage from './pages/stages/StageSelectPage';
+import StageTestPage from './pages/stages/StageTestPage';
 import {TestResultsProvider} from './pages/states/TestReSultContext';
 import {UserConfigProvider} from './pages/tests/test_page/userConfigContext';
 import Reiwa3Page from './pages/tests/test_page/Reiwa3Page';
@@ -29,6 +31,8 @@ const router = createBrowserRouter([
   {path: '/menu', element: <MenuPage />},
   {path: '/results', element: <ResultsPage />},
   {path: '/results/mini', element: <MiniResultPage />},
+  {path: '/stages/:year', element: <StageSelectPage />},
+  {path: '/stages/:year/:stageNumber', element: <StageTestPage />},
   {path: '/tests/reiwa3', element: <Reiwa3Page />},
   {path: '/tests/reiwa4', element: <Reiwa4Page />},
   {path: '/tests/reiwa5', element: <Reiwa5Page />},

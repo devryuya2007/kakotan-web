@@ -19,20 +19,23 @@ import {
   XP_PER_INCORRECT,
   getExperiencePoints,
 } from '@/features/results/scoring';
+import {recordStageResult} from '@/features/stages/stageProgressStore';
 import {usePrefersReducedMotion} from '@/hooks/usePrefersReducedMotion';
 import {useTestResults} from '@/pages/states/useTestResults';
 
 // このコンポーネントが受け取るpropsの形。questionsは問題配列、countは総数
-type TestPageLayoutProps = {
+interface TestPageLayoutProps {
   questions: QuizQuestion[];
   count: number;
   sectionId: string;
-};
+  stageId?: string;
+}
 
 export default function TestPageLayout({
   questions,
   count,
   sectionId,
+  stageId,
 }: TestPageLayoutProps) {
   // いま表示している問題の配列インデックス
   const {
@@ -169,6 +172,7 @@ export default function TestPageLayout({
     let durationMs: number | undefined;
     const correctCount = correct.length;
     const incorrectCount = incorrect.length;
+    const totalAnswered = correctCount + incorrectCount;
 
     if (typeof startedAt === 'number') {
       durationMs = Math.max(0, finishedAt - startedAt);
@@ -182,13 +186,24 @@ export default function TestPageLayout({
           correctCount,
           incorrectCount,
           gainedXp,
+          // ステージモードのときだけstageIdを記録する
+          stageId,
         });
       }
       sessionStartRef.current = null;
     }
 
+    // ステージモードのときは進捗を保存する（正答率90%以上でクリア扱い）
+    if (stageId && totalAnswered > 0) {
+      recordStageResult({
+        stageId,
+        correctCount,
+        totalCount: totalAnswered,
+      });
+    }
+
     return {gainedXp, updatedTotalXp, durationMs};
-  }, [correct, incorrect, totalXp, applyXp, addSession, sectionId]);
+  }, [correct, incorrect, totalXp, applyXp, addSession, sectionId, stageId]);
 
   const hasFinishedRef = useRef(false);
   const navigate = useNavigate();
