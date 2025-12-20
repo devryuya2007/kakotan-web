@@ -1,6 +1,11 @@
-import react from "@vitejs/plugin-react";
-import {URL, fileURLToPath} from "node:url";
-import {defineConfig} from "vitest/config";
+import react from '@vitejs/plugin-react';
+import {URL, fileURLToPath} from 'node:url';
+import {type UserConfig, defineConfig} from 'vite';
+import type {UserConfig as VitestUserConfig} from 'vitest/config';
+
+type ExtendedViteConfig = UserConfig & {
+  test?: VitestUserConfig['test'];
+};
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,20 +16,17 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["test/**/*.test.{ts,tsx}"],
-    environment: "jsdom",
+    include: ['tests/**/*.test.{ts,tsx}', 'src/**/*.test.{ts,tsx}'],
+    environment: 'jsdom',
     globals: true,
-    setupFiles: "./src/setupTests.ts",
+    setupFiles: './src/setupTests.ts',
     css: true,
-    pool: "forks",
-    maxWorkers: 1,
-    fileParallelism: false,
-    coverage: {
-      provider: "v8",
-      exclude: ["src/assets/**"],
+    pool: 'forks',
+    forks: {
+      singleFork: true,
     },
     typecheck: {
-      tsconfig: "./tsconfig.vitest.json",
+      tsconfig: './tsconfig.vitest.json',
     },
   },
-});
+} as ExtendedViteConfig);

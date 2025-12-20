@@ -34,7 +34,7 @@
 
 ## issue タグルール
 
-- issue 作成時には目的に沿ったタグをつける（例: `feature`, `ui`, `ux`, `data`, `progress`, `settings`, `content`, `bug`）。
+- issue 作成時には目的に沿ったタグをつける（例: `story`, `animation`, `ux`, `client-ui`, `gameflow`）。
 - 必要なタグがなければ新たに作成し、説明を添える。
 - タグ付けも issue 作成の一部として扱う。
 
@@ -84,4 +84,5 @@
 - `it`ではなく`test`を使う
 - テスト名は日本語で記述する
 - カバレッジ100%を維持し、できてない場合は都度提案する
+
 
