@@ -1,4 +1,4 @@
-import {useEffect, useId, useMemo, useReducer, useRef} from 'react';
+import {useEffect, useId, useMemo, useRef, useState} from 'react';
 
 import {useLocation, useNavigate, useParams} from 'react-router-dom';
 
@@ -6,29 +6,26 @@ import {AppLayout} from '@/components/layout/AppLayout';
 import {Modal} from '@/components/modal/Modal';
 import {
   type StageProgressEntry,
+  type StageProgressState,
   buildStageUnlockMap,
   loadStageProgress,
 } from '@/features/stages/stageProgressStore';
 import type {StageDefinition} from '@/features/stages/stageUtils';
-import type {YearKey} from "@/data/vocabLoader";
 import {useUserConfig} from '@/pages/tests/test_page/hooks/useUserConfig';
 
 import {useStageDefinitions} from './hooks/useStageDefinitions';
-import {
-  initialStageSelectState,
-  stageSelectReducer,
-} from "./stageSelectState";
 import {YEAR_LABELS, isYearKey} from './stageConstants';
 
 export default function StageSelectPage() {
   const {year: yearParam} = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const [state, dispatch] = useReducer(
-    stageSelectReducer,
-    initialStageSelectState,
+  const [selectedStage, setSelectedStage] = useState<StageDefinition | null>(
+    null,
   );
+  const [isVisible, setIsVisible] = useState(false);
   const mapWrapRef = useRef<HTMLDivElement | null>(null);
+  const [mapWrapWidth, setMapWrapWidth] = useState(0);
   // フラット系デザインの基準カラー（メインは #f2c97d）
   const primaryColor = '#f2c97d';
   const primaryDeep = '#d4a34d';
@@ -41,14 +38,10 @@ export default function StageSelectPage() {
   const tileGap = 24;
 
   // URLの年度が有効かチェックして、無効ならデフォルトに切り替える
-  const isValidYear =
-    typeof yearParam === "string" && isYearKey(yearParam);
+  const isValidYear = Boolean(yearParam && isYearKey(yearParam));
 
   // 年度ラベルを決める
-  const year: YearKey =
-    typeof yearParam === "string" && isYearKey(yearParam)
-      ? yearParam
-      : "reiwa3";
+  const year = isValidYear ? yearParam : 'reiwa3';
   const yearLabel = YEAR_LABELS[year];
   // ユーザー設定の「1ステージあたりの問題数」を取得する
   const {config} = useUserConfig();
@@ -60,10 +53,11 @@ export default function StageSelectPage() {
     baseQuestionCount,
   });
 
-  // 進捗はマウント時にlocalStorageから読み込み、reducerのstateで更新する
+  // 進捗はマウント時にlocalStorageから読み込み、stateで更新する
+  const [stageProgress, setStageProgress] = useState<StageProgressState>({});
   useEffect(() => {
     const syncProgress = () => {
-      dispatch({type: "setStageProgress", progress: loadStageProgress()});
+      setStageProgress(loadStageProgress());
     };
 
     // 画面表示時に必ず最新の進捗を読み込む
@@ -81,7 +75,7 @@ export default function StageSelectPage() {
       syncProgress();
     };
     const handleStorage = (event: StorageEvent) => {
-      if (event.key === "stage-progress:v1") {
+      if (event.key === 'stage-progress:v1') {
         syncProgress();
       }
     };
@@ -105,12 +99,12 @@ export default function StageSelectPage() {
     if (!element) return;
 
     const updateWidth = () => {
-      dispatch({type: "setMapWrapWidth", width: element.clientWidth});
+      setMapWrapWidth(element.clientWidth);
     };
 
     updateWidth();
 
-    if (typeof ResizeObserver !== "undefined") {
+    if (typeof ResizeObserver !== 'undefined') {
       const observer = new ResizeObserver(() => updateWidth());
       observer.observe(element);
       return () => observer.disconnect();
@@ -123,26 +117,22 @@ export default function StageSelectPage() {
   // 画面に入ったタイミングでアニメーションを開始
   useEffect(() => {
     const raf = requestAnimationFrame(() => {
-      dispatch({type: "setVisible", isVisible: true});
+      setIsVisible(true);
     });
     return () => {
       cancelAnimationFrame(raf);
-      dispatch({type: "setVisible", isVisible: false});
+      setIsVisible(false);
     };
   }, []);
 
   // 次に挑戦すべきステージを探して、駒の位置を決める
   const nextPlayableIndex = stages.findIndex((stage, index) => {
     if (index === 0) {
-      return !state.stageProgress[stage.stageId]?.cleared;
+      return !stageProgress[stage.stageId]?.cleared;
     }
     const prevStage = stages[index - 1];
-    const prevCleared = Boolean(
-      state.stageProgress[prevStage.stageId]?.cleared,
-    );
-    const currentCleared = Boolean(
-      state.stageProgress[stage.stageId]?.cleared,
-    );
+    const prevCleared = Boolean(stageProgress[prevStage.stageId]?.cleared);
+    const currentCleared = Boolean(stageProgress[stage.stageId]?.cleared);
     return prevCleared && !currentCleared;
   });
   const activeStageIndex =
@@ -151,7 +141,7 @@ export default function StageSelectPage() {
       : nextPlayableIndex >= 0
         ? nextPlayableIndex
         : stages.length - 1;
-  const safeWrapWidth = state.mapWrapWidth || tileWidth + tileGap;
+  const safeWrapWidth = mapWrapWidth || tileWidth + tileGap;
   const rawColumns = Math.floor(
     (safeWrapWidth + tileGap) / (tileWidth + tileGap),
   );
@@ -183,17 +173,17 @@ export default function StageSelectPage() {
 
   // 進捗をもとに、どのステージが解放されているかを計算する
   const unlockMap = useMemo(
-    () => buildStageUnlockMap(stages, state.stageProgress),
-    [stages, state.stageProgress],
+    () => buildStageUnlockMap(stages, stageProgress),
+    [stages, stageProgress],
   );
 
-  const selectedStageProgress = state.selectedStage
-    ? state.stageProgress[state.selectedStage.stageId]
+  const selectedStageProgress = selectedStage
+    ? stageProgress[selectedStage.stageId]
     : null;
 
   // ステージ開始ボタン
   const handleStartStage = (stage: StageDefinition) => {
-    dispatch({type: "selectStage", stage: null});
+    setSelectedStage(null);
     navigate(`/stages/${year}/${stage.stageNumber}`);
   };
 
@@ -214,9 +204,7 @@ export default function StageSelectPage() {
     <AppLayout mainClassName="overflow-y-auto overscroll-y-contain sm:overflow-hidden">
       <div
         className={`mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 transition-all duration-500 ease-out sm:px-6 ${
-          state.isVisible
-            ? "translate-y-0 opacity-100"
-            : "translate-y-4 opacity-0"
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
         }`}
       >
         <section className='relative'>
@@ -231,8 +219,7 @@ export default function StageSelectPage() {
               >
                 {/* ステージタイルを横並びで折り返し配置する */}
                 {stages.map((stage, index) => {
-                  const stageProgressEntry =
-                    state.stageProgress[stage.stageId];
+                  const stageProgressEntry = stageProgress[stage.stageId];
                   const isCleared = Boolean(stageProgressEntry?.cleared);
                   // 進捗とステージ順から解放状態を決める
                   const isUnlocked = Boolean(unlockMap[stage.stageId]);
@@ -259,9 +246,7 @@ export default function StageSelectPage() {
                         tileHeight={tileHeight}
                         tileIconHeight={tileIconHeight}
                         delayMs={index * 60}
-                        onSelect={() =>
-                          dispatch({type: "selectStage", stage})
-                        }
+                        onSelect={() => setSelectedStage(stage)}
                       />
                     </div>
                   );
@@ -273,12 +258,12 @@ export default function StageSelectPage() {
       </div>
 
       <Modal
-        open={Boolean(state.selectedStage)}
-        onClose={() => dispatch({type: "selectStage", stage: null})}
+        open={Boolean(selectedStage)}
+        onClose={() => setSelectedStage(null)}
         content={
-          state.selectedStage ? (
+          selectedStage ? (
             <StageStartModal
-              stage={state.selectedStage}
+              stage={selectedStage}
               progress={selectedStageProgress}
               accent={primaryColor}
               accentSoft={primaryDeep}
@@ -591,3 +576,4 @@ function StageStartModal({
     </div>
   );
 }
+

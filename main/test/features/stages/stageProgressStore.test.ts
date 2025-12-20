@@ -6,8 +6,8 @@ import {
   recordStageAttempt,
   recordStageResult,
   saveStageProgress,
-} from "@/features/stages/stageProgressStore";
-import type {StageProgressState} from "@/features/stages/stageProgressStore";
+} from "./stageProgressStore";
+import type {StageProgressState} from "./stageProgressStore";
 
 // ステージ進捗の保存と補完をテストする
 describe("ステージ進捗ストア", () => {

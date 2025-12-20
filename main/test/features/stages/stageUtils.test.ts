@@ -6,7 +6,7 @@ import {
   buildStageQuestions,
   calculateStageSummary,
   createStageDefinitions,
-} from "@/features/stages/stageUtils";
+} from "./stageUtils";
 
 // ステージ定義の計算ロジックをまとめて確認する
 describe("ステージ定義ユーティリティ", () => {
@@ -138,6 +138,7 @@ describe("ステージ定義ユーティリティ", () => {
   test("windowが無いときはキャッシュ操作をスキップする", () => {
     // SSR環境向けの早期returnを通す
     const originalWindow = window;
+    // @ts-expect-error windowを一時的に消す
     vi.stubGlobal("window", undefined);
 
     const vocab: VocabEntry[] = [
