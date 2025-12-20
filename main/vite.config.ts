@@ -6,6 +6,8 @@ import {defineConfig} from "vitest/config";
 export default defineConfig({
   plugins: [react()],
   resolve: {
+    // 依存内でReactが二重に解決されるのを防ぐ
+    dedupe: ["react", "react-dom"],
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
