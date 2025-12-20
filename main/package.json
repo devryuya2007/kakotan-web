@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
+    "covarage": "vitest run --coverage",
     "test:run": "vitest run"
   },
   "dependencies": {
