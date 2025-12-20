@@ -65,4 +65,28 @@ describe("ステージ進捗ストア", () => {
     expect(entry).toBeTruthy();
     expect(entry?.hasAttempted).toBe(true);
   });
+
+  test("不足した保存データでも全フィールドが補完される", () => {
+    const storageKey = "stage-progress:v1";
+    const stageId = "reiwa3-q20-stage4";
+    const legacy = {
+      [stageId]: {
+        stageId,
+      },
+    };
+
+    // 旧形式のまま保存しておく
+    localStorage.setItem(storageKey, JSON.stringify(legacy));
+
+    // 読み込み時に必要なフィールドが埋まるか確認する
+    const state = loadStageProgress();
+    const entry = state[stageId];
+    expect(entry).toBeTruthy();
+    expect(entry?.bestAccuracy).toBe(0);
+    expect(entry?.cleared).toBe(false);
+    expect(entry?.attempts).toBe(0);
+    expect(entry?.lastPlayedAt).toBe(0);
+    expect(entry?.lastAccuracy).toBe(0);
+    expect(entry?.hasAttempted).toBe(false);
+  });
 });
