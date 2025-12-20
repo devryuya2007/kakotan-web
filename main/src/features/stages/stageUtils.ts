@@ -217,23 +217,23 @@ export const createStageDefinitions = ({
 // 1ステージ分の問題を作る。年度語彙 + ステージ番号 + 1ステージの問題数で切り出す
 export interface StageQuestionInput {
   vocab: VocabEntry[];
-  stageNumber: number;
-  baseQuestionCount: number;
+  stage: StageDefinition;
 }
 
 // 指定ステージの問題配列を作る（最後のステージは残り分だけになる）
 export const buildStageQuestions = ({
   vocab,
-  stageNumber,
-  baseQuestionCount,
+  stage,
 }: StageQuestionInput): QuizQuestion[] => {
+  // ステージ定義と同じ基準で語彙をフィルタする
   const filteredEntries = filterStageEntries(vocab);
-  const normalizedQuestionCount = normalizeQuestionCount(baseQuestionCount);
-  const startIndex = Math.max(0, stageNumber - 1) * normalizedQuestionCount;
+  // 定義済みの開始位置と問題数を使って切り出す
+  const startIndex = Math.max(0, stage.startIndex);
+  const questionCount = Math.max(0, stage.questionCount);
   const stageEntries = filteredEntries.slice(
     startIndex,
-    startIndex + normalizedQuestionCount,
+    startIndex + questionCount,
   );
 
-  return buildQuestionsFromVocab(stageEntries, normalizedQuestionCount);
+  return buildQuestionsFromVocab(stageEntries, questionCount);
 };

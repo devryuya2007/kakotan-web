@@ -84,8 +84,7 @@ export default function StageTestPage() {
         // ステージ範囲の語彙から問題を作る
         const questions = buildStageQuestions({
           vocab,
-          stageNumber,
-          baseQuestionCount,
+          stage: targetStage,
         });
 
         setState({

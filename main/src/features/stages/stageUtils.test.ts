@@ -2,7 +2,11 @@ import {describe, test, expect, beforeEach} from "vitest";
 
 import type {VocabEntry, YearKey} from "@/data/vocabLoader";
 
-import {calculateStageSummary, createStageDefinitions} from "./stageUtils";
+import {
+  buildStageQuestions,
+  calculateStageSummary,
+  createStageDefinitions,
+} from "./stageUtils";
 
 // ステージ定義の計算ロジックをまとめて確認する
 describe("ステージ定義ユーティリティ", () => {
@@ -69,5 +73,35 @@ describe("ステージ定義ユーティリティ", () => {
     }>;
     expect(entries.length).toBeGreaterThan(0);
     expect(entries[0]?.stages[0]?.stageNumber).toBe(1);
+  });
+
+  test("ステージ定義の開始位置と問題数で問題が切り出される", () => {
+    const vocab: VocabEntry[] = [
+      {phrase: "apple", mean: "りんご"},
+      {phrase: "banana", mean: "ばなな"},
+      {phrase: "cherry", mean: "さくらんぼ"},
+      {phrase: "dragon", mean: "ドラゴン"},
+      {phrase: "egg", mean: "たまご"},
+    ];
+
+    // 2問ずつで区切るので、ステージ2は3〜4番目になる
+    const result = createStageDefinitions({
+      year: "reiwa3",
+      yearLabel: "Reiwa 3",
+      vocab,
+      baseQuestionCount: 2,
+    });
+    const targetStage = result.stages[1];
+    expect(targetStage).toBeTruthy();
+
+    const questions = buildStageQuestions({
+      vocab,
+      stage: targetStage,
+    });
+
+    // ステージ2の問題は cherry と dragon が対象になる
+    expect(questions).toHaveLength(2);
+    expect(questions[0]?.phrase).toBe("cherry");
+    expect(questions[1]?.phrase).toBe("dragon");
   });
 });
