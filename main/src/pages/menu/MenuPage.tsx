@@ -8,16 +8,15 @@ import {useEffect, useState} from "react";
 
 import {useNavigate} from "react-router-dom";
 
+import {yearRegistry} from "@/data/yearRegistry";
+
 import "../../index.css";
 
 // 年度ごとのステージ一覧へ進むためのメニュー
-const MENU_ITEMS = [
-  {label: "Reiwa 3", path: "/stages/reiwa3"},
-  {label: "Reiwa 4", path: "/stages/reiwa4"},
-  {label: "Reiwa 5", path: "/stages/reiwa5"},
-  {label: "Reiwa 6", path: "/stages/reiwa6"},
-  {label: "Reiwa 7", path: "/stages/reiwa7"},
-] as const;
+const MENU_ITEMS = yearRegistry.map((entry) => ({
+  label: entry.label,
+  path: `/stages/${entry.key}`,
+}));
 
 export default function MenuPage() {
   const [isVisible, setIsVisible] = useState(false);

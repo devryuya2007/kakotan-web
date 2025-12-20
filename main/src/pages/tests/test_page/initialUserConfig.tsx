@@ -1,7 +1,18 @@
-export const initialUserConfig = {
-  reiwa3: {maxCount: 20, sectionId: 'reiwa3'},
-  reiwa4: {maxCount: 20, sectionId: 'reiwa4'},
-  reiwa5: {maxCount: 20, sectionId: 'reiwa5'},
-  reiwa6: {maxCount: 20, sectionId: 'reiwa6'},
-  reiwa7: {maxCount: 20, sectionId: 'reiwa7'},
-} as const;
+import {yearRegistry, type YearKey} from "@/data/yearRegistry";
+
+export interface YearConfigEntry {
+  maxCount: number;
+  sectionId: YearKey;
+}
+
+// 年度レジストリから初期設定を自動生成する
+export const initialUserConfig = yearRegistry.reduce(
+  (accumulator, entry) => {
+    accumulator[entry.key] = {
+      maxCount: entry.defaultQuestionCount,
+      sectionId: entry.key,
+    };
+    return accumulator;
+  },
+  {} as Record<YearKey, YearConfigEntry>,
+);

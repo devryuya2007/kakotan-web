@@ -1,12 +1,6 @@
 import {AppLayout} from '../../components/layout/AppLayout';
 import {useTestResults} from '../states/useTestResults';
-import {
-  useReiwa3Vocab,
-  useReiwa4Vocab,
-  useReiwa5Vocab,
-  useReiwa6Vocab,
-  useReiwa7Vocab,
-} from '../tests/test_page/hooks/useReiwaVocab';
+import {useAllYearVocab} from "@/hooks/useAllYearVocab";
 
 import {useEffect, useMemo, useRef, useState} from 'react';
 
@@ -45,44 +39,17 @@ Chart.register(
 
 export default function ResultsPage() {
   const {sessionHistory, solvedPhrases} = useTestResults();
-  const {questions: reiwa3Questions, status: statusReiwa3} = useReiwa3Vocab();
-  const {questions: reiwa4Questions, status: statusReiwa4} = useReiwa4Vocab();
-  const {questions: reiwa5Questions, status: statusReiwa5} = useReiwa5Vocab();
-  const {questions: reiwa6Questions, status: statusReiwa6} = useReiwa6Vocab();
-  const {questions: reiwa7Questions, status: statusReiwa7} = useReiwa7Vocab();
-
-  const vocabReady = [
-    statusReiwa3,
-    statusReiwa4,
-    statusReiwa5,
-    statusReiwa6,
-    statusReiwa7,
-  ].every((status) => status === 'ready');
-
-  console.log('[ResultsPage] vocabReady:', vocabReady, {
-    statusReiwa3,
-    statusReiwa4,
-    statusReiwa5,
-    statusReiwa6,
-    statusReiwa7,
-  });
+  const {status: vocabStatus, questionsByYear} = useAllYearVocab();
+  const vocabReady = vocabStatus === "ready";
 
   const allQuestions = useMemo(() => {
     if (!vocabReady) return [];
-    return [
-      ...reiwa3Questions,
-      ...reiwa4Questions,
-      ...reiwa5Questions,
-      ...reiwa6Questions,
-      ...reiwa7Questions,
-    ].map((question) => question.phrase);
+    return Object.values(questionsByYear)
+      .flat()
+      .map((question) => question.phrase);
   }, [
     vocabReady,
-    reiwa3Questions,
-    reiwa4Questions,
-    reiwa5Questions,
-    reiwa6Questions,
-    reiwa7Questions,
+    questionsByYear,
   ]);
 
   const correctQuestions = useMemo(
@@ -90,11 +57,6 @@ export default function ResultsPage() {
     [solvedPhrases],
   );
 
-  console.log('[ResultsPage] allQuestions length:', allQuestions.length);
-  console.log(
-    '[ResultsPage] correctQuestions length:',
-    correctQuestions.length,
-  );
 
   const allQuestionsSet = useMemo(() => new Set(allQuestions), [allQuestions]);
   const correctQuestionsSet = useMemo(
@@ -116,7 +78,6 @@ export default function ResultsPage() {
     return Math.round((solvedCount / totalCount) * 100);
   }, [vocabReady, allQuestionsSet, correctQuestionsSet]);
 
-  console.log('[ResultsPage] progress value:', progress);
 
   const progressValue = progress ?? 0;
   const progressRatio = progressValue / 100;

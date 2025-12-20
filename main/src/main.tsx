@@ -11,11 +11,7 @@ import StageSelectPage from './pages/stages/StageSelectPage';
 import StageTestPage from './pages/stages/StageTestPage';
 import {TestResultsProvider} from './pages/states/TestReSultContext';
 import {UserConfigProvider} from './pages/tests/test_page/userConfigContext';
-import Reiwa3Page from './pages/tests/test_page/Reiwa3Page';
-import Reiwa4Page from './pages/tests/test_page/Reiwa4Page';
-import Reiwa5Page from './pages/tests/test_page/Reiwa5Page';
-import Reiwa6Page from './pages/tests/test_page/Reiwa6Page';
-import Reiwa7Page from './pages/tests/test_page/Reiwa7Page';
+import YearTestPage from "./pages/tests/test_page/YearTestPage";
 import UserConfig from './pages/userConfig/userConfig';
 
 import './index.css';
@@ -33,11 +29,7 @@ const router = createBrowserRouter([
   {path: '/results/mini', element: <MiniResultPage />},
   {path: '/stages/:year', element: <StageSelectPage />},
   {path: '/stages/:year/:stageNumber', element: <StageTestPage />},
-  {path: '/tests/reiwa3', element: <Reiwa3Page />},
-  {path: '/tests/reiwa4', element: <Reiwa4Page />},
-  {path: '/tests/reiwa5', element: <Reiwa5Page />},
-  {path: '/tests/reiwa6', element: <Reiwa6Page />},
-  {path: '/tests/reiwa7', element: <Reiwa7Page />},
+  {path: "/tests/:year", element: <YearTestPage />},
   {path: '/pages/user-config', element: <UserConfig />},
 ]);
 
