@@ -1,6 +1,6 @@
 import {useEffect, useId, useMemo, useRef, useState} from "react";
 
-import {useNavigate, useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 
 import {AppLayout} from "@/components/layout/AppLayout";
 import {Modal} from "@/components/modal/Modal";
@@ -17,6 +17,7 @@ import {YEAR_LABELS, isYearKey} from "./stageConstants";
 
 export default function StageSelectPage() {
   const {year: yearParam} = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const [selectedStage, setSelectedStage] = useState<StageDefinition | null>(
     null,
@@ -55,7 +56,7 @@ export default function StageSelectPage() {
   const [stageProgress, setStageProgress] = useState<StageProgressState>({});
   useEffect(() => {
     setStageProgress(loadStageProgress());
-  }, []);
+  }, [location.key]);
 
   // マップの幅に応じて列数を調整する（横に並べて足りなければ折り返す）
   useEffect(() => {
