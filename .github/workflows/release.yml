@@ -72,9 +72,9 @@ jobs:
               --pretty=format:"%s" --grep="^feat" --no-merges)
             if [ -n "$FEATURES" ]; then
               NOTES+="### ✨ 新機能\n"
-              echo "$FEATURES" | while read line; do
+              while IFS= read -r line; do
                 NOTES+="- $line\n"
-              done
+              done <<< "$FEATURES"
               NOTES+="\n"
             fi
 
@@ -83,9 +83,9 @@ jobs:
               --pretty=format:"%s" --grep="^fix" --no-merges)
             if [ -n "$FIXES" ]; then
               NOTES+="### 🐛 バグ修正\n"
-              echo "$FIXES" | while read line; do
+              while IFS= read -r line; do
                 NOTES+="- $line\n"
-              done
+              done <<< "$FIXES"
               NOTES+="\n"
             fi
 
@@ -96,9 +96,9 @@ jobs:
               --grep="^chore\|^refactor\|^docs\|^test" --no-merges)
             if [ -n "$OTHERS" ]; then
               NOTES+="### 🔧 その他の変更\n"
-              echo "$OTHERS" | while read line; do
+              while IFS= read -r line; do
                 NOTES+="- $line\n"
-              done
+              done <<< "$OTHERS"
             fi
           fi
 
