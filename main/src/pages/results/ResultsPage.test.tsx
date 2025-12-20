@@ -9,23 +9,15 @@ import ResultsPage from "./ResultsPage";
 import {lineGlowPlugin} from "./lineGlowPlugin";
 
 const useTestResultsMock = vi.fn();
-const useReiwa3VocabMock = vi.fn();
-const useReiwa4VocabMock = vi.fn();
-const useReiwa5VocabMock = vi.fn();
-const useReiwa6VocabMock = vi.fn();
-const useReiwa7VocabMock = vi.fn();
+const useAllYearVocabMock = vi.fn();
 const navigateMock = vi.fn();
 
 vi.mock("../states/useTestResults", () => ({
   useTestResults: () => useTestResultsMock(),
 }));
 
-vi.mock("../tests/test_page/hooks/useReiwaVocab", () => ({
-  useReiwa3Vocab: () => useReiwa3VocabMock(),
-  useReiwa4Vocab: () => useReiwa4VocabMock(),
-  useReiwa5Vocab: () => useReiwa5VocabMock(),
-  useReiwa6Vocab: () => useReiwa6VocabMock(),
-  useReiwa7Vocab: () => useReiwa7VocabMock(),
+vi.mock("@/hooks/useAllYearVocab", () => ({
+  useAllYearVocab: () => useAllYearVocabMock(),
 }));
 
 vi.mock("react-chartjs-2", () => ({
@@ -71,17 +63,21 @@ const createQuestion = (phrase: string): QuizQuestion => ({
 });
 
 const setVocabState = (status: string, questions: QuizQuestion[]) => {
-  const state = {status, questions};
-  useReiwa3VocabMock.mockReturnValue(state);
-  useReiwa4VocabMock.mockReturnValue(state);
-  useReiwa5VocabMock.mockReturnValue(state);
-  useReiwa6VocabMock.mockReturnValue(state);
-  useReiwa7VocabMock.mockReturnValue(state);
+  useAllYearVocabMock.mockReturnValue({
+    status,
+    questionsByYear: {
+      reiwa3: questions,
+      reiwa4: questions,
+      reiwa5: questions,
+      reiwa6: questions,
+      reiwa7: questions,
+    },
+    error: null,
+  });
 };
 
 // ResultsPageの進捗表示を確認する
 describe("ResultsPage", () => {
-  let consoleSpy: ReturnType<typeof vi.spyOn> | null = null;
   let rafMock: ReturnType<typeof vi.fn> | null = null;
   let cafMock: ReturnType<typeof vi.fn> | null = null;
 
@@ -107,15 +103,12 @@ describe("ResultsPage", () => {
       cafMock as unknown as typeof window.cancelAnimationFrame,
     );
 
-    consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-
+    useAllYearVocabMock.mockReset();
     navigateMock.mockReset();
   });
 
   afterEach(() => {
     vi.useRealTimers();
-    consoleSpy?.mockRestore();
-    consoleSpy = null;
     rafMock = null;
     cafMock = null;
     vi.clearAllMocks();
