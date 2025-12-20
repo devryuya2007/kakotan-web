@@ -4,6 +4,7 @@ import {useLocation, useNavigate, useParams} from "react-router-dom";
 
 import {AppLayout} from "@/components/layout/AppLayout";
 import {Modal} from "@/components/modal/Modal";
+import {QuickStartButton} from "@/components/buttons/QuickStartButton";
 import {
   type StageProgressEntry,
   buildStageStatusMap,
@@ -188,8 +189,12 @@ export default function StageSelectPage() {
   if (!isValidYear) {
     return (
       <AppLayout>
-        <div className='flex w-full items-center justify-center'>
-          <div className='rounded-2xl border border-white/10 bg-[#0f1524] px-6 py-4 text-center text-sm text-white/70'>
+        <div className="flex w-full flex-col items-center gap-6">
+          <QuickStartButton
+            onClick={() => navigate("/")}
+            label="Home"
+          />
+          <div className="rounded-2xl border border-white/10 bg-[#0f1524] px-6 py-4 text-center text-sm text-white/70">
             年度が見つからないので、メニューに戻ります。
           </div>
         </div>
@@ -206,6 +211,15 @@ export default function StageSelectPage() {
             : "translate-y-4 opacity-0"
         }`}
       >
+        <div className="flex w-full items-center justify-between">
+          <QuickStartButton
+            onClick={() => navigate("/")}
+            label="Home"
+          />
+          <span className="text-xs uppercase tracking-[0.35em] text-white/40">
+            {yearLabel}
+          </span>
+        </div>
         <section className='relative'>
           {status === 'ready' && stages.length > 0 && (
             <div ref={mapWrapRef} className='w-full'>

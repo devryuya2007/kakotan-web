@@ -3,11 +3,7 @@ import {StrictMode} from "react";
 import type {ConfigDefaults, PostHogConfig} from "posthog-js";
 import {PostHogProvider} from "posthog-js/react";
 import {createRoot} from "react-dom/client";
-import {
-  Outlet,
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import {RouterProvider, createBrowserRouter} from "react-router-dom";
 
 import HomePage from "./pages/home/HomePage";
 import MenuPage from "./pages/menu/MenuPage";
@@ -19,7 +15,7 @@ import {TestResultsProvider} from "./pages/states/TestReSultContext";
 import YearTestPage from "./pages/tests/test_page/YearTestPage";
 import {UserConfigProvider} from "./pages/tests/test_page/userConfigContext";
 import UserConfig from "./pages/userConfig/userConfig";
-import {GaPageViewTracker} from "./components/analytics/GaPageViewTracker";
+import {AppShell} from "./components/layout/AppShell";
 
 import "./index.css";
 
@@ -36,15 +32,6 @@ const postHogOptions: Partial<PostHogConfig> = {
   defaults: "2025-11-30" as ConfigDefaults,
   capture_exceptions: true, // エラーキャプチャの有効化
   debug: import.meta.env.MODE === "development",
-};
-
-const AppShell = () => {
-  return (
-    <>
-      <GaPageViewTracker />
-      <Outlet />
-    </>
-  );
 };
 
 const router = createBrowserRouter([
