@@ -4,7 +4,7 @@ import {useParams} from "react-router-dom";
 
 import {AppLayout} from "@/components/layout/AppLayout";
 import {loadYearVocab} from "@/data/vocabLoader";
-import type {QuizQuestion} from "@/data/vocabLoader";
+import type {QuizQuestion, YearKey} from "@/data/vocabLoader";
 import {
   buildStageQuestions,
   createStageDefinitions,
@@ -27,10 +27,14 @@ export default function StageTestPage() {
   const {config} = useUserConfig();
 
   // URLの年度が有効かチェックして、無効ならデフォルトに切り替える
-  const isValidYear = Boolean(yearParam && isYearKey(yearParam));
+  const isValidYear =
+    typeof yearParam === "string" && isYearKey(yearParam);
 
   // 年度とステージ番号を確定させる
-  const year = isValidYear ? yearParam : "reiwa3";
+  const year: YearKey =
+    typeof yearParam === "string" && isYearKey(yearParam)
+      ? yearParam
+      : "reiwa3";
   // ステージ番号は1以上の数値に丸めておく
   const parsedStageNumber = Number(stageParam ?? "1");
   const stageNumber =

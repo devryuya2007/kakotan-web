@@ -11,6 +11,7 @@ import {
   loadStageProgress,
 } from '@/features/stages/stageProgressStore';
 import type {StageDefinition} from '@/features/stages/stageUtils';
+import type {YearKey} from "@/data/vocabLoader";
 import {useUserConfig} from '@/pages/tests/test_page/hooks/useUserConfig';
 
 import {useStageDefinitions} from './hooks/useStageDefinitions';
@@ -76,10 +77,14 @@ export default function StageSelectPage() {
   const tileGap = 24;
 
   // URLの年度が有効かチェックして、無効ならデフォルトに切り替える
-  const isValidYear = Boolean(yearParam && isYearKey(yearParam));
+  const isValidYear =
+    typeof yearParam === "string" && isYearKey(yearParam);
 
   // 年度ラベルを決める
-  const year = isValidYear ? yearParam : 'reiwa3';
+  const year: YearKey =
+    typeof yearParam === "string" && isYearKey(yearParam)
+      ? yearParam
+      : "reiwa3";
   const yearLabel = YEAR_LABELS[year];
   // ユーザー設定の「1ステージあたりの問題数」を取得する
   const {config} = useUserConfig();
