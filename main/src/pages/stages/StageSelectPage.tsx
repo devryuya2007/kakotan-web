@@ -198,7 +198,7 @@ export default function StageSelectPage() {
   }
 
   return (
-    <AppLayout mainClassName="overflow-y-auto overscroll-y-contain sm:overflow-hidden">
+    <AppLayout mainClassName="overflow-y-auto overscroll-y-contain">
       <div
         className={`mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 transition-all duration-500 ease-out sm:px-6 ${
           state.isVisible
