@@ -55,7 +55,8 @@ jobs:
         id: release_notes
         run: |
           # 前回のタグを取得（存在しない場合は空文字）
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ \
+          PREVIOUS_TAG=$(git rev-list --tags --skip=1 --max-count=1 \
+            2>/dev/null | xargs -r git describe --tags --abbrev=0 \
             2>/dev/null || echo "")
 
           if [ -z "$PREVIOUS_TAG" ]; then
@@ -93,7 +94,8 @@ jobs:
             # その他の変更として抽出
             OTHERS=$(git log ${PREVIOUS_TAG}..HEAD \
               --pretty=format:"%s" \
-              --grep="^chore\|^refactor\|^docs\|^test" --no-merges)
+              --grep="^chore" --grep="^refactor" \
+              --grep="^docs" --grep="^test" --no-merges)
             if [ -n "$OTHERS" ]; then
               NOTES+="### 🔧 その他の変更\n"
               while IFS= read -r line; do
