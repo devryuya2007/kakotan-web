@@ -9,6 +9,7 @@ import {QuickStartButton} from '@/components/buttons/QuickStartButton';
 import {AppLayout} from '@/components/layout/AppLayout';
 import badgeRule from '@/features/results/badgeCondition';
 import {calculateLevelProgress} from '@/features/results/scoring';
+import {isYearKey} from "@/pages/stages/stageConstants";
 
 import MiniResultPageModal from './ResultModal/MiniResultPageModal';
 
@@ -44,7 +45,7 @@ export default function MiniResultPage() {
 
   type ToneKey = keyof typeof toneStyles;
 
-  const {correct, incorrect, totalXp} = useTestResults();
+  const {correct, incorrect, totalXp, sessionHistory} = useTestResults();
 
   const totalAnswer = correct.length + incorrect.length;
   const correctRate =
@@ -148,6 +149,16 @@ export default function MiniResultPage() {
     return topEntries;
   }, [wrongWordsAll]);
 
+  // 直近のステージ情報から戻り先の年度を推定する
+  const stageListPath = useMemo(() => {
+    const latestStageId =
+      sessionHistory[sessionHistory.length - 1]?.stageId ?? null;
+    if (!latestStageId) return "/menu";
+
+    const [maybeYear] = latestStageId.split("-");
+    return isYearKey(maybeYear) ? `/stages/${maybeYear}` : "/menu";
+  }, [sessionHistory]);
+
   function letterCalculate() {
     if (level === 99) return 'SS';
     else if (level >= 90) return 'S';
@@ -184,6 +195,10 @@ export default function MiniResultPage() {
     navigate('/results');
   };
 
+  const goStageList = () => {
+    navigate(stageListPath);
+  };
+
   const rankInfo = {
     letter: letterCalculate(),
     title: 'AURORA KNIGHT',
@@ -203,11 +218,16 @@ export default function MiniResultPage() {
               <h1 className='text-center text-xl font-bold tracking-tight text-[#f2c97d] sm:text-3xl'>
                 RESULT
               </h1>
-              <div className='absolute right-0 top-1/2 -translate-y-1/2'>
+              <div className='absolute right-0 top-1/2 flex -translate-y-1/2 flex-col gap-2'>
                 <QuickStartButton
                   onClick={() => results()}
                   label='Results'
                   className='!w-[6rem] !px-3 !py-1 text-xs tracking-[0.2em]'
+                />
+                <QuickStartButton
+                  onClick={goStageList}
+                  label='ステージ一覧'
+                  className='!w-[6rem] !px-2 !py-1 text-[0.6rem] tracking-[0.2em]'
                 />
               </div>
             </section>

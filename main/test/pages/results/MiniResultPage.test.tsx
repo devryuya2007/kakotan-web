@@ -4,6 +4,7 @@ import {MemoryRouter} from "react-router-dom";
 import {afterEach, beforeEach, describe, expect, test, vi} from "vitest";
 
 import {TestResultsContext} from "@/pages/states/TestReSultContext.shared";
+import type {SessionRecord} from "@/pages/states/TestReSultContext.shared";
 import type {QuizQuestion} from "@/data/vocabLoader";
 
 import MiniResultPage from "@/pages/results/MiniResultPage";
@@ -44,6 +45,7 @@ interface MiniResultOverrides {
   correct?: QuizQuestion[];
   incorrect?: QuizQuestion[];
   totalXp?: number;
+  sessionHistory?: SessionRecord[];
 }
 
 interface MiniResultLocationState {
@@ -54,13 +56,24 @@ const buildContextValue = (overrides?: MiniResultOverrides) => ({
   correct: overrides?.correct ?? [createQuestion("apple")],
   incorrect: overrides?.incorrect ?? [],
   totalXp: overrides?.totalXp ?? 200,
-  sessionHistory: [],
+  sessionHistory: overrides?.sessionHistory ?? [],
   solvedPhrases: [],
   missedPhrases: [],
   recordResult: () => {},
   applyXp: () => {},
   reset: () => {},
   addSession: () => {},
+});
+
+const createSessionRecord = (stageId?: string): SessionRecord => ({
+  startedAt: 1,
+  finishedAt: 2,
+  durationMs: 1,
+  sectionId: "reiwa3",
+  correctCount: 1,
+  incorrectCount: 0,
+  gainedXp: 10,
+  stageId,
 });
 
 const renderMiniResultPage = (
@@ -260,6 +273,42 @@ describe("ミニリザルトページ", () => {
     fireEvent.click(resultsButton);
 
     expect(navigateMock).toHaveBeenCalledWith("/results");
+  });
+
+  test("ステージ一覧ボタンで該当年度の一覧に戻る", () => {
+    // 直近のstageIdから年度が推定されることを確認する
+    calculateLevelProgressMock.mockReturnValue({
+      level: 12,
+      xpTillNextLevel: 15,
+      progressRatio: 0.6,
+    });
+
+    renderMiniResultPage(
+      buildContextValue({
+        sessionHistory: [createSessionRecord("reiwa3-q20-stage1")],
+      }),
+    );
+
+    const stageButton = screen.getByRole("button", {name: "ステージ一覧"});
+    fireEvent.click(stageButton);
+
+    expect(navigateMock).toHaveBeenCalledWith("/stages/reiwa3");
+  });
+
+  test("ステージ情報が無いときはメニューに戻る", () => {
+    // stageIdが無いときのフォールバック先を確認する
+    calculateLevelProgressMock.mockReturnValue({
+      level: 12,
+      xpTillNextLevel: 15,
+      progressRatio: 0.6,
+    });
+
+    renderMiniResultPage(buildContextValue());
+
+    const stageButton = screen.getByRole("button", {name: "ステージ一覧"});
+    fireEvent.click(stageButton);
+
+    expect(navigateMock).toHaveBeenCalledWith("/menu");
   });
 
   test("Homeボタンでホームに戻れる", () => {
