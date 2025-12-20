@@ -1,5 +1,6 @@
-import {render, screen} from "@testing-library/react";
-import {MemoryRouter, Route, Routes} from "react-router-dom";
+import {render, screen, waitFor} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import {MemoryRouter, Route, Routes, useParams} from "react-router-dom";
 import {beforeEach, describe, expect, test, vi} from "vitest";
 
 import type {StageDefinition} from "@/features/stages/stageUtils";
@@ -34,6 +35,15 @@ const createStageDefinitions = (count: number): StageDefinition[] =>
     questionCount: 20,
     baseQuestionCount: 20,
   }));
+
+function StageTestProbe() {
+  const {year, stageNumber} = useParams();
+  return (
+    <div>
+      StageTest {year} {stageNumber}
+    </div>
+  );
+}
 
 describe("StageSelectPage", () => {
   beforeEach(() => {
@@ -81,7 +91,8 @@ describe("StageSelectPage", () => {
     expect(wrapper).toHaveClass("opacity-100");
   });
 
-  test("ステージ1クリア済みならステージ2が選択できる", async () => {
+  test("ステージ1クリア済みならステージ2が選択できて遷移できる", async () => {
+    const user = userEvent.setup();
     const storageKey = "stage-progress:v1";
     const stage1Id = "reiwa3-q20-stage1";
     const progress = {
@@ -102,6 +113,7 @@ describe("StageSelectPage", () => {
       <MemoryRouter initialEntries={["/stages/reiwa3"]}>
         <Routes>
           <Route path="/stages/:year" element={<StageSelectPage />} />
+          <Route path="/stages/:year/:stageNumber" element={<StageTestProbe />} />
         </Routes>
       </MemoryRouter>,
     );
@@ -110,10 +122,16 @@ describe("StageSelectPage", () => {
       name: /Stage 02/i,
     });
 
-    expect(stage2Button).toBeEnabled();
-    expect(stage2Button).not.toHaveAttribute("aria-disabled", "true");
+    await waitFor(() => {
+      expect(stage2Button).toBeEnabled();
+    });
 
-    const stageButtons = screen.getAllByRole("button", {name: /Stage/i});
-    expect(stageButtons).toHaveLength(3);
+    await user.click(stage2Button);
+    const startButton = await screen.findByRole("button", {name: "Start"});
+    await user.click(startButton);
+
+    expect(
+      await screen.findByText("StageTest reiwa3 2"),
+    ).toBeInTheDocument();
   });
 });
