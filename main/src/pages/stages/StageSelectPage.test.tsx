@@ -7,7 +7,6 @@ import type {StageDefinition} from "@/features/stages/stageUtils";
 import StageSelectPage from "./StageSelectPage";
 
 const useStageDefinitionsMock = vi.fn();
-const loadStageProgressMock = vi.fn();
 
 vi.mock("./hooks/useStageDefinitions", () => ({
   useStageDefinitions: (args: unknown) => useStageDefinitionsMock(args),
@@ -23,15 +22,6 @@ vi.mock("@/pages/tests/test_page/hooks/useUserConfig", () => ({
       reiwa7: {maxCount: 20, sectionId: "reiwa7"},
     },
   }),
-}));
-
-vi.mock("@/features/stages/stageProgressStore", () => ({
-  loadStageProgress: () => loadStageProgressMock(),
-  buildStageUnlockMap: (stages: Array<{stageId: string}>) =>
-    stages.reduce<Record<string, boolean>>((acc, stage, index) => {
-      acc[stage.stageId] = index === 0;
-      return acc;
-    }, {}),
 }));
 
 const createStageDefinitions = (count: number): StageDefinition[] =>
@@ -62,7 +52,7 @@ describe("StageSelectPage", () => {
     }
     window.ResizeObserver = ResizeObserverStub;
 
-    loadStageProgressMock.mockReturnValue({});
+    localStorage.clear();
     useStageDefinitionsMock.mockReturnValue({
       status: "ready",
       stages: createStageDefinitions(3),
@@ -89,5 +79,41 @@ describe("StageSelectPage", () => {
     const wrapper = container.querySelector("div.max-w-6xl");
     expect(wrapper).toBeTruthy();
     expect(wrapper).toHaveClass("opacity-100");
+  });
+
+  test("ステージ1クリア済みならステージ2が選択できる", async () => {
+    const storageKey = "stage-progress:v1";
+    const stage1Id = "reiwa3-q20-stage1";
+    const progress = {
+      [stage1Id]: {
+        stageId: stage1Id,
+        bestAccuracy: 1,
+        cleared: true,
+        attempts: 1,
+        lastPlayedAt: 1,
+        lastAccuracy: 1,
+        hasAttempted: true,
+      },
+    };
+
+    localStorage.setItem(storageKey, JSON.stringify(progress));
+
+    render(
+      <MemoryRouter initialEntries={["/stages/reiwa3"]}>
+        <Routes>
+          <Route path="/stages/:year" element={<StageSelectPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    const stage2Button = await screen.findByRole("button", {
+      name: /Stage 02/i,
+    });
+
+    expect(stage2Button).toBeEnabled();
+    expect(stage2Button).not.toHaveAttribute("aria-disabled", "true");
+
+    const stageButtons = screen.getAllByRole("button", {name: /Stage/i});
+    expect(stageButtons).toHaveLength(3);
   });
 });

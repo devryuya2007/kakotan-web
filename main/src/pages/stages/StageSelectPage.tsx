@@ -70,6 +70,9 @@ export default function StageSelectPage() {
         syncProgress();
       }
     };
+    const handlePageShow = () => {
+      syncProgress();
+    };
     const handleStorage = (event: StorageEvent) => {
       if (event.key === "stage-progress:v1") {
         syncProgress();
@@ -78,11 +81,13 @@ export default function StageSelectPage() {
 
     window.addEventListener("focus", handleFocus);
     document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pageshow", handlePageShow);
     window.addEventListener("storage", handleStorage);
 
     return () => {
       window.removeEventListener("focus", handleFocus);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pageshow", handlePageShow);
       window.removeEventListener("storage", handleStorage);
     };
   }, [location.key]);
