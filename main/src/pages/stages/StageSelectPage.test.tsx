@@ -134,4 +134,51 @@ describe("StageSelectPage", () => {
       await screen.findByText("StageTest reiwa3 2"),
     ).toBeInTheDocument();
   });
+
+  test("進捗更新後にフォーカスするとステージ2が選択できる", async () => {
+    const user = userEvent.setup();
+    const storageKey = "stage-progress:v1";
+    const stage1Id = "reiwa3-q20-stage1";
+
+    render(
+      <MemoryRouter initialEntries={["/stages/reiwa3"]}>
+        <Routes>
+          <Route path="/stages/:year" element={<StageSelectPage />} />
+          <Route path="/stages/:year/:stageNumber" element={<StageTestProbe />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    const stage2Button = await screen.findByRole("button", {
+      name: /Stage 02/i,
+    });
+    expect(stage2Button).toBeDisabled();
+
+    const progress = {
+      [stage1Id]: {
+        stageId: stage1Id,
+        bestAccuracy: 1,
+        cleared: true,
+        attempts: 1,
+        lastPlayedAt: 1,
+        lastAccuracy: 1,
+        hasAttempted: true,
+      },
+    };
+    localStorage.setItem(storageKey, JSON.stringify(progress));
+
+    window.dispatchEvent(new Event("focus"));
+
+    await waitFor(() => {
+      expect(stage2Button).toBeEnabled();
+    });
+
+    await user.click(stage2Button);
+    const startButton = await screen.findByRole("button", {name: "Start"});
+    await user.click(startButton);
+
+    expect(
+      await screen.findByText("StageTest reiwa3 2"),
+    ).toBeInTheDocument();
+  });
 });
