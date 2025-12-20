@@ -27,6 +27,11 @@ vi.mock("@/pages/tests/test_page/hooks/useUserConfig", () => ({
 
 vi.mock("@/features/stages/stageProgressStore", () => ({
   loadStageProgress: () => loadStageProgressMock(),
+  buildStageUnlockMap: (stages: Array<{stageId: string}>) =>
+    stages.reduce<Record<string, boolean>>((acc, stage, index) => {
+      acc[stage.stageId] = index === 0;
+      return acc;
+    }, {}),
 }));
 
 const createStageDefinitions = (count: number): StageDefinition[] =>

@@ -4,29 +4,16 @@ import {useNavigate, useParams} from "react-router-dom";
 
 import {AppLayout} from "@/components/layout/AppLayout";
 import {Modal} from "@/components/modal/Modal";
-import {buildStageUnlockMap} from "@/features/stages/stageProgressStore";
-import type {StageProgressState} from "@/features/stages/stageProgressStore";
+import {
+  buildStageUnlockMap,
+  loadStageProgress,
+  type StageProgressState,
+} from "@/features/stages/stageProgressStore";
 import type {StageDefinition} from "@/features/stages/stageUtils";
 import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
 
 import {useStageDefinitions} from "./hooks/useStageDefinitions";
 import {YEAR_LABELS, isYearKey} from "./stageConstants";
-
-// localStorageから進捗を取得する（取得できない場合は空にする）
-const readStageProgressFromStorage = (): StageProgressState => {
-  if (typeof window === "undefined") {
-    return {};
-  }
-  try {
-    const raw = window.localStorage.getItem("stage-progress:v1");
-    if (!raw) return {};
-    const parsed = JSON.parse(raw) as StageProgressState;
-    return parsed ?? {};
-  } catch (error) {
-    console.warn("Failed to load stage progress", error);
-    return {};
-  }
-};
 
 export default function StageSelectPage() {
   const {year: yearParam} = useParams();
@@ -64,8 +51,11 @@ export default function StageSelectPage() {
     baseQuestionCount,
   });
 
-  // 進捗はlocalStorageだけを参照して計算する（stateには持たない）
-  const stageProgress = readStageProgressFromStorage();
+  // 進捗はマウント時にlocalStorageから読み込み、stateで更新する
+  const [stageProgress, setStageProgress] = useState<StageProgressState>({});
+  useEffect(() => {
+    setStageProgress(loadStageProgress());
+  }, []);
 
   // マップの幅に応じて列数を調整する（横に並べて足りなければ折り返す）
   useEffect(() => {
