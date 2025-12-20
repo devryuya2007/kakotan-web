@@ -107,7 +107,7 @@ describe("useStageDefinitions", () => {
 
   test("アンマウント後は途中の更新をスキップする", async () => {
     // cancelledフラグの分岐を通す
-    let resolvePromise: ((value: VocabEntry[]) => void) | null = null;
+    let resolvePromise: (value: VocabEntry[]) => void = () => {};
     const pending = new Promise<VocabEntry[]>((resolve) => {
       resolvePromise = resolve;
     });
@@ -117,7 +117,7 @@ describe("useStageDefinitions", () => {
     const {unmount} = render(<StageCountProbe baseQuestionCount={2} />);
     unmount();
 
-    resolvePromise?.([
+    resolvePromise([
       {phrase: "one", mean: "1"},
       {phrase: "two", mean: "2"},
     ]);
@@ -129,7 +129,7 @@ describe("useStageDefinitions", () => {
 
   test("アンマウント後のエラーも無視される", async () => {
     // rejectedでもcancelledなら更新しないことを確認する
-    let rejectPromise: ((reason?: unknown) => void) | null = null;
+    let rejectPromise: (reason?: unknown) => void = () => {};
     const pending = new Promise<VocabEntry[]>((_, reject) => {
       rejectPromise = reject;
     });
@@ -139,7 +139,7 @@ describe("useStageDefinitions", () => {
     const {unmount} = render(<StageCountProbe baseQuestionCount={2} />);
     unmount();
 
-    rejectPromise?.("load-error");
+    rejectPromise("load-error");
 
     await waitFor(() => {
       expect(true).toBe(true);

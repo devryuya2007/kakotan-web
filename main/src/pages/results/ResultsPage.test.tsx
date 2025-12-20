@@ -89,17 +89,19 @@ describe("ResultsPage", () => {
     vi.setSystemTime(new Date("2024-05-10T00:00:00Z"));
 
     let rafTime = 0;
-    rafMock = vi.fn((callback: FrameRequestCallback) => {
+    const raf = vi.fn((callback: FrameRequestCallback) => {
       rafTime += 500;
       return window.setTimeout(() => callback(rafTime), 0);
     });
-    const caf = (id: number) => {
+    rafMock = raf;
+    const caf: typeof window.cancelAnimationFrame = (id) => {
       window.clearTimeout(id);
     };
 
-    window.requestAnimationFrame = rafMock;
+    const rafTyped = raf as unknown as typeof window.requestAnimationFrame;
+    window.requestAnimationFrame = rafTyped;
     window.cancelAnimationFrame = caf;
-    globalThis.requestAnimationFrame = rafMock;
+    globalThis.requestAnimationFrame = rafTyped;
     globalThis.cancelAnimationFrame = caf;
 
     consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
@@ -123,8 +125,17 @@ describe("ResultsPage", () => {
       ctx: {save, restore},
     } as unknown as {ctx: {save: () => void; restore: () => void}};
 
-    lineGlowPlugin.beforeDatasetsDraw?.(chart as never);
-    lineGlowPlugin.afterDatasetsDraw?.(chart as never);
+    lineGlowPlugin.beforeDatasetsDraw?.(
+      chart as never,
+      {} as never,
+      {} as never,
+    );
+    lineGlowPlugin.afterDatasetsDraw?.(
+      chart as never,
+      {} as never,
+      {} as never,
+      {} as never,
+    );
 
     expect(save).toHaveBeenCalled();
     expect(restore).toHaveBeenCalled();
