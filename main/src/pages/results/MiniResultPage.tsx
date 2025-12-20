@@ -218,7 +218,7 @@ export default function MiniResultPage() {
               <h1 className='text-center text-xl font-bold tracking-tight text-[#f2c97d] sm:text-3xl'>
                 RESULT
               </h1>
-              <div className='absolute right-0 top-1/2 flex -translate-y-1/2 flex-col gap-2'>
+              <div className='absolute right-0 top-1/2 flex -translate-y-1/2 flex-row gap-2'>
                 <QuickStartButton
                   onClick={() => results()}
                   label='Results'
@@ -226,7 +226,7 @@ export default function MiniResultPage() {
                 />
                 <QuickStartButton
                   onClick={goStageList}
-                  label='ステージ一覧'
+                  label='Stage List'
                   className='!w-[6rem] !px-2 !py-1 text-[0.6rem] tracking-[0.2em]'
                 />
               </div>
