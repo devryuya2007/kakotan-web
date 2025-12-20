@@ -1,7 +1,7 @@
 import {renderHook, act} from "@testing-library/react";
 import {describe, expect, test, vi} from "vitest";
 
-import {usePrefersReducedMotion} from "./usePrefersReducedMotion";
+import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
 
 // ユーザーのアニメーション設定を正しく拾えるかを確認する
 describe("usePrefersReducedMotion", () => {

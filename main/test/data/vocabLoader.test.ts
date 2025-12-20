@@ -1,6 +1,6 @@
 import {describe, expect, test} from "vitest";
 
-import {buildQuestionsFromVocab, loadYearVocab, type VocabEntry, type YearKey} from "./vocabLoader";
+import {buildQuestionsFromVocab, loadYearVocab, type VocabEntry, type YearKey} from "@/data/vocabLoader";
 
 // 語彙ローダーの挙動を確認する
 describe("vocabLoader", () => {

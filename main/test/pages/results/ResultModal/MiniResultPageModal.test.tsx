@@ -1,8 +1,8 @@
 import {render, screen, fireEvent} from "@testing-library/react";
 import {beforeEach, describe, expect, test, vi} from "vitest";
 
-import type {WrongWordStat} from "../MiniResultPage";
-import MiniResultPageModal from "./MiniResultPageModal";
+import type {WrongWordStat} from "@/pages/results/MiniResultPage";
+import MiniResultPageModal from "@/pages/results/ResultModal/MiniResultPageModal";
 
 const navigateMock = vi.fn();
 

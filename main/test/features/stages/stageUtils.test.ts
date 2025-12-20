@@ -6,7 +6,7 @@ import {
   buildStageQuestions,
   calculateStageSummary,
   createStageDefinitions,
-} from "./stageUtils";
+} from "@/features/stages/stageUtils";
 
 // ステージ定義の計算ロジックをまとめて確認する
 describe("ステージ定義ユーティリティ", () => {

@@ -1,8 +1,8 @@
 import {render, screen} from "@testing-library/react";
 import {describe, expect, test} from "vitest";
 
-import {TestResultsContext} from "./TestReSultContext.shared";
-import {useTestResults} from "./useTestResults";
+import {TestResultsContext} from "@/pages/states/TestReSultContext.shared";
+import {useTestResults} from "@/pages/states/useTestResults";
 
 // useTestResultsのエラーと通常系を確認する
 describe("useTestResults", () => {

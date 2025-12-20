@@ -6,8 +6,8 @@ import {
   calculateLevelProgress,
   getExperiencePoints,
   requiredXpForLevel,
-} from "./scoring";
-import type {QuizQuestion} from "../../data/vocabLoader";
+} from "@/features/results/scoring";
+import type {QuizQuestion} from "@/data/vocabLoader";
 
 // スコア計算の基本ロジックを確認する
 describe("scoring", () => {

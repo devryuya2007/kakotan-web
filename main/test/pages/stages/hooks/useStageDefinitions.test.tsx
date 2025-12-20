@@ -3,7 +3,7 @@ import {beforeEach, describe, expect, test, vi} from "vitest";
 
 import type {VocabEntry} from "@/data/vocabLoader";
 
-import {useStageDefinitions} from "./useStageDefinitions";
+import {useStageDefinitions} from "@/pages/stages/hooks/useStageDefinitions";
 
 const loadYearVocabMock = vi.fn();
 

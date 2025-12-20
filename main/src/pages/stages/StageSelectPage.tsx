@@ -6,7 +6,6 @@ import {AppLayout} from '@/components/layout/AppLayout';
 import {Modal} from '@/components/modal/Modal';
 import {
   type StageProgressEntry,
-  type StageProgressState,
   buildStageUnlockMap,
   loadStageProgress,
 } from '@/features/stages/stageProgressStore';
@@ -15,46 +14,11 @@ import type {YearKey} from "@/data/vocabLoader";
 import {useUserConfig} from '@/pages/tests/test_page/hooks/useUserConfig';
 
 import {useStageDefinitions} from './hooks/useStageDefinitions';
+import {
+  initialStageSelectState,
+  stageSelectReducer,
+} from "./stageSelectState";
 import {YEAR_LABELS, isYearKey} from './stageConstants';
-
-interface StageSelectState {
-  selectedStage: StageDefinition | null;
-  isVisible: boolean;
-  mapWrapWidth: number;
-  stageProgress: StageProgressState;
-}
-
-type StageSelectAction =
-  | {type: "selectStage"; stage: StageDefinition | null}
-  | {type: "setVisible"; isVisible: boolean}
-  | {type: "setMapWrapWidth"; width: number}
-  | {type: "setStageProgress"; progress: StageProgressState};
-
-const initialStageSelectState: StageSelectState = {
-  selectedStage: null,
-  isVisible: false,
-  mapWrapWidth: 0,
-  stageProgress: {},
-};
-
-// ステージ選択画面のUI状態をまとめて扱うreducer
-function stageSelectReducer(
-  state: StageSelectState,
-  action: StageSelectAction,
-): StageSelectState {
-  switch (action.type) {
-    case "selectStage":
-      return {...state, selectedStage: action.stage};
-    case "setVisible":
-      return {...state, isVisible: action.isVisible};
-    case "setMapWrapWidth":
-      return {...state, mapWrapWidth: action.width};
-    case "setStageProgress":
-      return {...state, stageProgress: action.progress};
-    default:
-      return state;
-  }
-}
 
 export default function StageSelectPage() {
   const {year: yearParam} = useParams();

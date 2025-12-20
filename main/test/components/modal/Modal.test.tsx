@@ -1,7 +1,7 @@
 import {render, screen, fireEvent} from "@testing-library/react";
 import {describe, expect, test, vi} from "vitest";
 
-import {Modal} from "./Modal";
+import {Modal} from "@/components/modal/Modal";
 
 // モーダルの開閉とイベントを確認する
 describe("Modal", () => {

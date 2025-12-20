@@ -3,10 +3,10 @@ import {act} from "react";
 import {MemoryRouter} from "react-router-dom";
 import {afterEach, beforeEach, describe, expect, test, vi} from "vitest";
 
-import {TestResultsContext} from "../states/TestReSultContext.shared";
+import {TestResultsContext} from "@/pages/states/TestReSultContext.shared";
 import type {QuizQuestion} from "@/data/vocabLoader";
 
-import MiniResultPage from "./MiniResultPage";
+import MiniResultPage from "@/pages/results/MiniResultPage";
 
 const navigateMock = vi.fn();
 const calculateLevelProgressMock = vi.fn();

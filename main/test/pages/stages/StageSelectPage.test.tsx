@@ -6,7 +6,11 @@ import {afterEach, beforeEach, describe, expect, test, vi} from "vitest";
 
 import type {StageDefinition} from "@/features/stages/stageUtils";
 
-import StageSelectPage from "./StageSelectPage";
+import StageSelectPage from "@/pages/stages/StageSelectPage";
+import {
+  initialStageSelectState,
+  stageSelectReducer,
+} from "@/pages/stages/stageSelectState";
 
 const useStageDefinitionsMock = vi.fn();
 
@@ -84,6 +88,23 @@ describe("StageSelectPage", () => {
       normalizedQuestionCount: 20,
       error: null,
     });
+  });
+
+  test("未知のアクションでもstateが変わらない", () => {
+    // reducerのdefault分岐が安全にstateを返すかを確認する
+    const baseState = {
+      ...initialStageSelectState,
+      isVisible: true,
+    };
+
+    const result = stageSelectReducer(
+      baseState,
+      {type: "unknown"} as unknown as Parameters<
+        typeof stageSelectReducer
+      >[1],
+    );
+
+    expect(result).toBe(baseState);
   });
 
   test("ステージが全部表示されてisVisibleで見える状態になる", () => {

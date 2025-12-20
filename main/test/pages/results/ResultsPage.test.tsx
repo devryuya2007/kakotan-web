@@ -3,10 +3,10 @@ import {act} from "react";
 import {afterEach, beforeEach, describe, expect, test, vi} from "vitest";
 
 import type {QuizQuestion} from "@/data/vocabLoader";
-import type {SessionRecord} from "../states/TestReSultContext.shared";
+import type {SessionRecord} from "@/pages/states/TestReSultContext.shared";
 
-import ResultsPage from "./ResultsPage";
-import {lineGlowPlugin} from "./lineGlowPlugin";
+import ResultsPage from "@/pages/results/ResultsPage";
+import {lineGlowPlugin} from "@/pages/results/lineGlowPlugin";
 
 const useTestResultsMock = vi.fn();
 const useReiwa3VocabMock = vi.fn();
@@ -16,11 +16,11 @@ const useReiwa6VocabMock = vi.fn();
 const useReiwa7VocabMock = vi.fn();
 const navigateMock = vi.fn();
 
-vi.mock("../states/useTestResults", () => ({
+vi.mock("@/pages/states/useTestResults", () => ({
   useTestResults: () => useTestResultsMock(),
 }));
 
-vi.mock("../tests/test_page/hooks/useReiwaVocab", () => ({
+vi.mock("@/pages/tests/test_page/hooks/useReiwaVocab", () => ({
   useReiwa3Vocab: () => useReiwa3VocabMock(),
   useReiwa4Vocab: () => useReiwa4VocabMock(),
   useReiwa5Vocab: () => useReiwa5VocabMock(),
