@@ -211,11 +211,7 @@ export default function StageSelectPage() {
             : "translate-y-4 opacity-0"
         }`}
       >
-        <div className="flex w-full items-center justify-between">
-          <QuickStartButton
-            onClick={() => navigate("/")}
-            label="Home"
-          />
+        <div className="flex w-full items-center justify-end">
           <span className="text-xs uppercase tracking-[0.35em] text-white/40">
             {yearLabel}
           </span>
@@ -270,6 +266,13 @@ export default function StageSelectPage() {
             </div>
           )}
         </section>
+      </div>
+
+      <div className="fixed bottom-6 right-6 z-20">
+        <QuickStartButton
+          onClick={() => navigate("/")}
+          label="Home"
+        />
       </div>
 
       <Modal
