@@ -22,6 +22,15 @@ export interface StageUnlockState {
   [stageId: string]: boolean;
 }
 
+export interface StageStatusEntry {
+  isCleared: boolean;
+  isUnlocked: boolean;
+}
+
+export interface StageStatusMap {
+  [stageId: string]: StageStatusEntry;
+}
+
 // クリア条件（正答率90%）
 export const STAGE_CLEAR_THRESHOLD = 0.9;
 
@@ -164,17 +173,40 @@ export const buildStageUnlockMap = (
   stages: Array<{stageId: string}>,
   progress: StageProgressState,
 ): StageUnlockState => {
-  // 1つ目は常に解放、それ以降は直前がクリア済みかで判定する
+  const statusMap = buildStageStatusMap(stages, progress);
   const unlockState: StageUnlockState = {};
-  let isPrevCleared = true;
 
-  stages.forEach((stage, index) => {
-    const isUnlocked = index === 0 ? true : isPrevCleared;
-    unlockState[stage.stageId] = isUnlocked;
-
-    const entry = progress[stage.stageId];
-    isPrevCleared = Boolean(entry?.cleared);
+  stages.forEach((stage) => {
+    unlockState[stage.stageId] = Boolean(statusMap[stage.stageId]?.isUnlocked);
   });
 
   return unlockState;
+};
+
+// クリア済みの最後のステージから、クリア/解放/ロックを整理する
+export const buildStageStatusMap = (
+  stages: Array<{stageId: string}>,
+  progress: StageProgressState,
+): StageStatusMap => {
+  const statusMap: StageStatusMap = {};
+  let lastClearedIndex = -1;
+
+  stages.forEach((stage, index) => {
+    if (progress[stage.stageId]?.cleared) {
+      lastClearedIndex = Math.max(lastClearedIndex, index);
+    }
+  });
+
+  const nextUnlockedIndex = Math.min(
+    lastClearedIndex + 1,
+    Math.max(0, stages.length - 1),
+  );
+
+  stages.forEach((stage, index) => {
+    const isCleared = lastClearedIndex >= 0 && index <= lastClearedIndex;
+    const isUnlocked = index <= nextUnlockedIndex;
+    statusMap[stage.stageId] = {isCleared, isUnlocked};
+  });
+
+  return statusMap;
 };

@@ -1,6 +1,7 @@
 import {beforeEach, describe, expect, test, vi} from "vitest";
 
 import {
+  buildStageStatusMap,
   buildStageUnlockMap,
   loadStageProgress,
   recordStageAttempt,
@@ -117,6 +118,35 @@ describe("ステージ進捗ストア", () => {
     expect(unlockMap[stages[0].stageId]).toBe(true);
     expect(unlockMap[stages[1].stageId]).toBe(true);
     expect(unlockMap[stages[2].stageId]).toBe(false);
+  });
+
+  test("最後にクリアしたステージまでがクリア扱いになる", () => {
+    const stages = [
+      {stageId: "reiwa3-q20-stage1"},
+      {stageId: "reiwa3-q20-stage2"},
+      {stageId: "reiwa3-q20-stage3"},
+      {stageId: "reiwa3-q20-stage4"},
+    ];
+
+    // ステージ3だけクリア済みとして保存されている想定
+    const progress: StageProgressState = {
+      [stages[2].stageId]: {
+        stageId: stages[2].stageId,
+        bestAccuracy: 1,
+        cleared: true,
+        attempts: 1,
+        lastPlayedAt: 1,
+        lastAccuracy: 1,
+        hasAttempted: true,
+      },
+    };
+
+    const statusMap = buildStageStatusMap(stages, progress);
+    expect(statusMap[stages[0].stageId]?.isCleared).toBe(true);
+    expect(statusMap[stages[1].stageId]?.isCleared).toBe(true);
+    expect(statusMap[stages[2].stageId]?.isCleared).toBe(true);
+    expect(statusMap[stages[3].stageId]?.isCleared).toBe(false);
+    expect(statusMap[stages[3].stageId]?.isUnlocked).toBe(true);
   });
 
   test("windowが無いときは空の進捗を返す", () => {

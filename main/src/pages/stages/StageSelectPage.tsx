@@ -6,7 +6,7 @@ import {AppLayout} from "@/components/layout/AppLayout";
 import {Modal} from "@/components/modal/Modal";
 import {
   type StageProgressEntry,
-  buildStageUnlockMap,
+  buildStageStatusMap,
   loadStageProgress,
 } from "@/features/stages/stageProgressStore";
 import type {StageDefinition} from "@/features/stages/stageUtils";
@@ -129,18 +129,13 @@ export default function StageSelectPage() {
   }, []);
 
   // 次に挑戦すべきステージを探して、駒の位置を決める
-  const nextPlayableIndex = stages.findIndex((stage, index) => {
-    if (index === 0) {
-      return !state.stageProgress[stage.stageId]?.cleared;
-    }
-    const prevStage = stages[index - 1];
-    const prevCleared = Boolean(
-      state.stageProgress[prevStage.stageId]?.cleared,
-    );
-    const currentCleared = Boolean(
-      state.stageProgress[stage.stageId]?.cleared,
-    );
-    return prevCleared && !currentCleared;
+  const stageStatusMap = useMemo(
+    () => buildStageStatusMap(stages, state.stageProgress),
+    [stages, state.stageProgress],
+  );
+  const nextPlayableIndex = stages.findIndex((stage) => {
+    const status = stageStatusMap[stage.stageId];
+    return Boolean(status?.isUnlocked && !status?.isCleared);
   });
   const activeStageIndex =
     stages.length === 0
@@ -179,11 +174,6 @@ export default function StageSelectPage() {
   );
 
   // 進捗をもとに、どのステージが解放されているかを計算する
-  const unlockMap = useMemo(
-    () => buildStageUnlockMap(stages, state.stageProgress),
-    [stages, state.stageProgress],
-  );
-
   const selectedStageProgress = state.selectedStage
     ? state.stageProgress[state.selectedStage.stageId]
     : null;
@@ -228,11 +218,10 @@ export default function StageSelectPage() {
               >
                 {/* ステージタイルを横並びで折り返し配置する */}
                 {stages.map((stage, index) => {
-                  const stageProgressEntry =
-                    state.stageProgress[stage.stageId];
-                  const isCleared = Boolean(stageProgressEntry?.cleared);
+                  const stageStatus = stageStatusMap[stage.stageId];
+                  const isCleared = Boolean(stageStatus?.isCleared);
                   // 進捗とステージ順から解放状態を決める
-                  const isUnlocked = Boolean(unlockMap[stage.stageId]);
+                  const isUnlocked = Boolean(stageStatus?.isUnlocked);
                   const position = flowLayout.positions[index];
                   const isActive = index === activeStageIndex;
 
