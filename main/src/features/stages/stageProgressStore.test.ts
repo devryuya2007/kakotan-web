@@ -1,10 +1,12 @@
 import {beforeEach, describe, expect, test} from "vitest";
 
 import {
+  buildStageUnlockMap,
   loadStageProgress,
   recordStageAttempt,
   recordStageResult,
 } from "./stageProgressStore";
+import type {StageProgressState} from "./stageProgressStore";
 
 // ステージ進捗の保存と補完をテストする
 describe("ステージ進捗ストア", () => {
@@ -88,5 +90,31 @@ describe("ステージ進捗ストア", () => {
     expect(entry?.lastPlayedAt).toBe(0);
     expect(entry?.lastAccuracy).toBe(0);
     expect(entry?.hasAttempted).toBe(false);
+  });
+
+  test("進捗から解放状態が順番通りに計算される", () => {
+    const stages = [
+      {stageId: "reiwa3-q20-stage1"},
+      {stageId: "reiwa3-q20-stage2"},
+      {stageId: "reiwa3-q20-stage3"},
+    ];
+
+    // ステージ1だけクリア済みにする
+    const progress: StageProgressState = {
+      [stages[0].stageId]: {
+        stageId: stages[0].stageId,
+        bestAccuracy: 1,
+        cleared: true,
+        attempts: 1,
+        lastPlayedAt: 1,
+        lastAccuracy: 1,
+        hasAttempted: true,
+      },
+    };
+
+    const unlockMap = buildStageUnlockMap(stages, progress);
+    expect(unlockMap[stages[0].stageId]).toBe(true);
+    expect(unlockMap[stages[1].stageId]).toBe(true);
+    expect(unlockMap[stages[2].stageId]).toBe(false);
   });
 });

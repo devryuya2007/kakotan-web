@@ -17,6 +17,11 @@ export interface StageProgressState {
   [stageId: string]: StageProgressEntry;
 }
 
+// ステージIDごとに解放状態を持つ形式
+export interface StageUnlockState {
+  [stageId: string]: boolean;
+}
+
 // クリア条件（正答率90%）
 export const STAGE_CLEAR_THRESHOLD = 0.9;
 
@@ -152,4 +157,24 @@ export const recordStageResult = ({
 
   saveStageProgress(nextState);
   return nextState;
+};
+
+// 進捗とステージ一覧から、どのステージが解放されているかを計算する
+export const buildStageUnlockMap = (
+  stages: Array<{stageId: string}>,
+  progress: StageProgressState,
+): StageUnlockState => {
+  // 1つ目は常に解放、それ以降は直前がクリア済みかで判定する
+  const unlockState: StageUnlockState = {};
+  let isPrevCleared = true;
+
+  stages.forEach((stage, index) => {
+    const isUnlocked = index === 0 ? true : isPrevCleared;
+    unlockState[stage.stageId] = isUnlocked;
+
+    const entry = progress[stage.stageId];
+    isPrevCleared = Boolean(entry?.cleared);
+  });
+
+  return unlockState;
 };

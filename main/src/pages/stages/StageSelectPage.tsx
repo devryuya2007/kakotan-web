@@ -4,7 +4,10 @@ import {useNavigate, useParams} from "react-router-dom";
 
 import {AppLayout} from "@/components/layout/AppLayout";
 import {Modal} from "@/components/modal/Modal";
-import {loadStageProgress} from "@/features/stages/stageProgressStore";
+import {
+  buildStageUnlockMap,
+  loadStageProgress,
+} from "@/features/stages/stageProgressStore";
 import type {StageDefinition} from "@/features/stages/stageUtils";
 import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
 
@@ -126,6 +129,12 @@ export default function StageSelectPage() {
     [stages.length, fittedColumns, tileWidth, tileHeight, tileIconHeight, tileGap],
   );
 
+  // 進捗をもとに、どのステージが解放されているかを計算する
+  const unlockMap = useMemo(
+    () => buildStageUnlockMap(stages, stageProgress),
+    [stages, stageProgress],
+  );
+
   // ステージ開始ボタン
   const handleStartStage = () => {
     if (!selectedStage) return;
@@ -167,11 +176,8 @@ export default function StageSelectPage() {
                 {stages.map((stage, index) => {
                   const stageProgressEntry = stageProgress[stage.stageId];
                   const isCleared = Boolean(stageProgressEntry?.cleared);
-                  const prevStage = stages[index - 1];
-                    // 1つ前のステージがクリア済みなら解放、それ以外はロック
-                    const isUnlocked =
-                      index === 0 ||
-                      Boolean(prevStage && stageProgress[prevStage.stageId]?.cleared);
+                  // 進捗とステージ順から解放状態を決める
+                  const isUnlocked = Boolean(unlockMap[stage.stageId]);
                   const position = flowLayout.positions[index];
                   if (!position) {
                     return null;
