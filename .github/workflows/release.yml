@@ -1,0 +1,139 @@
+# リリース自動化ワークフロー
+# v* パターンのタグがプッシュされたら自動でリリースを作成する
+name: Create Release
+
+on:
+  push:
+    tags:
+      - "v*"  # v1.0.0, v2.3.1 などのタグにマッチ
+
+# GitHub Releaseの作成に必要な権限
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # リポジトリのチェックアウト（全履歴を取得してタグ比較を可能にする）
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          # 全履歴を取得（前回タグとの差分を取るため）
+          fetch-depth: 0
+
+      # Node.js 20のセットアップ
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: main/package-lock.json
+
+      # 依存パッケージのインストール
+      - name: Install dependencies
+        run: |
+          cd main
+          npm ci
+
+      # プロジェクトのビルド
+      - name: Build project
+        run: |
+          cd main
+          npm run build
+
+      # ビルド成果物をZIPファイルに圧縮
+      - name: Create ZIP file
+        run: |
+          cd main/dist
+          zip -r ../../kakotan-web-${{ github.ref_name }}.zip .
+          cd ../..
+
+      # カテゴリ分けされたリリースノートを自動生成
+      - name: Generate categorized release notes
+        id: release_notes
+        run: |
+          # 前回のタグを取得（存在しない場合は空文字）
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ \
+            2>/dev/null || echo "")
+
+          if [ -z "$PREVIOUS_TAG" ]; then
+            # 初回リリースの場合
+            NOTES="## 🎉 初回リリース\n\n"
+            NOTES+="共通テスト過去問特化の英単語アプリ"
+          else
+            # 2回目以降のリリース：前回タグからの変更内容を抽出
+            NOTES="## 📝 変更内容 "
+            NOTES+="($PREVIOUS_TAG → ${{ github.ref_name }})\n\n"
+
+            # feat: で始まるコミットを新機能として抽出
+            FEATURES=$(git log ${PREVIOUS_TAG}..HEAD \
+              --pretty=format:"%s" --grep="^feat" --no-merges)
+            if [ -n "$FEATURES" ]; then
+              NOTES+="### ✨ 新機能\n"
+              echo "$FEATURES" | while read line; do
+                NOTES+="- $line\n"
+              done
+              NOTES+="\n"
+            fi
+
+            # fix: で始まるコミットをバグ修正として抽出
+            FIXES=$(git log ${PREVIOUS_TAG}..HEAD \
+              --pretty=format:"%s" --grep="^fix" --no-merges)
+            if [ -n "$FIXES" ]; then
+              NOTES+="### 🐛 バグ修正\n"
+              echo "$FIXES" | while read line; do
+                NOTES+="- $line\n"
+              done
+              NOTES+="\n"
+            fi
+
+            # chore, refactor, docs, test で始まるコミットを
+            # その他の変更として抽出
+            OTHERS=$(git log ${PREVIOUS_TAG}..HEAD \
+              --pretty=format:"%s" \
+              --grep="^chore\|^refactor\|^docs\|^test" --no-merges)
+            if [ -n "$OTHERS" ]; then
+              NOTES+="### 🔧 その他の変更\n"
+              echo "$OTHERS" | while read line; do
+                NOTES+="- $line\n"
+              done
+            fi
+          fi
+
+          # 生成したノートをGitHub Outputに保存
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      # GitHub Releaseを作成して公開
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          body: |
+            ${{ steps.release_notes.outputs.notes }}
+
+            ---
+
+            ## 📦 ダウンロード
+
+            下記のZIPファイルをダウンロードして展開後、
+            Webサーバーで公開してください。
+
+            ## 🚀 使い方
+
+            ```bash
+            unzip kakotan-web-${{ github.ref_name }}.zip -d kakotan-web
+            cd kakotan-web
+            # Webサーバーで公開
+            ```
+          files: |
+            kakotan-web-${{ github.ref_name }}.zip
+          draft: false
+          prerelease: false
+          # GitHub標準のリリースノートも併用
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
