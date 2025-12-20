@@ -1,34 +1,30 @@
-import react from '@vitejs/plugin-react';
-import {URL, fileURLToPath} from 'node:url';
-import {type UserConfig, defineConfig} from 'vite';
-import type {UserConfig as VitestUserConfig} from 'vitest/config';
-
-type ExtendedViteConfig = UserConfig & {
-  test?: VitestUserConfig['test'];
-};
+import react from "@vitejs/plugin-react";
+import {URL, fileURLToPath} from "node:url";
+import {defineConfig} from "vitest/config";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
+    // 依存内でReactが二重に解決されるのを防ぐ
+    dedupe: ["react", "react-dom"],
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
   test: {
-    include: ['tests/**/*.test.{ts,tsx}', 'src/**/*.test.{ts,tsx}'],
-    environment: 'jsdom',
+    include: ["test/**/*.test.{ts,tsx}", "src/**/*.test.{ts,tsx}"],
+    environment: "jsdom",
     globals: true,
-    setupFiles: './src/setupTests.ts',
+    setupFiles: "./src/setupTests.ts",
     css: true,
-    pool: 'forks',
-    poolOptions: {
-      forks: {
-        singleFork: true,
-      },
+    pool: "forks",
+    coverage: {
+      provider: "v8",
+      exclude: ["src/assets/**"],
     },
     typecheck: {
-      tsconfig: './tsconfig.vitest.json',
+      tsconfig: "./tsconfig.vitest.json",
     },
   },
-} as ExtendedViteConfig);
+});

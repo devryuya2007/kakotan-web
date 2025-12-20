@@ -4,9 +4,10 @@ import {BackgroundGlow} from './BackgroundGlow';
 
 interface AppLayoutProps {
   children: ReactNode;
+  mainClassName?: string;
 }
 
-export function AppLayout({children}: AppLayoutProps) {
+export function AppLayout({children, mainClassName}: AppLayoutProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export function AppLayout({children}: AppLayoutProps) {
       <main
         className={`relative z-10 m-auto flex h-dvh w-full transform-gpu justify-center px-4 transition-all duration-500 ease-out sm:px-8 ${
           isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-        }`}
+        } ${mainClassName ?? ""}`}
       >
         {children}
       </main>

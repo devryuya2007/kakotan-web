@@ -5,7 +5,7 @@ import {vi} from 'vitest';
 
 import {PromoCard} from '@/components/promo/PromoCard';
 
-import HomePage from './HomePage';
+import HomePage from "@/pages/home/HomePage";
 
 const mockNavigate = vi.fn();
 

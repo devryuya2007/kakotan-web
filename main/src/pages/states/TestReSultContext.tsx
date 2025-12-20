@@ -79,6 +79,8 @@ const loadResults = (testId: string) => {
               correctCount: raw.correctCount ?? 0,
               incorrectCount: raw.incorrectCount ?? 0,
               gainedXp: raw.gainedXp ?? 0,
+              stageId:
+                typeof raw.stageId === 'string' ? raw.stageId : undefined,
             }),
           )
         : [],

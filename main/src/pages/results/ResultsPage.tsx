@@ -1,12 +1,6 @@
 import {AppLayout} from '../../components/layout/AppLayout';
 import {useTestResults} from '../states/useTestResults';
-import {
-  useReiwa3Vocab,
-  useReiwa4Vocab,
-  useReiwa5Vocab,
-  useReiwa6Vocab,
-  useReiwa7Vocab,
-} from '../tests/test_page/hooks/useReiwaVocab';
+import {useAllYearVocab} from "@/hooks/useAllYearVocab";
 
 import {useEffect, useMemo, useRef, useState} from 'react';
 
@@ -19,7 +13,6 @@ import {
   Legend,
   LineElement,
   LinearScale,
-  type Plugin,
   PointElement,
   Tooltip,
 } from 'chart.js';
@@ -31,20 +24,7 @@ import TimeElapsedIcon from '@/assets/iconSvg/時間経過のアイコン .svg';
 import AchievementIcon from '@/assets/iconSvg/業績アイコン.svg';
 import StreakIcon from '@/assets/iconSvg/火の玉のアイコン.svg';
 import {QuickStartButton} from '@/components/buttons/QuickStartButton';
-
-const lineGlowPlugin: Plugin<'line'> = {
-  id: 'line-glow',
-  beforeDatasetsDraw: (chart) => {
-    const {ctx} = chart;
-    ctx.save();
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = 'rgba(242, 201, 125, 0.35)';
-    ctx.globalAlpha = 1;
-  },
-  afterDatasetsDraw: (chart) => {
-    chart.ctx.restore();
-  },
-};
+import {lineGlowPlugin} from './lineGlowPlugin';
 
 Chart.register(
   CategoryScale,
@@ -59,44 +39,17 @@ Chart.register(
 
 export default function ResultsPage() {
   const {sessionHistory, solvedPhrases} = useTestResults();
-  const {questions: reiwa3Questions, status: statusReiwa3} = useReiwa3Vocab();
-  const {questions: reiwa4Questions, status: statusReiwa4} = useReiwa4Vocab();
-  const {questions: reiwa5Questions, status: statusReiwa5} = useReiwa5Vocab();
-  const {questions: reiwa6Questions, status: statusReiwa6} = useReiwa6Vocab();
-  const {questions: reiwa7Questions, status: statusReiwa7} = useReiwa7Vocab();
-
-  const vocabReady = [
-    statusReiwa3,
-    statusReiwa4,
-    statusReiwa5,
-    statusReiwa6,
-    statusReiwa7,
-  ].every((status) => status === 'ready');
-
-  console.log('[ResultsPage] vocabReady:', vocabReady, {
-    statusReiwa3,
-    statusReiwa4,
-    statusReiwa5,
-    statusReiwa6,
-    statusReiwa7,
-  });
+  const {status: vocabStatus, questionsByYear} = useAllYearVocab();
+  const vocabReady = vocabStatus === "ready";
 
   const allQuestions = useMemo(() => {
     if (!vocabReady) return [];
-    return [
-      ...reiwa3Questions,
-      ...reiwa4Questions,
-      ...reiwa5Questions,
-      ...reiwa6Questions,
-      ...reiwa7Questions,
-    ].map((question) => question.phrase);
+    return Object.values(questionsByYear)
+      .flat()
+      .map((question) => question.phrase);
   }, [
     vocabReady,
-    reiwa3Questions,
-    reiwa4Questions,
-    reiwa5Questions,
-    reiwa6Questions,
-    reiwa7Questions,
+    questionsByYear,
   ]);
 
   const correctQuestions = useMemo(
@@ -104,11 +57,6 @@ export default function ResultsPage() {
     [solvedPhrases],
   );
 
-  console.log('[ResultsPage] allQuestions length:', allQuestions.length);
-  console.log(
-    '[ResultsPage] correctQuestions length:',
-    correctQuestions.length,
-  );
 
   const allQuestionsSet = useMemo(() => new Set(allQuestions), [allQuestions]);
   const correctQuestionsSet = useMemo(
@@ -130,7 +78,6 @@ export default function ResultsPage() {
     return Math.round((solvedCount / totalCount) * 100);
   }, [vocabReady, allQuestionsSet, correctQuestionsSet]);
 
-  console.log('[ResultsPage] progress value:', progress);
 
   const progressValue = progress ?? 0;
   const progressRatio = progressValue / 100;
@@ -316,16 +263,12 @@ export default function ResultsPage() {
   };
 
   const dailySeries = computeDailyStudySeries(sessionHistory);
-  const maxDailyMinutes =
-    dailySeries.data.length > 0 ? Math.max(...dailySeries.data) : 0;
+  const maxDailyMinutes = Math.max(...dailySeries.data);
   const yAxisMax = Math.max(60, Math.ceil(maxDailyMinutes * 1.2));
-  const averageDailyMinutes =
-    dailySeries.data.length > 0
-      ? Math.round(
-          dailySeries.data.reduce((sum, value) => sum + value, 0) /
-            dailySeries.data.length,
-        )
-      : 0;
+  const averageDailyMinutes = Math.round(
+    dailySeries.data.reduce((sum, value) => sum + value, 0) /
+      dailySeries.data.length,
+  );
   const solvedWords = correctQuestionsSet.size;
   const totalWords = allQuestionsSet.size;
   const formattedTotalStudyTime =

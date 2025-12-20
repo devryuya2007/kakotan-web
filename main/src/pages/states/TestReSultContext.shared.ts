@@ -10,6 +10,7 @@ export interface SessionRecord {
   correctCount: number;
   incorrectCount: number;
   gainedXp: number;
+  stageId?: string;
 }
 
 export type TestResultsContextValue = {

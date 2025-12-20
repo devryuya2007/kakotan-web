@@ -1,26 +1,16 @@
-import reiwa3Vocab from '../assets/vocab/reiwa3_7/reiwa3.unigram.json';
-import reiwa4Vocab from '../assets/vocab/reiwa3_7/reiwa4.unigram.json';
-import reiwa5Vocab from '../assets/vocab/reiwa3_7/reiwa5.unigram.json';
-import reiwa6Vocab from '../assets/vocab/reiwa3_7/reiwa6.unigram.json';
-import reiwa7Vocab from '../assets/vocab/reiwa3_7/reiwa7.unigram.json';
+import {yearRegistry, type YearKey} from "./yearRegistry";
+import type {VocabEntry} from "./vocabTypes";
 
-export type YearKey = 'reiwa3' | 'reiwa4' | 'reiwa5' | 'reiwa6' | 'reiwa7';
+export type {VocabEntry} from "./vocabTypes";
+export type {YearKey} from "./yearRegistry";
 
-export type VocabEntry = {
-  phrase: string;
-  mean?: string;
-  onePhrase?: string;
-  onePhraseJa?: string;
-  count?: number;
-};
-
-const vocabByYear: Record<YearKey, VocabEntry[]> = {
-  reiwa3: reiwa3Vocab as VocabEntry[],
-  reiwa4: reiwa4Vocab as VocabEntry[],
-  reiwa5: reiwa5Vocab as VocabEntry[],
-  reiwa6: reiwa6Vocab as VocabEntry[],
-  reiwa7: reiwa7Vocab as VocabEntry[],
-};
+const vocabByYear = yearRegistry.reduce(
+  (accumulator, entry) => {
+    accumulator[entry.key] = entry.vocab as VocabEntry[];
+    return accumulator;
+  },
+  {} as Record<YearKey, VocabEntry[]>,
+);
 
 export async function loadYearVocab(year: YearKey): Promise<VocabEntry[]> {
   const vocab = vocabByYear[year];
