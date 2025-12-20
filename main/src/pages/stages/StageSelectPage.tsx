@@ -55,7 +55,36 @@ export default function StageSelectPage() {
   // 進捗はマウント時にlocalStorageから読み込み、stateで更新する
   const [stageProgress, setStageProgress] = useState<StageProgressState>({});
   useEffect(() => {
-    setStageProgress(loadStageProgress());
+    const syncProgress = () => {
+      setStageProgress(loadStageProgress());
+    };
+
+    // 画面表示時に必ず最新の進捗を読み込む
+    syncProgress();
+
+    const handleFocus = () => {
+      syncProgress();
+    };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        syncProgress();
+      }
+    };
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === "stage-progress:v1") {
+        syncProgress();
+      }
+    };
+
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("storage", handleStorage);
+    };
   }, [location.key]);
 
   // マップの幅に応じて列数を調整する（横に並べて足りなければ折り返す）
