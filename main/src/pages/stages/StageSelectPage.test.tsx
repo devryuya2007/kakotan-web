@@ -181,4 +181,40 @@ describe("StageSelectPage", () => {
       await screen.findByText("StageTest reiwa3 2"),
     ).toBeInTheDocument();
   });
+
+  test("過去に挑戦済みなら前回の正答率がモーダルに表示される", async () => {
+    const user = userEvent.setup();
+    const storageKey = "stage-progress:v1";
+    const stage1Id = "reiwa3-q20-stage1";
+    const progress = {
+      [stage1Id]: {
+        stageId: stage1Id,
+        bestAccuracy: 0.95,
+        cleared: true,
+        attempts: 1,
+        lastPlayedAt: 1,
+        lastAccuracy: 0.95,
+        hasAttempted: true,
+      },
+    };
+
+    localStorage.setItem(storageKey, JSON.stringify(progress));
+
+    render(
+      <MemoryRouter initialEntries={["/stages/reiwa3"]}>
+        <Routes>
+          <Route path="/stages/:year" element={<StageSelectPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    const stage1Button = await screen.findByRole("button", {
+      name: /Stage 01/i,
+    });
+    await user.click(stage1Button);
+
+    expect(
+      await screen.findByText(/前回の正答率: 95%/i),
+    ).toBeInTheDocument();
+  });
 });

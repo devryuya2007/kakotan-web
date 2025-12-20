@@ -7,6 +7,7 @@ import {Modal} from "@/components/modal/Modal";
 import {
   buildStageUnlockMap,
   loadStageProgress,
+  type StageProgressEntry,
   type StageProgressState,
 } from "@/features/stages/stageProgressStore";
 import type {StageDefinition} from "@/features/stages/stageUtils";
@@ -169,6 +170,10 @@ export default function StageSelectPage() {
     [stages, stageProgress],
   );
 
+  const selectedStageProgress = selectedStage
+    ? stageProgress[selectedStage.stageId]
+    : null;
+
   // ステージ開始ボタン
   const handleStartStage = () => {
     if (!selectedStage) return;
@@ -257,6 +262,7 @@ export default function StageSelectPage() {
           selectedStage ? (
             <StageStartModal
               stage={selectedStage}
+              progress={selectedStageProgress}
               accent={primaryColor}
               accentSoft={primaryDeep}
               onStart={handleStartStage}
@@ -509,6 +515,7 @@ function StageIcon({
 
 interface StageStartModalProps {
   stage: StageDefinition;
+  progress: StageProgressEntry | null;
   accent: string;
   accentSoft: string;
   onStart: () => void;
@@ -516,10 +523,15 @@ interface StageStartModalProps {
 
 function StageStartModal({
   stage,
+  progress,
   accent,
   accentSoft,
   onStart,
 }: StageStartModalProps) {
+  const hasAttempted = Boolean(progress?.hasAttempted);
+  const lastAccuracy = hasAttempted
+    ? Math.round((progress?.lastAccuracy ?? 0) * 100)
+    : null;
   // スタート前の説明をシンプルにまとめる
   return (
     <div className="space-y-4 text-left">
@@ -529,6 +541,9 @@ function StageStartModal({
       <h1 className="text-xl font-semibold text-white">{stage.title}</h1>
       <p className="text-sm text-white/70">
         出題数は {stage.questionCount} 問。正答率90%以上でクリア扱いになるよ。
+      </p>
+      <p className="text-sm text-white/60">
+        前回の正答率: {hasAttempted && lastAccuracy !== null ? `${lastAccuracy}%` : "未挑戦"}
       </p>
       <div className="flex items-center gap-3">
         <div
