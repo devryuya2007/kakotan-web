@@ -5,6 +5,7 @@ import {MemoryRouter, Route, Routes, useParams} from "react-router-dom";
 import {afterEach, beforeEach, describe, expect, test, vi} from "vitest";
 
 import type {StageDefinition} from "@/features/stages/stageUtils";
+import type {StageProgressState} from "@/features/stages/stageProgressStore";
 
 import StageSelectPage from "@/pages/stages/StageSelectPage";
 import {
@@ -14,7 +15,7 @@ import {
 
 const useStageDefinitionsMock = vi.fn();
 
-vi.mock("./hooks/useStageDefinitions", () => ({
+vi.mock("@/pages/stages/hooks/useStageDefinitions", () => ({
   useStageDefinitions: (args: unknown) => useStageDefinitionsMock(args),
 }));
 
@@ -105,6 +106,62 @@ describe("StageSelectPage", () => {
     );
 
     expect(result).toBe(baseState);
+  });
+
+  test("selectStageで選択中ステージが更新される", () => {
+    const baseState = {...initialStageSelectState};
+    const targetStage = createStageDefinitions(1)[0];
+
+    const result = stageSelectReducer(baseState, {
+      type: "selectStage",
+      stage: targetStage,
+    });
+
+    expect(result.selectedStage).toEqual(targetStage);
+  });
+
+  test("setVisibleで表示状態が更新される", () => {
+    const baseState = {...initialStageSelectState};
+
+    const result = stageSelectReducer(baseState, {
+      type: "setVisible",
+      isVisible: true,
+    });
+
+    expect(result.isVisible).toBe(true);
+  });
+
+  test("setMapWrapWidthで幅が更新される", () => {
+    const baseState = {...initialStageSelectState};
+
+    const result = stageSelectReducer(baseState, {
+      type: "setMapWrapWidth",
+      width: 320,
+    });
+
+    expect(result.mapWrapWidth).toBe(320);
+  });
+
+  test("setStageProgressで進捗が更新される", () => {
+    const baseState = {...initialStageSelectState};
+    const progress: StageProgressState = {
+      "reiwa3-q20-stage1": {
+        stageId: "reiwa3-q20-stage1",
+        bestAccuracy: 1,
+        cleared: true,
+        attempts: 1,
+        lastPlayedAt: 1,
+        lastAccuracy: 1,
+        hasAttempted: true,
+      },
+    };
+
+    const result = stageSelectReducer(baseState, {
+      type: "setStageProgress",
+      progress,
+    });
+
+    expect(result.stageProgress).toEqual(progress);
   });
 
   test("ステージが全部表示されてisVisibleで見える状態になる", () => {

@@ -83,6 +83,7 @@ const setVocabState = (status: string, questions: QuizQuestion[]) => {
 describe("ResultsPage", () => {
   let consoleSpy: ReturnType<typeof vi.spyOn> | null = null;
   let rafMock: ReturnType<typeof vi.fn> | null = null;
+  let cafMock: ReturnType<typeof vi.fn> | null = null;
 
   beforeEach(() => {
     vi.useFakeTimers();
@@ -93,14 +94,18 @@ describe("ResultsPage", () => {
       rafTime += 500;
       return window.setTimeout(() => callback(rafTime), 0);
     });
-    const caf = (id: number) => {
+    cafMock = vi.fn((id: number) => {
       window.clearTimeout(id);
-    };
+    });
 
-    window.requestAnimationFrame = rafMock;
-    window.cancelAnimationFrame = caf;
-    globalThis.requestAnimationFrame = rafMock;
-    globalThis.cancelAnimationFrame = caf;
+    vi.stubGlobal(
+      "requestAnimationFrame",
+      rafMock as unknown as typeof window.requestAnimationFrame,
+    );
+    vi.stubGlobal(
+      "cancelAnimationFrame",
+      cafMock as unknown as typeof window.cancelAnimationFrame,
+    );
 
     consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
@@ -112,6 +117,7 @@ describe("ResultsPage", () => {
     consoleSpy?.mockRestore();
     consoleSpy = null;
     rafMock = null;
+    cafMock = null;
     vi.clearAllMocks();
   });
 
@@ -123,8 +129,17 @@ describe("ResultsPage", () => {
       ctx: {save, restore},
     } as unknown as {ctx: {save: () => void; restore: () => void}};
 
-    lineGlowPlugin.beforeDatasetsDraw?.(chart as never);
-    lineGlowPlugin.afterDatasetsDraw?.(chart as never);
+    lineGlowPlugin.beforeDatasetsDraw?.(
+      chart as never,
+      {} as never,
+      {} as never,
+    );
+    lineGlowPlugin.afterDatasetsDraw?.(
+      chart as never,
+      {} as never,
+      {} as never,
+      {} as never,
+    );
 
     expect(save).toHaveBeenCalled();
     expect(restore).toHaveBeenCalled();

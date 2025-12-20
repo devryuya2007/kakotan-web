@@ -107,9 +107,9 @@ describe("useStageDefinitions", () => {
 
   test("アンマウント後は途中の更新をスキップする", async () => {
     // cancelledフラグの分岐を通す
-    let resolvePromise: ((value: VocabEntry[]) => void) | null = null;
+    const resolveHolder: {current?: (value: VocabEntry[]) => void} = {};
     const pending = new Promise<VocabEntry[]>((resolve) => {
-      resolvePromise = resolve;
+      resolveHolder.current = resolve;
     });
 
     loadYearVocabMock.mockReturnValueOnce(pending);
@@ -117,7 +117,7 @@ describe("useStageDefinitions", () => {
     const {unmount} = render(<StageCountProbe baseQuestionCount={2} />);
     unmount();
 
-    resolvePromise?.([
+    resolveHolder.current?.([
       {phrase: "one", mean: "1"},
       {phrase: "two", mean: "2"},
     ]);
@@ -129,9 +129,9 @@ describe("useStageDefinitions", () => {
 
   test("アンマウント後のエラーも無視される", async () => {
     // rejectedでもcancelledなら更新しないことを確認する
-    let rejectPromise: ((reason?: unknown) => void) | null = null;
+    const rejectHolder: {current?: (reason?: unknown) => void} = {};
     const pending = new Promise<VocabEntry[]>((_, reject) => {
-      rejectPromise = reject;
+      rejectHolder.current = reject;
     });
 
     loadYearVocabMock.mockReturnValueOnce(pending);
@@ -139,7 +139,7 @@ describe("useStageDefinitions", () => {
     const {unmount} = render(<StageCountProbe baseQuestionCount={2} />);
     unmount();
 
-    rejectPromise?.("load-error");
+    rejectHolder.current?.("load-error");
 
     await waitFor(() => {
       expect(true).toBe(true);

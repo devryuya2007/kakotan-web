@@ -1,59 +1,21 @@
-import {useEffect, useId, useMemo, useReducer, useRef} from 'react';
+import {useEffect, useId, useMemo, useReducer, useRef} from "react";
 
-import {useLocation, useNavigate, useParams} from 'react-router-dom';
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 
-import {AppLayout} from '@/components/layout/AppLayout';
-import {Modal} from '@/components/modal/Modal';
+import {AppLayout} from "@/components/layout/AppLayout";
+import {Modal} from "@/components/modal/Modal";
 import {
   type StageProgressEntry,
-  type StageProgressState,
   buildStageUnlockMap,
   loadStageProgress,
-} from '@/features/stages/stageProgressStore';
-import type {StageDefinition} from '@/features/stages/stageUtils';
-import {useUserConfig} from '@/pages/tests/test_page/hooks/useUserConfig';
+} from "@/features/stages/stageProgressStore";
+import type {StageDefinition} from "@/features/stages/stageUtils";
+import type {YearKey} from "@/data/vocabLoader";
+import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
+import {initialStageSelectState, stageSelectReducer} from "@/pages/stages/stageSelectState";
 
-import {useStageDefinitions} from './hooks/useStageDefinitions';
-import {YEAR_LABELS, isYearKey} from './stageConstants';
-
-interface StageSelectState {
-  selectedStage: StageDefinition | null;
-  isVisible: boolean;
-  mapWrapWidth: number;
-  stageProgress: StageProgressState;
-}
-
-type StageSelectAction =
-  | {type: "selectStage"; stage: StageDefinition | null}
-  | {type: "setVisible"; isVisible: boolean}
-  | {type: "setMapWrapWidth"; width: number}
-  | {type: "setStageProgress"; progress: StageProgressState};
-
-const initialStageSelectState: StageSelectState = {
-  selectedStage: null,
-  isVisible: false,
-  mapWrapWidth: 0,
-  stageProgress: {},
-};
-
-// ステージ選択画面のUI状態をまとめて扱うreducer
-function stageSelectReducer(
-  state: StageSelectState,
-  action: StageSelectAction,
-): StageSelectState {
-  switch (action.type) {
-    case "selectStage":
-      return {...state, selectedStage: action.stage};
-    case "setVisible":
-      return {...state, isVisible: action.isVisible};
-    case "setMapWrapWidth":
-      return {...state, mapWrapWidth: action.width};
-    case "setStageProgress":
-      return {...state, stageProgress: action.progress};
-    default:
-      return state;
-  }
-}
+import {useStageDefinitions} from "./hooks/useStageDefinitions";
+import {YEAR_LABELS, isYearKey} from "./stageConstants";
 
 export default function StageSelectPage() {
   const {year: yearParam} = useParams();
@@ -65,9 +27,9 @@ export default function StageSelectPage() {
   );
   const mapWrapRef = useRef<HTMLDivElement | null>(null);
   // フラット系デザインの基準カラー（メインは #f2c97d）
-  const primaryColor = '#f2c97d';
-  const primaryDeep = '#d4a34d';
-  const primaryGlow = 'rgba(242, 201, 125, 0.35)';
+  const primaryColor = "#f2c97d";
+  const primaryDeep = "#d4a34d";
+  const primaryGlow = "rgba(242, 201, 125, 0.35)";
   // タイルとトークンのサイズは固定値で扱って、位置計算を分かりやすくする
   const tileWidth = 120;
   const tileIconHeight = 130;
@@ -76,10 +38,14 @@ export default function StageSelectPage() {
   const tileGap = 24;
 
   // URLの年度が有効かチェックして、無効ならデフォルトに切り替える
-  const isValidYear = Boolean(yearParam && isYearKey(yearParam));
+  const isValidYear =
+    typeof yearParam === "string" && isYearKey(yearParam);
 
   // 年度ラベルを決める
-  const year = isValidYear ? yearParam : 'reiwa3';
+  const year: YearKey =
+    typeof yearParam === "string" && isYearKey(yearParam)
+      ? yearParam
+      : "reiwa3";
   const yearLabel = YEAR_LABELS[year];
   // ユーザー設定の「1ステージあたりの問題数」を取得する
   const {config} = useUserConfig();
@@ -104,7 +70,7 @@ export default function StageSelectPage() {
       syncProgress();
     };
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
+      if (document.visibilityState === "visible") {
         syncProgress();
       }
     };

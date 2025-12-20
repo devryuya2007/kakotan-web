@@ -394,9 +394,14 @@ describe("StageSelectPage", () => {
       value: 800,
     });
     // ResizeObserverが無い環境を再現する
-    // @ts-expect-error -- テスト専用でundefinedにする
-    window.ResizeObserver = undefined;
-    globalThis.ResizeObserver = undefined;
+    const windowWithResizeObserver = window as unknown as {
+      ResizeObserver?: typeof ResizeObserver;
+    };
+    const globalWithResizeObserver = globalThis as unknown as {
+      ResizeObserver?: typeof ResizeObserver;
+    };
+    delete windowWithResizeObserver.ResizeObserver;
+    delete globalWithResizeObserver.ResizeObserver;
 
     const {container} = render(
       <MemoryRouter initialEntries={["/stages/reiwa3"]}>
