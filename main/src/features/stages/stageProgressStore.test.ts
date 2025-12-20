@@ -1,10 +1,11 @@
-import {beforeEach, describe, expect, test} from "vitest";
+import {beforeEach, describe, expect, test, vi} from "vitest";
 
 import {
   buildStageUnlockMap,
   loadStageProgress,
   recordStageAttempt,
   recordStageResult,
+  saveStageProgress,
 } from "./stageProgressStore";
 import type {StageProgressState} from "./stageProgressStore";
 
@@ -116,5 +117,83 @@ describe("ステージ進捗ストア", () => {
     expect(unlockMap[stages[0].stageId]).toBe(true);
     expect(unlockMap[stages[1].stageId]).toBe(true);
     expect(unlockMap[stages[2].stageId]).toBe(false);
+  });
+
+  test("windowが無いときは空の進捗を返す", () => {
+    // SSRなどwindowが無い環境の分岐を通す
+    const originalWindow = window;
+    vi.stubGlobal("window", undefined);
+
+    const result = loadStageProgress();
+    expect(result).toEqual({});
+
+    vi.stubGlobal("window", originalWindow);
+  });
+
+  test("壊れたJSONは空扱いになりwarnが出る", () => {
+    // JSON.parseが失敗したときの保険を確認する
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    localStorage.setItem("stage-progress:v1", "{broken");
+
+    const result = loadStageProgress();
+    expect(result).toEqual({});
+    expect(warnSpy).toHaveBeenCalled();
+
+    warnSpy.mockRestore();
+  });
+
+  test("JSONがオブジェクトでない場合は空扱いになる", () => {
+    // numberなどの誤データが入っても空になることを確認する
+    localStorage.setItem("stage-progress:v1", "1");
+
+    const result = loadStageProgress();
+    expect(result).toEqual({});
+  });
+
+  test("entryがオブジェクトでない場合はスキップされる", () => {
+    // 保存形式が壊れていても安全にスキップされることを確認する
+    const raw = {
+      "stage-bad": "invalid",
+    };
+    localStorage.setItem("stage-progress:v1", JSON.stringify(raw));
+
+    const result = loadStageProgress();
+    expect(result).toEqual({});
+  });
+
+  test("windowが無いときは保存処理を行わない", () => {
+    // saveStageProgressの早期returnを通す
+    const originalWindow = window;
+    vi.stubGlobal("window", undefined);
+
+    saveStageProgress({});
+
+    vi.stubGlobal("window", originalWindow);
+  });
+
+  test("totalCountが0なら正答率は0になる", () => {
+    // 0割を避ける分岐を通す
+    const stageId = "reiwa3-q20-stage6";
+    recordStageResult({stageId, correctCount: 0, totalCount: 0});
+
+    const result = loadStageProgress();
+    expect(result[stageId]?.lastAccuracy).toBe(0);
+  });
+
+  test("保存時に例外が起きてもwarnで握りつぶす", () => {
+    // localStorageのsetItemが失敗するケースを通す
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const setItemSpy = vi
+      .spyOn(Storage.prototype, "setItem")
+      .mockImplementation(() => {
+        throw new Error("storage-fail");
+      });
+
+    saveStageProgress({});
+
+    expect(warnSpy).toHaveBeenCalled();
+
+    warnSpy.mockRestore();
+    setItemSpy.mockRestore();
   });
 });

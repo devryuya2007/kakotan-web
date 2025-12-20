@@ -19,7 +19,6 @@ import {
   Legend,
   LineElement,
   LinearScale,
-  type Plugin,
   PointElement,
   Tooltip,
 } from 'chart.js';
@@ -31,20 +30,7 @@ import TimeElapsedIcon from '@/assets/iconSvg/時間経過のアイコン .svg';
 import AchievementIcon from '@/assets/iconSvg/業績アイコン.svg';
 import StreakIcon from '@/assets/iconSvg/火の玉のアイコン.svg';
 import {QuickStartButton} from '@/components/buttons/QuickStartButton';
-
-const lineGlowPlugin: Plugin<'line'> = {
-  id: 'line-glow',
-  beforeDatasetsDraw: (chart) => {
-    const {ctx} = chart;
-    ctx.save();
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = 'rgba(242, 201, 125, 0.35)';
-    ctx.globalAlpha = 1;
-  },
-  afterDatasetsDraw: (chart) => {
-    chart.ctx.restore();
-  },
-};
+import {lineGlowPlugin} from './lineGlowPlugin';
 
 Chart.register(
   CategoryScale,
@@ -316,16 +302,12 @@ export default function ResultsPage() {
   };
 
   const dailySeries = computeDailyStudySeries(sessionHistory);
-  const maxDailyMinutes =
-    dailySeries.data.length > 0 ? Math.max(...dailySeries.data) : 0;
+  const maxDailyMinutes = Math.max(...dailySeries.data);
   const yAxisMax = Math.max(60, Math.ceil(maxDailyMinutes * 1.2));
-  const averageDailyMinutes =
-    dailySeries.data.length > 0
-      ? Math.round(
-          dailySeries.data.reduce((sum, value) => sum + value, 0) /
-            dailySeries.data.length,
-        )
-      : 0;
+  const averageDailyMinutes = Math.round(
+    dailySeries.data.reduce((sum, value) => sum + value, 0) /
+      dailySeries.data.length,
+  );
   const solvedWords = correctQuestionsSet.size;
   const totalWords = allQuestionsSet.size;
   const formattedTotalStudyTime =

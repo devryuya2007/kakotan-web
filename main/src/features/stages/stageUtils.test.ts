@@ -1,4 +1,4 @@
-import {describe, test, expect, beforeEach} from "vitest";
+import {describe, test, expect, beforeEach, vi} from "vitest";
 
 import type {VocabEntry, YearKey} from "@/data/vocabLoader";
 
@@ -34,6 +34,17 @@ describe("ステージ定義ユーティリティ", () => {
     expect(summary.totalWords).toBe(2);
     expect(summary.normalizedQuestionCount).toBe(1);
     expect(summary.totalStages).toBe(2);
+  });
+
+  test("語彙が0件ならステージ数は0になる", () => {
+    // totalWordsが0のときの分岐を通す
+    const summary = calculateStageSummary({
+      vocab: [],
+      baseQuestionCount: 5,
+    });
+
+    expect(summary.totalWords).toBe(0);
+    expect(summary.totalStages).toBe(0);
   });
 
   test("ステージ定義が正しい件数で作られてlocalStorageにも保存される", () => {
@@ -103,5 +114,123 @@ describe("ステージ定義ユーティリティ", () => {
     expect(questions).toHaveLength(2);
     expect(questions[0]?.phrase).toBe("cherry");
     expect(questions[1]?.phrase).toBe("dragon");
+  });
+
+  test("キャッシュが壊れていても新しく作り直される", () => {
+    // JSONが壊れている場合でも落ちないことを確認する
+    localStorage.setItem("stage-definition-cache:v1", "{broken");
+
+    const vocab: VocabEntry[] = [
+      {phrase: "one", mean: "1"},
+      {phrase: "two", mean: "2"},
+    ];
+
+    const result = createStageDefinitions({
+      year: "reiwa3",
+      yearLabel: "Reiwa 3",
+      vocab,
+      baseQuestionCount: 2,
+    });
+
+    expect(result.stages).toHaveLength(1);
+  });
+
+  test("windowが無いときはキャッシュ操作をスキップする", () => {
+    // SSR環境向けの早期returnを通す
+    const originalWindow = window;
+    // @ts-expect-error windowを一時的に消す
+    vi.stubGlobal("window", undefined);
+
+    const vocab: VocabEntry[] = [
+      {phrase: "one", mean: "1"},
+      {phrase: "two", mean: "2"},
+    ];
+
+    const result = createStageDefinitions({
+      year: "reiwa3",
+      yearLabel: "Reiwa 3",
+      vocab,
+      baseQuestionCount: 2,
+    });
+
+    expect(result.stages).toHaveLength(1);
+
+    vi.stubGlobal("window", originalWindow);
+  });
+
+  test("総語彙数が違うキャッシュは無効になる", () => {
+    // totalWordsが合わないキャッシュは使われないことを確認する
+    const cacheKey = "reiwa3-q2";
+    const cached = {
+      [cacheKey]: {
+        totalWords: 999,
+        normalizedQuestionCount: 2,
+        stages: [
+          {
+            stageId: "reiwa3-q2-stage1",
+            year: "reiwa3",
+            title: "Old Stage 1",
+            stageNumber: 1,
+            startIndex: 0,
+            questionCount: 2,
+            baseQuestionCount: 2,
+          },
+        ],
+        savedAt: 1,
+      },
+    };
+    localStorage.setItem("stage-definition-cache:v1", JSON.stringify(cached));
+
+    const vocab: VocabEntry[] = [
+      {phrase: "one", mean: "1"},
+      {phrase: "two", mean: "2"},
+    ];
+
+    const result = createStageDefinitions({
+      year: "reiwa3",
+      yearLabel: "Reiwa 3",
+      vocab,
+      baseQuestionCount: 2,
+    });
+
+    expect(result.stages[0]?.title).toBe("Reiwa 3 Stage 1");
+  });
+
+  test("キャッシュが有効なときはタイトルだけ作り直す", () => {
+    // totalWordsが合っているキャッシュは再利用されることを確認する
+    const cacheKey = "reiwa3-q2";
+    const cached = {
+      [cacheKey]: {
+        totalWords: 2,
+        normalizedQuestionCount: 2,
+        stages: [
+          {
+            stageId: "reiwa3-q2-stage1",
+            year: "reiwa3",
+            title: "Old Stage 1",
+            stageNumber: 1,
+            startIndex: 0,
+            questionCount: 2,
+            baseQuestionCount: 2,
+          },
+        ],
+        savedAt: 1,
+      },
+    };
+    localStorage.setItem("stage-definition-cache:v1", JSON.stringify(cached));
+
+    const vocab: VocabEntry[] = [
+      {phrase: "one", mean: "1"},
+      {phrase: "two", mean: "2"},
+    ];
+
+    const result = createStageDefinitions({
+      year: "reiwa3",
+      yearLabel: "Reiwa 3",
+      vocab,
+      baseQuestionCount: 2,
+    });
+
+    expect(result.stages[0]?.title).toBe("Reiwa 3 Stage 1");
   });
 });

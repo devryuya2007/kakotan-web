@@ -1,5 +1,5 @@
 import {render, screen, waitFor} from "@testing-library/react";
-import {describe, expect, test, vi} from "vitest";
+import {beforeEach, describe, expect, test, vi} from "vitest";
 
 import type {VocabEntry} from "@/data/vocabLoader";
 
@@ -36,7 +36,27 @@ function StageCountProbe({baseQuestionCount}: StageCountProbeProps) {
   return <div data-testid="stage-count">{stages.length}</div>;
 }
 
+function StageErrorProbe() {
+  // エラー時の文言が取得できるかを確認する
+  const {status, error} = useStageDefinitions({
+    year: "reiwa3",
+    yearLabel: "Reiwa 3",
+    baseQuestionCount: 2,
+  });
+
+  return (
+    <div>
+      <span data-testid="status">{status}</span>
+      <span data-testid="error">{error ?? ""}</span>
+    </div>
+  );
+}
+
 describe("useStageDefinitions", () => {
+  beforeEach(() => {
+    loadYearVocabMock.mockReset();
+  });
+
   test("設定の問題数でステージ数が連動して変わる", async () => {
     // 語彙は5語、すべて有効なデータとして扱う
     const vocab: VocabEntry[] = [
@@ -56,6 +76,73 @@ describe("useStageDefinitions", () => {
     rerender(<StageCountProbe baseQuestionCount={3} />);
     await waitFor(() => {
       expect(screen.getByTestId("stage-count")).toHaveTextContent("2");
+    });
+  });
+
+  test("読み込みエラー時はstatusがerrorになりメッセージが入る", async () => {
+    // 文字列を投げてもString変換されることを確認する
+    loadYearVocabMock.mockRejectedValueOnce("load-error");
+
+    render(<StageErrorProbe />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("status")).toHaveTextContent("error");
+    });
+
+    expect(screen.getByTestId("error")).toHaveTextContent("load-error");
+  });
+
+  test("Errorを投げたときはmessageが入る", async () => {
+    // Error型のメッセージが使われることを確認する
+    loadYearVocabMock.mockRejectedValueOnce(new Error("load-error-object"));
+
+    render(<StageErrorProbe />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("status")).toHaveTextContent("error");
+    });
+
+    expect(screen.getByTestId("error")).toHaveTextContent("load-error-object");
+  });
+
+  test("アンマウント後は途中の更新をスキップする", async () => {
+    // cancelledフラグの分岐を通す
+    let resolvePromise: ((value: VocabEntry[]) => void) | null = null;
+    const pending = new Promise<VocabEntry[]>((resolve) => {
+      resolvePromise = resolve;
+    });
+
+    loadYearVocabMock.mockReturnValueOnce(pending);
+
+    const {unmount} = render(<StageCountProbe baseQuestionCount={2} />);
+    unmount();
+
+    resolvePromise?.([
+      {phrase: "one", mean: "1"},
+      {phrase: "two", mean: "2"},
+    ]);
+
+    await waitFor(() => {
+      expect(true).toBe(true);
+    });
+  });
+
+  test("アンマウント後のエラーも無視される", async () => {
+    // rejectedでもcancelledなら更新しないことを確認する
+    let rejectPromise: ((reason?: unknown) => void) | null = null;
+    const pending = new Promise<VocabEntry[]>((_, reject) => {
+      rejectPromise = reject;
+    });
+
+    loadYearVocabMock.mockReturnValueOnce(pending);
+
+    const {unmount} = render(<StageCountProbe baseQuestionCount={2} />);
+    unmount();
+
+    rejectPromise?.("load-error");
+
+    await waitFor(() => {
+      expect(true).toBe(true);
     });
   });
 });

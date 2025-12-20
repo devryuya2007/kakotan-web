@@ -25,6 +25,10 @@ export default defineConfig({
     forks: {
       singleFork: true,
     },
+    coverage: {
+      provider: "v8",
+      exclude: ["src/assets/**"],
+    },
     typecheck: {
       tsconfig: './tsconfig.vitest.json',
     },

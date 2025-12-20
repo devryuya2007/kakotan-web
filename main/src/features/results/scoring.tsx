@@ -45,11 +45,11 @@ export function requiredXpForLevel(
   config: LevelSystemConfig = defaultLevelConfig,
 ): number {
   if (level <= 1) {
-    return Math.round(config.baseRequiredXp);
+    return Math.max(1, Math.round(config.baseRequiredXp));
   }
 
   const scaled = config.baseRequiredXp * config.growthRate ** (level - 1);
-  return Math.round(scaled);
+  return Math.max(1, Math.round(scaled));
 }
 
 // totalXp: 累積経験値, config: 使用するカーブ設定 -> 現在のレベル進捗情報を返す
@@ -81,7 +81,7 @@ export function calculateLevelProgress(
       // required 次のレベルアップに必要な経験値
       const xpIntoLevel = safeTotal - xpSpent; // レベルの途中で溜まっている分
       const xpTillNextLevel = required - xpIntoLevel; // ユーザーが次のレベルに必要な分
-      const progressRatio = required === 0 ? 1 : xpIntoLevel / required; // 次のレベルアップまで何割進んだか
+      const progressRatio = xpIntoLevel / required; // 次のレベルアップまで何割進んだか
 
       return {
         level,

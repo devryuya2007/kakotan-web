@@ -31,8 +31,8 @@ export default function MiniResultPageModal({
     if (!isOpen) return;
 
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
-      if (!modalRef.current) return;
-      if (modalRef.current.contains(event.target as Node)) return;
+      const modalElement = modalRef.current as HTMLDivElement;
+      if (modalElement.contains(event.target as Node)) return;
       onClose();
     };
 

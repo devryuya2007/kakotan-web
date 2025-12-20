@@ -1,7 +1,8 @@
-import {render, screen, waitFor} from "@testing-library/react";
+import {render, screen, waitFor, fireEvent} from "@testing-library/react";
+import {act} from "react";
 import userEvent from "@testing-library/user-event";
 import {MemoryRouter, Route, Routes, useParams} from "react-router-dom";
-import {beforeEach, describe, expect, test, vi} from "vitest";
+import {afterEach, beforeEach, describe, expect, test, vi} from "vitest";
 
 import type {StageDefinition} from "@/features/stages/stageUtils";
 
@@ -46,6 +47,12 @@ function StageTestProbe() {
 }
 
 describe("StageSelectPage", () => {
+  const originalVisibilityState = Object.getOwnPropertyDescriptor(
+    document,
+    "visibilityState",
+  );
+  const originalResizeObserver = window.ResizeObserver;
+
   beforeEach(() => {
     // rAFを即時実行してisVisibleの状態をtrueにする
     window.requestAnimationFrame = (callback) => {
@@ -56,11 +63,18 @@ describe("StageSelectPage", () => {
 
     // ResizeObserverが無い環境でも落ちないようにスタブする
     class ResizeObserverStub {
-      observe() {}
+      private readonly callback: ResizeObserverCallback;
+      constructor(callback: ResizeObserverCallback) {
+        this.callback = callback;
+      }
+      observe() {
+        this.callback([], this);
+      }
       disconnect() {}
       unobserve() {}
     }
     window.ResizeObserver = ResizeObserverStub;
+    globalThis.ResizeObserver = ResizeObserverStub;
 
     localStorage.clear();
     useStageDefinitionsMock.mockReturnValue({
@@ -167,7 +181,9 @@ describe("StageSelectPage", () => {
     };
     localStorage.setItem(storageKey, JSON.stringify(progress));
 
-    window.dispatchEvent(new Event("focus"));
+    act(() => {
+      window.dispatchEvent(new Event("focus"));
+    });
 
     await waitFor(() => {
       expect(stage2Button).toBeEnabled();
@@ -216,5 +232,257 @@ describe("StageSelectPage", () => {
     expect(
       await screen.findByText(/前回の正答率: 95%/i),
     ).toBeInTheDocument();
+  });
+
+  test("表示イベントとストレージ更新で進捗が同期される", async () => {
+    const storageKey = "stage-progress:v1";
+    const stage1Id = "reiwa3-q20-stage1";
+
+    render(
+      <MemoryRouter initialEntries={["/stages/reiwa3"]}>
+        <Routes>
+          <Route path="/stages/:year" element={<StageSelectPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    const stage2Button = await screen.findByRole("button", {
+      name: /Stage 02/i,
+    });
+    expect(stage2Button).toBeDisabled();
+
+    const progress = {
+      [stage1Id]: {
+        stageId: stage1Id,
+        bestAccuracy: 1,
+        cleared: true,
+        attempts: 1,
+        lastPlayedAt: 1,
+        lastAccuracy: 1,
+        hasAttempted: true,
+      },
+    };
+    localStorage.setItem(storageKey, JSON.stringify(progress));
+
+    // 非表示状態では同期されないことを確認する
+    Object.defineProperty(document, "visibilityState", {
+      configurable: true,
+      value: "hidden",
+    });
+    act(() => {
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    expect(stage2Button).toBeDisabled();
+
+    // visibleに戻すと同期される
+    Object.defineProperty(document, "visibilityState", {
+      configurable: true,
+      value: "visible",
+    });
+    act(() => {
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+
+    await waitFor(() => {
+      expect(stage2Button).toBeEnabled();
+    });
+
+    // pageshowでも同期される
+    act(() => {
+      window.dispatchEvent(new Event("pageshow"));
+    });
+
+    // storageイベントでも同期する
+    act(() => {
+      window.dispatchEvent(
+        new StorageEvent("storage", {key: "stage-progress:v1"}),
+      );
+    });
+
+    // 無関係なキーは無視される
+    act(() => {
+      window.dispatchEvent(new StorageEvent("storage", {key: "other-key"}));
+    });
+  });
+
+  test("ステージが0件でも落ちずに描画される", () => {
+    useStageDefinitionsMock.mockReturnValue({
+      status: "ready",
+      stages: [],
+      totalWords: 0,
+      normalizedQuestionCount: 20,
+      error: null,
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/stages/reiwa3"]}>
+        <Routes>
+          <Route path="/stages/:year" element={<StageSelectPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.queryByRole("button", {name: /Stage/i})).toBeNull();
+  });
+
+  test("全ステージクリア済みなら最後のステージがアクティブになる", async () => {
+    const storageKey = "stage-progress:v1";
+    const progress = createStageDefinitions(3).reduce<Record<string, unknown>>(
+      (acc, stage) => {
+        acc[stage.stageId] = {
+          stageId: stage.stageId,
+          bestAccuracy: 1,
+          cleared: true,
+          attempts: 2,
+          lastPlayedAt: 1,
+          lastAccuracy: 1,
+          hasAttempted: true,
+        };
+        return acc;
+      },
+      {},
+    );
+    localStorage.setItem(storageKey, JSON.stringify(progress));
+
+    render(
+      <MemoryRouter initialEntries={["/stages/reiwa3"]}>
+        <Routes>
+          <Route path="/stages/:year" element={<StageSelectPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    const stage3Button = await screen.findByRole("button", {
+      name: /Stage 03/i,
+    });
+    expect(stage3Button).toBeEnabled();
+  });
+
+  test("モーダルを開いたあとEscで閉じられる", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter initialEntries={["/stages/reiwa3"]}>
+        <Routes>
+          <Route path="/stages/:year" element={<StageSelectPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    const stage1Button = await screen.findByRole("button", {
+      name: /Stage 01/i,
+    });
+    await user.click(stage1Button);
+
+    expect(screen.getByText("Stage Ready")).toBeInTheDocument();
+
+    fireEvent.keyDown(document, {key: "Escape"});
+
+    await waitFor(() => {
+      expect(screen.queryByText("Stage Ready")).toBeNull();
+    });
+  });
+
+  test("横幅に応じて列数が切り替わる（ResizeObserverなし）", () => {
+    const originalClientWidth = Object.getOwnPropertyDescriptor(
+      HTMLElement.prototype,
+      "clientWidth",
+    );
+
+    Object.defineProperty(HTMLElement.prototype, "clientWidth", {
+      configurable: true,
+      value: 800,
+    });
+    // ResizeObserverが無い環境を再現する
+    // @ts-expect-error -- テスト専用でundefinedにする
+    window.ResizeObserver = undefined;
+    globalThis.ResizeObserver = undefined;
+
+    const {container} = render(
+      <MemoryRouter initialEntries={["/stages/reiwa3"]}>
+        <Routes>
+          <Route path="/stages/:year" element={<StageSelectPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    act(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
+
+    const mapShell = container.querySelector("div.relative.mx-auto");
+    expect(mapShell).toHaveStyle({width: "408px"});
+
+    if (originalClientWidth) {
+      Object.defineProperty(
+        HTMLElement.prototype,
+        "clientWidth",
+        originalClientWidth,
+      );
+    }
+    window.ResizeObserver = originalResizeObserver;
+    globalThis.ResizeObserver = originalResizeObserver;
+  });
+
+  test("極端に狭い幅のときは1列配置になる", () => {
+    const originalClientWidth = Object.getOwnPropertyDescriptor(
+      HTMLElement.prototype,
+      "clientWidth",
+    );
+
+    Object.defineProperty(HTMLElement.prototype, "clientWidth", {
+      configurable: true,
+      value: 1,
+    });
+
+    const {container} = render(
+      <MemoryRouter initialEntries={["/stages/reiwa3"]}>
+        <Routes>
+          <Route path="/stages/:year" element={<StageSelectPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    const mapShell = container.querySelector("div.relative.mx-auto");
+    expect(mapShell).toHaveStyle({width: "120px"});
+
+    if (originalClientWidth) {
+      Object.defineProperty(
+        HTMLElement.prototype,
+        "clientWidth",
+        originalClientWidth,
+      );
+    }
+  });
+
+  test("不正な年度パラメータなら案内文が出る", () => {
+    // URLの年度が無効なときにメッセージが出るか確認する
+    useStageDefinitionsMock.mockReturnValue({
+      status: "ready",
+      stages: createStageDefinitions(1),
+      totalWords: 20,
+      normalizedQuestionCount: 20,
+      error: null,
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/stages/unknown"]}>
+        <Routes>
+          <Route path="/stages/:year" element={<StageSelectPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(
+      screen.getByText("年度が見つからないので、メニューに戻ります。"),
+    ).toBeInTheDocument();
+  });
+
+  afterEach(() => {
+    if (originalVisibilityState) {
+      Object.defineProperty(document, "visibilityState", originalVisibilityState);
+    }
+    window.ResizeObserver = originalResizeObserver;
+    globalThis.ResizeObserver = originalResizeObserver;
   });
 });
