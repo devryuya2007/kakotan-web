@@ -19,7 +19,10 @@ import {
   XP_PER_INCORRECT,
   getExperiencePoints,
 } from '@/features/results/scoring';
-import {recordStageResult} from '@/features/stages/stageProgressStore';
+import {
+  recordStageAttempt,
+  recordStageResult,
+} from "@/features/stages/stageProgressStore";
 import {usePrefersReducedMotion} from '@/hooks/usePrefersReducedMotion';
 import {useTestResults} from '@/pages/states/useTestResults';
 
@@ -86,10 +89,15 @@ export default function TestPageLayout({
     reset();
     sessionStartRef.current = Date.now();
 
+    // ステージモードなら挑戦済みを先に記録しておく
+    if (stageId) {
+      recordStageAttempt(stageId);
+    }
+
     return () => {
       sessionStartRef.current = null;
     };
-  }, [reset]);
+  }, [reset, stageId]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   // 各選択肢が正解・不正解・未回答かを保持する
