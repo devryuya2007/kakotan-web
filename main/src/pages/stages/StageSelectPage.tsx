@@ -203,94 +203,97 @@ export default function StageSelectPage() {
   }
 
   return (
-    <AppLayout mainClassName="overflow-y-auto overscroll-y-contain">
-      <div
-        className={`mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 transition-all duration-500 ease-out sm:px-6 ${
-          state.isVisible
-            ? "translate-y-0 opacity-100"
-            : "translate-y-4 opacity-0"
-        }`}
-      >
-        <div className="flex w-full items-center justify-end">
-          <span className="text-xs uppercase tracking-[0.35em] text-white/40">
-            {yearLabel}
-          </span>
-        </div>
-        <section className='relative'>
-          {status === 'ready' && stages.length > 0 && (
-            <div ref={mapWrapRef} className='w-full'>
-              <div
-                className='relative mx-auto'
-                style={{
-                  width: `${flowLayout.mapWidth}px`,
-                  height: `${flowLayout.mapHeight}px`,
-                }}
-              >
-                {/* ステージタイルを横並びで折り返し配置する */}
-                {stages.map((stage, index) => {
-                  const stageStatus = stageStatusMap[stage.stageId];
-                  const isCleared = Boolean(stageStatus?.isCleared);
-                  // 進捗とステージ順から解放状態を決める
-                  const isUnlocked = Boolean(stageStatus?.isUnlocked);
-                  const position = flowLayout.positions[index];
-                  const isActive = index === activeStageIndex;
+    <>
+      <AppLayout mainClassName="overflow-y-auto overscroll-y-contain">
+        <div
+          className={`mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 transition-all duration-500 ease-out sm:px-6 ${
+            state.isVisible
+              ? "translate-y-0 opacity-100"
+              : "translate-y-4 opacity-0"
+          }`}
+        >
+          <div className="flex w-full items-center justify-end">
+            <span className="text-xs uppercase tracking-[0.35em] text-white/40">
+              {yearLabel}
+            </span>
+          </div>
+          <section className='relative'>
+            {status === 'ready' && stages.length > 0 && (
+              <div ref={mapWrapRef} className='w-full'>
+                <div
+                  className='relative mx-auto'
+                  style={{
+                    width: `${flowLayout.mapWidth}px`,
+                    height: `${flowLayout.mapHeight}px`,
+                  }}
+                >
+                  {/* ステージタイルを横並びで折り返し配置する */}
+                  {stages.map((stage, index) => {
+                    const stageStatus = stageStatusMap[stage.stageId];
+                    const isCleared = Boolean(stageStatus?.isCleared);
+                    // 進捗とステージ順から解放状態を決める
+                    const isUnlocked = Boolean(stageStatus?.isUnlocked);
+                    const position = flowLayout.positions[index];
+                    const isActive = index === activeStageIndex;
 
-                  return (
-                    <div
-                      key={stage.stageId}
-                      className='absolute'
-                      style={{
-                        transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
-                      }}
-                    >
-                      <StageTile
-                        stage={stage}
-                        isLocked={!isUnlocked && !isCleared}
-                        isCleared={isCleared}
-                        isActive={isActive}
-                        primaryColor={primaryColor}
-                        primaryDeep={primaryDeep}
-                        primaryGlow={primaryGlow}
-                        tileWidth={tileWidth}
-                        tileHeight={tileHeight}
-                        tileIconHeight={tileIconHeight}
-                        delayMs={index * 60}
-                        onSelect={() =>
-                          dispatch({type: "selectStage", stage})
-                        }
-                      />
-                    </div>
-                  );
-                })}
+                    return (
+                      <div
+                        key={stage.stageId}
+                        className='absolute'
+                        style={{
+                          transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
+                        }}
+                      >
+                        <StageTile
+                          stage={stage}
+                          isLocked={!isUnlocked && !isCleared}
+                          isCleared={isCleared}
+                          isActive={isActive}
+                          primaryColor={primaryColor}
+                          primaryDeep={primaryDeep}
+                          primaryGlow={primaryGlow}
+                          tileWidth={tileWidth}
+                          tileHeight={tileHeight}
+                          tileIconHeight={tileIconHeight}
+                          delayMs={index * 60}
+                          onSelect={() =>
+                            dispatch({type: "selectStage", stage})
+                          }
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          )}
-        </section>
-      </div>
+            )}
+          </section>
+        </div>
 
-      <div className="fixed bottom-6 right-6 z-20">
+        <Modal
+          open={Boolean(state.selectedStage)}
+          onClose={() => dispatch({type: "selectStage", stage: null})}
+          content={
+            state.selectedStage ? (
+              <StageStartModal
+                stage={state.selectedStage}
+                progress={selectedStageProgress}
+                accent={primaryColor}
+                accentSoft={primaryDeep}
+                onStart={handleStartStage}
+              />
+            ) : null
+          }
+        />
+      </AppLayout>
+
+      {/* 画面スクロール中も常に右下に表示したいので画面固定で配置 */}
+      <div className="fixed bottom-6 right-6 z-50">
         <QuickStartButton
           onClick={() => navigate("/")}
           label="Home"
         />
       </div>
-
-      <Modal
-        open={Boolean(state.selectedStage)}
-        onClose={() => dispatch({type: "selectStage", stage: null})}
-        content={
-          state.selectedStage ? (
-            <StageStartModal
-              stage={state.selectedStage}
-              progress={selectedStageProgress}
-              accent={primaryColor}
-              accentSoft={primaryDeep}
-              onStart={handleStartStage}
-            />
-          ) : null
-        }
-      />
-    </AppLayout>
+    </>
   );
 }
 
