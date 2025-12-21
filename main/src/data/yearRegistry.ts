@@ -1,9 +1,9 @@
-import extraVocab from '../assets/vocab/extra/extra_translated_refined.json';
-import reiwa3Vocab from '../assets/vocab/reiwa3_7/reiwa3.unigram.json';
-import reiwa4Vocab from '../assets/vocab/reiwa3_7/reiwa4.unigram.json';
-import reiwa5Vocab from '../assets/vocab/reiwa3_7/reiwa5.unigram.json';
-import reiwa6Vocab from '../assets/vocab/reiwa3_7/reiwa6.unigram.json';
-import reiwa7Vocab from '../assets/vocab/reiwa3_7/reiwa7.unigram.json';
+import reiwa3Vocab from "../assets/vocab/reiwa3_7/reiwa3.unigram.json";
+import reiwa4Vocab from "../assets/vocab/reiwa3_7/reiwa4.unigram.json";
+import reiwa5Vocab from "../assets/vocab/reiwa3_7/reiwa5.unigram.json";
+import reiwa6Vocab from "../assets/vocab/reiwa3_7/reiwa6.unigram.json";
+import reiwa7Vocab from "../assets/vocab/reiwa3_7/reiwa7.unigram.json";
+import extraVocab from "../assets/vocab/extra/extra_translated_refined.json";
 
 import type {VocabEntry} from './vocabTypes';
 
@@ -84,6 +84,18 @@ export const yearRegistry = [
       accent: '#f2c97d',
       accentSoft: '#ffe7b0',
       accentGlow: 'rgba(242, 201, 125, 0.35)',
+    },
+    defaultQuestionCount: 20,
+  },
+  {
+    key: "extra",
+    label: "Extra",
+    sectionLabel: "追加単語",
+    vocab: extraVocab as VocabEntry[],
+    theme: {
+      accent: "#f2c97d",
+      accentSoft: "#ffe7b0",
+      accentGlow: "rgba(242, 201, 125, 0.35)",
     },
     defaultQuestionCount: 20,
   },
