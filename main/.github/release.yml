@@ -1,0 +1,25 @@
+changelog:
+  categories:
+    - title: "変更点(機能/仕様)"
+      labels:
+        - "feature"
+        - "enhancement"
+        - "story"
+        - "gameflow"
+        - "progress"
+        - "content"
+    - title: "UI/UX変更"
+      labels:
+        - "ux"
+        - "ui"
+        - "client-ui"
+  exclude:
+    labels:
+      - "dependencies"
+      - "github_actions"
+      - "documentation"
+      - "codex"
+      - "data"
+      - "javascript"
+      - "bug"
+      - "fix"
