@@ -364,11 +364,11 @@ export default function ResultsPage() {
             </div>
           </header>
           <div className='flex flex-col gap-8'>
-            <div className='flex flex-col gap-6 lg:flex-row lg:items-stretch'>
+              <div className='flex flex-col gap-6 lg:flex-row lg:items-stretch'>
                 <div className='w-full lg:w-1/2'>
-                  <div className='rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur'>
-                  <div className='flex flex-col gap-8 lg:flex-row lg:items-center'>
-                    <div className='flex items-center justify-center'>
+                  <div className='flex h-full rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur'>
+                  <div className='flex flex-1 flex-col gap-8 lg:flex-row lg:items-stretch lg:items-center'>
+                    <div className='flex h-full items-center justify-center'>
                       <div
                         className='flex rounded-full p-4'
                         style={{width: ringSize + 16, height: ringSize + 16}}
@@ -464,7 +464,7 @@ export default function ResultsPage() {
                         </svg>
                       </div>
                     </div>
-                    <div className='flex flex-col items-center justify-center space-y-3 text-center lg:items-start lg:text-left'>
+                    <div className='flex flex-1 flex-col items-center justify-center space-y-3 text-center lg:items-start lg:text-left'>
                       <p className='text-xs uppercase tracking-[0.6em] text-[#f2c97d]/80'>
                         MAIN QUEST
                       </p>
@@ -495,12 +495,12 @@ export default function ResultsPage() {
                   </div>
                 </div>
               </div>
-              <div className='w-full lg:w-1/2'>
-                <RankSummaryCard
-                  levelProgress={calculateLevelProgress(totalXp ?? 0)}
-                  variant='results'
-                />
-              </div>
+                <div className='w-full lg:w-1/2'>
+                  <RankSummaryCard
+                    levelProgress={calculateLevelProgress(totalXp ?? 0)}
+                    variant='results'
+                  />
+                </div>
             </div>
             <div className='grid grid-cols-1 gap-8 lg:grid-cols-[1.1fr_1.4fr]'>
               <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1'>
