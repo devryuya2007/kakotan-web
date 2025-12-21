@@ -1,25 +1,36 @@
 changelog:
   categories:
-    - title: "変更点(機能/仕様)"
+    - title: "feature"
       labels:
+        - "data"
         - "feature"
         - "enhancement"
         - "story"
         - "gameflow"
         - "progress"
         - "content"
-    - title: "UI/UX変更"
-      labels:
         - "ux"
         - "ui"
         - "client-ui"
+    - title: "bugfix"
+      labels:
+        - "bug"
+        - "fix"
+    - title: "test"
+      labels:
+        - "test"
+    - title: "docs"
+      labels:
+        - "documentation"
+        - "docs"
+    - title: "chore"
+      labels:
+        - "dependencies"
+        - "github_actions"
+        - "javascript"
+    - title: "etc..."
+      labels:
+        - "*"
   exclude:
     labels:
-      - "dependencies"
-      - "github_actions"
-      - "documentation"
       - "codex"
-      - "data"
-      - "javascript"
-      - "bug"
-      - "fix"
