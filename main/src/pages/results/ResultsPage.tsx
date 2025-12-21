@@ -365,8 +365,8 @@ export default function ResultsPage() {
           </header>
           <div className='flex flex-col gap-8'>
             <div className='flex flex-col gap-6 lg:flex-row lg:items-stretch'>
-              <div className='w-full lg:w-1/2'>
-                <div className='rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur'>
+                <div className='w-full lg:w-1/2'>
+                  <div className='rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur'>
                   <div className='flex flex-col gap-8 lg:flex-row lg:items-center'>
                     <div className='flex items-center justify-center'>
                       <div
@@ -498,6 +498,7 @@ export default function ResultsPage() {
               <div className='w-full lg:w-1/2'>
                 <RankSummaryCard
                   levelProgress={calculateLevelProgress(totalXp ?? 0)}
+                  variant='results'
                 />
               </div>
             </div>
@@ -643,17 +644,22 @@ interface RankSummaryCardProps {
   levelProgress:
     | ReturnType<typeof calculateLevelProgress>
     | {progressRatio: number; xpTillNextLevel: number; level: number};
+  variant?: 'default' | 'results';
 }
 
-function RankSummaryCard({levelProgress}: RankSummaryCardProps) {
+function RankSummaryCard({levelProgress, variant = 'default'}: RankSummaryCardProps) {
   const {level, xpTillNextLevel, progressRatio} = levelProgress;
   const dashRadius = 52;
   const circumference = 2 * Math.PI * dashRadius;
   const dashOffset = circumference * (1 - progressRatio);
   const rankLetter = letterCalculate(level);
+  const backgroundClass =
+    variant === 'results' ? 'bg-[#0f1524]' : 'bg-[#0f1524]/70';
 
   return (
-    <div className='relative min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[#0f1524]/70 p-5 shadow-[0_20px_45px_-35px_rgba(5,8,20,0.9)]'>
+    <div
+      className={`relative min-w-0 overflow-hidden rounded-2xl border border-white/10 ${backgroundClass} p-5 shadow-[0_20px_45px_-35px_rgba(5,8,20,0.9)]`}
+    >
       <div className='pointer-events-none absolute inset-0 opacity-50'>
         <div className='absolute inset-x-0 top-8 h-px bg-gradient-to-r from-transparent via-[#f2c97d33] to-transparent' />
       </div>
