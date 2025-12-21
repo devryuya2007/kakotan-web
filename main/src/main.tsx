@@ -1,7 +1,4 @@
 import {StrictMode} from "react";
-
-import type {ConfigDefaults, PostHogConfig} from "posthog-js";
-import {PostHogProvider} from "posthog-js/react";
 import {createRoot} from "react-dom/client";
 import {RouterProvider, createBrowserRouter} from "react-router-dom";
 
@@ -25,15 +22,6 @@ if (!container) {
   throw new Error("Root element #root not found");
 }
 
-// PostHogの接続先とモードをまとめておく（後で読む人が迷わないように）
-const postHogOptions: Partial<PostHogConfig> = {
-  api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-  // PostHogの推奨デフォルト日付を型で明示する
-  defaults: "2025-11-30" as ConfigDefaults,
-  capture_exceptions: true, // エラーキャプチャの有効化
-  debug: import.meta.env.MODE === "development",
-};
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -53,16 +41,10 @@ const router = createBrowserRouter([
 
 createRoot(container).render(
   <StrictMode>
-    {/* PostHogのキーはenvから取り、全ページで計測できるようにする */}
-    <PostHogProvider
-      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
-      options={postHogOptions}
-    >
-      <UserConfigProvider>
-        <TestResultsProvider>
-          <RouterProvider router={router} />
-        </TestResultsProvider>
-      </UserConfigProvider>
-    </PostHogProvider>
+    <UserConfigProvider>
+      <TestResultsProvider>
+        <RouterProvider router={router} />
+      </TestResultsProvider>
+    </UserConfigProvider>
   </StrictMode>,
 );
