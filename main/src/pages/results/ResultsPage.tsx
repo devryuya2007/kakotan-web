@@ -86,13 +86,13 @@ function RankSummaryCard({levelProgress, variant = 'default'}: RankSummaryCardPr
         </p>
       </header>
 
-      <div className='relative mx-auto flex h-20 w-20 items-center justify-center sm:mx-0'>
+      <div className='relative mx-auto flex h-24 w-24 items-center justify-center sm:mx-0 lg:absolute lg:right-5 lg:top-5 lg:mx-0'>
         <div className='absolute inset-0 bg-gradient-to-br from-[#fdf1d7] via-[#f2c97d] to-[#b8860b] opacity-80 blur-sm' />
         <div className='relative flex h-full w-full items-center justify-center border border-[#f2c97d55] bg-[#050509]/80 shadow-[0_0_28px_rgba(242,201,125,0.38)]'>
-          <span className='absolute right-[26%] top-[15%] text-[0.55rem] tracking-[0.32em] text-white/60'>
+          <span className='absolute right-[24%] top-[14%] text-[0.6rem] tracking-[0.32em] text-white/60'>
             RANK
           </span>
-          <span className='text-4xl font-black text-[#f2c97d] drop-shadow-[0_0_12px_rgba(242,201,125,0.65)]'>
+          <span className='text-5xl font-black text-[#f2c97d] drop-shadow-[0_0_12px_rgba(242,201,125,0.65)]'>
             {rankLetter}
           </span>
         </div>
