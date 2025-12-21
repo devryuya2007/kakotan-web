@@ -660,8 +660,12 @@ function RankSummaryCard({levelProgress, variant = 'default'}: RankSummaryCardPr
     <div
       className={`relative min-w-0 overflow-hidden rounded-2xl border border-white/10 ${backgroundClass} p-5 shadow-[0_20px_45px_-35px_rgba(5,8,20,0.9)]`}
     >
+      <div className='pointer-events-none absolute inset-0 bg-gradient-to-br from-transparent via-[#ffffff08] to-transparent opacity-70' />
       <div className='pointer-events-none absolute inset-0 opacity-50'>
         <div className='absolute inset-x-0 top-8 h-px bg-gradient-to-r from-transparent via-[#f2c97d33] to-transparent' />
+      </div>
+      <div className='pointer-events-none absolute right-4 top-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#f2c97d]/20 text-sm font-semibold tracking-[0.4em] text-white/80 shadow-[0_0_25px_rgba(242,201,125,0.35)]'>
+        {rankLetter}
       </div>
 
       <header className='relative mb-6 flex flex-col gap-4 text-center sm:text-left'>
