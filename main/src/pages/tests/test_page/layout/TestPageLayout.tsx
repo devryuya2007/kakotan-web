@@ -25,6 +25,8 @@ import {
 } from "@/features/stages/stageProgressStore";
 import {usePrefersReducedMotion} from '@/hooks/usePrefersReducedMotion';
 import {useTestResults} from '@/pages/states/useTestResults';
+import correctSoundSrc from "../../../../../assets/sounds/correct.mp3";
+import incorrectSoundSrc from "../../../../../assets/sounds/incorrect.mp3";
 
 // このコンポーネントが受け取るpropsの形。questionsは問題配列、countは総数
 interface TestPageLayoutProps {
@@ -114,6 +116,8 @@ export default function TestPageLayout({
   // セクション要素の位置を参照してトーストの表示座標に使う
   const sectionRef = useRef<HTMLElement | null>(null);
   const toastDelayTimeoutRef = useRef<number | null>(null);
+  const correctAudioRef = useRef<HTMLAudioElement | null>(null);
+  const incorrectAudioRef = useRef<HTMLAudioElement | null>(null);
   // 解答直後の待ち時間を制御するためのタイマー参照
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // カードアニメーション終了待ち用タイマーの参照
@@ -135,6 +139,19 @@ export default function TestPageLayout({
   const effectiveTransitionDuration = prefersReducedMotion
     ? 0
     : TRANSITION_DURATION;
+
+  useEffect(() => {
+    correctAudioRef.current = new Audio(correctSoundSrc);
+    incorrectAudioRef.current = new Audio(incorrectSoundSrc);
+  }, []);
+
+  const playFeedbackSound = useCallback((audio: HTMLAudioElement | null) => {
+    if (!audio) return;
+    // 正解・誤答の音を差し替えて再生
+    audio.pause();
+    audio.currentTime = 0;
+    void audio.play().catch(() => {});
+  }, []);
 
   // 問題セットが差し替わったらシャッフル結果をリセットする
   if (cacheSourceRef.current !== questions) {
@@ -273,6 +290,9 @@ export default function TestPageLayout({
       ...prev,
       [choice]: isAnswer ? 'correct' : 'incorrect',
     }));
+    playFeedbackSound(
+      isAnswer ? correctAudioRef.current : incorrectAudioRef.current,
+    );
 
     const buttonRect = event.currentTarget.getBoundingClientRect();
     const sectionRect = sectionRef.current?.getBoundingClientRect();
