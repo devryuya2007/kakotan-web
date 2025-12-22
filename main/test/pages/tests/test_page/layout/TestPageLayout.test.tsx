@@ -1,4 +1,4 @@
-import {render, screen, fireEvent, within} from "@testing-library/react";
+import {render, screen, fireEvent, within, waitFor} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {act} from "react";
 import {MemoryRouter} from "react-router-dom";
@@ -18,6 +18,24 @@ const addSessionMook = vi.fn();
 const resetMock = vi.fn();
 const recordStageAttemptMock = vi.fn();
 const recordStageResultMock = vi.fn();
+const audioInstances: {
+  play: ReturnType<typeof vi.fn>;
+  pause: ReturnType<typeof vi.fn>;
+  currentTime: number;
+}[] = [];
+const originalAudio = window.Audio;
+
+const createMockAudio = () => {
+  const playMock = vi.fn().mockResolvedValue(undefined);
+  const pauseMock = vi.fn();
+  const instance = {
+    play: playMock,
+    pause: pauseMock,
+    currentTime: 0,
+  } as unknown as HTMLAudioElement;
+  audioInstances.push(instance);
+  return instance;
+};
 
 vi.mock("@/pages/states/useTestResults", () => ({
   useTestResults: () => useTestResultsMock(),
@@ -92,6 +110,12 @@ beforeEach(() => {
   usePrefersReducedMotionMock.mockReturnValue(false);
   matchMediaMatches = false;
   matchMediaChangeHandler = null;
+  audioInstances.length = 0;
+  Object.defineProperty(window, "Audio", {
+    configurable: true,
+    writable: true,
+    value: vi.fn().mockImplementation(createMockAudio),
+  });
 
   recorResultsMook.mockImplementation((question: QuizQuestion, isCorrect: boolean) => {
     if (isCorrect) {
@@ -119,6 +143,15 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.useRealTimers();
+  if (originalAudio) {
+    Object.defineProperty(window, "Audio", {
+      configurable: true,
+      writable: true,
+      value: originalAudio,
+    });
+  } else {
+    delete (window as typeof window & {Audio?: unknown}).Audio;
+  }
 });
 
 const sampleQuestions: QuizQuestion[] = [
@@ -190,6 +223,24 @@ describe("テストページ", () => {
     fireEvent.click(correctButton);
 
     expect(recorResultsMook).toHaveBeenCalledWith(sampleQuestions[0], true);
+  });
+  test("正解のときに正解音が再生される", async () => {
+    renderLayout();
+    await waitFor(() => expect(audioInstances).toHaveLength(2));
+
+    const buttons = screen.getAllByRole("button", {name: "正誤判定"});
+    const {answerIndex, choices} = sampleQuestions[0];
+    const correctLabel = choices[answerIndex];
+    const correctButton = buttons.find((button) =>
+      button.textContent?.includes(correctLabel),
+    );
+    if (!correctButton) {
+      throw new Error("正解の選択肢が見つかりません");
+    }
+
+    fireEvent.click(correctButton);
+
+    expect(audioInstances[0].play).toHaveBeenCalled();
   });
   test("正解の選択肢を押すとスタイルが変わる", async () => {
     renderLayout();
