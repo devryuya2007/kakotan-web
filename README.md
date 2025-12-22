@@ -184,6 +184,11 @@ npm --prefix main run test -- run
   </video>
 </p>
 
+## サウンドエフェクト
+
+- `main/assets/sounds/correct.mp3` … Mike Koenig 作「Ta Da」。SoundBible の Attribution 3.0（https://creativecommons.org/licenses/by/3.0/）で公開されており、アプリ内で正解の演出として利用しています（https://soundbible.com/1003-Ta-Da.html）。
+- `main/assets/sounds/incorrect.mp3` … Mike Koenig 作「Bleep」。同じく Attribution 3.0 で、誤答時のフィードバック音として使っています（https://soundbible.com/1252-Bleep.html）。
+
 ## コントリビュート
 
 - Issue や Pull Request は日本語で歓迎です。
