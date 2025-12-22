@@ -547,6 +547,7 @@ export default function TestPageLayout({
                                 ? 'correct-choice'
                                 : 'incorrect-choice'
                             }
+                            data-skip-click-sound
                             // アクティブなカードだけクリック可にする
                             onClick={
                               isActiveCard
