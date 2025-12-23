@@ -1,10 +1,10 @@
-import {useEffect, useRef} from "react";
+import { useEffect, useRef } from "react";
 
 import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
 
 const clickSoundOggUrl = new URL(
   "../../assets/kenney_interface-sounds/Audio/click_002.ogg",
-  import.meta.url,
+  import.meta.url
 ).href;
 const clickSoundMp3Url = new URL(
   "../../assets/kenney_interface-sounds/Audio/click_002.mp3",
@@ -38,7 +38,7 @@ export const useButtonClickSound = () => {
     clickAudio.volume = 0.65;
     audioRef.current = clickAudio;
 
-    const handlePointerDown = (event: PointerEvent) => {
+    const handlePointerUp = (event: PointerEvent) => {
       if (!(event.target instanceof HTMLElement)) return;
       const button = event.target.closest("button");
       if (!button) return;
@@ -55,12 +55,12 @@ export const useButtonClickSound = () => {
       }
     };
 
-    document.addEventListener("pointerdown", handlePointerDown, {
+    document.addEventListener("pointerup", handlePointerUp, {
       capture: true,
     });
 
     return () => {
-      document.removeEventListener("pointerdown", handlePointerDown, {
+      document.removeEventListener("pointerup", handlePointerUp, {
         capture: true,
       });
     };
