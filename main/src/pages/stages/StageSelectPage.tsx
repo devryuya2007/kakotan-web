@@ -1,4 +1,4 @@
-import {useEffect, useId, useMemo, useReducer, useRef} from "react";
+import {useEffect, useId, useMemo, useReducer} from "react";
 
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 
@@ -26,7 +26,6 @@ export default function StageSelectPage() {
     stageSelectReducer,
     initialStageSelectState,
   );
-  const mapWrapRef = useRef<HTMLDivElement | null>(null);
   // フラット系デザインの基準カラー（メインは #f2c97d）
   const primaryColor = "#f2c97d";
   const primaryDeep = "#d4a34d";
@@ -97,27 +96,6 @@ export default function StageSelectPage() {
     };
   }, [location.key]);
 
-  // マップの幅に応じて列数を調整する（横に並べて足りなければ折り返す）
-  useEffect(() => {
-    const element = mapWrapRef.current;
-    if (!element) return;
-
-    const updateWidth = () => {
-      dispatch({type: "setMapWrapWidth", width: element.clientWidth});
-    };
-
-    updateWidth();
-
-    if (typeof ResizeObserver !== "undefined") {
-      const observer = new ResizeObserver(() => updateWidth());
-      observer.observe(element);
-      return () => observer.disconnect();
-    }
-
-    window.addEventListener('resize', updateWidth);
-    return () => window.removeEventListener('resize', updateWidth);
-  }, [status, stages.length]);
-
   // 画面に入ったタイミングでアニメーションを開始
   useEffect(() => {
     const raf = requestAnimationFrame(() => {
@@ -144,36 +122,6 @@ export default function StageSelectPage() {
       : nextPlayableIndex >= 0
         ? nextPlayableIndex
         : stages.length - 1;
-  const safeWrapWidth = state.mapWrapWidth || tileWidth + tileGap;
-  const rawColumns = Math.floor(
-    (safeWrapWidth + tileGap) / (tileWidth + tileGap),
-  );
-  const isMobileLayout = safeWrapWidth < 640;
-  const baseColumns = Math.max(1, rawColumns || 1);
-  const fittedColumns = isMobileLayout
-    ? 1
-    : Math.min(baseColumns, Math.max(1, stages.length));
-
-  const flowLayout = useMemo(
-    () =>
-      createFlowLayout({
-        stageCount: stages.length,
-        columns: fittedColumns,
-        tileWidth,
-        tileHeight,
-        tileIconHeight,
-        tileGap,
-      }),
-    [
-      stages.length,
-      fittedColumns,
-      tileWidth,
-      tileHeight,
-      tileIconHeight,
-      tileGap,
-    ],
-  );
-
   // 進捗をもとに、どのステージが解放されているかを計算する
   const selectedStageProgress = state.selectedStage
     ? state.stageProgress[state.selectedStage.stageId]
@@ -219,51 +167,39 @@ export default function StageSelectPage() {
           </div>
           <section className='relative'>
             {status === 'ready' && stages.length > 0 && (
-              <div ref={mapWrapRef} className='w-full'>
-                <div
-                  className='relative mx-auto'
-                  style={{
-                    width: `${flowLayout.mapWidth}px`,
-                    height: `${flowLayout.mapHeight}px`,
-                  }}
-                >
-                  {/* ステージタイルを横並びで折り返し配置する */}
-                  {stages.map((stage, index) => {
-                    const stageStatus = stageStatusMap[stage.stageId];
-                    const isCleared = Boolean(stageStatus?.isCleared);
-                    // 進捗とステージ順から解放状態を決める
-                    const isUnlocked = Boolean(stageStatus?.isUnlocked);
-                    const position = flowLayout.positions[index];
-                    const isActive = index === activeStageIndex;
+              <div
+                className='mx-auto grid w-full justify-center'
+                style={{
+                  gridTemplateColumns: `repeat(auto-fit, minmax(${tileWidth}px, ${tileWidth}px))`,
+                  gap: `${tileGap}px`,
+                }}
+              >
+                {/* ステージタイルはGridで自動配置し、初期幅が0でも崩れにくくする */}
+                {stages.map((stage, index) => {
+                  const stageStatus = stageStatusMap[stage.stageId];
+                  const isCleared = Boolean(stageStatus?.isCleared);
+                  // 進捗とステージ順から解放状態を決める
+                  const isUnlocked = Boolean(stageStatus?.isUnlocked);
+                  const isActive = index === activeStageIndex;
 
-                    return (
-                      <div
-                        key={stage.stageId}
-                        className='absolute'
-                        style={{
-                          transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
-                        }}
-                      >
-                        <StageTile
-                          stage={stage}
-                          isLocked={!isUnlocked && !isCleared}
-                          isCleared={isCleared}
-                          isActive={isActive}
-                          primaryColor={primaryColor}
-                          primaryDeep={primaryDeep}
-                          primaryGlow={primaryGlow}
-                          tileWidth={tileWidth}
-                          tileHeight={tileHeight}
-                          tileIconHeight={tileIconHeight}
-                          delayMs={index * 60}
-                          onSelect={() =>
-                            dispatch({type: "selectStage", stage})
-                          }
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
+                  return (
+                    <StageTile
+                      key={stage.stageId}
+                      stage={stage}
+                      isLocked={!isUnlocked && !isCleared}
+                      isCleared={isCleared}
+                      isActive={isActive}
+                      primaryColor={primaryColor}
+                      primaryDeep={primaryDeep}
+                      primaryGlow={primaryGlow}
+                      tileWidth={tileWidth}
+                      tileHeight={tileHeight}
+                      tileIconHeight={tileIconHeight}
+                      delayMs={index * 60}
+                      onSelect={() => dispatch({type: "selectStage", stage})}
+                    />
+                  );
+                })}
               </div>
             )}
           </section>
@@ -295,72 +231,6 @@ export default function StageSelectPage() {
       </div>
     </>
   );
-}
-
-interface FlowLayoutInput {
-  stageCount: number;
-  columns: number;
-  tileWidth: number;
-  tileHeight: number;
-  tileIconHeight: number;
-  tileGap: number;
-}
-
-interface FlowLayoutPosition {
-  x: number;
-  y: number;
-}
-
-interface FlowLayoutResult {
-  columns: number;
-  rows: number;
-  mapWidth: number;
-  mapHeight: number;
-  positions: FlowLayoutPosition[];
-  polylinePoints: string;
-}
-
-// 横一列を優先しつつ、幅が足りないときは次の列へ流す配置を作る
-function createFlowLayout({
-  stageCount,
-  columns,
-  tileWidth,
-  tileHeight,
-  tileIconHeight,
-  tileGap,
-}: FlowLayoutInput): FlowLayoutResult {
-  const safeColumns = Math.max(1, columns);
-  const rows = stageCount === 0 ? 0 : Math.ceil(stageCount / safeColumns);
-  const tileSpacingX = tileWidth + tileGap;
-  const tileSpacingY = tileHeight + tileGap;
-  const mapWidth =
-    safeColumns * tileWidth + Math.max(0, safeColumns - 1) * tileGap;
-  const mapHeight = rows * tileHeight + Math.max(0, rows - 1) * tileGap;
-
-  const positions: FlowLayoutPosition[] = Array.from(
-    {length: stageCount},
-    (_, index) => {
-      const row = Math.floor(index / safeColumns);
-      const colIndex = index % safeColumns;
-      return {
-        x: colIndex * tileSpacingX,
-        y: row * tileSpacingY,
-      };
-    },
-  );
-
-  const polylinePoints = positions
-    .map((pos) => `${pos.x + tileWidth / 2},${pos.y + tileIconHeight / 2}`)
-    .join(' ');
-
-  return {
-    columns: safeColumns,
-    rows,
-    mapWidth,
-    mapHeight,
-    positions,
-    polylinePoints,
-  };
 }
 
 interface StageTileProps {

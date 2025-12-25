@@ -56,7 +56,6 @@ describe("StageSelectPage", () => {
     document,
     "visibilityState",
   );
-  const originalResizeObserver = window.ResizeObserver;
 
   beforeEach(() => {
     // rAFを即時実行してisVisibleの状態をtrueにする
@@ -65,21 +64,6 @@ describe("StageSelectPage", () => {
       return 0;
     };
     window.cancelAnimationFrame = () => {};
-
-    // ResizeObserverが無い環境でも落ちないようにスタブする
-    class ResizeObserverStub {
-      private readonly callback: ResizeObserverCallback;
-      constructor(callback: ResizeObserverCallback) {
-        this.callback = callback;
-      }
-      observe() {
-        this.callback([], this);
-      }
-      disconnect() {}
-      unobserve() {}
-    }
-    window.ResizeObserver = ResizeObserverStub;
-    globalThis.ResizeObserver = ResizeObserverStub;
 
     localStorage.clear();
     useStageDefinitionsMock.mockReturnValue({
@@ -129,17 +113,6 @@ describe("StageSelectPage", () => {
     });
 
     expect(result.isVisible).toBe(true);
-  });
-
-  test("setMapWrapWidthで幅が更新される", () => {
-    const baseState = {...initialStageSelectState};
-
-    const result = stageSelectReducer(baseState, {
-      type: "setMapWrapWidth",
-      width: 320,
-    });
-
-    expect(result.mapWrapWidth).toBe(320);
   });
 
   test("setStageProgressで進捗が更新される", () => {
@@ -461,22 +434,7 @@ describe("StageSelectPage", () => {
     });
   });
 
-  test("横幅に応じて列数が切り替わる（ResizeObserverなし）", () => {
-    const originalClientWidth = Object.getOwnPropertyDescriptor(
-      HTMLElement.prototype,
-      "clientWidth",
-    );
-
-    Object.defineProperty(HTMLElement.prototype, "clientWidth", {
-      configurable: true,
-      value: 800,
-    });
-    // ResizeObserverが無い環境を再現する
-    window.ResizeObserver =
-      undefined as unknown as typeof ResizeObserver;
-    globalThis.ResizeObserver =
-      undefined as unknown as typeof ResizeObserver;
-
+  test("ステージ一覧がGridレイアウトで配置される", () => {
     const {container} = render(
       <MemoryRouter initialEntries={["/stages/reiwa3"]}>
         <Routes>
@@ -485,53 +443,12 @@ describe("StageSelectPage", () => {
       </MemoryRouter>,
     );
 
-    act(() => {
-      window.dispatchEvent(new Event("resize"));
+    const stageGrid = container.querySelector("div.grid");
+    expect(stageGrid).toBeTruthy();
+    expect(stageGrid).toHaveStyle({
+      gridTemplateColumns: "repeat(auto-fit, minmax(120px, 120px))",
     });
-
-    const mapShell = container.querySelector("div.relative.mx-auto");
-    expect(mapShell).toHaveStyle({width: "408px"});
-
-    if (originalClientWidth) {
-      Object.defineProperty(
-        HTMLElement.prototype,
-        "clientWidth",
-        originalClientWidth,
-      );
-    }
-    window.ResizeObserver = originalResizeObserver;
-    globalThis.ResizeObserver = originalResizeObserver;
-  });
-
-  test("極端に狭い幅のときは1列配置になる", () => {
-    const originalClientWidth = Object.getOwnPropertyDescriptor(
-      HTMLElement.prototype,
-      "clientWidth",
-    );
-
-    Object.defineProperty(HTMLElement.prototype, "clientWidth", {
-      configurable: true,
-      value: 1,
-    });
-
-    const {container} = render(
-      <MemoryRouter initialEntries={["/stages/reiwa3"]}>
-        <Routes>
-          <Route path="/stages/:year" element={<StageSelectPage />} />
-        </Routes>
-      </MemoryRouter>,
-    );
-
-    const mapShell = container.querySelector("div.relative.mx-auto");
-    expect(mapShell).toHaveStyle({width: "120px"});
-
-    if (originalClientWidth) {
-      Object.defineProperty(
-        HTMLElement.prototype,
-        "clientWidth",
-        originalClientWidth,
-      );
-    }
+    expect(stageGrid).toHaveStyle({gap: "24px"});
   });
 
   test("不正な年度パラメータなら案内文が出る", () => {
@@ -561,7 +478,5 @@ describe("StageSelectPage", () => {
     if (originalVisibilityState) {
       Object.defineProperty(document, "visibilityState", originalVisibilityState);
     }
-    window.ResizeObserver = originalResizeObserver;
-    globalThis.ResizeObserver = originalResizeObserver;
   });
 });
