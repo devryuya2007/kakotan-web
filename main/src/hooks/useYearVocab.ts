@@ -1,7 +1,8 @@
-import {buildQuestionsFromVocab, loadYearVocab} from '../data/vocabLoader';
-import type {QuizQuestion, YearKey} from '../data/vocabLoader';
+import {buildQuestionsFromVocab, loadYearVocab} from "../data/vocabLoader";
+import type {QuizQuestion, YearKey} from "../data/vocabLoader";
 
-import {useEffect, useState} from 'react';
+import {useEffect, useState} from "react";
+import {useShuffledItems} from "./useShuffledItems";
 
 export type UseYearVocabResult = {
   status: 'idle' | 'loading' | 'ready' | 'error';
@@ -19,6 +20,9 @@ export function useYearVocab(
   );
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [error, setError] = useState<string | null>(null);
+  // extraだけ順番をシャッフルして、連続出題の偏りを減らす
+  const shouldShuffle = year === "extra";
+  const shuffledQuestions = useShuffledItems(questions, shouldShuffle);
 
   useEffect(() => {
     let cancelled = false;
@@ -49,8 +53,8 @@ export function useYearVocab(
 
   return {
     status,
-    questions,
-    count: questions.length,
+    questions: shuffledQuestions,
+    count: shuffledQuestions.length,
     error,
   };
 }
