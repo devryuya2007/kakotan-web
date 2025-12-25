@@ -23,6 +23,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Audit dependencies
+        run: |
+          npm audit --audit-level=high
+          npm --prefix main audit --audit-level=high
+
       - name: Lint
         run: npm --prefix main run lint
 
