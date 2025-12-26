@@ -1,46 +1,26 @@
 import {useEffect, useRef} from "react";
 
-const correctSoundUrl = new URL(
-  "../../assets/kenney_interface-sounds/Audio/answer_correct.ogg",
-  import.meta.url,
-).href;
+// 正解時のフィードバックは端末のバイブに切り替える
 
 interface AnswerSoundControls {
   playAnswerSound: (isCorrect: boolean) => void;
 }
 
 export const useAnswerResultSound = (): AnswerSoundControls => {
-  const correctAudioRef = useRef<HTMLAudioElement | null>(null);
+  // バイブが使えるかどうかをキャッシュしておく
+  const canVibrateRef = useRef(false);
 
   useEffect(() => {
-    // 正解音を先読みして、クリック直後の遅延を減らす
-    const correctAudio = new Audio(correctSoundUrl);
-    correctAudio.preload = "auto";
-    // 音量を上げて、短い音でも聞き取りやすくする
-    correctAudio.volume = 0.95;
-
-    correctAudioRef.current = correctAudio;
-
-    return () => {
-      // アンマウント時に参照を外して、ガベージコレクションで解放できるようにする
-      correctAudioRef.current = null;
-    };
+    if (typeof navigator === "undefined") return;
+    canVibrateRef.current = typeof navigator.vibrate === "function";
   }, []);
 
   const playAnswerSound = (isCorrect: boolean) => {
-    // 不正解時は音を鳴らさない
+    // 不正解時は何もしない
     if (!isCorrect) return;
-    const playback = correctAudioRef.current;
-    if (!playback) return;
-
-    // 連打でも必ず先頭から鳴るように巻き戻す
-    playback.pause();
-    playback.currentTime = 0;
-    const result = playback.play();
-    // テスト環境ではplayがPromiseを返さない場合があるので安全にガードする
-    if (result && typeof result.catch === "function") {
-      void result.catch(() => {});
-    }
+    // ブラウザが対応していれば、短いバイブで正解を伝える
+    if (!canVibrateRef.current) return;
+    navigator.vibrate(30);
   };
 
   return {playAnswerSound};
