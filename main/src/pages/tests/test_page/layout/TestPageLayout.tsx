@@ -6,11 +6,13 @@ import {
   type MouseEvent,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
 
+import {gsap} from "gsap";
 import {useNavigate} from 'react-router-dom';
 
 import {QuickStartButton} from '@/components/buttons/QuickStartButton';
@@ -114,7 +116,6 @@ export default function TestPageLayout({
   // カード切り替え中かどうか。trueになっている間はボタン操作を無効化する
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isSlideActive, setIsSlideActive] = useState(false);
-  const [isToastVisible, setIsToastVisible] = useState(false);
   // 獲得XPのトースト表示に使うstate
   const [gainToast, setGainToast] = useState<{
     amount: number;
@@ -133,10 +134,12 @@ export default function TestPageLayout({
   const [isGainPulse, setIsGainPulse] = useState(false);
   // 表示用のXPをなめらかに増やすためのstate
   const [animatedXp, setAnimatedXp] = useState(baseTotalXpRef.current);
-  // XPのアニメーション制御に使う参照
-  const animatedXpRef = useRef(animatedXp);
-  const xpAnimationRef = useRef<number | null>(null);
-  const xpAnimationStartRef = useRef<number | null>(null);
+  // XP演出の現在値をGSAPで回すための参照
+  const xpCounterRef = useRef({value: baseTotalXpRef.current});
+  const xpTweenRef = useRef<gsap.core.Tween | null>(null);
+  // トーストのアニメーション制御に使う参照
+  const toastRef = useRef<HTMLDivElement | null>(null);
+  const toastAnimationRef = useRef<gsap.core.Timeline | null>(null);
   const gainPulseTimeoutRef = useRef<number | null>(null);
   // セクション要素の位置を参照してトーストの表示座標に使う
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -274,36 +277,18 @@ export default function TestPageLayout({
       if (gainPulseTimeoutRef.current) {
         clearTimeout(gainPulseTimeoutRef.current);
       }
-      if (xpAnimationRef.current) {
-        window.cancelAnimationFrame(xpAnimationRef.current);
+      if (xpTweenRef.current) {
+        xpTweenRef.current.kill();
+      }
+      if (toastAnimationRef.current) {
+        toastAnimationRef.current.kill();
       }
     };
   }, []);
 
+  // XPの現在値をrefにも保存し、次の演出で途切れないようにする
   useEffect(() => {
-    if (!gainToast) {
-      setIsToastVisible(false);
-      return;
-    }
-
-    const showId = window.requestAnimationFrame(() => {
-      setIsToastVisible(true);
-    });
-
-    const timeoutId = window.setTimeout(() => {
-      setIsToastVisible(false);
-      setGainToast(null);
-    }, TOAST_DURATION);
-
-    return () => {
-      window.cancelAnimationFrame(showId);
-      clearTimeout(timeoutId);
-    };
-  }, [gainToast, TOAST_DURATION]);
-
-  // アニメーション対象のXPを最新値で追従できるようにする
-  useEffect(() => {
-    animatedXpRef.current = animatedXp;
+    xpCounterRef.current.value = animatedXp;
   }, [animatedXp]);
 
   // XPが増えたときに、数値をカウントアップで見せる
@@ -311,41 +296,85 @@ export default function TestPageLayout({
     const targetXp = Math.max(0, baseTotalXpRef.current + sessionGainedXp);
     if (prefersReducedMotion) {
       setAnimatedXp(targetXp);
+      xpCounterRef.current.value = targetXp;
       return;
     }
-    if (xpAnimationRef.current) {
-      window.cancelAnimationFrame(xpAnimationRef.current);
+    if (xpTweenRef.current) {
+      xpTweenRef.current.kill();
     }
-    const fromValue = animatedXpRef.current;
-    if (fromValue === targetXp) return;
+    if (xpCounterRef.current.value === targetXp) {
+      return;
+    }
 
-    const durationMs = 360;
-    xpAnimationStartRef.current = null;
-
-    const animate = (timestamp: number) => {
-      if (!xpAnimationStartRef.current) {
-        xpAnimationStartRef.current = timestamp;
-      }
-      const elapsed = timestamp - xpAnimationStartRef.current;
-      const progress = Math.min(elapsed / durationMs, 1);
-      // 最後にスッと止まるイージングを使う
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const nextValue = Math.round(fromValue + (targetXp - fromValue) * eased);
-      setAnimatedXp(nextValue);
-
-      if (progress < 1) {
-        xpAnimationRef.current = window.requestAnimationFrame(animate);
-      }
-    };
-
-    xpAnimationRef.current = window.requestAnimationFrame(animate);
+    // スロットっぽく小刻みに増えるように、ステップ状のイージングを使う
+    xpTweenRef.current = gsap.to(xpCounterRef.current, {
+      value: targetXp,
+      duration: 0.6,
+      ease: "steps(24)",
+      onUpdate: () => {
+        setAnimatedXp(Math.round(xpCounterRef.current.value));
+      },
+    });
 
     return () => {
-      if (xpAnimationRef.current) {
-        window.cancelAnimationFrame(xpAnimationRef.current);
+      if (xpTweenRef.current) {
+        xpTweenRef.current.kill();
       }
     };
   }, [sessionGainedXp, prefersReducedMotion]);
+
+  // トーストはGSAPで短く動かし、一定時間だけ表示する
+  useLayoutEffect(() => {
+    if (!gainToast) return;
+    const toastEl = toastRef.current;
+    if (!toastEl) return;
+
+    if (toastAnimationRef.current) {
+      toastAnimationRef.current.kill();
+    }
+
+    if (prefersReducedMotion) {
+      const timeoutId = window.setTimeout(() => {
+        setGainToast(null);
+      }, TOAST_DURATION);
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
+
+    const holdMs = Math.max(TOAST_DURATION - 380, 0);
+    toastAnimationRef.current = gsap
+      .timeline({
+        onComplete: () => {
+          setGainToast(null);
+        },
+      })
+      .fromTo(
+        toastEl,
+        {autoAlpha: 0, y: 10, scale: 0.9},
+        {autoAlpha: 1, y: -6, scale: 1, duration: 0.18, ease: "power2.out"},
+      )
+      .to(toastEl, {
+        autoAlpha: 1,
+        y: -8,
+        scale: 1,
+        duration: holdMs / 1000,
+        ease: "none",
+      })
+      .to(toastEl, {
+        autoAlpha: 0,
+        y: -18,
+        scale: 0.96,
+        duration: 0.2,
+        ease: "power2.in",
+      });
+
+    return () => {
+      if (toastAnimationRef.current) {
+        toastAnimationRef.current.kill();
+      }
+    };
+  }, [gainToast, prefersReducedMotion, TOAST_DURATION]);
 
   // XPが増えた直後だけ強調演出を入れる
   useEffect(() => {
@@ -494,12 +523,12 @@ export default function TestPageLayout({
   ];
 
   const toastBaseClass =
-    'absolute z-50 flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-lg pointer-events-none transition-all duration-200 ease-out opacity-0 -translate-y-4';
+    'absolute z-[9999] flex items-center rounded-full border px-1.5 py-0.5 text-[9px] font-semibold shadow-[0_10px_24px_rgba(0,0,0,0.35)] pointer-events-none';
 
   const correctToastClass =
-    'border-emerald-200 bg-emerald-500 text-emerald-50 shadow-[0_18px_36px_-16px_rgba(16,185,129,0.75)]';
+    'border-emerald-200/80 bg-emerald-500/90 text-emerald-50';
   const incorrectToastClass =
-    'border-rose-200 bg-rose-500 text-rose-50 shadow-[0_18px_36px_-16px_rgba(244,63,94,0.75)]';
+    'border-rose-200/80 bg-rose-500/90 text-rose-50';
 
   const toastVariantClass =
     gainToast?.amount === XP_PER_CORRECT
@@ -512,9 +541,6 @@ export default function TestPageLayout({
         transform: 'translate(-50%, -120%)',
       }
     : undefined;
-  const toastVisibilityClass = isToastVisible
-    ? 'opacity-100 translate-y-0'
-    : 'opacity-0 -translate-y-3';
 
   // EXP表示の強調状態に合わせてアニメーションを出し分ける
   const expIndicatorClass = `pointer-events-none fixed left-1/2 top-3 z-30 w-[200px] -translate-x-1/2 transform-gpu rounded-2xl border border-white/10 bg-[#0b0f1f]/80 px-4 py-3 text-white shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur ${isGainPulse ? "scale-[1.03]" : "scale-100"} ${
@@ -539,7 +565,7 @@ export default function TestPageLayout({
           <span>{`Lv ${expProgress.level}`}</span>
         </div>
         <div className="mt-2 flex items-end justify-between gap-3">
-          <span className="text-2xl font-semibold text-[#f2c97d]">
+          <span className="text-2xl font-semibold tabular-nums tracking-[0.08em] text-[#f2c97d]">
             {animatedXp}
           </span>
           {latestGain && (
@@ -571,12 +597,13 @@ export default function TestPageLayout({
       >
         {gainToast && gainToast.amount === XP_PER_CORRECT && (
           <div
-            className={`${toastBaseClass} ${toastVariantClass} ${toastVisibilityClass}`}
+            ref={toastRef}
+            className={`${toastBaseClass} ${toastVariantClass}`}
             style={toastPositionStyle}
             key={gainToast.key}
             data-testid="xp-toast"
           >
-            {`+${gainToast.amount} XP`}
+            {`${gainToast.amount}`}
           </div>
         )}
         {/* デスクトップではカードを重ねるために絶対配置を使うので、この囲いをrelativeにして境界を固定化 */}
