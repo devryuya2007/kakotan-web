@@ -94,7 +94,8 @@ export default function TestPageLayout({
     sessionStartRef.current = Date.now();
     // セッション開始時点のXPを基準にして表示を初期化する
     setSessionGainedXp(0);
-    setAnimatedXp(baseTotalXpRef.current);
+    setLatestGain(null);
+    setAnimatedXp(0);
 
     // ステージモードなら挑戦済みを先に記録しておく
     if (stageId) {
@@ -122,13 +123,21 @@ export default function TestPageLayout({
   } | null>(null);
   // テスト中に獲得したXPを積み上げておく
   const [sessionGainedXp, setSessionGainedXp] = useState(0);
+  // 直近の加算分を表示するためのstate
+  const [latestGain, setLatestGain] = useState<{
+    amount: number;
+    key: number;
+  } | null>(null);
   // 直近の獲得演出を強調するためのフラグ
   const [isGainPulse, setIsGainPulse] = useState(false);
   // 表示用のXPをなめらかに増やすためのstate
-  const [animatedXp, setAnimatedXp] = useState(baseTotalXpRef.current);
+  const [animatedXp, setAnimatedXp] = useState(0);
   // XP演出の現在値をGSAPで回すための参照
   const xpCounterRef = useRef({value: baseTotalXpRef.current});
   const xpTweenRef = useRef<gsap.core.Tween | null>(null);
+  const gainBadgeRef = useRef<HTMLDivElement | null>(null);
+  const gainBadgeTimeoutRef = useRef<number | null>(null);
+  const gainBadgeAnimationRef = useRef<gsap.core.Timeline | null>(null);
   // トーストのアニメーション制御に使う参照
   const toastRef = useRef<HTMLDivElement | null>(null);
   const toastAnimationRef = useRef<gsap.core.Timeline | null>(null);
@@ -259,11 +268,17 @@ export default function TestPageLayout({
       if (gainPulseTimeoutRef.current) {
         clearTimeout(gainPulseTimeoutRef.current);
       }
+      if (gainBadgeTimeoutRef.current) {
+        clearTimeout(gainBadgeTimeoutRef.current);
+      }
       if (xpTweenRef.current) {
         xpTweenRef.current.kill();
       }
       if (toastAnimationRef.current) {
         toastAnimationRef.current.kill();
+      }
+      if (gainBadgeAnimationRef.current) {
+        gainBadgeAnimationRef.current.kill();
       }
     };
   }, []);
@@ -275,7 +290,7 @@ export default function TestPageLayout({
 
   // XPが増えたときに、数値をカウントアップで見せる
   useEffect(() => {
-    const targetXp = Math.max(0, baseTotalXpRef.current + sessionGainedXp);
+    const targetXp = Math.max(0, sessionGainedXp);
     if (prefersReducedMotion) {
       setAnimatedXp(targetXp);
       xpCounterRef.current.value = targetXp;
@@ -380,6 +395,45 @@ export default function TestPageLayout({
     };
   }, [sessionGainedXp]);
 
+  // EXP増加の加算分は短時間だけ表示して、ポンッと演出する
+  useLayoutEffect(() => {
+    if (!latestGain) return;
+    if (gainBadgeTimeoutRef.current) {
+      clearTimeout(gainBadgeTimeoutRef.current);
+    }
+
+    const badge = gainBadgeRef.current;
+    if (!prefersReducedMotion && badge) {
+      if (gainBadgeAnimationRef.current) {
+        gainBadgeAnimationRef.current.kill();
+      }
+      gainBadgeAnimationRef.current = gsap
+        .timeline()
+        .fromTo(
+          badge,
+          {autoAlpha: 0, scale: 0.8, y: 6},
+          {
+            autoAlpha: 1,
+            scale: 1.08,
+            y: -6,
+            duration: 0.22,
+            ease: "back.out(2.6)",
+          },
+        )
+        .to(badge, {
+          autoAlpha: 0,
+          y: -14,
+          duration: 0.2,
+          ease: "power2.in",
+        });
+    }
+
+    gainBadgeTimeoutRef.current = window.setTimeout(() => {
+      setLatestGain(null);
+      gainBadgeTimeoutRef.current = null;
+    }, 1000);
+  }, [latestGain, prefersReducedMotion]);
+
   // 問題や正解が存在しない場合は何も描画しない
   if (!question || !answerChoice)
     return <p aria-label='data-error'>問題データが取得できませんでした</p>;
@@ -407,6 +461,8 @@ export default function TestPageLayout({
     const gainAmount = isAnswer ? XP_PER_CORRECT : XP_PER_INCORRECT;
     // 獲得XPは累積で表示するためにセッション内で加算しておく
     setSessionGainedXp((prev) => prev + gainAmount);
+    // 加算分の演出をEXPパネルに渡す
+    setLatestGain({amount: gainAmount, key: Date.now()});
     clearTimeout(toastDelayTimeoutRef.current as unknown as number);
     toastDelayTimeoutRef.current = window.setTimeout(() => {
       setGainToast({
@@ -523,9 +579,9 @@ export default function TestPageLayout({
     : undefined;
 
   // EXP表示の強調状態に合わせてアニメーションを出し分ける
-  const expIndicatorClass = `pointer-events-none fixed left-1/2 top-3 z-30 w-[200px] -translate-x-1/2 transform-gpu rounded-2xl border border-white/10 bg-[#0b0f1f]/80 px-4 py-3 text-white shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur ${isGainPulse ? "scale-[1.03]" : "scale-100"} ${
+  const expIndicatorClass = `pointer-events-none fixed right-3 top-3 z-[80] inline-flex min-w-[96px] items-center justify-center rounded-xl border border-white/10 bg-[#0b0f1f]/85 px-3 py-2 text-white shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur ${isGainPulse ? "scale-[1.03]" : "scale-100"} ${
     prefersReducedMotion ? "" : "transition-transform duration-300"
-  } sm:left-auto sm:right-6 sm:top-20 sm:w-[220px] sm:translate-x-0`;
+  } sm:right-6 sm:top-6`;
 
   return (
     <>
@@ -633,7 +689,18 @@ export default function TestPageLayout({
                         {cardIndex + 1} / {totalQuestions}
                       </span>
                     </div>
-                    <div className='mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10'>
+                  <div className='relative mt-2'>
+                    {/* 直近の加算分は進捗バーの真上にセンターで表示する */}
+                    {isActiveCard && latestGain && (
+                      <span
+                        ref={gainBadgeRef}
+                        key={latestGain.key}
+                        className='absolute left-1/2 top-0 -translate-x-1/2 -translate-y-full rounded-lg border border-emerald-200/80 bg-emerald-500/90 px-2 py-0.5 text-[11px] font-semibold text-emerald-50 shadow-[0_12px_26px_rgba(16,185,129,0.35)]'
+                      >
+                        {`+${latestGain.amount}`}
+                      </span>
+                    )}
+                    <div className='h-2 w-full overflow-hidden rounded-full bg-white/10'>
                       <span
                         // アクセシビリティ用のaria属性で進捗を伝える
                         aria-label={`進捗 ${cardIndex + 1} / ${totalQuestions}`}
@@ -645,6 +712,7 @@ export default function TestPageLayout({
                         style={{width: `${cardProgress}%`}}
                       />
                     </div>
+                  </div>
                   </div>
                   {/* 出題中の単語 */}
                   <h1 className='mb-6 text-center text-4xl font-bold text-[#f2c97d]'>
