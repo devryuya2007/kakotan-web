@@ -60,8 +60,7 @@ const ToggleSwitch = ({
 };
 
 export default function UserConfig() {
-  const {config, setMaxCount, setSoundEnabled, setVibrationEnabled} =
-    useUserConfig();
+  const {config, setMaxCount, setSoundEnabled} = useUserConfig();
   const {soundPreference} = config;
   const configEntries = useMemo(
     () =>
@@ -87,16 +86,9 @@ export default function UserConfig() {
             <ToggleSwitch
               id="sound-toggle"
               label="すべての音"
-              description="クリック音や正解・不正解の音をまとめて切り替える"
+              description="クリック音などをまとめて切り替える"
               checked={soundPreference.isSoundEnabled}
               onChange={setSoundEnabled}
-            />
-            <ToggleSwitch
-              id="vibration-toggle"
-              label="バイブ"
-              description="正解・不正解時のバイブをまとめて切り替える"
-              checked={soundPreference.isVibrationEnabled}
-              onChange={setVibrationEnabled}
             />
           </div>
           {/* 問題数の設定は画面幅に合わせて折り返す */}
