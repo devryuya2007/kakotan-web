@@ -40,6 +40,15 @@ body {
   text-shadow: 0 0 10px var(--accent-color);
 }
 
+.button-pressable {
+  transform: translateZ(0);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.button-pressable:active {
+  transform: translateY(4px);
+}
+
 .heading-display {
   font-family:
     'Playfair Display',

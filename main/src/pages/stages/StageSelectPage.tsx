@@ -274,7 +274,7 @@ function StageTile({
       type='button'
       onClick={onSelect}
       disabled={isLocked}
-      className={`group flex flex-col items-center justify-start transition-all duration-300 ${
+      className={`button-pressable group flex flex-col items-center justify-start transition-all duration-300 ${
         isLocked ? 'cursor-not-allowed' : 'hover:-translate-y-1'
       }`}
       style={{
@@ -458,7 +458,7 @@ function StageStartModal({
       <div className='pt-2 text-right'>
         <button
           type='button'
-          className='rounded-full border border-[#f2c97d66] bg-[#14141f] px-6 py-3 text-sm font-semibold tracking-[0.3em] text-[#f2c97d] shadow-[0_0_25px_rgba(242,201,125,0.25)] transition hover:border-[#f2c97d] hover:bg-[#1c1c2a] hover:shadow-[0_0_35px_rgba(242,201,125,0.35)]'
+          className='button-pressable rounded-full border border-[#f2c97d66] bg-[#14141f] px-6 py-3 text-sm font-semibold tracking-[0.3em] text-[#f2c97d] shadow-[0_0_25px_rgba(242,201,125,0.25)] transition hover:border-[#f2c97d] hover:bg-[#1c1c2a] hover:shadow-[0_0_35px_rgba(242,201,125,0.35)]'
           onClick={() => onStart(stage)}
         >
           Start

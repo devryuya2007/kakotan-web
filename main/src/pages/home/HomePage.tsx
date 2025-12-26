@@ -7,7 +7,7 @@ import {useNavigate} from 'react-router-dom';
 
 // Secondary CTA style for the “View Results” button.
 const SecondaryButtonStyle =
-  'w-full rounded-full border border-[#f2c97d33] bg-transparent px-6 py-3 text-sm font-semibold tracking-[0.3em] text-[#f2c97d] shadow-[0_0_25px_rgba(242,201,125,0.15)] transition hover:border-[#f2c97d] hover:bg-[#1c1c2a] hover:shadow-[0_0_35px_rgba(242,201,125,0.25)]';
+  "button-pressable w-full rounded-full border border-[#f2c97d33] bg-transparent px-6 py-3 text-sm font-semibold tracking-[0.3em] text-[#f2c97d] shadow-[0_0_25px_rgba(242,201,125,0.15)] transition hover:border-[#f2c97d] hover:bg-[#1c1c2a] hover:shadow-[0_0_35px_rgba(242,201,125,0.25)]";
 
 export default function HomePage() {
   const nav = useNavigate();
