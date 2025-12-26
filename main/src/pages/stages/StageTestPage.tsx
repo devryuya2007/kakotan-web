@@ -12,7 +12,6 @@ import {
 } from "@/features/stages/stageUtils";
 import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
 import TestPageLayout from "@/pages/tests/test_page/layout/TestPageLayout";
-import {useShuffledItems} from "@/hooks/useShuffledItems";
 
 import {YEAR_LABELS, isYearKey} from "./stageConstants";
 
@@ -92,6 +91,7 @@ export default function StageTestPage() {
         const questions = buildStageQuestions({
           vocab,
           stage: targetStage,
+          shuffleEntries: shouldShuffle,
         });
 
         setState({
@@ -143,8 +143,8 @@ export default function StageTestPage() {
         )}
         {state.status === "ready" && state.stage && (
           <TestPageLayout
-            count={displayQuestions.length}
-            questions={displayQuestions}
+            count={state.questions.length}
+            questions={state.questions}
             sectionId={`${yearLabel} Stage ${stageNumber}`}
             stageId={state.stage.stageId}
           />
