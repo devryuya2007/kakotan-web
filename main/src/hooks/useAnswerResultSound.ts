@@ -31,7 +31,6 @@ export const useAnswerResultSound = (): AnswerSoundControls => {
   const canVibrateRef = useRef(false);
   // バイブが使えない端末向けに音を保持しておく
   const correctAudioRef = useRef<HTMLAudioElement | null>(null);
-  const incorrectAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
