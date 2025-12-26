@@ -140,6 +140,7 @@ describe("ステージ定義ユーティリティ", () => {
       vocab,
       stage: targetStage,
       shuffleEntries: true,
+      shuffleSeed: 20250101,
     });
 
     expect(questions).toHaveLength(2);

@@ -16,6 +16,7 @@ export function useYearVocab(
   year: YearKey,
   maxCount: number,
 ): UseYearVocabResult {
+  const extraShuffleSeed = 20250101;
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>(
     'idle',
   );
@@ -23,7 +24,11 @@ export function useYearVocab(
   const [error, setError] = useState<string | null>(null);
   // extraだけ順番をシャッフルして、連続出題の偏りを減らす
   const shouldShuffle = year === "extra";
-  const shuffledQuestions = useShuffledItems(questions, shouldShuffle);
+  const shuffledQuestions = useShuffledItems(
+    questions,
+    shouldShuffle,
+    extraShuffleSeed,
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -36,7 +41,9 @@ export function useYearVocab(
         const vocab = await loadYearVocab(year);
         if (cancelled) return;
 
-        const sourceVocab = shouldShuffle ? shuffleItems(vocab) : vocab;
+        const sourceVocab = shouldShuffle
+          ? shuffleItems(vocab, extraShuffleSeed)
+          : vocab;
         const nextQuestions = buildQuestionsFromVocab(sourceVocab, maxCount);
         setQuestions(nextQuestions);
         setStatus('ready');

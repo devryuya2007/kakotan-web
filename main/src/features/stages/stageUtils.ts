@@ -220,6 +220,7 @@ export interface StageQuestionInput {
   vocab: VocabEntry[];
   stage: StageDefinition;
   shuffleEntries?: boolean;
+  shuffleSeed?: number;
 }
 
 // 指定ステージの問題配列を作る（最後のステージは残り分だけになる）
@@ -227,12 +228,13 @@ export const buildStageQuestions = ({
   vocab,
   stage,
   shuffleEntries = false,
+  shuffleSeed,
 }: StageQuestionInput): QuizQuestion[] => {
   // ステージ定義と同じ基準で語彙をフィルタする
   const filteredEntries = filterStageEntries(vocab);
   // 必要なら出題対象の順番を先にシャッフルして偏りを減らす
   const sourceEntries = shuffleEntries
-    ? shuffleItems(filteredEntries)
+    ? shuffleItems(filteredEntries, shuffleSeed)
     : filteredEntries;
   // 定義済みの開始位置と問題数を使って切り出す
   const startIndex = Math.max(0, stage.startIndex);
