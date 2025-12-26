@@ -23,6 +23,7 @@ interface StageQuestionState {
 }
 
 export default function StageTestPage() {
+  const extraShuffleSeed = 20250101;
   const {year: yearParam, stageNumber: stageParam} = useParams();
   const {config} = useUserConfig();
 
@@ -92,6 +93,7 @@ export default function StageTestPage() {
           vocab,
           stage: targetStage,
           shuffleEntries: shouldShuffle,
+          shuffleSeed: extraShuffleSeed,
         });
 
         setState({
