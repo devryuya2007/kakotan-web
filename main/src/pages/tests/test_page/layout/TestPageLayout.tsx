@@ -503,7 +503,7 @@ export default function TestPageLayout({
   ];
 
   const toastBaseClass =
-    'absolute z-[9999] flex items-center rounded-full border px-1.5 py-0.5 text-[9px] font-semibold shadow-[0_10px_24px_rgba(0,0,0,0.35)] pointer-events-none';
+    'absolute z-[9999] flex h-[28px] w-[72px] items-center justify-center rounded-xl border text-[12px] font-semibold shadow-[0_10px_24px_rgba(0,0,0,0.35)] pointer-events-none';
 
   const correctToastClass =
     'border-emerald-200/80 bg-emerald-500/90 text-emerald-50';
@@ -555,7 +555,7 @@ export default function TestPageLayout({
             key={gainToast.key}
             data-testid="xp-toast"
           >
-            {`${gainToast.amount}`}
+            {`+${gainToast.amount}`}
           </div>
         )}
         {/* デスクトップではカードを重ねるために絶対配置を使うので、この囲いをrelativeにして境界を固定化 */}
