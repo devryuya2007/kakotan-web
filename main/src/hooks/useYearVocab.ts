@@ -1,7 +1,7 @@
-import {buildQuestionsFromVocab, loadYearVocab} from '../data/vocabLoader';
-import type {QuizQuestion, YearKey} from '../data/vocabLoader';
+import {buildQuestionsFromVocab, loadYearVocab} from "../data/vocabLoader";
+import type {QuizQuestion, YearKey} from "../data/vocabLoader";
 
-import {useEffect, useState} from 'react';
+import {useEffect, useState} from "react";
 
 export type UseYearVocabResult = {
   status: 'idle' | 'loading' | 'ready' | 'error';

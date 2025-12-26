@@ -12,7 +12,13 @@ vi.mock("@/hooks/useYearVocab", () => ({
 vi.mock("@/pages/tests/test_page/hooks/useUserConfig", () => ({
   useUserConfig: () => ({
     config: {
-      reiwa3: {maxCount: 20, sectionId: "reiwa3"},
+      years: {
+        reiwa3: {maxCount: 20, sectionId: "reiwa3"},
+      },
+      soundPreference: {
+        isSoundEnabled: true,
+        isVibrationEnabled: true,
+      },
     },
   }),
 }));

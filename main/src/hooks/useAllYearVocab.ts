@@ -43,7 +43,7 @@ export function useAllYearVocab(): AllYearVocabResult {
           yearRegistry.map(async (entry) => {
             const vocab = await loadYearVocab(entry.key);
             const maxCount =
-              config[entry.key]?.maxCount ?? entry.defaultQuestionCount;
+              config.years[entry.key]?.maxCount ?? entry.defaultQuestionCount;
             const questions = buildQuestionsFromVocab(vocab, maxCount);
             return [entry.key, questions] as const;
           }),
@@ -70,7 +70,7 @@ export function useAllYearVocab(): AllYearVocabResult {
     return () => {
       cancelled = true;
     };
-  }, [config]);
+  }, [config.years]);
 
   return {
     status,

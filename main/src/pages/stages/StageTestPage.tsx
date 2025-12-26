@@ -41,7 +41,7 @@ export default function StageTestPage() {
     Number.isFinite(parsedStageNumber) && parsedStageNumber > 0
       ? parsedStageNumber
       : 1;
-  const baseQuestionCount = config[year].maxCount;
+  const baseQuestionCount = config.years[year].maxCount;
   const yearLabel = YEAR_LABELS[year];
 
   // ステージの問題配列やエラーをまとめて管理する
@@ -113,7 +113,6 @@ export default function StageTestPage() {
       cancelled = true;
     };
   }, [year, yearLabel, baseQuestionCount, stageNumber]);
-
   // URLの年度が不正ならメニューに戻す案内を出す
   if (!isValidYear) {
     return (

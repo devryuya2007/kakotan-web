@@ -11,10 +11,10 @@ type MiniResultPageModalProps = {
 };
 
 const CLOSE_BUTTON_CLASS =
-  'rounded-xl bg-[#f2c97d] px-5 py-2 text-sm font-semibold text-slate-900 transition hover:bg-[#f6dda5]';
+  'button-pressable rounded-xl bg-[#f2c97d] px-5 py-2 text-sm font-semibold text-slate-900 transition hover:bg-[#f6dda5]';
 
 const RESULTS_BUTTON_CLASS =
-  'rounded-xl border border-[#f2c97d55] px-5 py-2 text-sm font-semibold text-[#f2c97d] transition hover:border-[#f2c97d] hover:text-[#f6dda5]';
+  'button-pressable rounded-xl border border-[#f2c97d55] px-5 py-2 text-sm font-semibold text-[#f2c97d] transition hover:border-[#f2c97d] hover:text-[#f6dda5]';
 
 const LIST_ITEM_CLASS =
   'flex flex-col gap-1 rounded-xl border border-white/10  px-4 py-3 bg-[#262335]';

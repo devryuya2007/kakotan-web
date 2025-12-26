@@ -298,7 +298,7 @@ export default function MiniResultPage() {
                   <button
                     onClick={() => setIsModalOpen(true)}
                     type='button'
-                    className={`mt-4 block w-full text-sm font-semibold ${palette.accent} transition hover:text-[#f7e2bd]`}
+                    className={`button-pressable mt-4 block w-full text-sm font-semibold ${palette.accent} transition hover:text-[#f7e2bd]`}
                   >
                     View more...
                   </button>

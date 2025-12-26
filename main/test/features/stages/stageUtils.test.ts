@@ -116,6 +116,7 @@ describe("ステージ定義ユーティリティ", () => {
     expect(questions[1]?.phrase).toBe("dragon");
   });
 
+
   test("キャッシュが壊れていても新しく作り直される", () => {
     // JSONが壊れている場合でも落ちないことを確認する
     localStorage.setItem("stage-definition-cache:v1", "{broken");
@@ -138,7 +139,6 @@ describe("ステージ定義ユーティリティ", () => {
   test("windowが無いときはキャッシュ操作をスキップする", () => {
     // SSR環境向けの早期returnを通す
     const originalWindow = window;
-    // @ts-expect-error windowを一時的に消す
     vi.stubGlobal("window", undefined);
 
     const vocab: VocabEntry[] = [
