@@ -19,7 +19,6 @@ import {QuickStartButton} from '@/components/buttons/QuickStartButton';
 import {
   XP_PER_CORRECT,
   XP_PER_INCORRECT,
-  calculateLevelProgress,
   getExperiencePoints,
 } from '@/features/results/scoring';
 import {
@@ -95,7 +94,6 @@ export default function TestPageLayout({
     sessionStartRef.current = Date.now();
     // セッション開始時点のXPを基準にして表示を初期化する
     setSessionGainedXp(0);
-    setLatestGain(null);
     setAnimatedXp(baseTotalXpRef.current);
 
     // ステージモードなら挑戦済みを先に記録しておく
@@ -124,12 +122,6 @@ export default function TestPageLayout({
   } | null>(null);
   // テスト中に獲得したXPを積み上げておく
   const [sessionGainedXp, setSessionGainedXp] = useState(0);
-  // 直近の獲得XPを一時的に表示するためのstate
-  const [latestGain, setLatestGain] = useState<{
-    amount: number;
-    isCorrect: boolean;
-    key: number;
-  } | null>(null);
   // 直近の獲得演出を強調するためのフラグ
   const [isGainPulse, setIsGainPulse] = useState(false);
   // 表示用のXPをなめらかに増やすためのstate
@@ -195,16 +187,6 @@ export default function TestPageLayout({
     () => questions.slice(currentIndex, currentIndex + 4),
     [questions, currentIndex],
   );
-  // 表示用XPからレベル進捗を計算してUIに渡す
-  const expProgress = useMemo(
-    () => calculateLevelProgress(animatedXp),
-    [animatedXp],
-  );
-  const expProgressPercent = Math.min(
-    expProgress.progressRatio * 100,
-    100,
-  );
-
   const finishTest = useCallback(() => {
     const snapshot = {correct, incorrect, ExperiencePoints: totalXp};
     const {gainedXp, nextTotalXp} = getExperiencePoints(snapshot);
@@ -378,7 +360,7 @@ export default function TestPageLayout({
 
   // XPが増えた直後だけ強調演出を入れる
   useEffect(() => {
-    if (!latestGain) {
+    if (sessionGainedXp <= 0) {
       setIsGainPulse(false);
       return;
     }
@@ -396,7 +378,7 @@ export default function TestPageLayout({
         clearTimeout(gainPulseTimeoutRef.current);
       }
     };
-  }, [latestGain]);
+  }, [sessionGainedXp]);
 
   // 問題や正解が存在しない場合は何も描画しない
   if (!question || !answerChoice)
@@ -425,8 +407,6 @@ export default function TestPageLayout({
     const gainAmount = isAnswer ? XP_PER_CORRECT : XP_PER_INCORRECT;
     // 獲得XPは累積で表示するためにセッション内で加算しておく
     setSessionGainedXp((prev) => prev + gainAmount);
-    // 直近の獲得量をUIに渡す
-    setLatestGain({amount: gainAmount, isCorrect: isAnswer, key: Date.now()});
     clearTimeout(toastDelayTimeoutRef.current as unknown as number);
     toastDelayTimeoutRef.current = window.setTimeout(() => {
       setGainToast({
@@ -546,11 +526,6 @@ export default function TestPageLayout({
   const expIndicatorClass = `pointer-events-none fixed left-1/2 top-3 z-30 w-[200px] -translate-x-1/2 transform-gpu rounded-2xl border border-white/10 bg-[#0b0f1f]/80 px-4 py-3 text-white shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur ${isGainPulse ? "scale-[1.03]" : "scale-100"} ${
     prefersReducedMotion ? "" : "transition-transform duration-300"
   } sm:left-auto sm:right-6 sm:top-20 sm:w-[220px] sm:translate-x-0`;
-  const expGainClass =
-    latestGain?.isCorrect === false ? "text-rose-200" : "text-emerald-200";
-  const expProgressClass = `block h-full rounded-full bg-gradient-to-r from-[#f2c97d] via-amber-300 to-yellow-200 ${
-    prefersReducedMotion ? "" : "transition-all duration-500"
-  }`;
 
   return (
     <>
@@ -560,32 +535,9 @@ export default function TestPageLayout({
         aria-live="polite"
         data-testid="exp-indicator"
       >
-        <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-white/60">
-          <span>EXP</span>
-          <span>{`Lv ${expProgress.level}`}</span>
-        </div>
-        <div className="mt-2 flex items-end justify-between gap-3">
-          <span className="text-2xl font-semibold tabular-nums tracking-[0.08em] text-[#f2c97d]">
-            {animatedXp}
-          </span>
-          {latestGain && (
-            <span
-              key={latestGain.key}
-              className={`text-xs font-semibold ${expGainClass}`}
-            >
-              {`+${latestGain.amount} XP`}
-            </span>
-          )}
-        </div>
-        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10">
-          <span
-            className={expProgressClass}
-            style={{width: `${expProgressPercent}%`}}
-          />
-        </div>
-        <p className="mt-1 text-[10px] text-white/55">
-          {`NEXT ${expProgress.xpTillNextLevel} XP`}
-        </p>
+        <span className="text-3xl font-semibold tabular-nums tracking-[0.08em] text-[#f2c97d]">
+          {animatedXp}
+        </span>
       </div>
       <div className='fixed bottom-6 right-6 z-20 w-[6rem]'>
         <QuickStartButton onClick={() => navigate('/')} label='Home' />

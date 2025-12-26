@@ -301,7 +301,8 @@ describe("テストページ", () => {
     expect(toast).toBeInTheDocument();
   });
 
-  test("正解時にEXPが累積表示として増える", async () => {
+  test("正解時に累積XPの数字が増える", async () => {
+    usePrefersReducedMotionMock.mockReturnValue(true);
     renderLayout();
 
     const user = userEvent.setup();
@@ -310,8 +311,8 @@ describe("テストページ", () => {
     await user.click(correctButton);
 
     const indicator = screen.getByTestId("exp-indicator");
-    const gainText = await within(indicator).findByText("+90 XP");
-    expect(gainText).toBeInTheDocument();
+    const totalText = await within(indicator).findByText("90");
+    expect(totalText).toBeInTheDocument();
   });
 
   test("applyXpが正しい引数で呼ばれているか", async () => {
