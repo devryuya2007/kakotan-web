@@ -6,6 +6,25 @@ import reiwa7Vocab from "../assets/vocab/reiwa3_7/reiwa7.unigram.json";
 import extraVocab from "../assets/vocab/extra/extra_translated_refined.json";
 
 import type { VocabEntry } from "./vocabTypes";
+import { useMemo } from "react";
+
+function handleShuffkeVocab(vocab: VocabEntry[]): VocabEntry[] {
+  const parse = [...vocab];
+
+  for (let i = parse.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [parse[i], parse[j]] = [parse[j], parse[i]];
+  }
+
+  return parse;
+}
+
+export const useShuffledItem = (items: VocabEntry[], enabled: boolean = true): VocabEntry[] => {
+  return useMemo(() => {
+    if (!enabled) return items;
+    return handleShuffkeVocab(items);
+  }, [items, enabled]);
+};
 
 export interface StageTheme {
   accent: string;
@@ -99,4 +118,3 @@ export const isYearKey = (value: string): value is YearKey =>
 // 年度情報を取得する（存在しない場合は先頭年度を返す）
 export const getYearEntry = (year: YearKey): YearRegistryEntry =>
   yearRegistry.find((entry) => entry.key === year) ?? yearRegistry[0];
-
