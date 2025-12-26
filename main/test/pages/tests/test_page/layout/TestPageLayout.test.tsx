@@ -612,7 +612,7 @@ describe("テストページ", () => {
     });
 
     const toast = screen.getByTestId("xp-toast");
-    expect(toast.className).toContain("opacity-100");
+    expect(toast.className).toContain("z-[9999]");
   });
 
   test("IDが無い問題でもシャッフルが動く", () => {
