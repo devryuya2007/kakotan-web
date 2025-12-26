@@ -14,7 +14,7 @@ export const useButtonClickSound = () => {
     clickAudio.volume = 0.65;
     audioRef.current = clickAudio;
 
-    const handlePointerUp = (event: PointerEvent) => {
+    const handlePointerDown = (event: PointerEvent) => {
       if (!(event.target instanceof HTMLElement)) return;
       const button = event.target.closest("button");
       if (!button) return;
@@ -27,12 +27,12 @@ export const useButtonClickSound = () => {
       void playback.play().catch(() => {});
     };
 
-    document.addEventListener("pointerup", handlePointerUp, {
+    document.addEventListener("pointerdown", handlePointerDown, {
       capture: true,
     });
 
     return () => {
-      document.removeEventListener("pointerup", handlePointerUp, {
+      document.removeEventListener("pointerdown", handlePointerDown, {
         capture: true,
       });
     };
