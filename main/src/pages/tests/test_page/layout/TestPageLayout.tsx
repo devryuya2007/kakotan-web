@@ -17,6 +17,7 @@ import {QuickStartButton} from '@/components/buttons/QuickStartButton';
 import {
   XP_PER_CORRECT,
   XP_PER_INCORRECT,
+  calculateLevelProgress,
   getExperiencePoints,
 } from '@/features/results/scoring';
 import {
@@ -52,6 +53,8 @@ export default function TestPageLayout({
     addSession,
   } = useTestResults();
 
+  // このテスト開始時点の累積XPを固定で持っておく
+  const baseTotalXpRef = useRef(totalXp);
   const sessionStartRef = useRef<number | null>(null);
   // 正解・不正解に合わせた効果音を鳴らすための関数
   const {playAnswerSound} = useAnswerResultSound();
@@ -88,6 +91,10 @@ export default function TestPageLayout({
   useEffect(() => {
     reset();
     sessionStartRef.current = Date.now();
+    // セッション開始時点のXPを基準にして表示を初期化する
+    setSessionGainedXp(0);
+    setLatestGain(null);
+    setAnimatedXp(baseTotalXpRef.current);
 
     // ステージモードなら挑戦済みを先に記録しておく
     if (stageId) {
@@ -114,6 +121,23 @@ export default function TestPageLayout({
     key: number;
     position: {top: number; left: number};
   } | null>(null);
+  // テスト中に獲得したXPを積み上げておく
+  const [sessionGainedXp, setSessionGainedXp] = useState(0);
+  // 直近の獲得XPを一時的に表示するためのstate
+  const [latestGain, setLatestGain] = useState<{
+    amount: number;
+    isCorrect: boolean;
+    key: number;
+  } | null>(null);
+  // 直近の獲得演出を強調するためのフラグ
+  const [isGainPulse, setIsGainPulse] = useState(false);
+  // 表示用のXPをなめらかに増やすためのstate
+  const [animatedXp, setAnimatedXp] = useState(baseTotalXpRef.current);
+  // XPのアニメーション制御に使う参照
+  const animatedXpRef = useRef(animatedXp);
+  const xpAnimationRef = useRef<number | null>(null);
+  const xpAnimationStartRef = useRef<number | null>(null);
+  const gainPulseTimeoutRef = useRef<number | null>(null);
   // セクション要素の位置を参照してトーストの表示座標に使う
   const sectionRef = useRef<HTMLElement | null>(null);
   const toastDelayTimeoutRef = useRef<number | null>(null);
@@ -167,6 +191,15 @@ export default function TestPageLayout({
   const visibleCards = useMemo(
     () => questions.slice(currentIndex, currentIndex + 4),
     [questions, currentIndex],
+  );
+  // 表示用XPからレベル進捗を計算してUIに渡す
+  const expProgress = useMemo(
+    () => calculateLevelProgress(animatedXp),
+    [animatedXp],
+  );
+  const expProgressPercent = Math.min(
+    expProgress.progressRatio * 100,
+    100,
   );
 
   const finishTest = useCallback(() => {
@@ -238,6 +271,12 @@ export default function TestPageLayout({
       if (transitionTimeoutRef.current) {
         clearTimeout(transitionTimeoutRef.current);
       }
+      if (gainPulseTimeoutRef.current) {
+        clearTimeout(gainPulseTimeoutRef.current);
+      }
+      if (xpAnimationRef.current) {
+        window.cancelAnimationFrame(xpAnimationRef.current);
+      }
     };
   }, []);
 
@@ -261,6 +300,74 @@ export default function TestPageLayout({
       clearTimeout(timeoutId);
     };
   }, [gainToast, TOAST_DURATION]);
+
+  // アニメーション対象のXPを最新値で追従できるようにする
+  useEffect(() => {
+    animatedXpRef.current = animatedXp;
+  }, [animatedXp]);
+
+  // XPが増えたときに、数値をカウントアップで見せる
+  useEffect(() => {
+    const targetXp = Math.max(0, baseTotalXpRef.current + sessionGainedXp);
+    if (prefersReducedMotion) {
+      setAnimatedXp(targetXp);
+      return;
+    }
+    if (xpAnimationRef.current) {
+      window.cancelAnimationFrame(xpAnimationRef.current);
+    }
+    const fromValue = animatedXpRef.current;
+    if (fromValue === targetXp) return;
+
+    const durationMs = 360;
+    xpAnimationStartRef.current = null;
+
+    const animate = (timestamp: number) => {
+      if (!xpAnimationStartRef.current) {
+        xpAnimationStartRef.current = timestamp;
+      }
+      const elapsed = timestamp - xpAnimationStartRef.current;
+      const progress = Math.min(elapsed / durationMs, 1);
+      // 最後にスッと止まるイージングを使う
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const nextValue = Math.round(fromValue + (targetXp - fromValue) * eased);
+      setAnimatedXp(nextValue);
+
+      if (progress < 1) {
+        xpAnimationRef.current = window.requestAnimationFrame(animate);
+      }
+    };
+
+    xpAnimationRef.current = window.requestAnimationFrame(animate);
+
+    return () => {
+      if (xpAnimationRef.current) {
+        window.cancelAnimationFrame(xpAnimationRef.current);
+      }
+    };
+  }, [sessionGainedXp, prefersReducedMotion]);
+
+  // XPが増えた直後だけ強調演出を入れる
+  useEffect(() => {
+    if (!latestGain) {
+      setIsGainPulse(false);
+      return;
+    }
+    setIsGainPulse(true);
+    if (gainPulseTimeoutRef.current) {
+      clearTimeout(gainPulseTimeoutRef.current);
+    }
+    gainPulseTimeoutRef.current = window.setTimeout(() => {
+      setIsGainPulse(false);
+      gainPulseTimeoutRef.current = null;
+    }, 520);
+
+    return () => {
+      if (gainPulseTimeoutRef.current) {
+        clearTimeout(gainPulseTimeoutRef.current);
+      }
+    };
+  }, [latestGain]);
 
   // 問題や正解が存在しない場合は何も描画しない
   if (!question || !answerChoice)
@@ -287,6 +394,10 @@ export default function TestPageLayout({
       buttonRect.left - sectionRect!.left + buttonRect.width / 2;
 
     const gainAmount = isAnswer ? XP_PER_CORRECT : XP_PER_INCORRECT;
+    // 獲得XPは累積で表示するためにセッション内で加算しておく
+    setSessionGainedXp((prev) => prev + gainAmount);
+    // 直近の獲得量をUIに渡す
+    setLatestGain({amount: gainAmount, isCorrect: isAnswer, key: Date.now()});
     clearTimeout(toastDelayTimeoutRef.current as unknown as number);
     toastDelayTimeoutRef.current = window.setTimeout(() => {
       setGainToast({
@@ -405,8 +516,51 @@ export default function TestPageLayout({
     ? 'opacity-100 translate-y-0'
     : 'opacity-0 -translate-y-3';
 
+  // EXP表示の強調状態に合わせてアニメーションを出し分ける
+  const expIndicatorClass = `pointer-events-none fixed left-1/2 top-3 z-30 w-[200px] -translate-x-1/2 transform-gpu rounded-2xl border border-white/10 bg-[#0b0f1f]/80 px-4 py-3 text-white shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur ${isGainPulse ? "scale-[1.03]" : "scale-100"} ${
+    prefersReducedMotion ? "" : "transition-transform duration-300"
+  } sm:left-auto sm:right-6 sm:top-20 sm:w-[220px] sm:translate-x-0`;
+  const expGainClass =
+    latestGain?.isCorrect === false ? "text-rose-200" : "text-emerald-200";
+  const expProgressClass = `block h-full rounded-full bg-gradient-to-r from-[#f2c97d] via-amber-300 to-yellow-200 ${
+    prefersReducedMotion ? "" : "transition-all duration-500"
+  }`;
+
   return (
     <>
+      {/* EXPの累積表示は画面端に固定して、正答ごとの伸びを見せる */}
+      <div
+        className={expIndicatorClass}
+        aria-live="polite"
+        data-testid="exp-indicator"
+      >
+        <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-white/60">
+          <span>EXP</span>
+          <span>{`Lv ${expProgress.level}`}</span>
+        </div>
+        <div className="mt-2 flex items-end justify-between gap-3">
+          <span className="text-2xl font-semibold text-[#f2c97d]">
+            {animatedXp}
+          </span>
+          {latestGain && (
+            <span
+              key={latestGain.key}
+              className={`text-xs font-semibold ${expGainClass}`}
+            >
+              {`+${latestGain.amount} XP`}
+            </span>
+          )}
+        </div>
+        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10">
+          <span
+            className={expProgressClass}
+            style={{width: `${expProgressPercent}%`}}
+          />
+        </div>
+        <p className="mt-1 text-[10px] text-white/55">
+          {`NEXT ${expProgress.xpTillNextLevel} XP`}
+        </p>
+      </div>
       <div className='fixed bottom-6 right-6 z-20 w-[6rem]'>
         <QuickStartButton onClick={() => navigate('/')} label='Home' />
       </div>
@@ -420,6 +574,7 @@ export default function TestPageLayout({
             className={`${toastBaseClass} ${toastVariantClass} ${toastVisibilityClass}`}
             style={toastPositionStyle}
             key={gainToast.key}
+            data-testid="xp-toast"
           >
             {`+${gainToast.amount} XP`}
           </div>

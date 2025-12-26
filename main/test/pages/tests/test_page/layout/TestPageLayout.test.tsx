@@ -1,4 +1,4 @@
-import {render, screen, fireEvent} from "@testing-library/react";
+import {render, screen, fireEvent, within} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {act} from "react";
 import {MemoryRouter} from "react-router-dom";
@@ -297,8 +297,21 @@ describe("テストページ", () => {
 
     await user.click(correctButton);
 
-    const toast = await screen.findByText(/xp/i);
+    const toast = await screen.findByTestId("xp-toast");
     expect(toast).toBeInTheDocument();
+  });
+
+  test("正解時にEXPが累積表示として増える", async () => {
+    renderLayout();
+
+    const user = userEvent.setup();
+    const correctButton = screen.getByTestId("correct-choice");
+
+    await user.click(correctButton);
+
+    const indicator = screen.getByTestId("exp-indicator");
+    const gainText = await within(indicator).findByText("+90 XP");
+    expect(gainText).toBeInTheDocument();
   });
 
   test("applyXpが正しい引数で呼ばれているか", async () => {
@@ -581,6 +594,7 @@ describe("テストページ", () => {
 
   test("トーストが表示状態になる", () => {
     // rAF経由でトーストが表示状態になるか確認する
+    usePrefersReducedMotionMock.mockReturnValue(true);
     vi.useFakeTimers();
     window.requestAnimationFrame = (callback) => {
       callback(0);
@@ -597,7 +611,7 @@ describe("テストページ", () => {
       vi.advanceTimersByTime(1);
     });
 
-    const toast = screen.getByText(/XP/i);
+    const toast = screen.getByTestId("xp-toast");
     expect(toast.className).toContain("opacity-100");
   });
 
