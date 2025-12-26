@@ -1,10 +1,10 @@
-import { useEffect, useRef } from "react";
+import {useEffect, useRef} from "react";
 
 import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
 
 const clickSoundOggUrl = new URL(
   "../../assets/kenney_interface-sounds/Audio/click_002.ogg",
-  import.meta.url
+  import.meta.url,
 ).href;
 const clickSoundMp3Url = new URL(
   "../../assets/kenney_interface-sounds/Audio/click_002.mp3",

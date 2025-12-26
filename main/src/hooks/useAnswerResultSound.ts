@@ -1,7 +1,6 @@
 import {useEffect, useRef} from "react";
 
 import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
-
 const correctSoundOggUrl = new URL(
   "../../assets/kenney_interface-sounds/Audio/answer_correct.ogg",
   import.meta.url,
@@ -31,6 +30,7 @@ export const useAnswerResultSound = (): AnswerSoundControls => {
   const canVibrateRef = useRef(false);
   // バイブが使えない端末向けに音を保持しておく
   const correctAudioRef = useRef<HTMLAudioElement | null>(null);
+  const incorrectAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
