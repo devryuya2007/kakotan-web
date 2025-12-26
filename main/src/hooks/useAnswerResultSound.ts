@@ -21,11 +21,13 @@ export const useAnswerResultSound = (): AnswerSoundControls => {
     // 正解・不正解の短い音を先読みして、クリック直後の遅延を減らす
     const correctAudio = new Audio(correctSoundUrl);
     correctAudio.preload = "auto";
-    correctAudio.volume = 0.55;
+    // 音量を少し上げて、短い音でも聞き取りやすくする
+    correctAudio.volume = 0.8;
 
     const incorrectAudio = new Audio(incorrectSoundUrl);
     incorrectAudio.preload = "auto";
-    incorrectAudio.volume = 0.55;
+    // 不正解も同じ音量に揃えて、体感の差を減らす
+    incorrectAudio.volume = 0.8;
 
     correctAudioRef.current = correctAudio;
     incorrectAudioRef.current = incorrectAudio;
