@@ -1,6 +1,5 @@
 import {buildQuestionsFromVocab} from "@/data/vocabLoader";
 import type {QuizQuestion, VocabEntry, YearKey} from "@/data/vocabLoader";
-import {shuffleItems} from "@/utils/shuffleItems";
 
 // ステージ1つ分の情報。UIやルーティングで使うために必須の情報だけまとめる
 export interface StageDefinition {
@@ -219,27 +218,19 @@ export const createStageDefinitions = ({
 export interface StageQuestionInput {
   vocab: VocabEntry[];
   stage: StageDefinition;
-  shuffleEntries?: boolean;
-  shuffleSeed?: number;
 }
 
 // 指定ステージの問題配列を作る（最後のステージは残り分だけになる）
 export const buildStageQuestions = ({
   vocab,
   stage,
-  shuffleEntries = false,
-  shuffleSeed,
 }: StageQuestionInput): QuizQuestion[] => {
   // ステージ定義と同じ基準で語彙をフィルタする
   const filteredEntries = filterStageEntries(vocab);
-  // 必要なら出題対象の順番を先にシャッフルして偏りを減らす
-  const sourceEntries = shuffleEntries
-    ? shuffleItems(filteredEntries, shuffleSeed)
-    : filteredEntries;
   // 定義済みの開始位置と問題数を使って切り出す
   const startIndex = Math.max(0, stage.startIndex);
   const questionCount = Math.max(0, stage.questionCount);
-  const stageEntries = sourceEntries.slice(
+  const stageEntries = filteredEntries.slice(
     startIndex,
     startIndex + questionCount,
   );
