@@ -5,26 +5,8 @@ import reiwa6Vocab from "../assets/vocab/reiwa3_7/reiwa6.unigram.json";
 import reiwa7Vocab from "../assets/vocab/reiwa3_7/reiwa7.unigram.json";
 import extraVocab from "../assets/vocab/extra/extra_translated_refined.json";
 
-import type { VocabEntry } from "./vocabTypes";
-import { useMemo } from "react";
-
-function handleShuffkeVocab(vocab: VocabEntry[]): VocabEntry[] {
-  const parse = [...vocab];
-
-  for (let i = parse.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [parse[i], parse[j]] = [parse[j], parse[i]];
-  }
-
-  return parse;
-}
-
-export const useShuffledItem = (items: VocabEntry[], enabled: boolean = true): VocabEntry[] => {
-  return useMemo(() => {
-    if (!enabled) return items;
-    return handleShuffkeVocab(items);
-  }, [items, enabled]);
-};
+import type {VocabEntry} from "./vocabTypes";
+import {shuffleItems} from "../utils/shuffleItems";
 
 export interface StageTheme {
   accent: string;
@@ -98,7 +80,8 @@ export const yearRegistry = [
     key: "extra",
     label: "Extra",
     sectionLabel: "追加単語",
-    vocab: extraVocab as VocabEntry[],
+    // extraは固定シードで一度シャッフルして、出題順の偏りを避ける
+    vocab: shuffleItems(extraVocab as VocabEntry[], 20250101),
     theme: {
       accent: "#f2c97d",
       accentSoft: "#ffe7b0",
