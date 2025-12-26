@@ -7,6 +7,7 @@ import {shuffleItems} from "@/utils/shuffleItems";
 export const useShuffledItems = <T,>(
   items: T[],
   enabled = true,
+  seed?: number,
 ): T[] => {
   return useMemo(() => {
     // 無効化されているときは順番を変えずに返す
@@ -14,6 +15,6 @@ export const useShuffledItems = <T,>(
       return items;
     }
     // Fisher-Yatesで配列の順番をランダムに入れ替える
-    return shuffleItems(items);
-  }, [items, enabled]);
+    return shuffleItems(items, seed);
+  }, [items, enabled, seed]);
 };

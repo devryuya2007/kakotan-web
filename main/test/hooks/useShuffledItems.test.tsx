@@ -1,13 +1,10 @@
 import {renderHook} from "@testing-library/react";
-import {afterEach, describe, expect, test, vi} from "vitest";
+import {describe, expect, test} from "vitest";
 
 import {useShuffledItems} from "@/hooks/useShuffledItems";
+import {shuffleItems} from "@/utils/shuffleItems";
 
 describe("useShuffledItems", () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   test("enabledがfalseなら順番を変えずに返す", () => {
     const items = [1, 2, 3];
     // フラグOFFのときは元の配列順を維持する
@@ -18,12 +15,12 @@ describe("useShuffledItems", () => {
 
   test("enabledがtrueなら順番がシャッフルされる", () => {
     const items = [1, 2, 3];
-    // 乱数を固定してシャッフル結果を安定させる
-    vi.spyOn(Math, "random").mockReturnValue(0);
+    const seed = 20250101;
 
-    const {result} = renderHook(() => useShuffledItems(items, true));
+    const {result} = renderHook(() => useShuffledItems(items, true, seed));
 
-    expect(result.current).not.toEqual(items);
+    const expected = shuffleItems(items, seed);
+    expect(result.current).toEqual(expected);
     expect([...result.current].sort()).toEqual([...items].sort());
   });
 });
