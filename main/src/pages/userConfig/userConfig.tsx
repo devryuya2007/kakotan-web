@@ -1,19 +1,72 @@
-import {useUserConfig} from '../tests/test_page/hooks/useUserConfig';
+import {useUserConfig} from "../tests/test_page/hooks/useUserConfig";
 
-import {useMemo} from 'react';
+import {useMemo} from "react";
 
-import * as Slider from '@radix-ui/react-slider';
-import {useNavigate} from 'react-router-dom';
+import * as Slider from "@radix-ui/react-slider";
+import {useNavigate} from "react-router-dom";
 
-import {QuickStartButton} from '@/components/buttons/QuickStartButton';
-import {AppLayout} from '@/components/layout/AppLayout';
+import {QuickStartButton} from "@/components/buttons/QuickStartButton";
+import {AppLayout} from "@/components/layout/AppLayout";
+
+interface ToggleOption {
+  id: string;
+  label: string;
+  description: string;
+  checked: boolean;
+  onChange: (next: boolean) => void;
+}
+
+// 設定画面で使うトグルUI。role="switch"でアクセシビリティを確保する
+const ToggleSwitch = ({
+  id,
+  label,
+  description,
+  checked,
+  onChange,
+}: ToggleOption) => {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-labelledby={`${id}-label`}
+      aria-describedby={`${id}-desc`}
+      onClick={() => onChange(!checked)}
+      className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/15 bg-white/5 px-4 py-4 text-left shadow-[0_10px_30px_rgba(0,0,0,0.35)] transition hover:border-white/30"
+    >
+      <div className="space-y-1">
+        <p id={`${id}-label`} className="text-sm font-semibold text-white">
+          {label}
+        </p>
+        <p id={`${id}-desc`} className="text-xs text-white/60">
+          {description}
+        </p>
+      </div>
+      <span
+        className={`relative inline-flex h-7 w-12 items-center rounded-full border transition ${
+          checked
+            ? "border-[#f2c97d]/80 bg-[#f2c97d]/80"
+            : "border-white/20 bg-white/10"
+        }`}
+      >
+        <span
+          className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition ${
+            checked ? "translate-x-5" : "translate-x-1"
+          }`}
+        />
+      </span>
+    </button>
+  );
+};
 
 export default function UserConfig() {
-  const {config, setMaxCount} = useUserConfig();
+  const {config, setMaxCount, setSoundEnabled, setVibrationEnabled} =
+    useUserConfig();
+  const {soundPreference} = config;
   const configEntries = useMemo(
     () =>
-      Object.entries(config) as Array<
-        [keyof typeof config, (typeof config)[keyof typeof config]]
+      Object.entries(config.years) as Array<
+        [keyof typeof config.years, (typeof config.years)[keyof typeof config.years]]
       >,
     [config],
   );
@@ -29,6 +82,22 @@ export default function UserConfig() {
             <h1 className='text-[#f2c97d]'>Setting Your Exam</h1>
             <p className='text-sm text-white/60'>developing......</p>
           </header>
+          <div className='space-y-4'>
+            <ToggleSwitch
+              id="sound-toggle"
+              label="すべての音"
+              description="クリック音や正解・不正解の音をまとめて切り替える"
+              checked={soundPreference.isSoundEnabled}
+              onChange={setSoundEnabled}
+            />
+            <ToggleSwitch
+              id="vibration-toggle"
+              label="バイブ"
+              description="正解・不正解時のバイブをまとめて切り替える"
+              checked={soundPreference.isVibrationEnabled}
+              onChange={setVibrationEnabled}
+            />
+          </div>
           <div className='space-y-10'>
             {configEntries.map(([yearKey, yearConfig]) => (
               <div key={yearConfig.sectionId} className='space-y-4'>

@@ -22,11 +22,17 @@ vi.mock("@/pages/stages/hooks/useStageDefinitions", () => ({
 vi.mock("@/pages/tests/test_page/hooks/useUserConfig", () => ({
   useUserConfig: () => ({
     config: {
-      reiwa3: {maxCount: 20, sectionId: "reiwa3"},
-      reiwa4: {maxCount: 20, sectionId: "reiwa4"},
-      reiwa5: {maxCount: 20, sectionId: "reiwa5"},
-      reiwa6: {maxCount: 20, sectionId: "reiwa6"},
-      reiwa7: {maxCount: 20, sectionId: "reiwa7"},
+      years: {
+        reiwa3: {maxCount: 20, sectionId: "reiwa3"},
+        reiwa4: {maxCount: 20, sectionId: "reiwa4"},
+        reiwa5: {maxCount: 20, sectionId: "reiwa5"},
+        reiwa6: {maxCount: 20, sectionId: "reiwa6"},
+        reiwa7: {maxCount: 20, sectionId: "reiwa7"},
+      },
+      soundPreference: {
+        isSoundEnabled: true,
+        isVibrationEnabled: true,
+      },
     },
   }),
 }));

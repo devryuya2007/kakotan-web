@@ -1,5 +1,7 @@
 import {useEffect, useRef} from "react";
 
+import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
+
 const correctSoundOggUrl = new URL(
   "../../assets/kenney_interface-sounds/Audio/answer_correct.ogg",
   import.meta.url,
@@ -22,6 +24,9 @@ interface AnswerSoundControls {
 }
 
 export const useAnswerResultSound = (): AnswerSoundControls => {
+  const {config} = useUserConfig();
+  // 設定画面のON/OFFに合わせて音とバイブの挙動を切り替える
+  const {isSoundEnabled, isVibrationEnabled} = config.soundPreference;
   // バイブが使えるかどうかをキャッシュしておく
   const canVibrateRef = useRef(false);
   // バイブが使えない端末向けに音を保持しておく
@@ -34,38 +39,43 @@ export const useAnswerResultSound = (): AnswerSoundControls => {
     canVibrateRef.current = typeof navigator.vibrate === "function";
 
     // 再生できる形式を選んで、音を先読みしておく
-    const probe = document.createElement("audio");
-    const canPlayMp3 = probe.canPlayType("audio/mpeg");
-    const canPlayOgg = probe.canPlayType("audio/ogg; codecs=\"vorbis\"");
-    const pickUrl = (oggUrl: string, mp3Url: string) =>
-      canPlayMp3 !== ""
-        ? mp3Url
-        : canPlayOgg !== ""
-          ? oggUrl
-          : mp3Url;
+    if (isSoundEnabled) {
+      const probe = document.createElement("audio");
+      const canPlayMp3 = probe.canPlayType("audio/mpeg");
+      const canPlayOgg = probe.canPlayType("audio/ogg; codecs=\"vorbis\"");
+      const pickUrl = (oggUrl: string, mp3Url: string) =>
+        canPlayMp3 !== ""
+          ? mp3Url
+          : canPlayOgg !== ""
+            ? oggUrl
+            : mp3Url;
 
-    const correctAudio = new Audio(
-      pickUrl(correctSoundOggUrl, correctSoundMp3Url),
-    );
-    const incorrectAudio = new Audio(
-      pickUrl(incorrectSoundOggUrl, incorrectSoundMp3Url),
-    );
-    correctAudio.preload = "auto";
-    incorrectAudio.preload = "auto";
-    correctAudio.volume = 0.95;
-    incorrectAudio.volume = 0.95;
-    correctAudioRef.current = correctAudio;
-    incorrectAudioRef.current = incorrectAudio;
+      const correctAudio = new Audio(
+        pickUrl(correctSoundOggUrl, correctSoundMp3Url),
+      );
+      const incorrectAudio = new Audio(
+        pickUrl(incorrectSoundOggUrl, incorrectSoundMp3Url),
+      );
+      correctAudio.preload = "auto";
+      incorrectAudio.preload = "auto";
+      correctAudio.volume = 0.95;
+      incorrectAudio.volume = 0.95;
+      correctAudioRef.current = correctAudio;
+      incorrectAudioRef.current = incorrectAudio;
+    } else {
+      correctAudioRef.current = null;
+      incorrectAudioRef.current = null;
+    }
 
     return () => {
       correctAudioRef.current = null;
       incorrectAudioRef.current = null;
     };
-  }, []);
+  }, [isSoundEnabled]);
 
   const playAnswerSound = (isCorrect: boolean) => {
     // 先にバイブを試し、使えない端末は音にフォールバックする
-    if (canVibrateRef.current) {
+    if (isVibrationEnabled && canVibrateRef.current) {
       if (isCorrect) {
         const didVibrate = navigator.vibrate(30);
         if (didVibrate) return;
@@ -75,6 +85,7 @@ export const useAnswerResultSound = (): AnswerSoundControls => {
       }
     }
 
+    if (!isSoundEnabled) return;
     const playback = isCorrect
       ? correctAudioRef.current
       : incorrectAudioRef.current;

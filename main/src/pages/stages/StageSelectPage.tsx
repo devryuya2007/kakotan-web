@@ -49,7 +49,7 @@ export default function StageSelectPage() {
   const yearLabel = YEAR_LABELS[year];
   // ユーザー設定の「1ステージあたりの問題数」を取得する
   const {config} = useUserConfig();
-  const baseQuestionCount = config[year].maxCount;
+  const baseQuestionCount = config.years[year].maxCount;
 
   const {status, stages} = useStageDefinitions({
     year,
@@ -83,16 +83,16 @@ export default function StageSelectPage() {
       }
     };
 
-    window.addEventListener('focus', handleFocus);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('pageshow', handlePageShow);
-    window.addEventListener('storage', handleStorage);
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pageshow", handlePageShow);
+    window.addEventListener("storage", handleStorage);
 
     return () => {
-      window.removeEventListener('focus', handleFocus);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('pageshow', handlePageShow);
-      window.removeEventListener('storage', handleStorage);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pageshow", handlePageShow);
+      window.removeEventListener("storage", handleStorage);
     };
   }, [location.key]);
 

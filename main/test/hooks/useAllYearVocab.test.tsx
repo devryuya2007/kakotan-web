@@ -19,16 +19,22 @@ vi.mock("@/data/vocabLoader", async () => {
 
 vi.mock("@/pages/tests/test_page/hooks/useUserConfig", () => ({
   useUserConfig: () => ({
-    config: yearRegistry.reduce(
-      (accumulator, entry) => {
-        accumulator[entry.key] = {
-          maxCount: entry.defaultQuestionCount,
-          sectionId: entry.key,
-        };
-        return accumulator;
+    config: {
+      years: yearRegistry.reduce(
+        (accumulator, entry) => {
+          accumulator[entry.key] = {
+            maxCount: entry.defaultQuestionCount,
+            sectionId: entry.key,
+          };
+          return accumulator;
+        },
+        {} as Record<YearKey, {maxCount: number; sectionId: YearKey}>,
+      ),
+      soundPreference: {
+        isSoundEnabled: true,
+        isVibrationEnabled: true,
       },
-      {} as Record<YearKey, {maxCount: number; sectionId: YearKey}>,
-    ),
+    },
   }),
 }));
 

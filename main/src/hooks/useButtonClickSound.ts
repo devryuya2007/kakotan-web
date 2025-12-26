@@ -1,4 +1,6 @@
-import { useEffect, useRef } from "react";
+import {useEffect, useRef} from "react";
+
+import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
 
 const clickSoundOggUrl = new URL(
   "../../assets/kenney_interface-sounds/Audio/click_002.ogg",
@@ -10,9 +12,17 @@ const clickSoundMp3Url = new URL(
 ).href;
 
 export const useButtonClickSound = () => {
+  const {config} = useUserConfig();
+  // 音のON/OFF設定に合わせてクリック音を制御する
+  const {isSoundEnabled} = config.soundPreference;
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    if (!isSoundEnabled) {
+      audioRef.current = null;
+      return;
+    }
+    if (typeof document === "undefined") return;
     // 端末の対応状況に合わせて再生できる形式を選ぶ
     const probe = document.createElement("audio");
     const canPlayMp3 = probe.canPlayType("audio/mpeg");
@@ -54,5 +64,5 @@ export const useButtonClickSound = () => {
         capture: true,
       });
     };
-  }, []);
+  }, [isSoundEnabled]);
 };

@@ -6,6 +6,7 @@ import {beforeAll, describe, expect, vi} from "vitest";
 
 import type {QuizQuestion} from "@/data/vocabLoader";
 import TestPageLayout from "@/pages/tests/test_page/layout/TestPageLayout";
+import {UserConfigProvider} from "@/pages/tests/test_page/userConfigContext";
 
 const usePrefersReducedMotionMock = vi.fn();
 const navigateMock = vi.fn();
@@ -130,8 +131,12 @@ const sampleQuestions: QuizQuestion[] = [
   },
 ];
 
+// 設定コンテキストをテスト側でも使えるように包む
+const renderWithConfig = (ui: Parameters<typeof render>[0]) =>
+  render(ui, {wrapper: UserConfigProvider});
+
 const renderLayout = () =>
-  render(
+  renderWithConfig(
     <MemoryRouter>
       <TestPageLayout
         questions={sampleQuestions}
@@ -211,7 +216,7 @@ describe("テストページ", () => {
   });
 
   test("問題データが無いときはエラーを表示できているか", () => {
-    render(
+    renderWithConfig(
       <MemoryRouter>
         <TestPageLayout questions={[]} count={0} sectionId='null' />
       </MemoryRouter>,
@@ -223,7 +228,7 @@ describe("テストページ", () => {
   });
   test("正誤に応じてrecordResultの引数（true/false）が変わっているか", async () => {
     const user = userEvent.setup();
-    const firstRender = render(
+    const firstRender = renderWithConfig(
       <MemoryRouter>
         <TestPageLayout
           questions={[multiQuestions[0]]}
@@ -252,7 +257,7 @@ describe("テストページ", () => {
 
     firstRender.unmount();
 
-    render(
+    renderWithConfig(
       <MemoryRouter>
         <TestPageLayout
           questions={[multiQuestions[1]]}
@@ -298,7 +303,7 @@ describe("テストページ", () => {
 
   test("applyXpが正しい引数で呼ばれているか", async () => {
     const user = userEvent.setup();
-    const firstRender = render(
+    const firstRender = renderWithConfig(
       <MemoryRouter>
         <TestPageLayout
           questions={[multiQuestions[0]]}
@@ -321,7 +326,7 @@ describe("テストページ", () => {
     expect(applyXpMook).not.toHaveBeenCalled();
 
     firstRender.unmount();
-    render(
+    renderWithConfig(
       <MemoryRouter>
         <TestPageLayout
           questions={[multiQuestions[1]]}
@@ -355,7 +360,7 @@ describe("テストページ", () => {
     usePrefersReducedMotionMock.mockReturnValue(true);
     vi.useFakeTimers();
 
-    render(
+    renderWithConfig(
       <MemoryRouter>
         <TestPageLayout
           questions={multiQuestions}
@@ -396,7 +401,7 @@ describe("テストページ", () => {
 
   test("ステージIDがあると挑戦記録が保存される", () => {
     // ステージモードの初期化時に記録が走るか確認する
-    render(
+    renderWithConfig(
       <MemoryRouter>
         <TestPageLayout
           questions={sampleQuestions}
@@ -414,7 +419,7 @@ describe("テストページ", () => {
     // 正答したあとにステージ結果が保存されるか確認する
     vi.useFakeTimers();
 
-    render(
+    renderWithConfig(
       <MemoryRouter>
         <TestPageLayout
           questions={[multiQuestions[0]]}
@@ -450,7 +455,7 @@ describe("テストページ", () => {
     // hasFinishedRefのガードが動くか確認する
     vi.useFakeTimers();
 
-    const {rerender} = render(
+    const {rerender} = renderWithConfig(
       <MemoryRouter>
         <TestPageLayout
           questions={[multiQuestions[0]]}
@@ -493,7 +498,7 @@ describe("テストページ", () => {
     // スライド中にトランジション用のレイアウトが使われるか確認する
     vi.useFakeTimers();
 
-    render(
+    renderWithConfig(
       <MemoryRouter>
         <TestPageLayout
           questions={multiQuestions}
@@ -530,7 +535,7 @@ describe("テストページ", () => {
     // matchMediaがtrueのときにモバイル用レイアウトになるか確認する
     matchMediaMatches = true;
 
-    render(
+    renderWithConfig(
       <MemoryRouter>
         <TestPageLayout
           questions={[multiQuestions[0], multiQuestions[1], sampleQuestions[0]]}
@@ -606,7 +611,7 @@ describe("テストページ", () => {
       answerIndex: 0,
     };
 
-    render(
+    renderWithConfig(
       <MemoryRouter>
         <TestPageLayout questions={[questionWithoutId]} count={1} sectionId="q3" />
       </MemoryRouter>,
