@@ -16,11 +16,14 @@ export const useAnswerResultSound = (): AnswerSoundControls => {
   }, []);
 
   const playAnswerSound = (isCorrect: boolean) => {
-    // 不正解時は何もしない
-    if (!isCorrect) return;
     // ブラウザが対応していれば、短いバイブで正解を伝える
     if (!canVibrateRef.current) return;
-    navigator.vibrate(30);
+    if (isCorrect) {
+      navigator.vibrate(30);
+      return;
+    }
+    // 不正解は「ブブッ」に感じる短い2回振動
+    navigator.vibrate([20, 40, 20]);
   };
 
   return {playAnswerSound};
