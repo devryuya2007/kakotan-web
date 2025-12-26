@@ -1,11 +1,11 @@
 import {useEffect, useRef} from "react";
 
 const correctSoundUrl = new URL(
-  "../../assets/kenney_interface-sounds/Audio/answer_correct.mp4",
+  "../../assets/kenney_interface-sounds/Audio/answer_correct.ogg",
   import.meta.url,
 ).href;
 const incorrectSoundUrl = new URL(
-  "../../assets/kenney_interface-sounds/Audio/answer_incorrect.mp4",
+  "../../assets/kenney_interface-sounds/Audio/answer_incorrect.ogg",
   import.meta.url,
 ).href;
 
@@ -21,13 +21,13 @@ export const useAnswerResultSound = (): AnswerSoundControls => {
     // 正解・不正解の短い音を先読みして、クリック直後の遅延を減らす
     const correctAudio = new Audio(correctSoundUrl);
     correctAudio.preload = "auto";
-    // 音量を少し上げて、短い音でも聞き取りやすくする
-    correctAudio.volume = 0.8;
+    // 音量を上げて、短い音でも聞き取りやすくする
+    correctAudio.volume = 0.95;
 
     const incorrectAudio = new Audio(incorrectSoundUrl);
     incorrectAudio.preload = "auto";
-    // 不正解も同じ音量に揃えて、体感の差を減らす
-    incorrectAudio.volume = 0.8;
+    // 不正解も少し大きめにして、低音でも聞き取れるようにする
+    incorrectAudio.volume = 0.95;
 
     correctAudioRef.current = correctAudio;
     incorrectAudioRef.current = incorrectAudio;
