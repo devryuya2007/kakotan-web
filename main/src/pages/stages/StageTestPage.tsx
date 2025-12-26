@@ -23,7 +23,6 @@ interface StageQuestionState {
 }
 
 export default function StageTestPage() {
-  const extraShuffleSeed = 20250101;
   const {year: yearParam, stageNumber: stageParam} = useParams();
   const {config} = useUserConfig();
 
@@ -44,8 +43,6 @@ export default function StageTestPage() {
       : 1;
   const baseQuestionCount = config[year].maxCount;
   const yearLabel = YEAR_LABELS[year];
-  // extraだけ順番をシャッフルして、同系統語の連続を減らす
-  const shouldShuffle = year === "extra";
 
   // ステージの問題配列やエラーをまとめて管理する
   const [state, setState] = useState<StageQuestionState>({
@@ -92,8 +89,6 @@ export default function StageTestPage() {
         const questions = buildStageQuestions({
           vocab,
           stage: targetStage,
-          shuffleEntries: shouldShuffle,
-          shuffleSeed: extraShuffleSeed,
         });
 
         setState({
@@ -117,7 +112,7 @@ export default function StageTestPage() {
     return () => {
       cancelled = true;
     };
-  }, [year, yearLabel, baseQuestionCount, stageNumber, shouldShuffle]);
+  }, [year, yearLabel, baseQuestionCount, stageNumber]);
   // URLの年度が不正ならメニューに戻す案内を出す
   if (!isValidYear) {
     return (
