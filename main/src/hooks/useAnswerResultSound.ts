@@ -36,7 +36,11 @@ export const useAnswerResultSound = (): AnswerSoundControls => {
     // 連打でも必ず先頭から鳴るように巻き戻す
     playback.pause();
     playback.currentTime = 0;
-    void playback.play().catch(() => {});
+    const result = playback.play();
+    // テスト環境ではplayがPromiseを返さない場合があるので安全にガードする
+    if (result && typeof result.catch === "function") {
+      void result.catch(() => {});
+    }
   };
 
   return {playAnswerSound};
