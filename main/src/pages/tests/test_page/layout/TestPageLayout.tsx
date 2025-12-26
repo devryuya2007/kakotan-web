@@ -549,14 +549,8 @@ export default function TestPageLayout({
 
   return (
     <>
-      {/* EXPの累積表示は画面端に固定して、正答ごとの伸びを見せる */}
-      <ExpIndicator
-        value={animatedXp}
-        isPulse={isGainPulse}
-        prefersReducedMotion={prefersReducedMotion}
-      />
-      <div className='fixed bottom-6 right-6 z-20 w-[6rem]'>
-        <QuickStartButton onClick={() => navigate('/')} label='Home' />
+      <div className="fixed bottom-6 right-6 z-20 w-[6rem]">
+        <QuickStartButton onClick={() => navigate("/")} label="Home" />
       </div>
       <section
         // カードスタック全体の外枠。センタリングと余白を担当
@@ -642,8 +636,15 @@ export default function TestPageLayout({
                   }`}
                 >
                   {/* 問題番号やプログレスバーなどのヘッダー */}
-                  <div className='sticky top-4 z-20 mb-6 rounded-xl bg-[#050509]/90 px-4 py-3 backdrop-blur-sm'>
-                    <div className='flex items-center justify-between text-xs font-medium uppercase tracking-wide text-white/50'>
+                  {/* EXPの累積表示は画面端に固定して、正答ごとの伸びを見せる */}
+
+                  <ExpIndicator
+                    value={animatedXp}
+                    isPulse={isGainPulse}
+                    prefersReducedMotion={prefersReducedMotion}
+                  />
+                  <div className="sticky top-4 z-20 mb-6 rounded-xl bg-[#050509]/90 px-4 py-3 backdrop-blur-sm">
+                    <div className="flex items-center justify-between text-xs font-medium uppercase tracking-wide text-white/50">
                       <span>問題 {cardIndex + 1}</span>
                       <span>
                         {cardIndex + 1} / {totalQuestions}
