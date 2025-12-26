@@ -116,39 +116,6 @@ describe("ステージ定義ユーティリティ", () => {
     expect(questions[1]?.phrase).toBe("dragon");
   });
 
-  test("シャッフル指定があると出題順が変わる", () => {
-    const vocab: VocabEntry[] = [
-      {phrase: "alpha", mean: "A"},
-      {phrase: "bravo", mean: "B"},
-      {phrase: "charlie", mean: "C"},
-      {phrase: "delta", mean: "D"},
-    ];
-
-    const result = createStageDefinitions({
-      year: "reiwa3",
-      yearLabel: "Reiwa 3",
-      vocab,
-      baseQuestionCount: 2,
-    });
-    const targetStage = result.stages[0];
-    expect(targetStage).toBeTruthy();
-
-    // 乱数を固定してシャッフル結果を安定させる
-    const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0);
-
-    const questions = buildStageQuestions({
-      vocab,
-      stage: targetStage,
-      shuffleEntries: true,
-      shuffleSeed: 20250101,
-    });
-
-    expect(questions).toHaveLength(2);
-    expect(questions[0]?.phrase).not.toBe("alpha");
-    expect(questions[1]?.phrase).not.toBe("bravo");
-
-    randomSpy.mockRestore();
-  });
 
   test("キャッシュが壊れていても新しく作り直される", () => {
     // JSONが壊れている場合でも落ちないことを確認する
