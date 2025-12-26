@@ -3,6 +3,7 @@ import type {QuizQuestion, YearKey} from "../data/vocabLoader";
 
 import {useEffect, useState} from "react";
 import {useShuffledItems} from "./useShuffledItems";
+import {shuffleItems} from "@/utils/shuffleItems";
 
 export type UseYearVocabResult = {
   status: 'idle' | 'loading' | 'ready' | 'error';
@@ -35,7 +36,8 @@ export function useYearVocab(
         const vocab = await loadYearVocab(year);
         if (cancelled) return;
 
-        const nextQuestions = buildQuestionsFromVocab(vocab, maxCount);
+        const sourceVocab = shouldShuffle ? shuffleItems(vocab) : vocab;
+        const nextQuestions = buildQuestionsFromVocab(sourceVocab, maxCount);
         setQuestions(nextQuestions);
         setStatus('ready');
       } catch (e) {
@@ -49,7 +51,7 @@ export function useYearVocab(
     return () => {
       cancelled = true;
     };
-  }, [year, maxCount]);
+  }, [year, maxCount, shouldShuffle]);
 
   return {
     status,
