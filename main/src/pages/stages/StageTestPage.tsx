@@ -12,7 +12,6 @@ import {
 } from "@/features/stages/stageUtils";
 import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
 import TestPageLayout from "@/pages/tests/test_page/layout/TestPageLayout";
-import {useShuffledItems} from "@/hooks/useShuffledItems";
 
 import {YEAR_LABELS, isYearKey} from "./stageConstants";
 
@@ -92,6 +91,7 @@ export default function StageTestPage() {
         const questions = buildStageQuestions({
           vocab,
           stage: targetStage,
+          shuffleEntries: shouldShuffle,
         });
 
         setState({
@@ -115,10 +115,7 @@ export default function StageTestPage() {
     return () => {
       cancelled = true;
     };
-  }, [year, yearLabel, baseQuestionCount, stageNumber]);
-  // 画面表示用の問題配列は必要に応じてシャッフルする
-  const displayQuestions = useShuffledItems(state.questions, shouldShuffle);
-
+  }, [year, yearLabel, baseQuestionCount, stageNumber, shouldShuffle]);
   // URLの年度が不正ならメニューに戻す案内を出す
   if (!isValidYear) {
     return (
@@ -144,8 +141,8 @@ export default function StageTestPage() {
         )}
         {state.status === "ready" && state.stage && (
           <TestPageLayout
-            count={displayQuestions.length}
-            questions={displayQuestions}
+            count={state.questions.length}
+            questions={state.questions}
             sectionId={`${yearLabel} Stage ${stageNumber}`}
             stageId={state.stage.stageId}
           />
