@@ -24,6 +24,7 @@ import {
   recordStageResult,
 } from "@/features/stages/stageProgressStore";
 import {usePrefersReducedMotion} from '@/hooks/usePrefersReducedMotion';
+import {useAnswerResultSound} from "@/hooks/useAnswerResultSound";
 import {useTestResults} from '@/pages/states/useTestResults';
 
 // このコンポーネントが受け取るpropsの形。questionsは問題配列、countは総数
@@ -52,6 +53,8 @@ export default function TestPageLayout({
   } = useTestResults();
 
   const sessionStartRef = useRef<number | null>(null);
+  // 正解・不正解に合わせた効果音を鳴らすための関数
+  const {playAnswerSound} = useAnswerResultSound();
 
   const [isSmall, setIsSmall] = useState(() =>
     window.matchMedia('(max-width: 640px)').matches,
@@ -269,6 +272,8 @@ export default function TestPageLayout({
 
     // 正解かどうかを判定し、ボタンの見た目ステータスを更新
     const isAnswer = choice === answerChoice;
+    // 正解・不正解の音を短く鳴らして結果を分かりやすくする
+    playAnswerSound(isAnswer);
     setButtonStates((prev) => ({
       ...prev,
       [choice]: isAnswer ? 'correct' : 'incorrect',
