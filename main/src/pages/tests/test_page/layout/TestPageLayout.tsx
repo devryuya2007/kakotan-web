@@ -35,18 +35,69 @@ interface ExpIndicatorProps {
   value: number;
   isPulse: boolean;
   prefersReducedMotion: boolean;
+  gain: { amount: number; isCorrect: boolean; key: number } | null;
 }
 
-export const ExpIndicator = ({ value, isPulse, prefersReducedMotion }: ExpIndicatorProps) => {
-  const expIndicatorClass = `pointer-events-none fixed right-3 top-3 z-[80] inline-flex min-w-[96px] items-center justify-center rounded-xl border border-white/10 bg-[#0b0f1f]/85 px-3 py-2 text-white shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur ${isPulse ? "scale-[1.03]" : "scale-100"} ${
-    prefersReducedMotion ? "" : "transition-transform duration-300"
-  } sm:right-6 sm:top-6`;
+export const ExpIndicator = ({
+  value,
+  isPulse,
+  prefersReducedMotion,
+  gain,
+}: ExpIndicatorProps) => {
+  const gainBadgeRef = useRef<HTMLSpanElement | null>(null);
+  const gainAnimationRef = useRef<gsap.core.Timeline | null>(null);
+  const expIndicatorClass = "pointer-events-none absolute right-4 top-4 z-[30]";
+  const expIndicatorInnerClass = `relative inline-flex min-w-[96px] items-center justify-center rounded-xl border border-white/10 bg-transparent px-3 py-2 text-white shadow-[0_16px_40px_rgba(0,0,0,0.35)] ${
+    isPulse ? "scale-[1.03]" : "scale-100"
+  } ${prefersReducedMotion ? "" : "transition-transform duration-300"}`;
+  const gainBadgeClass = gain?.isCorrect
+    ? "border-emerald-200/80 bg-emerald-500/90 text-emerald-50 shadow-[0_10px_24px_rgba(16,185,129,0.35)]"
+    : "border-rose-200/80 bg-rose-500/90 text-rose-50 shadow-[0_10px_24px_rgba(244,63,94,0.35)]";
+
+  useLayoutEffect(() => {
+    if (!gain || prefersReducedMotion) return;
+    const badge = gainBadgeRef.current;
+    if (!badge) return;
+    if (gainAnimationRef.current) {
+      gainAnimationRef.current.kill();
+    }
+    gainAnimationRef.current = gsap
+      .timeline()
+      .fromTo(
+        badge,
+        { autoAlpha: 0, scale: 0.85, y: 6 },
+        {
+          autoAlpha: 1,
+          scale: 1.1,
+          y: -6,
+          duration: 0.2,
+          ease: "back.out(2.6)",
+        },
+      )
+      .to(badge, {
+        autoAlpha: 0,
+        y: -14,
+        duration: 0.2,
+        ease: "power2.in",
+      });
+  }, [gain, prefersReducedMotion]);
 
   return (
     <div className={expIndicatorClass} aria-live="polite" data-testid="exp-indicator">
-      <span className="text-3xl font-semibold tabular-nums tracking-[0.08em] text-[#f2c97d]">
-        {value}
-      </span>
+      <div className={expIndicatorInnerClass}>
+        <span className="text-3xl font-semibold tabular-nums tracking-[0.08em] text-[#f2c97d]">
+          {value}
+        </span>
+        {gain && (
+          <span
+            ref={gainBadgeRef}
+            key={gain.key}
+            className={`absolute -top-2 right-0 rounded-lg border px-2 py-0.5 text-[10px] font-semibold ${gainBadgeClass}`}
+          >
+            {`+${gain.amount}`}
+          </span>
+        )}
+      </div>
     </div>
   );
 };
@@ -95,6 +146,7 @@ export default function TestPageLayout({
     sessionStartRef.current = Date.now();
     // セッション開始時点のXPを基準にして表示を初期化する
     setSessionGainedXp(0);
+    setLatestGain(null);
     setAnimatedXp(0);
 
     // ステージモードなら挑戦済みを先に記録しておく
@@ -123,6 +175,12 @@ export default function TestPageLayout({
   } | null>(null);
   // テスト中に獲得したXPを積み上げておく
   const [sessionGainedXp, setSessionGainedXp] = useState(0);
+  // 直近の獲得XPをExpIndicatorに渡すためのstate
+  const [latestGain, setLatestGain] = useState<{
+    amount: number;
+    isCorrect: boolean;
+    key: number;
+  } | null>(null);
   // 直近の獲得演出を強調するためのフラグ
   const [isGainPulse, setIsGainPulse] = useState(false);
   // 表示用のXPをなめらかに増やすためのstate
@@ -134,6 +192,7 @@ export default function TestPageLayout({
   const toastRef = useRef<HTMLDivElement | null>(null);
   const toastAnimationRef = useRef<gsap.core.Timeline | null>(null);
   const gainPulseTimeoutRef = useRef<number | null>(null);
+  const expGainTimeoutRef = useRef<number | null>(null);
   // セクション要素の位置を参照してトーストの表示座標に使う
   const sectionRef = useRef<HTMLElement | null>(null);
   const toastDelayTimeoutRef = useRef<number | null>(null);
@@ -256,6 +315,9 @@ export default function TestPageLayout({
       if (gainPulseTimeoutRef.current) {
         clearTimeout(gainPulseTimeoutRef.current);
       }
+      if (expGainTimeoutRef.current) {
+        clearTimeout(expGainTimeoutRef.current);
+      }
       if (xpTweenRef.current) {
         xpTweenRef.current.kill();
       }
@@ -377,6 +439,24 @@ export default function TestPageLayout({
     };
   }, [sessionGainedXp]);
 
+  // ExpIndicatorの加算表示は短時間だけ出す
+  useEffect(() => {
+    if (!latestGain) return;
+    if (expGainTimeoutRef.current) {
+      clearTimeout(expGainTimeoutRef.current);
+    }
+    expGainTimeoutRef.current = window.setTimeout(() => {
+      setLatestGain(null);
+      expGainTimeoutRef.current = null;
+    }, 1000);
+
+    return () => {
+      if (expGainTimeoutRef.current) {
+        clearTimeout(expGainTimeoutRef.current);
+      }
+    };
+  }, [latestGain]);
+
   // 問題や正解が存在しない場合は何も描画しない
   if (!question || !answerChoice)
     return <p aria-label="data-error">問題データが取得できませんでした</p>;
@@ -402,6 +482,8 @@ export default function TestPageLayout({
     const gainAmount = isAnswer ? XP_PER_CORRECT : XP_PER_INCORRECT;
     // 獲得XPは累積で表示するためにセッション内で加算しておく
     setSessionGainedXp((prev) => prev + gainAmount);
+    // 正解・不正解の加算演出をExpIndicatorに渡す
+    setLatestGain({ amount: gainAmount, isCorrect: isAnswer, key: Date.now() });
     clearTimeout(toastDelayTimeoutRef.current as unknown as number);
     toastDelayTimeoutRef.current = window.setTimeout(() => {
       setGainToast({
@@ -589,18 +671,20 @@ export default function TestPageLayout({
               >
                 {/* カード本体。外枠のゴールドから内側はダークな背景 */}
                 <div
-                  className={`bg-[#050509] text-white [border-radius:inherit] ${
+                  className={`relative bg-[#050509] text-white [border-radius:inherit] ${
                     isSmall ? "px-4 py-10" : "px-6 py-[72px]"
                   }`}
                 >
                   {/* 問題番号やプログレスバーなどのヘッダー */}
-                  {/* EXPの累積表示は画面端に固定して、正答ごとの伸びを見せる */}
-
-                  <ExpIndicator
-                    value={animatedXp}
-                    isPulse={isGainPulse}
-                    prefersReducedMotion={prefersReducedMotion}
-                  />
+                  {/* EXPの累積表示はカード右上に固定して、正答ごとの伸びを見せる */}
+                  {isActiveCard && (
+                    <ExpIndicator
+                      value={animatedXp}
+                      isPulse={isGainPulse}
+                      prefersReducedMotion={prefersReducedMotion}
+                      gain={latestGain}
+                    />
+                  )}
                   <div className="sticky top-4 z-20 mb-6 rounded-xl bg-[#050509]/90 px-4 py-3 backdrop-blur-sm">
                     <div className="flex items-center justify-between text-xs font-medium uppercase tracking-wide text-white/50">
                       <span>問題 {cardIndex + 1}</span>
