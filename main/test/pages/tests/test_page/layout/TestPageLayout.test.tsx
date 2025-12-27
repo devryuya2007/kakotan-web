@@ -310,7 +310,7 @@ describe("テストページ", () => {
 
     await user.click(correctButton);
 
-    const indicator = screen.getByTestId("exp-indicator");
+    const indicator = screen.getAllByTestId("exp-indicator")[0];
     const totalText = await within(indicator).findByText("90");
     expect(totalText).toBeInTheDocument();
   });

@@ -6,6 +6,7 @@ import {
   type MouseEvent,
   useCallback,
   useEffect,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -36,6 +37,8 @@ interface ExpIndicatorProps {
   isPulse: boolean;
   prefersReducedMotion: boolean;
   gain: { amount: number; isCorrect: boolean; key: number } | null;
+  isCompact: boolean;
+  fillRatio: number;
 }
 
 export const ExpIndicator = ({
@@ -43,16 +46,44 @@ export const ExpIndicator = ({
   isPulse,
   prefersReducedMotion,
   gain,
+  isCompact,
+  fillRatio,
 }: ExpIndicatorProps) => {
+  const clipPathId = useId();
   const gainBadgeRef = useRef<HTMLSpanElement | null>(null);
   const gainAnimationRef = useRef<gsap.core.Timeline | null>(null);
-  const expIndicatorClass = "pointer-events-none absolute right-4 top-4 z-[30]";
-  const expIndicatorInnerClass = `relative inline-flex min-w-[96px] items-center justify-center rounded-xl border border-white/10 bg-transparent px-3 py-2 text-white shadow-[0_16px_40px_rgba(0,0,0,0.35)] ${
+  const fillRectRef = useRef<SVGRectElement | null>(null);
+  const fillAnimationRef = useRef<gsap.core.Tween | null>(null);
+  const expIndicatorClass = isCompact
+    ? "pointer-events-none absolute right-2 top-2 z-[30]"
+    : "pointer-events-none absolute right-4 top-4 z-[30]";
+  const expIndicatorInnerClass = `relative inline-flex ${isCompact ? "h-[56px] w-[56px]" : "h-[72px] w-[72px]"} items-center justify-center ${
     isPulse ? "scale-[1.03]" : "scale-100"
   } ${prefersReducedMotion ? "" : "transition-transform duration-300"}`;
+  const fillLevel = Math.min(1, Math.max(0, fillRatio));
+  const fillHeight = 100 * fillLevel;
+  const fillY = 100 - fillHeight;
   const gainBadgeClass = gain?.isCorrect
     ? "border-emerald-200/80 bg-emerald-500/90 text-emerald-50 shadow-[0_10px_24px_rgba(16,185,129,0.35)]"
     : "border-rose-200/80 bg-rose-500/90 text-rose-50 shadow-[0_10px_24px_rgba(244,63,94,0.35)]";
+
+  useLayoutEffect(() => {
+    const rect = fillRectRef.current;
+    if (!rect) return;
+    if (fillAnimationRef.current) {
+      fillAnimationRef.current.kill();
+    }
+    if (prefersReducedMotion) {
+      rect.setAttribute("y", `${fillY}`);
+      rect.setAttribute("height", `${fillHeight}`);
+      return;
+    }
+    fillAnimationRef.current = gsap.to(rect, {
+      duration: 0.4,
+      ease: "power2.out",
+      attr: { y: fillY, height: fillHeight },
+    });
+  }, [fillY, fillHeight, prefersReducedMotion]);
 
   useLayoutEffect(() => {
     if (!gain || prefersReducedMotion) return;
@@ -85,7 +116,34 @@ export const ExpIndicator = ({
   return (
     <div className={expIndicatorClass} aria-live="polite" data-testid="exp-indicator">
       <div className={expIndicatorInnerClass}>
-        <span className="text-3xl font-semibold tabular-nums tracking-[0.08em] text-[#f2c97d]">
+        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" aria-hidden="true">
+          <defs>
+            <linearGradient id={`${clipPathId}-fill`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#34d399" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#10b981" stopOpacity="0.85" />
+            </linearGradient>
+            <clipPath id={clipPathId}>
+              <polygon points="50,6 96,96 4,96" />
+            </clipPath>
+          </defs>
+          <rect
+            ref={fillRectRef}
+            x="0"
+            y={fillY}
+            width="100"
+            height={fillHeight}
+            fill={`url(#${clipPathId}-fill)`}
+            clipPath={`url(#${clipPathId})`}
+          />
+          <polygon
+            points="50,6 96,96 4,96"
+            fill="none"
+            stroke="rgba(255,255,255,0.28)"
+            strokeWidth="3"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <span className="relative z-10 text-[18px] font-semibold tabular-nums tracking-[0.08em] text-emerald-100">
           {value}
         </span>
         {gain && (
@@ -243,6 +301,11 @@ export default function TestPageLayout({
     () => questions.slice(currentIndex, currentIndex + 4),
     [questions, currentIndex]
   );
+  const expFillRatio = useMemo(() => {
+    const maxXp = XP_PER_CORRECT * totalQuestions;
+    if (maxXp <= 0) return 0;
+    return Math.min(1, sessionGainedXp / maxXp);
+  }, [sessionGainedXp, totalQuestions]);
   const finishTest = useCallback(() => {
     const snapshot = { correct, incorrect, ExperiencePoints: totalXp };
     const { gainedXp, nextTotalXp } = getExperiencePoints(snapshot);
@@ -676,15 +739,15 @@ export default function TestPageLayout({
                   }`}
                 >
                   {/* 問題番号やプログレスバーなどのヘッダー */}
-                  {/* EXPの累積表示はカード右上に固定して、正答ごとの伸びを見せる */}
-                  {isActiveCard && (
-                    <ExpIndicator
-                      value={animatedXp}
-                      isPulse={isGainPulse}
-                      prefersReducedMotion={prefersReducedMotion}
-                      gain={latestGain}
-                    />
-                  )}
+                  {/* EXPの累積表示はカードスタックと同じ位置変化で描画する */}
+                  <ExpIndicator
+                    value={animatedXp}
+                    isPulse={isGainPulse}
+                    prefersReducedMotion={prefersReducedMotion}
+                    gain={isActiveCard ? latestGain : null}
+                    isCompact={isSmall}
+                    fillRatio={expFillRatio}
+                  />
                   <div className="sticky top-4 z-20 mb-6 rounded-xl bg-[#050509]/90 px-4 py-3 backdrop-blur-sm">
                     <div className="flex items-center justify-between text-xs font-medium uppercase tracking-wide text-white/50">
                       <span>問題 {cardIndex + 1}</span>
