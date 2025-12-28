@@ -2,6 +2,20 @@ import "@testing-library/jest-dom/vitest";
 import {cleanup} from "@testing-library/react";
 import {afterEach, vi} from "vitest";
 
+interface MatchMediaMock extends MediaQueryList {
+  addListener: (listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown) => void;
+  removeListener: (listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown) => void;
+  addEventListener: (
+    type: string,
+    listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown
+  ) => void;
+  removeEventListener: (
+    type: string,
+    listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown
+  ) => void;
+  dispatchEvent: (event: Event) => boolean;
+}
+
 // requestAnimationFrameが無い環境でも安全に動かすための保険
 if (!globalThis.requestAnimationFrame) {
   globalThis.requestAnimationFrame = (callback: FrameRequestCallback) =>
@@ -29,6 +43,23 @@ afterEach(() => {
 
   cleanup();
 });
+
+// matchMediaが無い環境でもusePrefersReducedMotionが落ちないように保険を入れる
+if (!window.matchMedia) {
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    value: (query: string): MatchMediaMock => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }),
+  });
+}
 
 // テスト環境ではAudio再生が未実装なので、安全にモックして落ちないようにする
 const createMockAudio = () => {
