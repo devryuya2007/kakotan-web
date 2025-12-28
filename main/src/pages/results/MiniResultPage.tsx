@@ -195,9 +195,8 @@ export default function MiniResultPage() {
   const expPointsRef = useRef<Array<HTMLSpanElement | null>>([]);
   const expAnimTimeoutRef = useRef<number | null>(null);
   const expProgressTweenRef = useRef<gsap.core.Tween | null>(null);
-  const expProgressValueRef = useRef({value: 0});
-  // ポイントの個数は控えめにしてスマホでも軽くする
-  const expPointCount = 5;
+  // たまは1つだけ大きめに出す
+  const expPointCount = 1;
 
   useLayoutEffect(() => {
     // 連続レンダリング時の残りタイマーを先に消す
@@ -221,7 +220,7 @@ export default function MiniResultPage() {
     // 省アニメ設定なら即時反映して、演出は飛ばす
     if (prefersReducedMotion) {
       setDisplayProgress(progress);
-      setMascotFillRatio(shouldAnimateGain ? 0 : progress);
+      setMascotFillRatio(progress);
       return undefined;
     }
 
@@ -261,6 +260,7 @@ export default function MiniResultPage() {
     const pointTravelDuration = 0.45 * animScale;
     const pointFadeDuration = 0.2 * animScale;
     const mascotPopDuration = 0.25 * animScale;
+    const progressAnimDuration = 0.4 * animScale;
     const transferDuration =
       pointTravelDuration + pointDelayStep * (points.length - 1);
 
@@ -278,48 +278,45 @@ export default function MiniResultPage() {
 
     // ポイントは水ちゃんからリング中心に飛ばす
     setDisplayProgress(normalizedStartProgress);
-    setMascotFillRatio(1);
-    expProgressValueRef.current.value = 0;
+    // たまが出た瞬間に水ちゃんの水を空にする
+    setMascotFillRatio(0);
     points.forEach((point, index) => {
-      const spreadX = (index - (points.length - 1) / 2) * 8;
-      const spreadY = -index * 6;
+      const spreadX = 0;
+      const spreadY = 0;
       const delay = pointDelayStep * index;
 
-      gsap.set(point, {x: startX, y: startY, autoAlpha: 0, scale: 0.6});
+      gsap.set(point, {x: startX, y: startY, autoAlpha: 0, scale: 1});
       gsap.to(point, {
         x: targetX + spreadX,
         y: targetY + spreadY,
         autoAlpha: 1,
-        scale: 1,
+        // 移動中に少しずつ小さくして「水が減る」感を出す
+        scale: 0.5,
         duration: pointTravelDuration,
         ease: "power2.out",
         delay,
       });
       gsap.to(point, {
         autoAlpha: 0,
-        scale: 0.25,
+        scale: 0.1,
         duration: pointFadeDuration,
         ease: "power2.in",
         delay: delay + pointTravelDuration,
       });
     });
 
-    // 水が減っていくのと同時に円が伸びていく
-    expProgressTweenRef.current = gsap.to(expProgressValueRef.current, {
-      value: 1,
-      duration: transferDuration,
+    // たまが吸い込まれたタイミングで円を伸ばす
+    const progressValue = {value: normalizedStartProgress};
+    expProgressTweenRef.current = gsap.to(progressValue, {
+      value: progress,
+      delay: transferDuration,
+      duration: progressAnimDuration,
       ease: "power1.out",
       onUpdate: () => {
-        const ratio = expProgressValueRef.current.value;
-        const nextProgress =
-          normalizedStartProgress +
-          (progress - normalizedStartProgress) * ratio;
-        setDisplayProgress(nextProgress);
-        setMascotFillRatio(1 - ratio);
+        setDisplayProgress(progressValue.value);
       },
       onComplete: () => {
         setDisplayProgress(progress);
-        setMascotFillRatio(0);
       },
     });
 
@@ -601,7 +598,7 @@ export default function MiniResultPage() {
                           ref={(element) => {
                             expPointsRef.current[index] = element;
                           }}
-                          className="absolute h-2 w-2 rounded-full bg-emerald-200/90 opacity-0 shadow-[0_0_10px_rgba(16,185,129,0.55)]"
+                          className="absolute h-5 w-5 rounded-full bg-gradient-to-br from-emerald-100 via-emerald-200 to-emerald-400 opacity-0 shadow-[0_0_14px_rgba(16,185,129,0.6)]"
                         />
                       ))}
                   </div>
