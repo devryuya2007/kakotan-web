@@ -1,14 +1,17 @@
 import {badges} from '../badge/badge';
 import {useTestResults} from '../states/useTestResults';
 
-import {type ReactNode, useEffect, useMemo, useState} from 'react';
+import {type ReactNode, useLayoutEffect, useMemo, useRef, useState} from "react";
 
 import {useLocation, useNavigate} from 'react-router-dom';
+
+import {gsap} from "gsap";
 
 import {QuickStartButton} from '@/components/buttons/QuickStartButton';
 import {AppLayout} from '@/components/layout/AppLayout';
 import badgeRule from '@/features/results/badgeCondition';
 import {calculateLevelProgress} from '@/features/results/scoring';
+import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
 import {isYearKey} from "@/pages/stages/stageConstants";
 
 import MiniResultPageModal from './ResultModal/MiniResultPageModal';
@@ -61,6 +64,8 @@ export default function MiniResultPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const carriedXp = location.state as ResultLocationState | undefined;
+  // 1回の結果ページで獲得したXP。演出に使う
+  const gainedXp = carriedXp?.gainedXp ?? 0;
   const effectiveTotalXp = carriedXp?.updatedTotalXp ?? totalXp;
   const {
     level,
@@ -178,16 +183,163 @@ export default function MiniResultPage() {
 
   const hasNoWrongWords = wrongWordsTop.length === 0;
   const [displayProgress, setDisplayProgress] = useState(0);
+  const [mascotFillRatio, setMascotFillRatio] = useState(0);
+  // 水ちゃんは常に表示して、XP獲得があるときだけ演出を動かす
+  const shouldShowMascot = true;
+  const shouldAnimateGain = gainedXp > 0;
+  // アニメを控える設定のときは演出を簡略化する
+  const prefersReducedMotion = usePrefersReducedMotion();
+  // 水ちゃん・ポイント・ターゲットの参照
+  const expMascotRef = useRef<HTMLDivElement | null>(null);
+  const expRingRef = useRef<HTMLDivElement | null>(null);
+  const expPointsRef = useRef<Array<HTMLSpanElement | null>>([]);
+  const expAnimTimeoutRef = useRef<number | null>(null);
+  const expProgressTweenRef = useRef<gsap.core.Tween | null>(null);
+  const expProgressValueRef = useRef({value: 0});
+  // ポイントの個数は控えめにしてスマホでも軽くする
+  const expPointCount = 5;
 
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
+  useLayoutEffect(() => {
+    // 連続レンダリング時の残りタイマーを先に消す
+    if (expAnimTimeoutRef.current) {
+      clearTimeout(expAnimTimeoutRef.current);
+      expAnimTimeoutRef.current = null;
+    }
+    if (expProgressTweenRef.current) {
+      expProgressTweenRef.current.kill();
+      expProgressTweenRef.current = null;
+    }
+
+    // 今回の増加前の進捗を計算して、伸びる量を決める
+    const previousTotalXp = Math.max(0, effectiveTotalXp - gainedXp);
+    const {
+      progressRatio: startProgressRatio,
+      level: startLevel,
+    } = calculateLevelProgress(previousTotalXp);
+    const normalizedStartProgress = startLevel === level ? startProgressRatio : 0;
+
+    // 省アニメ設定なら即時反映して、演出は飛ばす
+    if (prefersReducedMotion) {
       setDisplayProgress(progress);
-    }, 300);
+      setMascotFillRatio(shouldAnimateGain ? 0 : progress);
+      return undefined;
+    }
+
+    // XP増加がないときは軽い遅延だけで反映する
+    if (!shouldAnimateGain) {
+      const timeoutId = window.setTimeout(() => {
+        setDisplayProgress(progress);
+        setMascotFillRatio(progress);
+      }, 200);
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
+
+    // ここから「水ちゃん → ポイント飛翔 → バー加算」の流れ
+    const ring = expRingRef.current;
+    const mascot = expMascotRef.current;
+    const points = expPointsRef.current.filter(
+      (point): point is HTMLSpanElement => Boolean(point),
+    );
+
+    if (!ring || !mascot || points.length === 0) {
+      setDisplayProgress(progress);
+      return undefined;
+    }
+
+    const ringRect = ring.getBoundingClientRect();
+    const mascotRect = mascot.getBoundingClientRect();
+    const startX = mascotRect.left + mascotRect.width * 0.7 - ringRect.left;
+    const startY = mascotRect.top + mascotRect.height * 0.35 - ringRect.top;
+    const targetX = ringRect.width / 2;
+    const targetY = ringRect.height / 2;
+
+    // アニメ全体をゆっくりにするために速度を3倍遅くする
+    const animScale = 3;
+    const pointDelayStep = 0.08 * animScale;
+    const pointTravelDuration = 0.45 * animScale;
+    const pointFadeDuration = 0.2 * animScale;
+    const mascotPopDuration = 0.25 * animScale;
+    const transferDuration =
+      pointTravelDuration + pointDelayStep * (points.length - 1);
+
+    // まず水ちゃんをポンっと登場させる
+    gsap.fromTo(
+      mascot,
+      {autoAlpha: 0, scale: 0.85},
+      {
+        autoAlpha: 1,
+        scale: 1,
+        duration: mascotPopDuration,
+        ease: "back.out(1.6)",
+      },
+    );
+
+    // ポイントは水ちゃんからリング中心に飛ばす
+    setDisplayProgress(normalizedStartProgress);
+    setMascotFillRatio(1);
+    expProgressValueRef.current.value = 0;
+    points.forEach((point, index) => {
+      const spreadX = (index - (points.length - 1) / 2) * 8;
+      const spreadY = -index * 6;
+      const delay = pointDelayStep * index;
+
+      gsap.set(point, {x: startX, y: startY, autoAlpha: 0, scale: 0.6});
+      gsap.to(point, {
+        x: targetX + spreadX,
+        y: targetY + spreadY,
+        autoAlpha: 1,
+        scale: 1,
+        duration: pointTravelDuration,
+        ease: "power2.out",
+        delay,
+      });
+      gsap.to(point, {
+        autoAlpha: 0,
+        scale: 0.25,
+        duration: pointFadeDuration,
+        ease: "power2.in",
+        delay: delay + pointTravelDuration,
+      });
+    });
+
+    // 水が減っていくのと同時に円が伸びていく
+    expProgressTweenRef.current = gsap.to(expProgressValueRef.current, {
+      value: 1,
+      duration: transferDuration,
+      ease: "power1.out",
+      onUpdate: () => {
+        const ratio = expProgressValueRef.current.value;
+        const nextProgress =
+          normalizedStartProgress +
+          (progress - normalizedStartProgress) * ratio;
+        setDisplayProgress(nextProgress);
+        setMascotFillRatio(1 - ratio);
+      },
+      onComplete: () => {
+        setDisplayProgress(progress);
+        setMascotFillRatio(0);
+      },
+    });
 
     return () => {
-      clearTimeout(timeoutId);
+      if (expAnimTimeoutRef.current) {
+        clearTimeout(expAnimTimeoutRef.current);
+      }
+      if (expProgressTweenRef.current) {
+        expProgressTweenRef.current.kill();
+        expProgressTweenRef.current = null;
+      }
     };
-  }, [progress]);
+  }, [
+    prefersReducedMotion,
+    progress,
+    shouldAnimateGain,
+    gainedXp,
+    effectiveTotalXp,
+    level,
+  ]);
 
   const dashOffset = circumference * (1 - displayProgress);
 
@@ -347,7 +499,112 @@ export default function MiniResultPage() {
                   </div>
                 </header>
 
-                <div className='relative mx-auto flex h-40 w-40 items-center justify-center sm:h-44 sm:w-44'>
+                <div
+                  ref={expRingRef}
+                  className='relative mx-auto flex h-40 w-40 items-center justify-center sm:h-44 sm:w-44'
+                >
+                  {/* 水ちゃんはXP獲得時だけ出す */}
+                  {shouldShowMascot && (
+                    <div
+                      ref={expMascotRef}
+                      className='absolute -left-8 top-6 h-12 w-12 sm:-left-10 sm:top-4 sm:h-14 sm:w-14'
+                      aria-hidden="true"
+                    >
+                      <svg viewBox="0 0 200 200" className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <path
+                            id="mini-result-water-shape"
+                            d="M100,20 C150,20 180,60 180,110 C180,170 150,190 100,190 C50,190 20,170 20,110 C20,60 50,20 100,20 Z"
+                          />
+                          <linearGradient id="mini-result-water-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#67e8f9" stopOpacity="0.9" />
+                            <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.95" />
+                          </linearGradient>
+                          <clipPath id="mini-result-water-clip">
+                            <use href="#mini-result-water-shape" />
+                          </clipPath>
+                        </defs>
+                        <use
+                          href="#mini-result-water-shape"
+                          fill="rgba(255, 255, 255, 0.1)"
+                          stroke="rgba(255, 255, 255, 0.5)"
+                          strokeWidth="2"
+                        />
+                        <g clipPath="url(#mini-result-water-clip)">
+                          <g
+                            style={{
+                              // バーの進み具合と同じ水位に合わせる
+                              transform: `translateY(${190 - (170 * Math.min(100, mascotFillRatio * 100)) / 100}px)`,
+                              transition: prefersReducedMotion
+                                ? "none"
+                                : "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                            }}
+                          >
+                            <path d="M-50,0 Q0,10 50,0 T150,0 T250,0 V200 H-50 Z" fill="url(#mini-result-water-gradient)">
+                              {!prefersReducedMotion && (
+                                <animate
+                                  attributeName="d"
+                                  dur="2.4s"
+                                  repeatCount="indefinite"
+                                  values="M-50,0 Q0,10 50,0 T150,0 T250,0 V200 H-50 Z;M-50,4 Q0,6 50,4 T150,4 T250,4 V200 H-50 Z;M-50,0 Q0,10 50,0 T150,0 T250,0 V200 H-50 Z"
+                                />
+                              )}
+                            </path>
+                            {prefersReducedMotion ? (
+                              <>
+                                <circle cx="50" cy="40" r="3" fill="rgba(255,255,255,0.6)" />
+                                <circle cx="120" cy="80" r="2" fill="rgba(255,255,255,0.6)" />
+                              </>
+                            ) : (
+                              <>
+                                <circle cx="50" cy="40" r="3" fill="rgba(255,255,255,0.6)">
+                                  <animate attributeName="cy" from="40" to="-20" dur="1.5s" repeatCount="indefinite" begin="0s" />
+                                  <animate attributeName="opacity" values="0.6;0" dur="1.5s" repeatCount="indefinite" />
+                                </circle>
+                                <circle cx="120" cy="80" r="2" fill="rgba(255,255,255,0.6)">
+                                  <animate attributeName="cy" from="80" to="0" dur="2s" repeatCount="indefinite" begin="0.5s" />
+                                  <animate attributeName="opacity" values="0.6;0" dur="2s" repeatCount="indefinite" />
+                                </circle>
+                              </>
+                            )}
+                          </g>
+                        </g>
+                        {/* 表情は50%以上でニコ */}
+                        <g transform="translate(0, 10)">
+                          {displayProgress >= 0.5 ? (
+                            <>
+                              <path d="M60,100 Q70,92 80,100" fill="none" stroke="#1e293b" strokeWidth="3" strokeLinecap="round" />
+                              <path d="M120,100 Q130,92 140,100" fill="none" stroke="#1e293b" strokeWidth="3" strokeLinecap="round" />
+                              <path d="M86,108 Q100,122 114,108" fill="none" stroke="#1e293b" strokeWidth="2" strokeLinecap="round" />
+                            </>
+                          ) : (
+                            <>
+                              <ellipse cx="70" cy="100" rx="8" ry="12" fill="#1e293b" />
+                              <circle cx="73" cy="96" r="3" fill="#ffffff" />
+                              <ellipse cx="130" cy="100" rx="8" ry="12" fill="#1e293b" />
+                              <circle cx="133" cy="96" r="3" fill="#ffffff" />
+                              <path d="M90,110 Q100,115 110,110" fill="none" stroke="#1e293b" strokeWidth="2" strokeLinecap="round" />
+                            </>
+                          )}
+                          <ellipse cx="60" cy="115" rx="6" ry="3" fill="#fda4af" opacity="0.6" />
+                          <ellipse cx="140" cy="115" rx="6" ry="3" fill="#fda4af" opacity="0.6" />
+                        </g>
+                      </svg>
+                    </div>
+                  )}
+                  {/* ポイント粒の飛翔レイヤー */}
+                  <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+                    {shouldAnimateGain &&
+                      Array.from({length: expPointCount}).map((_, index) => (
+                        <span
+                          key={`exp-point-${index}`}
+                          ref={(element) => {
+                            expPointsRef.current[index] = element;
+                          }}
+                          className="absolute h-2 w-2 rounded-full bg-emerald-200/90 opacity-0 shadow-[0_0_10px_rgba(16,185,129,0.55)]"
+                        />
+                      ))}
+                  </div>
                   <svg
                     className='h-full w-full -rotate-90 transform text-[#1f2333]'
                     viewBox='0 0 140 140'
