@@ -68,6 +68,8 @@ export const ExpIndicator = ({
   const wavePathAlt = "M-50,4 Q0,6 50,4 T150,4 T250,4 V200 H-50 Z";
   // 0〜1で来る比率を0〜100の水位に変換して使う
   const fillLevel = Math.min(100, Math.max(0, fillRatio * 100));
+  // 50%以上で表情をニコっと変える
+  const isHappyFace = fillLevel >= 50;
   // 水位に合わせて水面の位置を上下させる（下が空、上が満タン）
   const waterTranslateY = 190 - (170 * fillLevel) / 100;
   // 低減設定のときはアニメを止めるためにtransitionを切る
@@ -163,11 +165,26 @@ export const ExpIndicator = ({
           </g>
           {/* 顔は水より手前に出してキャラ感を優先する */}
           <g transform="translate(0, 10)">
-            <ellipse cx="70" cy="100" rx="8" ry="12" fill="#1e293b" />
-            <circle cx="73" cy="96" r="3" fill="#ffffff" />
-            <ellipse cx="130" cy="100" rx="8" ry="12" fill="#1e293b" />
-            <circle cx="133" cy="96" r="3" fill="#ffffff" />
-            <path d="M90,110 Q100,115 110,110" fill="none" stroke="#1e293b" strokeWidth="2" strokeLinecap="round" />
+            {isHappyFace ? (
+              <>
+                <path d="M60,100 Q70,92 80,100" fill="none" stroke="#1e293b" strokeWidth="3" strokeLinecap="round" />
+                <path d="M120,100 Q130,92 140,100" fill="none" stroke="#1e293b" strokeWidth="3" strokeLinecap="round" />
+              </>
+            ) : (
+              <>
+                <ellipse cx="70" cy="100" rx="8" ry="12" fill="#1e293b" />
+                <circle cx="73" cy="96" r="3" fill="#ffffff" />
+                <ellipse cx="130" cy="100" rx="8" ry="12" fill="#1e293b" />
+                <circle cx="133" cy="96" r="3" fill="#ffffff" />
+              </>
+            )}
+            <path
+              d={isHappyFace ? "M86,108 Q100,122 114,108" : "M90,110 Q100,115 110,110"}
+              fill="none"
+              stroke="#1e293b"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
             <ellipse cx="60" cy="115" rx="6" ry="3" fill="#fda4af" opacity="0.6" />
             <ellipse cx="140" cy="115" rx="6" ry="3" fill="#fda4af" opacity="0.6" />
           </g>
