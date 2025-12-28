@@ -522,7 +522,7 @@ export default function MiniResultPage() {
                 )}
               </div>
 
-              <div className='relative min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[#0f1524]/70 p-5'>
+              <div className='relative min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[#0f1524] p-5'>
                 <div className='pointer-events-none absolute -right-24 -top-28 h-60 w-60 rounded-full bg-gradient-to-br from-[#f2c97d33] via-[#be8b381f] to-transparent blur-3xl' />
                 <div className='pointer-events-none absolute inset-0 opacity-50'>
                   <div className='absolute inset-x-0 top-8 h-px bg-gradient-to-r from-transparent via-[#f2c97d33] to-transparent' />
@@ -639,9 +639,9 @@ export default function MiniResultPage() {
                         <g transform="translate(0, 10)">
                           {displayProgress >= 0.5 ? (
                             <>
-                              <path d="M60,100 Q70,92 80,100" fill="none" stroke="#1e293b" strokeWidth="3" strokeLinecap="round" />
-                              <path d="M120,100 Q130,92 140,100" fill="none" stroke="#1e293b" strokeWidth="3" strokeLinecap="round" />
-                              <path d="M86,108 Q100,122 114,108" fill="none" stroke="#1e293b" strokeWidth="2" strokeLinecap="round" />
+                              <path d="M60,100 Q70,92 80,100" fill="none" stroke="#0b1020" strokeWidth="4" strokeLinecap="round" />
+                              <path d="M120,100 Q130,92 140,100" fill="none" stroke="#0b1020" strokeWidth="4" strokeLinecap="round" />
+                              <path d="M86,108 Q100,122 114,108" fill="none" stroke="#0b1020" strokeWidth="3" strokeLinecap="round" />
                             </>
                           ) : (
                             <>
@@ -649,7 +649,7 @@ export default function MiniResultPage() {
                               <circle cx="73" cy="96" r="3" fill="#ffffff" />
                               <ellipse cx="130" cy="100" rx="8" ry="12" fill="#1e293b" />
                               <circle cx="133" cy="96" r="3" fill="#ffffff" />
-                              <path d="M90,110 Q100,115 110,110" fill="none" stroke="#1e293b" strokeWidth="2" strokeLinecap="round" />
+                              <path d="M90,110 Q100,115 110,110" fill="none" stroke="#0b1020" strokeWidth="3" strokeLinecap="round" />
                             </>
                           )}
                           <ellipse cx="60" cy="115" rx="6" ry="3" fill="#fda4af" opacity="0.6" />
