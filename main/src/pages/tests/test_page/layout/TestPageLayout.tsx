@@ -55,9 +55,9 @@ export const ExpIndicator = ({
   const fillRectRef = useRef<SVGRectElement | null>(null);
   const fillAnimationRef = useRef<gsap.core.Tween | null>(null);
   const expIndicatorClass = isCompact
-    ? "pointer-events-none absolute right-2 top-2 z-[30]"
-    : "pointer-events-none absolute right-4 top-4 z-[30]";
-  const expIndicatorInnerClass = `relative inline-flex ${isCompact ? "h-[56px] w-[56px]" : "h-[72px] w-[72px]"} items-center justify-center ${
+    ? "pointer-events-none absolute left-1/2 top-[6px] z-[30] -translate-x-1/2"
+    : "pointer-events-none absolute left-1/2 top-[14px] z-[30] -translate-x-1/2";
+  const expIndicatorInnerClass = `relative inline-flex ${isCompact ? "h-[54px] w-[54px]" : "h-[70px] w-[70px]"} items-center justify-center ${
     isPulse ? "scale-[1.03]" : "scale-100"
   } ${prefersReducedMotion ? "" : "transition-transform duration-300"}`;
   const fillLevel = Math.min(1, Math.max(0, fillRatio));
@@ -116,7 +116,11 @@ export const ExpIndicator = ({
   return (
     <div className={expIndicatorClass} aria-live="polite" data-testid="exp-indicator">
       <div className={expIndicatorInnerClass}>
-        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" aria-hidden="true">
+        <svg
+          className="absolute inset-0 h-full w-full -translate-y-[2px]"
+          viewBox="0 0 100 100"
+          aria-hidden="true"
+        >
           <defs>
             <linearGradient id={`${clipPathId}-fill`} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#34d399" stopOpacity="0.95" />
