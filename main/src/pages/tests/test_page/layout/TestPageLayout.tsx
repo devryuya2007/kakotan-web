@@ -63,6 +63,9 @@ export const ExpIndicator = ({
   const expIndicatorInnerClass = `relative inline-flex ${isCompact ? "h-[54px] w-[54px]" : "h-[70px] w-[70px]"} items-center justify-center ${
     isPulse ? "scale-[1.03]" : "scale-100"
   } ${prefersReducedMotion ? "" : "transition-transform duration-300"}`;
+  // 波の形を2パターン用意して、左右移動ではなく形だけ揺らす
+  const wavePathBase = "M-50,0 Q0,10 50,0 T150,0 T250,0 V200 H-50 Z";
+  const wavePathAlt = "M-50,4 Q0,6 50,4 T150,4 T250,4 V200 H-50 Z";
   // 0〜1で来る比率を0〜100の水位に変換して使う
   const fillLevel = Math.min(100, Math.max(0, fillRatio * 100));
   // 水位に合わせて水面の位置を上下させる（下が空、上が満タン）
@@ -136,18 +139,17 @@ export const ExpIndicator = ({
           <g clipPath={`url(#${clipPathId})`}>
             <g style={waterStyle}>
               <path
-                d="M-50,0 Q0,10 50,0 T150,0 T250,0 V200 H-50 Z"
+                d={wavePathBase}
                 fill={`url(#${waterGradientId})`}
               >
-                <animateTransform
-                  attributeName="transform"
-                  attributeType="XML"
-                  type="translate"
-                  from="0 0"
-                  to="-100 0"
-                  dur="2s"
-                  repeatCount="indefinite"
-                />
+                {!prefersReducedMotion && (
+                  <animate
+                    attributeName="d"
+                    dur="2.4s"
+                    repeatCount="indefinite"
+                    values={`${wavePathBase};${wavePathAlt};${wavePathBase}`}
+                  />
+                )}
               </path>
               <circle cx="50" cy="40" r="3" fill="rgba(255,255,255,0.6)">
                 <animate attributeName="cy" from="40" to="-20" dur="1.5s" repeatCount="indefinite" begin="0s" />
@@ -159,10 +161,18 @@ export const ExpIndicator = ({
               </circle>
             </g>
           </g>
+          {/* 顔は水より手前に出してキャラ感を優先する */}
+          <g transform="translate(0, 10)">
+            <ellipse cx="70" cy="100" rx="8" ry="12" fill="#1e293b" />
+            <circle cx="73" cy="96" r="3" fill="#ffffff" />
+            <ellipse cx="130" cy="100" rx="8" ry="12" fill="#1e293b" />
+            <circle cx="133" cy="96" r="3" fill="#ffffff" />
+            <path d="M90,110 Q100,115 110,110" fill="none" stroke="#1e293b" strokeWidth="2" strokeLinecap="round" />
+            <ellipse cx="60" cy="115" rx="6" ry="3" fill="#fda4af" opacity="0.6" />
+            <ellipse cx="140" cy="115" rx="6" ry="3" fill="#fda4af" opacity="0.6" />
+          </g>
         </svg>
-        <span className="relative z-10 text-[18px] font-semibold tabular-nums tracking-[0.08em] text-emerald-100">
-          {value}
-        </span>
+        <span className="sr-only">{value}</span>
         {gain && (
           <span
             ref={gainBadgeRef}
