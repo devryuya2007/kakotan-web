@@ -49,41 +49,32 @@ export const ExpIndicator = ({
   isCompact,
   fillRatio,
 }: ExpIndicatorProps) => {
-  const clipPathId = useId();
+  // 複数表示されてもIDがかぶらないようにユニークなIDを作る
+  const baseId = useId().replace(/:/g, "");
+  // SVG内の定義を参照するためのIDをまとめて用意する
+  const charShapeId = `${baseId}-shape`;
+  const waterGradientId = `${baseId}-water`;
+  const clipPathId = `${baseId}-clip`;
   const gainBadgeRef = useRef<HTMLSpanElement | null>(null);
   const gainAnimationRef = useRef<gsap.core.Timeline | null>(null);
-  const fillRectRef = useRef<SVGRectElement | null>(null);
-  const fillAnimationRef = useRef<gsap.core.Tween | null>(null);
   const expIndicatorClass = isCompact
     ? "pointer-events-none absolute left-1/2 top-[6px] z-[30] -translate-x-1/2"
     : "pointer-events-none absolute left-1/2 top-[14px] z-[30] -translate-x-1/2";
   const expIndicatorInnerClass = `relative inline-flex ${isCompact ? "h-[54px] w-[54px]" : "h-[70px] w-[70px]"} items-center justify-center ${
     isPulse ? "scale-[1.03]" : "scale-100"
   } ${prefersReducedMotion ? "" : "transition-transform duration-300"}`;
-  const fillLevel = Math.min(1, Math.max(0, fillRatio));
-  const fillHeight = 100 * fillLevel;
-  const fillY = 100 - fillHeight;
+  // 0〜1で来る比率を0〜100の水位に変換して使う
+  const fillLevel = Math.min(100, Math.max(0, fillRatio * 100));
+  // 水位に合わせて水面の位置を上下させる（下が空、上が満タン）
+  const waterTranslateY = 190 - (170 * fillLevel) / 100;
+  // 低減設定のときはアニメを止めるためにtransitionを切る
+  const waterStyle: CSSProperties = {
+    transform: `translateY(${waterTranslateY}px)`,
+    transition: prefersReducedMotion ? "none" : "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+  };
   const gainBadgeClass = gain?.isCorrect
     ? "border-emerald-200/80 bg-emerald-500/90 text-emerald-50 shadow-[0_10px_24px_rgba(16,185,129,0.35)]"
     : "border-rose-200/80 bg-rose-500/90 text-rose-50 shadow-[0_10px_24px_rgba(244,63,94,0.35)]";
-
-  useLayoutEffect(() => {
-    const rect = fillRectRef.current;
-    if (!rect) return;
-    if (fillAnimationRef.current) {
-      fillAnimationRef.current.kill();
-    }
-    if (prefersReducedMotion) {
-      rect.setAttribute("y", `${fillY}`);
-      rect.setAttribute("height", `${fillHeight}`);
-      return;
-    }
-    fillAnimationRef.current = gsap.to(rect, {
-      duration: 0.4,
-      ease: "power2.out",
-      attr: { y: fillY, height: fillHeight },
-    });
-  }, [fillY, fillHeight, prefersReducedMotion]);
 
   useLayoutEffect(() => {
     if (!gain || prefersReducedMotion) return;
@@ -118,34 +109,56 @@ export const ExpIndicator = ({
       <div className={expIndicatorInnerClass}>
         <svg
           className="absolute inset-0 h-full w-full -translate-y-[2px]"
-          viewBox="0 0 100 100"
+          viewBox="0 0 200 200"
           aria-hidden="true"
         >
           <defs>
-            <linearGradient id={`${clipPathId}-fill`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#34d399" stopOpacity="0.95" />
-              <stop offset="100%" stopColor="#10b981" stopOpacity="0.85" />
+            <path
+              id={charShapeId}
+              d="M100,20 C150,20 180,60 180,110 C180,170 150,190 100,190 C50,190 20,170 20,110 C20,60 50,20 100,20 Z"
+            />
+            <linearGradient id={waterGradientId} x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#67e8f9" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.95" />
             </linearGradient>
             <clipPath id={clipPathId}>
-              <polygon points="50,6 96,96 4,96" />
+              <use href={`#${charShapeId}`} />
             </clipPath>
           </defs>
-          <rect
-            ref={fillRectRef}
-            x="0"
-            y={fillY}
-            width="100"
-            height={fillHeight}
-            fill={`url(#${clipPathId}-fill)`}
-            clipPath={`url(#${clipPathId})`}
+
+          <use
+            href={`#${charShapeId}`}
+            fill="rgba(255, 255, 255, 0.1)"
+            stroke="rgba(255, 255, 255, 0.5)"
+            strokeWidth="2"
           />
-          <polygon
-            points="50,6 96,96 4,96"
-            fill="none"
-            stroke="rgba(255,255,255,0.28)"
-            strokeWidth="3"
-            strokeLinejoin="round"
-          />
+
+          <g clipPath={`url(#${clipPathId})`}>
+            <g style={waterStyle}>
+              <path
+                d="M-50,0 Q0,10 50,0 T150,0 T250,0 V200 H-50 Z"
+                fill={`url(#${waterGradientId})`}
+              >
+                <animateTransform
+                  attributeName="transform"
+                  attributeType="XML"
+                  type="translate"
+                  from="0 0"
+                  to="-100 0"
+                  dur="2s"
+                  repeatCount="indefinite"
+                />
+              </path>
+              <circle cx="50" cy="40" r="3" fill="rgba(255,255,255,0.6)">
+                <animate attributeName="cy" from="40" to="-20" dur="1.5s" repeatCount="indefinite" begin="0s" />
+                <animate attributeName="opacity" values="0.6;0" dur="1.5s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="120" cy="80" r="2" fill="rgba(255,255,255,0.6)">
+                <animate attributeName="cy" from="80" to="0" dur="2s" repeatCount="indefinite" begin="0.5s" />
+                <animate attributeName="opacity" values="0.6;0" dur="2s" repeatCount="indefinite" />
+              </circle>
+            </g>
+          </g>
         </svg>
         <span className="relative z-10 text-[18px] font-semibold tabular-nums tracking-[0.08em] text-emerald-100">
           {value}
