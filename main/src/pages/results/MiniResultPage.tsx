@@ -572,7 +572,7 @@ export default function MiniResultPage() {
                   {shouldShowMascot && (
                     <div
                       ref={expMascotRef}
-                      className='absolute -left-8 top-6 h-12 w-12 sm:-left-10 sm:top-4 sm:h-14 sm:w-14'
+                      className='absolute -left-10 top-6 h-14 w-14 sm:-left-12 sm:top-4 sm:h-16 sm:w-16'
                       style={shouldHideMascotAtStart ? {opacity: 0} : undefined}
                       aria-hidden="true"
                     >
