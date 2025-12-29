@@ -56,6 +56,8 @@ export default function StageSelectPage() {
     yearLabel,
     baseQuestionCount,
   });
+  // 読み込み中はローディングを出す
+  const isLoadingStages = status === "idle" || status === "loading";
 
   // 進捗はマウント時にlocalStorageから読み込み、reducerのstateで更新する
   useEffect(() => {
@@ -165,7 +167,22 @@ export default function StageSelectPage() {
               {yearLabel}
             </span>
           </div>
-          <section className='relative'>
+          <section className='relative min-h-[220px] sm:min-h-[260px]'>
+            {isLoadingStages && (
+              <div
+                className='absolute inset-0 z-10 grid place-items-center rounded-2xl bg-[#0b0b13]/60 backdrop-blur-sm'
+                role='status'
+                aria-live='polite'
+                aria-label='Loading stages'
+              >
+                <div className='flex flex-col items-center gap-3'>
+                  <div className='h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-[#67e8f9]' />
+                  <span className='text-xs uppercase tracking-[0.3em] text-white/60'>
+                    Loading...
+                  </span>
+                </div>
+              </div>
+            )}
             {status === 'ready' && stages.length > 0 && (
               <div
                 className='mx-auto grid w-full justify-center'
