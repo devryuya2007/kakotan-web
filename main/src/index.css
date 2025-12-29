@@ -49,6 +49,11 @@ body {
   transform: translateY(4px);
 }
 
+button,
+[role='button'] {
+  text-transform: uppercase;
+}
+
 .heading-display {
   font-family:
     'Playfair Display',

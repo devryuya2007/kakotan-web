@@ -1,7 +1,7 @@
 import type {ReactNode} from 'react';
 
 export interface PromoCardProps {
-  brand: string;
+  brand?: string;
   title: string;
   subtitle?: string;
   description: string;
@@ -24,10 +24,12 @@ export function PromoCard({
       <div className='flex h-full w-full flex-col overflow-hidden'>
         <div className='flex min-h-0 flex-1 flex-col items-center gap-6 overflow-hidden px-6 py-8 text-center sm:gap-8 sm:px-10 sm:py-10'>
           <header className='my-auto flex flex-col items-center gap-4'>
-            <span className='text-sm tracking-[0.45em] text-[#f2c97d]/80'>
-              {brand}
-            </span>
-            <h1 className='text-2xl font-semibold tracking-widest text-[#f2c97d] sm:text-3xl'>
+            {brand ? (
+              <span className='text-sm tracking-[0.45em] text-[#f2c97d]/80'>
+                {brand}
+              </span>
+            ) : null}
+            <h1 className='text-3xl font-semibold uppercase tracking-[0.45em] text-[#f2c97d] sm:text-4xl'>
               {title}
             </h1>
             {subtitle ? (
