@@ -687,7 +687,7 @@ export default function MiniResultPage() {
                       fill='transparent'
                     />
                     <circle
-                      className='text-[#f2c97d] transition-all duration-700 ease-out'
+                      className='text-[#67e8f9] transition-all duration-700 ease-out'
                       stroke='currentColor'
                       strokeWidth='12'
                       strokeLinecap='round'
