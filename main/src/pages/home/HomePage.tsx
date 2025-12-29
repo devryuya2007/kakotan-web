@@ -29,9 +29,8 @@ export default function HomePage() {
   return (
     <AppLayout>
       <PromoCard
-        brand='LEXIFY'
-        title='UNIVERSITY ENTRANCE ENGLISH'
-        subtitle='Vocabulary Mastery'
+        title='KAKOTAN'
+        subtitle='vocabulary mastery'
         description='Master 2,000 essential words with quick daily drills. Perfect for commuters and study breaks—always ready, even offline.'
         icon={<BrainBookIcon dataTestid='BrainIcon' className='h-16 w-16' />}
         action={

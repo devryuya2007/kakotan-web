@@ -78,15 +78,17 @@ export default function UserConfig() {
       <div className="flex min-h-full w-full flex-col gap-8 px-4 py-6 sm:gap-10 sm:px-8">
         <section className="flex w-full flex-col gap-6">
           <header className='space-y-1'>
-            <h1 className='text-[#f2c97d]'>Setting Your Exam</h1>
-            <p className='text-sm text-white/60'>developing......</p>
+            <h1 className='text-[#f2c97d]'>Practice Settings</h1>
+            <p className='text-sm text-white/60'>
+              Adjust the sound and question counts for your session.
+            </p>
           </header>
           {/* トグル項目は余白を活かして横並びできるようにする */}
           <div className="flex flex-wrap gap-4">
             <ToggleSwitch
               id="sound-toggle"
-              label="すべての音"
-              description="クリック音などをまとめて切り替える"
+              label="Sound effects"
+              description="Toggle all in-app sounds, including button clicks."
               checked={soundPreference.isSoundEnabled}
               onChange={setSoundEnabled}
             />

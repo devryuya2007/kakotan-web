@@ -197,6 +197,7 @@ export default function MiniResultPage() {
   const expPointsRef = useRef<Array<HTMLSpanElement | null>>([]);
   const expProgressTweenRef = useRef<gsap.core.Tween | null>(null);
   const expTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const expMascotBounceRef = useRef<gsap.core.Timeline | null>(null);
   // たまは1つだけ大きめに出す
   const expPointCount = 1;
   const gainedFillRatio =
@@ -407,6 +408,32 @@ export default function MiniResultPage() {
   ]);
 
   const dashOffset = circumference * (1 - displayProgress);
+  const handleMascotTap = () => {
+    if (prefersReducedMotion) return;
+    const mascot = expMascotRef.current;
+    if (!mascot) return;
+
+    if (expMascotBounceRef.current) {
+      expMascotBounceRef.current.kill();
+      expMascotBounceRef.current = null;
+    }
+
+    expMascotBounceRef.current = gsap
+      .timeline()
+      .to(mascot, {
+        y: -6,
+        scale: 1.08,
+        duration: 0.12,
+        ease: "power1.out",
+        overwrite: "auto",
+      })
+      .to(mascot, {
+        y: 0,
+        scale: 1,
+        duration: 0.2,
+        ease: "bounce.out",
+      });
+  };
 
   const results = () => {
     navigate('/results');
@@ -443,7 +470,7 @@ export default function MiniResultPage() {
                 />
                 <QuickStartButton
                   onClick={goStageList}
-                  label='Stage List'
+                  label='Stage'
                   className='!w-[6rem] !px-2 !py-1 text-[0.6rem] tracking-[0.2em]'
                 />
               </div>
@@ -570,11 +597,13 @@ export default function MiniResultPage() {
                 >
                   {/* 水ちゃんはXP獲得時だけ出す */}
                   {shouldShowMascot && (
-                    <div
+                    <button
                       ref={expMascotRef}
-                      className='absolute -left-10 top-6 h-14 w-14 sm:-left-12 sm:top-4 sm:h-16 sm:w-16'
+                      type="button"
+                      onClick={handleMascotTap}
+                      className='absolute -left-10 top-6 h-14 w-14 cursor-pointer appearance-none bg-transparent p-0 sm:-left-12 sm:top-4 sm:h-16 sm:w-16'
                       style={shouldHideMascotAtStart ? {opacity: 0} : undefined}
-                      aria-hidden="true"
+                      aria-label="水ちゃんを動かす"
                     >
                       <svg viewBox="0 0 200 200" className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
                         <defs>
@@ -656,7 +685,7 @@ export default function MiniResultPage() {
                           <ellipse cx="140" cy="115" rx="6" ry="3" fill="#fda4af" opacity="0.6" />
                         </g>
                       </svg>
-                    </div>
+                    </button>
                   )}
                   {/* ポイント粒の飛翔レイヤー */}
                   <div className="pointer-events-none absolute inset-0" aria-hidden="true">
