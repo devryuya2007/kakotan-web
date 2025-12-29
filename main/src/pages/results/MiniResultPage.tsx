@@ -1,4 +1,3 @@
-import {badges} from '../badge/badge';
 import {useTestResults} from '../states/useTestResults';
 
 import {type ReactNode, useLayoutEffect, useMemo, useRef, useState} from "react";
@@ -9,7 +8,6 @@ import {gsap} from "gsap";
 
 import {QuickStartButton} from '@/components/buttons/QuickStartButton';
 import {AppLayout} from '@/components/layout/AppLayout';
-import badgeRule from '@/features/results/badgeCondition';
 import {calculateLevelProgress} from '@/features/results/scoring';
 import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
 import {isYearKey} from "@/pages/stages/stageConstants";
@@ -73,11 +71,6 @@ export default function MiniResultPage() {
     xpForNextLevel,
     progressRatio: progress,
   } = calculateLevelProgress(effectiveTotalXp);
-  const shouldShowBadge = badgeRule({
-    totalXp: effectiveTotalXp,
-    level,
-  });
-
   const summaryCards: Array<{
     label: string;
     value: ReactNode;
@@ -95,20 +88,7 @@ export default function MiniResultPage() {
     },
     {
       label: 'Badges earned',
-      value: (
-        <div className='flex flex-wrap gap-3'>
-          {shouldShowBadge && // Badge unlock rule (currently hidden, see badgeCondition.ts)
-            // x
-            badges.map(({key, icon}) => (
-              <span
-                key={key}
-                className='inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/5 bg-white/5'
-              >
-                {icon}
-              </span>
-            ))}
-        </div>
-      ),
+      value: <span className='text-sm text-white/60'>secret...</span>,
     },
   ];
 

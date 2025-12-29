@@ -48,7 +48,7 @@ export default function MenuPage() {
               SELECT
             </h1>
             <p className="select-none text-sm text-[#f2c97d]/70">
-              年度を選んで、ステージへ進もう。
+              Choose a year to move on to the stages.
             </p>
             {/* Resultsボタンは右下固定なのでここでは表示しない */}
           </header>

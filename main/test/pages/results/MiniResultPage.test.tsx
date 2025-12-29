@@ -289,7 +289,7 @@ describe("ミニリザルトページ", () => {
       }),
     );
 
-    const stageButton = screen.getByRole("button", {name: "Stage List"});
+    const stageButton = screen.getByRole("button", {name: "Stage"});
     fireEvent.click(stageButton);
 
     expect(navigateMock).toHaveBeenCalledWith("/stages/reiwa3");
@@ -305,7 +305,7 @@ describe("ミニリザルトページ", () => {
 
     renderMiniResultPage(buildContextValue());
 
-    const stageButton = screen.getByRole("button", {name: "Stage List"});
+    const stageButton = screen.getByRole("button", {name: "Stage"});
     fireEvent.click(stageButton);
 
     expect(navigateMock).toHaveBeenCalledWith("/menu");
