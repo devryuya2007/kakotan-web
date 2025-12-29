@@ -382,6 +382,26 @@ describe("StageSelectPage", () => {
     expect(screen.queryByRole("button", {name: /Stage/i})).toBeNull();
   });
 
+  test("ローディング中はスピナーが表示される", () => {
+    useStageDefinitionsMock.mockReturnValue({
+      status: "loading",
+      stages: [],
+      totalWords: 0,
+      normalizedQuestionCount: 20,
+      error: null,
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/stages/reiwa3"]}>
+        <Routes>
+          <Route path="/stages/:year" element={<StageSelectPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByLabelText("Loading stages")).toBeInTheDocument();
+  });
+
   test("全ステージクリア済みなら最後のステージがアクティブになる", async () => {
     const storageKey = "stage-progress:v1";
     const progress = createStageDefinitions(3).reduce<Record<string, unknown>>(
