@@ -66,7 +66,7 @@ describe('メインメニュー', () => {
         <MemoryRouter>
           <PromoCard
             brand='LEXIFY'
-            title='UNIVERSITY ENTRANCE ENGLISH'
+            title='KAKOTAN'
             description='Master 2,000 essential words with quick daily drills. Perfect for commuters and study breaks—always ready, even offline.'
           />
         </MemoryRouter>,
