@@ -2,6 +2,8 @@ import "@testing-library/jest-dom/vitest";
 import {cleanup} from "@testing-library/react";
 import {afterEach, vi} from "vitest";
 
+const hasWindow = typeof window !== "undefined";
+
 interface MatchMediaMock extends MediaQueryList {
   addListener: (
     listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown,
@@ -25,13 +27,13 @@ interface MatchMediaMock extends MediaQueryList {
 // requestAnimationFrameが無い環境でも安全に動かすための保険
 if (!globalThis.requestAnimationFrame) {
   globalThis.requestAnimationFrame = (callback: FrameRequestCallback) =>
-    window.setTimeout(() => callback(Date.now()), 0);
+    globalThis.setTimeout(() => callback(Date.now()), 0);
 }
 
 // cancelAnimationFrameが無い環境でも安全に動かすための保険
 if (!globalThis.cancelAnimationFrame) {
   globalThis.cancelAnimationFrame = (id: number) => {
-    window.clearTimeout(id);
+    globalThis.clearTimeout(id);
   };
 }
 
@@ -39,11 +41,11 @@ afterEach(() => {
   // cleanup前にcancelAnimationFrameが無いと落ちるので保険を掛け直す
   if (!globalThis.requestAnimationFrame) {
     globalThis.requestAnimationFrame = (callback: FrameRequestCallback) =>
-      window.setTimeout(() => callback(Date.now()), 0);
+      globalThis.setTimeout(() => callback(Date.now()), 0);
   }
   if (!globalThis.cancelAnimationFrame) {
     globalThis.cancelAnimationFrame = (id: number) => {
-      window.clearTimeout(id);
+      globalThis.clearTimeout(id);
     };
   }
 
@@ -51,7 +53,7 @@ afterEach(() => {
 });
 
 // matchMediaが無い環境でもusePrefersReducedMotionが落ちないように保険を入れる
-if (!window.matchMedia) {
+if (hasWindow && !window.matchMedia) {
   Object.defineProperty(window, "matchMedia", {
     writable: true,
     value: (query: string): MatchMediaMock => ({
@@ -86,17 +88,19 @@ Object.defineProperty(globalThis, "Audio", {
 });
 
 // jsdomのHTMLMediaElement未実装メソッドを補う
-Object.defineProperty(HTMLMediaElement.prototype, "play", {
-  configurable: true,
-  value: vi.fn().mockResolvedValue(undefined),
-});
-Object.defineProperty(HTMLMediaElement.prototype, "pause", {
-  configurable: true,
-  value: vi.fn(),
-});
+if (typeof HTMLMediaElement !== "undefined") {
+  Object.defineProperty(HTMLMediaElement.prototype, "play", {
+    configurable: true,
+    value: vi.fn().mockResolvedValue(undefined),
+  });
+  Object.defineProperty(HTMLMediaElement.prototype, "pause", {
+    configurable: true,
+    value: vi.fn(),
+  });
+}
 
 // バイブAPIを使う処理があっても落ちないように保険を入れる
-if (!("vibrate" in navigator)) {
+if (typeof navigator !== "undefined" && !("vibrate" in navigator)) {
   Object.defineProperty(navigator, "vibrate", {
     configurable: true,
     value: vi.fn(() => false),
