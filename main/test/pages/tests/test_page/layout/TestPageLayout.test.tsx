@@ -465,6 +465,81 @@ describe("テストページ", () => {
     });
   });
 
+  test("非アクティブ時間は学習時間に含めない", () => {
+    // アクティブ時間だけをdurationMsに反映できているか確認する
+    usePrefersReducedMotionMock.mockReturnValue(true);
+    vi.useFakeTimers();
+
+    let nowValue = 0;
+    const performanceNowMock = vi
+      .spyOn(performance, "now")
+      .mockImplementation(() => nowValue);
+    const dateNowMock = vi
+      .spyOn(Date, "now")
+      .mockImplementation(() => 100000 + nowValue);
+
+    renderWithConfig(
+      <MemoryRouter>
+        <TestPageLayout
+          questions={multiQuestions}
+          count={multiQuestions.length}
+          sectionId="q1"
+        />
+      </MemoryRouter>,
+    );
+
+    const firstCorrectLabel =
+      multiQuestions[0].choices[multiQuestions[0].answerIndex];
+    const firstButton = screen
+      .getAllByRole("button", {name: "正誤判定"})
+      .find((button) => button.textContent?.includes(firstCorrectLabel));
+    if (!firstButton) {
+      throw new Error("正解の選択肢が見つかりません");
+    }
+
+    fireEvent.click(firstButton);
+
+    act(() => {
+      nowValue = 600;
+      window.dispatchEvent(new Event("blur"));
+      // 正解レビュー時間を進めて次の問題へ
+      vi.advanceTimersByTime(800);
+    });
+
+    act(() => {
+      nowValue = 1600;
+      window.dispatchEvent(new Event("focus"));
+    });
+
+    const secondCorrectLabel =
+      multiQuestions[1].choices[multiQuestions[1].answerIndex];
+    const secondButton = screen
+      .getAllByRole("button", {name: "正誤判定"})
+      .find((button) => button.textContent?.includes(secondCorrectLabel));
+    if (!secondButton) {
+      throw new Error("正解の選択肢が見つかりません");
+    }
+
+    fireEvent.click(secondButton);
+
+    act(() => {
+      nowValue = 2000;
+      vi.advanceTimersByTime(800);
+    });
+
+    expect(navigateMock).toHaveBeenCalledWith(
+      "/results/mini",
+      expect.objectContaining({
+        state: expect.objectContaining({
+          durationMs: 1000,
+        }),
+      }),
+    );
+
+    performanceNowMock.mockRestore();
+    dateNowMock.mockRestore();
+  });
+
   test("終了後に再レンダリングしても二重遷移しない", () => {
     // hasFinishedRefのガードが動くか確認する
     vi.useFakeTimers();

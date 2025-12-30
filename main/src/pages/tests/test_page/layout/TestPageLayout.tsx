@@ -47,7 +47,13 @@ export default function TestPageLayout({
   const { correct, incorrect, recordResult, totalXp, applyXp, reset, addSession } =
     useTestResults();
 
+  const now = () => performance.now();
+  const isVisible = () => document.visibilityState === "visible";
+  // セッションの開始時刻（画面表示の時刻）を残す
   const sessionStartRef = useRef<number | null>(null);
+  // アクティブ時間の開始点と累積値を保存する
+  const activeStartRef = useRef<number | null>(isVisible() ? now() : null);
+  const activeTotalRef = useRef(0);
   // 正解・不正解に合わせた効果音を鳴らすための関数
   const { playAnswerSound } = useAnswerResultSound();
 
@@ -77,6 +83,11 @@ export default function TestPageLayout({
   useEffect(() => {
     reset();
     sessionStartRef.current = Date.now();
+    // 画面がアクティブな時だけカウントするように初期化
+    activeTotalRef.current = 0;
+    activeStartRef.current = isVisible() ? now() : null;
+    // セッション開始時点のXPを基準にして表示を初期化する
+    setSessionGainedXp(0);
 
     // ステージモードなら挑戦済みを先に記録しておく
     if (stageId) {
@@ -85,8 +96,41 @@ export default function TestPageLayout({
 
     return () => {
       sessionStartRef.current = null;
+      activeStartRef.current = null;
+      activeTotalRef.current = 0;
     };
   }, [reset, stageId]);
+
+  useEffect(() => {
+    const handleBlur = () => {
+      // セッションが終わっている場合は何もしない
+      if (sessionStartRef.current === null) return;
+      if (activeStartRef.current === null) return;
+      activeTotalRef.current += now() - activeStartRef.current;
+      activeStartRef.current = null;
+    };
+
+    const handleFocus = () => {
+      if (sessionStartRef.current === null) return;
+      if (activeStartRef.current !== null) return;
+      activeStartRef.current = now();
+    };
+
+    const handleVisibilityChange = () => {
+      if (isVisible()) handleFocus();
+      else handleBlur();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("blur", handleBlur);
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("blur", handleBlur);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, []);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   // 各選択肢が正解・不正解・未回答かを保持する
@@ -162,12 +206,15 @@ export default function TestPageLayout({
     const updatedTotalXp = nextTotalXp;
 
     const finishedAt = Date.now();
-    const startedAt = sessionStartRef.current;
+    const startedAt = sessionStartRef.current ?? finishedAt;
     const correctCount = correct.length;
     const incorrectCount = incorrect.length;
     const totalAnswered = correctCount + incorrectCount;
 
-    const durationMs = Math.max(0, finishedAt - (startedAt as number));
+    const activeDuration =
+      activeTotalRef.current +
+      (activeStartRef.current ? now() - activeStartRef.current : 0);
+    const durationMs = Math.max(0, activeDuration);
     // セッション履歴は集計に使うので、テスト毎のメタ情報を丸ごと残しておく
     addSession({
       startedAt: startedAt as number,
@@ -181,6 +228,7 @@ export default function TestPageLayout({
       stageId,
     });
     sessionStartRef.current = null;
+    activeStartRef.current = null;
 
     // ステージモードのときは進捗を保存する（正答率90%以上でクリア扱い）
     if (stageId && totalAnswered > 0) {
