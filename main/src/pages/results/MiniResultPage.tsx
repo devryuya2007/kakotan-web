@@ -172,7 +172,7 @@ export default function MiniResultPage() {
   const prefersReducedMotion = usePrefersReducedMotion();
   const shouldHideMascotAtStart = shouldAnimateGain && !prefersReducedMotion;
   // 水ちゃん・ポイント・ターゲットの参照
-  const expMascotRef = useRef<HTMLDivElement | null>(null);
+  const expMascotRef = useRef<HTMLButtonElement | null>(null);
   const expRingRef = useRef<HTMLDivElement | null>(null);
   const expPointsRef = useRef<Array<HTMLSpanElement | null>>([]);
   const expProgressTweenRef = useRef<gsap.core.Tween | null>(null);
