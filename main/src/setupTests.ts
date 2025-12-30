@@ -3,15 +3,21 @@ import {cleanup} from "@testing-library/react";
 import {afterEach, vi} from "vitest";
 
 interface MatchMediaMock extends MediaQueryList {
-  addListener: (listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown) => void;
-  removeListener: (listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown) => void;
+  addListener: (
+    listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown,
+  ) => void;
+  removeListener: (
+    listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown,
+  ) => void;
   addEventListener: (
-    type: string,
-    listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown
+    type: keyof MediaQueryListEventMap | string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions,
   ) => void;
   removeEventListener: (
-    type: string,
-    listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown
+    type: keyof MediaQueryListEventMap | string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | EventListenerOptions,
   ) => void;
   dispatchEvent: (event: Event) => boolean;
 }
