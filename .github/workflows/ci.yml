@@ -31,5 +31,8 @@ jobs:
       - name: Lint
         run: npm --prefix main run lint
 
+      - name: Build
+        run: npm --prefix main run build
+
       - name: Run tests
         run: npm --prefix main run test:run
