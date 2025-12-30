@@ -86,8 +86,6 @@ export default function TestPageLayout({
     // 画面がアクティブな時だけカウントするように初期化
     activeTotalRef.current = 0;
     activeStartRef.current = isVisible() ? now() : null;
-    // セッション開始時点のXPを基準にして表示を初期化する
-    setSessionGainedXp(0);
 
     // ステージモードなら挑戦済みを先に記録しておく
     if (stageId) {
