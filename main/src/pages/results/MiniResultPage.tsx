@@ -438,7 +438,7 @@ export default function MiniResultPage() {
             <QuickStartButton onClick={() => navigate('/')} label='Home' />
           </div>
           <div className={contentWrapperClass}>
-            <section className='relative w-full space-y-2'>
+            <section className='relative w-full space-y-2 pt-2 sm:pt-3'>
               <h1 className='text-center text-xl font-bold tracking-tight text-[#f2c97d] sm:text-3xl'>
                 RESULT
               </h1>
@@ -446,12 +446,12 @@ export default function MiniResultPage() {
                 <QuickStartButton
                   onClick={() => results()}
                   label='Results'
-                  className='!w-[6rem] !px-3 !py-1 text-xs tracking-[0.2em]'
+                  className='!w-[7rem] !px-5 !py-2.5 text-xs tracking-[0.2em]'
                 />
                 <QuickStartButton
                   onClick={goStageList}
                   label='Stage'
-                  className='!w-[6rem] !px-2 !py-1 text-[0.6rem] tracking-[0.2em]'
+                  className='!w-[7rem] !px-5 !py-2.5 text-xs tracking-[0.2em]'
                 />
               </div>
             </section>
