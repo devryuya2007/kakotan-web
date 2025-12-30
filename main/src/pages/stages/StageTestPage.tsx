@@ -10,6 +10,7 @@ import {
   createStageDefinitions,
   type StageDefinition,
 } from "@/features/stages/stageUtils";
+import {useShuffledItems} from "@/hooks/useShuffledItems";
 import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
 import TestPageLayout from "@/pages/tests/test_page/layout/TestPageLayout";
 
@@ -43,6 +44,8 @@ export default function StageTestPage() {
       : 1;
   const baseQuestionCount = config.years[year].maxCount;
   const yearLabel = YEAR_LABELS[year];
+  // extraだけ順番をシャッフルして、連続出題の偏りを減らす
+  const shouldShuffle = year === "extra";
 
   // ステージの問題配列やエラーをまとめて管理する
   const [state, setState] = useState<StageQuestionState>({
@@ -140,8 +143,8 @@ export default function StageTestPage() {
         )}
         {state.status === "ready" && state.stage && (
           <TestPageLayout
-            count={state.questions.length}
-            questions={state.questions}
+            count={displayQuestions.length}
+            questions={displayQuestions}
             sectionId={`${yearLabel} Stage ${stageNumber}`}
             stageId={state.stage.stageId}
           />
