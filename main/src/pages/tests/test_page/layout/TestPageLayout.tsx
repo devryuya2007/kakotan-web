@@ -213,7 +213,9 @@ export default function TestPageLayout({
 
     const activeDuration =
       activeTotalRef.current +
-      (activeStartRef.current ? now() - activeStartRef.current : 0);
+      (activeStartRef.current !== null
+        ? now() - activeStartRef.current
+        : 0);
     const durationMs = Math.max(0, activeDuration);
     // セッション履歴は集計に使うので、テスト毎のメタ情報を丸ごと残しておく
     addSession({
