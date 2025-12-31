@@ -318,7 +318,6 @@ describe("テストページ", () => {
   test("applyXpが正しい引数で呼ばれているか", async () => {
     // タイマー依存の処理を確実に進めるためフェイクタイマーを使う
     vi.useFakeTimers();
-    const user = userEvent.setup({advanceTimers: vi.advanceTimersByTime});
     const firstRender = renderWithConfig(
       <MemoryRouter>
         <TestPageLayout
@@ -338,7 +337,7 @@ describe("テストページ", () => {
     if (!firstCorrectButton) {
       throw new Error('正解の選択肢が見つかりません');
     }
-    await user.click(firstCorrectButton);
+    fireEvent.click(firstCorrectButton);
     expect(applyXpMook).not.toHaveBeenCalled();
 
     firstRender.unmount();
@@ -361,7 +360,7 @@ describe("テストページ", () => {
     if (!secondCorrectButton) {
       throw new Error('正解の選択肢が見つかりません');
     }
-    await user.click(secondCorrectButton);
+    fireEvent.click(secondCorrectButton);
     // フェイクタイマーでレビュー＋遷移の時間を進めてfinishTestまで到達させる
     act(() => {
       vi.advanceTimersByTime(1500);
