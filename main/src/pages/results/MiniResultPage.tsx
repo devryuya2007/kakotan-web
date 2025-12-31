@@ -438,7 +438,7 @@ export default function MiniResultPage() {
             <QuickStartButton onClick={() => navigate('/')} label='Home' />
           </div>
           <div className={contentWrapperClass}>
-            <section className='relative w-full space-y-2 pt-2 sm:pt-3'>
+            <section className='order-1 relative w-full space-y-2 pt-2 sm:pt-3'>
               <h1 className='text-center text-xl font-bold tracking-tight text-[#f2c97d] sm:text-3xl'>
                 RESULT
               </h1>
@@ -456,7 +456,7 @@ export default function MiniResultPage() {
               </div>
             </section>
 
-            <section className='grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-3'>
+            <section className='order-3 grid w-full min-w-0 grid-cols-1 gap-4 sm:order-2 sm:grid-cols-3'>
               {summaryCards.map(({label, value, tone}) => {
                 const toneClass = tone ? toneStyles[tone] : '';
 
@@ -478,8 +478,8 @@ export default function MiniResultPage() {
               })}
             </section>
 
-            <section className='mb-0 grid w-full min-w-0 grid-cols-1 gap-6 lg:grid-cols-3'>
-              <div className='min-w-0 rounded-2xl border border-white/10 bg-[#0f1524] p-5 lg:col-span-2'>
+            <section className='order-2 mb-0 grid w-full min-w-0 grid-cols-1 gap-6 sm:order-3 lg:grid-cols-3'>
+              <div className='order-2 min-w-0 rounded-2xl border border-white/10 bg-[#0f1524] p-5 lg:order-1 lg:col-span-2'>
                 <div className='mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between'>
                   <div>
                     <h2
@@ -529,7 +529,7 @@ export default function MiniResultPage() {
                 )}
               </div>
 
-              <div className='relative min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[#0f1524] p-5'>
+              <div className='order-1 relative min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[#0f1524] p-5 lg:order-2'>
                 <div className='pointer-events-none absolute -right-24 -top-28 h-60 w-60 rounded-full bg-gradient-to-br from-[#f2c97d33] via-[#be8b381f] to-transparent blur-3xl' />
                 <div className='pointer-events-none absolute inset-0 opacity-50'>
                   <div className='absolute inset-x-0 top-8 h-px bg-gradient-to-r from-transparent via-[#f2c97d33] to-transparent' />
