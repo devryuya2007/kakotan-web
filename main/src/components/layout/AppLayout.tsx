@@ -5,9 +5,11 @@ import {BackgroundGlow} from './BackgroundGlow';
 interface AppLayoutProps {
   children: ReactNode;
   mainClassName?: string;
+  // 画面固定のボタンなどをmainの外に置いて、スクロールや変形の影響を避ける
+  floatingSlot?: ReactNode;
 }
 
-export function AppLayout({children, mainClassName}: AppLayoutProps) {
+export function AppLayout({children, mainClassName, floatingSlot}: AppLayoutProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -21,6 +23,7 @@ export function AppLayout({children, mainClassName}: AppLayoutProps) {
   return (
     <div className='relative m-auto min-h-dvh overflow-hidden bg-[#050509] text-white'>
       <BackgroundGlow />
+      {floatingSlot}
 
       <main
         className={`relative z-10 m-auto flex h-dvh w-full transform-gpu justify-center px-4 transition-all duration-500 ease-out sm:px-8 ${
