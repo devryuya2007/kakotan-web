@@ -30,6 +30,15 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useAnswerResultSound } from "@/hooks/useAnswerResultSound";
 import { useTestResults } from "@/pages/states/useTestResults";
 
+const hasWindow = typeof window !== "undefined";
+const hasDocument = typeof document !== "undefined";
+const getIsSmallDefault = () => {
+  if (!hasWindow || !window.matchMedia) return false;
+  return window.matchMedia("(max-width: 640px)").matches;
+};
+const isDocumentVisible = () =>
+  hasDocument ? document.visibilityState === "visible" : true;
+
 // このコンポーネントが受け取るpropsの形。questionsは問題配列、countは総数
 interface TestPageLayoutProps {
   questions: QuizQuestion[];
@@ -217,7 +226,7 @@ export default function TestPageLayout({
     useTestResults();
 
   const now = () => performance.now();
-  const isVisible = () => document.visibilityState === "visible";
+  const isVisible = () => isDocumentVisible();
   // セッションの開始時刻（画面表示の時刻）を残す
   const sessionStartRef = useRef<number | null>(null);
   // アクティブ時間の開始点と累積値を保存する
@@ -226,16 +235,21 @@ export default function TestPageLayout({
   // 正解・不正解に合わせた効果音を鳴らすための関数
   const { playAnswerSound } = useAnswerResultSound();
 
-  const [isSmall, setIsSmall] = useState(() => window.matchMedia("(max-width: 640px)").matches);
+  const [isSmall, setIsSmall] = useState(getIsSmallDefault);
 
   useEffect(() => {
+    if (!hasWindow || !window.matchMedia) return;
     const mediaQuery = window.matchMedia("(max-width: 640px)");
     const handleChange = (event: MediaQueryListEvent) => {
       setIsSmall(event.matches);
     };
 
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
   }, []);
 
   // 表示するカードのindexから適切なレイアウト情報を引き出す
@@ -291,14 +305,22 @@ export default function TestPageLayout({
       else handleBlur();
     };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("blur", handleBlur);
-    window.addEventListener("focus", handleFocus);
+    if (hasDocument) {
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+    }
+    if (hasWindow) {
+      window.addEventListener("blur", handleBlur);
+      window.addEventListener("focus", handleFocus);
+    }
 
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("blur", handleBlur);
-      window.removeEventListener("focus", handleFocus);
+      if (hasDocument) {
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+      }
+      if (hasWindow) {
+        window.removeEventListener("blur", handleBlur);
+        window.removeEventListener("focus", handleFocus);
+      }
     };
   }, []);
 
@@ -518,7 +540,7 @@ export default function TestPageLayout({
     if (gainPulseTimeoutRef.current) {
       clearTimeout(gainPulseTimeoutRef.current);
     }
-    gainPulseTimeoutRef.current = window.setTimeout(() => {
+    gainPulseTimeoutRef.current = globalThis.setTimeout(() => {
       setIsGainPulse(false);
       gainPulseTimeoutRef.current = null;
     }, 520);
@@ -541,7 +563,7 @@ export default function TestPageLayout({
     }
 
     if (prefersReducedMotion) {
-      const timeoutId = window.setTimeout(() => {
+      const timeoutId = globalThis.setTimeout(() => {
         setGainToast(null);
       }, TOAST_DURATION);
       return () => {
@@ -609,7 +631,7 @@ export default function TestPageLayout({
     // 獲得XPは累積で表示するためにセッション内で加算しておく
     setSessionGainedXp((prev) => prev + gainAmount);
     clearTimeout(toastDelayTimeoutRef.current as unknown as number);
-    toastDelayTimeoutRef.current = window.setTimeout(() => {
+    toastDelayTimeoutRef.current = globalThis.setTimeout(() => {
       setGainToast({
         amount: gainAmount,
         key: Date.now(),
