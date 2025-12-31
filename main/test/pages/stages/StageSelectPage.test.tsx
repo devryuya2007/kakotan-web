@@ -287,7 +287,7 @@ describe("StageSelectPage", () => {
     await user.click(stage1Button);
 
     expect(
-      await screen.findByText(/前回の正答率: 95%/i),
+      await screen.findByText(/Last accuracy:\s*95%/i),
     ).toBeInTheDocument();
   });
 
