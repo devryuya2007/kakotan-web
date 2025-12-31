@@ -457,11 +457,11 @@ function StageStartModal({
         {stage.title}
       </p>
       <p className='text-sm text-white/70'>
-        出題数は {stage.questionCount} 問。正答率90%以上でクリア扱いになるよ。
+        This stage has {stage.questionCount} questions. Score 90% or higher to clear.
       </p>
       <p className='text-sm text-white/60'>
-        前回の正答率:{' '}
-        {hasAttempted && lastAccuracy !== null ? `${lastAccuracy}%` : '未挑戦'}
+        Last accuracy:{' '}
+        {hasAttempted && lastAccuracy !== null ? `${lastAccuracy}%` : 'Not attempted'}
       </p>
       <div className='flex items-center gap-3'>
         <div
@@ -470,7 +470,7 @@ function StageStartModal({
             background: `linear-gradient(90deg, ${accent}, ${accentSoft})`,
           }}
         />
-        <span className='text-xs text-white/60'>1ステージずつ進めよう</span>
+        <span className='text-xs text-white/60'>Clear stages one by one.</span>
       </div>
       <div className='pt-2 text-right'>
         <button
