@@ -20,7 +20,6 @@ const MENU_ITEMS = yearRegistry.map((entry) => ({
 
 export default function MenuPage() {
   const [isVisible, setIsVisible] = useState(false);
-  const [isNavigating, setIsNavigating] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,65 +32,40 @@ export default function MenuPage() {
 
   // メニューからステージ一覧へ遷移する
   const handleSelect = (path: string) => {
-    if (isNavigating) return;
-    // 遷移直前にローディングを見せるため、1フレーム待ってから移動する
-    setIsNavigating(true);
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        navigate(path);
-      });
-    });
+    navigate(path);
   };
 
   return (
     <AppLayout>
-      <div className="relative w-full">
-        <div
-          className={`my-auto w-full max-w-4xl transform-gpu rounded-2xl transition-all duration-500 ease-out ${
-            isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-          }`}
-        >
-          <div className="flex h-full w-full flex-col gap-8 rounded-2xl px-8 py-10 text-center sm:gap-10 sm:px-12 sm:py-12">
-            <header className="space-y-8">
-              <h1 className="select-none text-2xl font-semibold tracking-widest text-[#f2c97d] sm:text-3xl">
-                SELECT
-              </h1>
-              <p className="select-none text-sm text-[#f2c97d]/70">
-                Choose a year to move on to the stages.
-              </p>
-              {/* Resultsボタンは右下固定なのでここでは表示しない */}
-            </header>
+      <div
+        className={`my-auto w-full max-w-4xl transform-gpu rounded-2xl transition-all duration-500 ease-out ${
+          isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+        }`}
+      >
+        <div className="flex h-full w-full flex-col gap-8 rounded-2xl px-8 py-10 text-center sm:gap-10 sm:px-12 sm:py-12">
+          <header className="space-y-8">
+            <h1 className="select-none text-2xl font-semibold tracking-widest text-[#f2c97d] sm:text-3xl">
+              SELECT
+            </h1>
+            <p className="select-none text-sm text-[#f2c97d]/70">
+              Choose a year to move on to the stages.
+            </p>
+            {/* Resultsボタンは右下固定なのでここでは表示しない */}
+          </header>
 
-            {/* 年度ごとのステージ入口 */}
-            <section>
-              <div className="grid grid-cols-3 gap-4 sm:gap-6">
-                {MENU_ITEMS.map(({label, path}) => (
-                  <MenuButton
-                    key={label}
-                    label={label}
-                    onSelect={() => handleSelect(path)}
-                    disabled={isNavigating}
-                  />
-                ))}
-              </div>
-            </section>
-          </div>
-        </div>
-        {isNavigating && (
-          <div
-            className="fixed inset-0 z-30 grid place-items-center bg-[#0b0b13]/60 backdrop-blur-sm"
-            role="status"
-            aria-live="polite"
-            aria-label="Loading stages"
-          >
-            <div className="flex flex-col items-center gap-4">
-              <div className="h-14 w-14 animate-spin rounded-full border-4 border-white/20 border-t-[#67e8f9]" />
-              <span className="text-sm uppercase tracking-[0.3em] text-white/70">
-                Loading...
-              </span>
+          {/* 年度ごとのステージ入口 */}
+          <section>
+            <div className="grid grid-cols-3 gap-4 sm:gap-6">
+              {MENU_ITEMS.map(({label, path}) => (
+                <MenuButton
+                  key={label}
+                  label={label}
+                  onSelect={() => handleSelect(path)}
+                />
+              ))}
             </div>
-          </div>
-        )}
+          </section>
+        </div>
       </div>
       <div className="fixed bottom-6 right-6 w-[6rem]">
         <QuickStartButton onClick={() => navigate("/")} label="Home" />
@@ -103,17 +77,11 @@ export default function MenuPage() {
 interface MenuButtonProps {
   label: string;
   onSelect: () => void;
-  disabled?: boolean;
 }
 
-function MenuButton({label, onSelect, disabled}: MenuButtonProps) {
+function MenuButton({label, onSelect}: MenuButtonProps) {
   return (
-    <button
-      type="button"
-      onClick={onSelect}
-      disabled={disabled}
-      className={`${QuickStartButtonStyle} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
-    >
+    <button type="button" onClick={onSelect} className={QuickStartButtonStyle}>
       {label}
     </button>
   );
