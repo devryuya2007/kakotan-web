@@ -316,7 +316,9 @@ describe("テストページ", () => {
   });
 
   test("applyXpが正しい引数で呼ばれているか", async () => {
-    const user = userEvent.setup();
+    // タイマー依存の処理を確実に進めるためフェイクタイマーを使う
+    vi.useFakeTimers();
+    const user = userEvent.setup({advanceTimers: vi.advanceTimersByTime});
     const firstRender = renderWithConfig(
       <MemoryRouter>
         <TestPageLayout
@@ -360,10 +362,9 @@ describe("テストページ", () => {
       throw new Error('正解の選択肢が見つかりません');
     }
     await user.click(secondCorrectButton);
-    // NOTE: 本来はフェイクタイマーで待機を制御すべきだが、handleClickが多段のsetTimeoutで複雑なので
-    // 現状は実時間で待ってfinishTestが走るまで待機している。より実務的にはタイマー処理を分離してテストしやすくする必要がある。
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+    // フェイクタイマーでレビュー＋遷移の時間を進めてfinishTestまで到達させる
+    act(() => {
+      vi.advanceTimersByTime(1500);
     });
 
     expect(applyXpMook).toHaveBeenCalled();
