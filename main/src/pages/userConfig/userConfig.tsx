@@ -119,7 +119,7 @@ export default function UserConfig() {
                 checked={soundPreference.isSoundEnabled}
                 onChange={setSoundEnabled}
               />
-            <div className="flex flex-col w-full items-center justify-between gap-12 rounded-2xl border border-white/15 bg-[#0f1524] px-4 py-4 text-left shadow-[0_10px_30px_rgba(0,0,0,0.35)] transition hover:border-white/30 sm:flex-row">
+              <div className="flex w-full flex-col items-center justify-between gap-12 rounded-2xl border border-white/15 bg-[#0f1524] px-4 py-4 text-left shadow-[0_10px_30px_rgba(0,0,0,0.35)] transition hover:border-white/30 sm:flex-row">
                 <div className="space-y-1">
                   <p className="text-sm font-semibold text-white">data import</p>
                   <p className="text-xs text-white/60">
@@ -154,7 +154,7 @@ export default function UserConfig() {
                   />
                   <label
                     htmlFor={dataImportInputId}
-                    className="w-[12rem] text-center ml-0 rounded-full border border-white/20 bg-white/10 p-4  text-sm font-semibold text-white/80 transition hover:border-white/40 hover:bg-white/15"
+                    className="ml-0 w-[12rem] rounded-full border border-white/20 bg-white/10 p-4 text-center text-sm font-semibold text-white/80 transition hover:border-white/40 hover:bg-white/15"
                   >
                     select file
                   </label>
