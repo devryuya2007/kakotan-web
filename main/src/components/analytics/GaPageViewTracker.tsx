@@ -12,6 +12,10 @@ export const GaPageViewTracker = (): null => {
   const location = useLocation();
 
   useEffect(() => {
+    // 開発環境の計測を止めるためのフラグ
+    if (import.meta.env.VITE_GA_DISABLED === "true") {
+      return;
+    }
     // gtagが無い場合は何もしない（開発中や未設定の環境向け）
     if (typeof window === "undefined" || typeof window.gtag !== "function") {
       return;
