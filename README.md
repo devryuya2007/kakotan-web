@@ -192,4 +192,6 @@ npm --prefix main run test -- run
 
 ## ライセンス
 
-### Apache-2.0
+### All Rights Reserved
+
+本リポジトリの配布・転載は禁止の詳細は `LICENSE` を参照してください。
