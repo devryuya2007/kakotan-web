@@ -1,4 +1,4 @@
-import {yearRegistry, type YearKey} from "@/data/yearRegistry";
+import { yearRegistry, type YearKey } from "@/data/defaultRegistry";
 
 export interface YearConfigEntry {
   maxCount: number;
@@ -25,7 +25,7 @@ const buildInitialYearConfig = (): Record<YearKey, YearConfigEntry> => {
       };
       return accumulator;
     },
-    {} as Record<YearKey, YearConfigEntry>,
+    {} as Record<YearKey, YearConfigEntry>
   );
 };
 

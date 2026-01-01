@@ -1,16 +1,14 @@
-import {renderHook, waitFor} from "@testing-library/react";
-import {beforeEach, describe, expect, test, vi} from "vitest";
+import { renderHook, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
-import {useAllYearVocab} from "@/hooks/useAllYearVocab";
-import {yearRegistry, type YearKey} from "@/data/yearRegistry";
-import type {VocabEntry} from "@/data/vocabLoader";
+import { useAllYearVocab } from "@/hooks/useAllYearVocab";
+import { yearRegistry, type YearKey } from "@/data/defaultRegistry";
+import type { VocabEntry } from "@/data/vocabLoader";
 
 const loadYearVocabMock = vi.fn();
 
 vi.mock("@/data/vocabLoader", async () => {
-  const actual = await vi.importActual<typeof import("@/data/vocabLoader")>(
-    "@/data/vocabLoader",
-  );
+  const actual = await vi.importActual<typeof import("@/data/vocabLoader")>("@/data/vocabLoader");
   return {
     ...actual,
     loadYearVocab: (year: YearKey) => loadYearVocabMock(year),
@@ -28,7 +26,7 @@ vi.mock("@/pages/tests/test_page/hooks/useUserConfig", () => ({
           };
           return accumulator;
         },
-        {} as Record<YearKey, {maxCount: number; sectionId: YearKey}>,
+        {} as Record<YearKey, { maxCount: number; sectionId: YearKey }>
       ),
       soundPreference: {
         isSoundEnabled: true,
@@ -45,30 +43,28 @@ describe("useAllYearVocab", () => {
 
   test("年度ごとの問題がまとめて読み込まれる", async () => {
     const vocab: VocabEntry[] = [
-      {phrase: "alpha", mean: "アルファ"},
-      {phrase: "beta", mean: "ベータ"},
-      {phrase: "gamma", mean: "ガンマ"},
-      {phrase: "delta", mean: "デルタ"},
+      { phrase: "alpha", mean: "アルファ" },
+      { phrase: "beta", mean: "ベータ" },
+      { phrase: "gamma", mean: "ガンマ" },
+      { phrase: "delta", mean: "デルタ" },
     ];
     loadYearVocabMock.mockResolvedValue(vocab);
 
-    const {result} = renderHook(() => useAllYearVocab());
+    const { result } = renderHook(() => useAllYearVocab());
 
     await waitFor(() => {
       expect(result.current.status).toBe("ready");
     });
 
     yearRegistry.forEach((entry) => {
-      expect(result.current.questionsByYear[entry.key].length).toBeGreaterThan(
-        0,
-      );
+      expect(result.current.questionsByYear[entry.key].length).toBeGreaterThan(0);
     });
   });
 
   test("読み込みに失敗するとerrorになる", async () => {
     loadYearVocabMock.mockRejectedValue(new Error("load-error"));
 
-    const {result} = renderHook(() => useAllYearVocab());
+    const { result } = renderHook(() => useAllYearVocab());
 
     await waitFor(() => {
       expect(result.current.status).toBe("error");

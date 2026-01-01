@@ -1,14 +1,11 @@
-import {
-  QuickStartButton,
-  QuickStartButtonStyle,
-} from "../../components/buttons/QuickStartButton";
-import {AppLayout} from "../../components/layout/AppLayout";
+import { QuickStartButton, QuickStartButtonStyle } from "../../components/buttons/QuickStartButton";
+import { AppLayout } from "../../components/layout/AppLayout";
 
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-import {yearRegistry} from "@/data/yearRegistry";
+import { yearRegistry } from "@/data/defaultRegistry";
 
 import "../../index.css";
 
@@ -56,12 +53,8 @@ export default function MenuPage() {
           {/* 年度ごとのステージ入口 */}
           <section>
             <div className="grid grid-cols-3 gap-4 sm:gap-6">
-              {MENU_ITEMS.map(({label, path}) => (
-                <MenuButton
-                  key={label}
-                  label={label}
-                  onSelect={() => handleSelect(path)}
-                />
+              {MENU_ITEMS.map(({ label, path }) => (
+                <MenuButton key={label} label={label} onSelect={() => handleSelect(path)} />
               ))}
             </div>
           </section>
@@ -79,7 +72,7 @@ interface MenuButtonProps {
   onSelect: () => void;
 }
 
-function MenuButton({label, onSelect}: MenuButtonProps) {
+function MenuButton({ label, onSelect }: MenuButtonProps) {
   return (
     <button type="button" onClick={onSelect} className={QuickStartButtonStyle}>
       {label}

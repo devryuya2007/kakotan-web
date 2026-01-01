@@ -1,15 +1,15 @@
-import {yearRegistry, type YearKey} from "./yearRegistry";
-import type {VocabEntry} from "./vocabTypes";
+import { yearRegistry, type YearKey } from "./defaultRegistry";
+import type { VocabEntry } from "./vocabTypes";
 
-export type {VocabEntry} from "./vocabTypes";
-export type {YearKey} from "./yearRegistry";
+export type { VocabEntry } from "./vocabTypes";
+export type { YearKey } from "./defaultRegistry";
 
 const vocabByYear = yearRegistry.reduce(
   (accumulator, entry) => {
     accumulator[entry.key] = entry.vocab as VocabEntry[];
     return accumulator;
   },
-  {} as Record<YearKey, VocabEntry[]>,
+  {} as Record<YearKey, VocabEntry[]>
 );
 
 export async function loadYearVocab(year: YearKey): Promise<VocabEntry[]> {
@@ -36,10 +36,7 @@ export interface QuizQuestion {
   contextJa?: string; // 例文（和）
 }
 
-export function buildQuestionsFromVocab(
-  vocab: VocabEntry[],
-  maxCount = 20,
-): QuizQuestion[] {
+export function buildQuestionsFromVocab(vocab: VocabEntry[], maxCount = 20): QuizQuestion[] {
   const entries = vocab.filter((e) => !!e.phrase && !!e.mean);
   const take = Math.min(maxCount, entries.length);
 

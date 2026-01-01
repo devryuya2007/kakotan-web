@@ -1,4 +1,4 @@
-import {type ReactNode, useCallback, useEffect, useMemo, useState} from "react";
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   initialUserConfig,
@@ -6,11 +6,8 @@ import {
   type UserConfigState,
   type YearConfigEntry,
 } from "./initialUserConfig";
-import {
-  type UserConfigContextValue,
-  UserConfigContext,
-} from "./userConfigStore";
-import type {YearKey} from "@/data/yearRegistry";
+import { type UserConfigContextValue, UserConfigContext } from "./userConfigStore";
+import type { YearKey } from "@/data/defaultRegistry";
 
 const USER_CONFIG_STORAGE_KEY = "user-config:max-count";
 
@@ -43,7 +40,7 @@ const loadStoredConfig = (): UserConfigState => {
       ...(isRecord(parsed.soundPreference) ? parsed.soundPreference : {}),
     };
     const nextYears = isRecord(parsed.years)
-      ? {...initialUserConfig.years, ...parsed.years}
+      ? { ...initialUserConfig.years, ...parsed.years }
       : initialUserConfig.years;
     return {
       ...initialUserConfig,
@@ -57,18 +54,13 @@ const loadStoredConfig = (): UserConfigState => {
   }
 };
 
-export function UserConfigProvider({children}: {children: ReactNode}) {
-  const [config, setConfig] = useState<UserConfigState>(() =>
-    loadStoredConfig(),
-  );
+export function UserConfigProvider({ children }: { children: ReactNode }) {
+  const [config, setConfig] = useState<UserConfigState>(() => loadStoredConfig());
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      window.localStorage.setItem(
-        USER_CONFIG_STORAGE_KEY,
-        JSON.stringify(config),
-      );
+      window.localStorage.setItem(USER_CONFIG_STORAGE_KEY, JSON.stringify(config));
     } catch (error) {
       console.warn("Failed to persist user config", error);
     }
@@ -79,36 +71,33 @@ export function UserConfigProvider({children}: {children: ReactNode}) {
       ...prev,
       years: {
         ...prev.years,
-        [year]: {...prev.years[year], maxCount: value},
+        [year]: { ...prev.years[year], maxCount: value },
       },
     }));
   }, []);
 
-  const updateSoundPreference = useCallback(
-    (next: Partial<SoundPreferenceState>) => {
-      setConfig((prev) => ({
-        ...prev,
-        soundPreference: {
-          ...prev.soundPreference,
-          ...next,
-        },
-      }));
-    },
-    [],
-  );
+  const updateSoundPreference = useCallback((next: Partial<SoundPreferenceState>) => {
+    setConfig((prev) => ({
+      ...prev,
+      soundPreference: {
+        ...prev.soundPreference,
+        ...next,
+      },
+    }));
+  }, []);
 
   const setSoundEnabled = useCallback(
     (value: boolean) => {
-      updateSoundPreference({isSoundEnabled: value});
+      updateSoundPreference({ isSoundEnabled: value });
     },
-    [updateSoundPreference],
+    [updateSoundPreference]
   );
 
   const setVibrationEnabled = useCallback(
     (value: boolean) => {
-      updateSoundPreference({isVibrationEnabled: value});
+      updateSoundPreference({ isVibrationEnabled: value });
     },
-    [updateSoundPreference],
+    [updateSoundPreference]
   );
 
   const value = useMemo<UserConfigContextValue>(
@@ -119,18 +108,8 @@ export function UserConfigProvider({children}: {children: ReactNode}) {
       setVibrationEnabled,
       updateSoundPreference,
     }),
-    [
-      config,
-      setMaxCount,
-      setSoundEnabled,
-      setVibrationEnabled,
-      updateSoundPreference,
-    ],
+    [config, setMaxCount, setSoundEnabled, setVibrationEnabled, updateSoundPreference]
   );
 
-  return (
-    <UserConfigContext.Provider value={value}>
-      {children}
-    </UserConfigContext.Provider>
-  );
+  return <UserConfigContext.Provider value={value}>{children}</UserConfigContext.Provider>;
 }

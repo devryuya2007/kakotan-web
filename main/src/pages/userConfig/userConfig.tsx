@@ -1,12 +1,13 @@
 import { useUserConfig } from "../tests/test_page/hooks/useUserConfig";
 
-import { useId, useMemo, type ChangeEvent } from "react";
+import { useId, useMemo } from "react";
 
 import * as Slider from "@radix-ui/react-slider";
 import { useNavigate } from "react-router-dom";
 
 import { QuickStartButton } from "@/components/buttons/QuickStartButton";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { useUserYearRegistryImport } from "@/data/userYearRegistry";
 
 interface ToggleOption {
   id: string;
@@ -82,9 +83,8 @@ export default function UserConfig() {
   );
   const navigate = useNavigate();
   // JSONインポートはUIだけ先に用意し、処理は後で実装できるようにする
-  const handleDataImport = (event: ChangeEvent<HTMLInputElement>) => {
-    event.currentTarget.value = "";
-  };
+  const { handleDataImport } = useUserYearRegistryImport();
+
   return (
     <AppLayout
       mainClassName="overflow-y-auto overflow-x-hidden pb-8"

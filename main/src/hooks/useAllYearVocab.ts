@@ -1,9 +1,9 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
-import {buildQuestionsFromVocab, loadYearVocab} from "@/data/vocabLoader";
-import {yearRegistry, type YearKey} from "@/data/yearRegistry";
-import type {QuizQuestion} from "@/data/vocabLoader";
-import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
+import { buildQuestionsFromVocab, loadYearVocab } from "@/data/vocabLoader";
+import { yearRegistry, type YearKey } from "@/data/defaultRegistry";
+import type { QuizQuestion } from "@/data/vocabLoader";
+import { useUserConfig } from "@/pages/tests/test_page/hooks/useUserConfig";
 
 export interface AllYearVocabResult {
   status: "idle" | "loading" | "ready" | "error";
@@ -18,16 +18,14 @@ const buildEmptyQuestions = (): Record<YearKey, QuizQuestion[]> => {
       accumulator[entry.key] = [];
       return accumulator;
     },
-    {} as Record<YearKey, QuizQuestion[]>,
+    {} as Record<YearKey, QuizQuestion[]>
   );
 };
 
 export function useAllYearVocab(): AllYearVocabResult {
-  const {config} = useUserConfig();
+  const { config } = useUserConfig();
   const [status, setStatus] = useState<AllYearVocabResult["status"]>("idle");
-  const [questionsByYear, setQuestionsByYear] = useState(
-    buildEmptyQuestions,
-  );
+  const [questionsByYear, setQuestionsByYear] = useState(buildEmptyQuestions);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -42,11 +40,10 @@ export function useAllYearVocab(): AllYearVocabResult {
         const results = await Promise.all(
           yearRegistry.map(async (entry) => {
             const vocab = await loadYearVocab(entry.key);
-            const maxCount =
-              config.years[entry.key]?.maxCount ?? entry.defaultQuestionCount;
+            const maxCount = config.years[entry.key]?.maxCount ?? entry.defaultQuestionCount;
             const questions = buildQuestionsFromVocab(vocab, maxCount);
             return [entry.key, questions] as const;
-          }),
+          })
         );
 
         if (cancelled) return;
