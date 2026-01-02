@@ -5,10 +5,25 @@ interface UserYearImportResult {
   importError: string | null;
 }
 
+// インポートで受け取る単語の最小形
 interface VocabEntryLike {
   phrase: string;
   mean: string;
 }
+
+// ユーザーが追加したレジストリの1件分
+export interface PlayerRegistryEntry {
+  key: string;
+  label: string;
+  vocab: VocabEntryLike[];
+}
+
+// 保存先のキーはバージョン付きで固定する
+export const PLAYER_REGISTRY_STORAGE_KEY = "playerRegistry:v1";
+
+// 文字列キーだけを持つか判定するためのガード
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null;
 
 // JSONの配列がphrase/meanを持っているかを判定する
 const isVocabEntryArray = (value: unknown): value is VocabEntryLike[] => {
@@ -17,6 +32,56 @@ const isVocabEntryArray = (value: unknown): value is VocabEntryLike[] => {
     const record = item as Partial<VocabEntryLike>;
     return typeof record.phrase === "string" && typeof record.mean === "string";
   });
+};
+
+// playerRegistryの1件かどうかを判定する
+const isPlayerRegistryEntry = (value: unknown): value is PlayerRegistryEntry => {
+  if (!isRecord(value)) return false;
+  if (typeof value.key !== "string") return false;
+  if (typeof value.label !== "string") return false;
+  return isVocabEntryArray(value.vocab);
+};
+
+// playerRegistryの配列かどうかを判定する
+const isPlayerRegistryEntryArray = (value: unknown): value is PlayerRegistryEntry[] => {
+  if (!Array.isArray(value)) return false;
+  return value.every(isPlayerRegistryEntry);
+};
+
+// ファイル名からキーとラベルを作る（配列JSON用の仮登録）
+const buildEntryFromFileName = (fileName: string, vocab: VocabEntryLike[]): PlayerRegistryEntry => {
+  const baseName = fileName.replace(/\.json$/iu, "").trim();
+  const normalized = baseName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/giu, "-")
+    .replace(/^-+|-+$/gu, "");
+  const key = normalized ? `player-${normalized}` : `player-${Date.now()}`;
+  const label = baseName.length > 0 ? baseName : "Player Extra";
+
+  return {
+    key,
+    label,
+    vocab,
+  };
+};
+
+// localStorageからplayerRegistryを読み込む
+export const loadPlayerRegistry = (): PlayerRegistryEntry[] => {
+  if (typeof window === "undefined") return [];
+  const raw = window.localStorage.getItem(PLAYER_REGISTRY_STORAGE_KEY);
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    return isPlayerRegistryEntryArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
+// playerRegistryをlocalStorageに保存する
+export const savePlayerRegistry = (entries: PlayerRegistryEntry[]): void => {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(PLAYER_REGISTRY_STORAGE_KEY, JSON.stringify(entries));
 };
 
 // ユーザーのJSONインポートを扱うためのフック
@@ -51,14 +116,24 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
       return;
     }
 
-    // 配列で全要素にphrase/meanがあるかチェック
-    if (!isVocabEntryArray(parsed)) {
-      setImportError("すべての要素にphraseとmeanが含まれるjsonにしてください。");
+    // 受け付けるJSONをplayerRegistryの形に揃える
+    const nextEntries: PlayerRegistryEntry[] = isPlayerRegistryEntry(parsed)
+      ? [parsed]
+      : isPlayerRegistryEntryArray(parsed)
+        ? parsed
+        : isVocabEntryArray(parsed)
+          ? [buildEntryFromFileName(file.name, parsed)]
+          : [];
+
+    if (nextEntries.length === 0) {
+      setImportError("phraseとmeanを含む配列、またはkey/label/vocab形式のJSONにしてください。");
       return;
     }
 
-    // 中身そのまま保存する（JSON文字列）
-    localStorage.setItem("playerRegistry:v1", raw);
+    // 既存のplayerRegistryに追加して保存する
+    const current = loadPlayerRegistry();
+    const merged = [...current, ...nextEntries];
+    savePlayerRegistry(merged);
   }, []);
 
   return { handleDataImport, importError };
