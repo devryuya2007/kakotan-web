@@ -2,18 +2,21 @@ import { AppLayout } from "../../../components/layout/AppLayout";
 
 import { useParams } from "react-router-dom";
 
-import { getYearEntry, isYearKey, yearRegistry } from "@/data/defaultRegistry";
 import { useYearVocabByKey } from "./hooks/useYearVocabByKey";
 import TestPageLayout from "./layout/TestPageLayout";
+import { getAllRegistry } from "@/hooks/getAllRegistry";
 
 export default function YearTestPage() {
   const { year: yearParam } = useParams();
   // URLパラメータの妥当性を確認する
-  const isValidYear = typeof yearParam === "string" && isYearKey(yearParam);
-  const fallbackYear = yearRegistry[0]?.key ?? "reiwa3";
+
+  const registry = getAllRegistry();
+
+  const isValidYear = typeof yearParam === "string" && registry.some((e) => e.key === yearParam);
+  const fallbackYear = registry[0]?.key ?? "reiwa3";
   const yearKey = isValidYear ? yearParam : fallbackYear;
   // 年度メタ情報を拾って表示用ラベルに使う
-  const yearEntry = getYearEntry(yearKey);
+  const yearEntry = registry.find((e) => e.key === yearKey) ?? registry[0];
   const { status, count, error, questions } = useYearVocabByKey(yearKey);
 
   return (
