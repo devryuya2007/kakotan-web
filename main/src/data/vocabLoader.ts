@@ -1,22 +1,13 @@
-import { yearRegistry } from "./defaultRegistry";
+import { getAllRegistry } from "@/hooks/getAllRegistry";
 import type { VocabEntry } from "./vocabTypes";
 
 export type { VocabEntry } from "./vocabTypes";
 
-const vocabByYear = yearRegistry.reduce(
-  (accumulator, entry) => {
-    accumulator[entry.key] = entry.vocab as VocabEntry[];
-    return accumulator;
-  },
-  {} as Record<string, VocabEntry[]>
-);
-
 export async function loadYearVocab(year: string): Promise<VocabEntry[]> {
-  const vocab = vocabByYear[year];
-  if (!vocab) {
-    throw new Error(`Unknown year key: ${year}`);
-  }
-  return structuredClone(vocab);
+  const entry = getAllRegistry().find((item) => item.key === year);
+  if (!entry) throw new Error(`Unknown year key ${year}`);
+
+  return structuredClone(entry.vocab as VocabEntry[]);
 }
 
 /**
