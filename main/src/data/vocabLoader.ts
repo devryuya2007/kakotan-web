@@ -2,7 +2,6 @@ import { yearRegistry } from "./defaultRegistry";
 import type { VocabEntry } from "./vocabTypes";
 
 export type { VocabEntry } from "./vocabTypes";
-export type { YearKey } from "./defaultRegistry";
 
 const vocabByYear = yearRegistry.reduce(
   (accumulator, entry) => {
