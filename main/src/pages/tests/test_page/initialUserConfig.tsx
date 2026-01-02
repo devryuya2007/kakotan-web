@@ -1,8 +1,8 @@
-import { yearRegistry, type YearKey } from "@/data/defaultRegistry";
+import { getAllRegistry, type RegistryEntry } from "@/hooks/getAllRegistry";
 
 export interface YearConfigEntry {
   maxCount: number;
-  sectionId: YearKey;
+  sectionId: string;
 }
 
 export interface SoundPreferenceState {
@@ -11,21 +11,21 @@ export interface SoundPreferenceState {
 }
 
 export interface UserConfigState {
-  years: Record<YearKey, YearConfigEntry>;
+  years: Record<string, YearConfigEntry>;
   soundPreference: SoundPreferenceState;
 }
 
 // 年度レジストリから初期設定を自動生成する
-const buildInitialYearConfig = (): Record<YearKey, YearConfigEntry> => {
-  return yearRegistry.reduce(
-    (accumulator, entry) => {
+const buildInitialYearConfig = (): Record<string, YearConfigEntry> => {
+  return getAllRegistry().reduce(
+    (accumulator, entry: RegistryEntry) => {
       accumulator[entry.key] = {
         maxCount: entry.defaultQuestionCount,
-        sectionId: entry.key,
+        sectionId: entry.sectionLabel,
       };
       return accumulator;
     },
-    {} as Record<YearKey, YearConfigEntry>
+    {} as Record<string, YearConfigEntry>
   );
 };
 
