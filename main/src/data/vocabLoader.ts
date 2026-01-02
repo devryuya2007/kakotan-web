@@ -1,4 +1,4 @@
-import { yearRegistry, type YearKey } from "./defaultRegistry";
+import { yearRegistry } from "./defaultRegistry";
 import type { VocabEntry } from "./vocabTypes";
 
 export type { VocabEntry } from "./vocabTypes";
@@ -9,10 +9,10 @@ const vocabByYear = yearRegistry.reduce(
     accumulator[entry.key] = entry.vocab as VocabEntry[];
     return accumulator;
   },
-  {} as Record<YearKey, VocabEntry[]>
+  {} as Record<string, VocabEntry[]>
 );
 
-export async function loadYearVocab(year: YearKey): Promise<VocabEntry[]> {
+export async function loadYearVocab(year: string): Promise<VocabEntry[]> {
   const vocab = vocabByYear[year];
   if (!vocab) {
     throw new Error(`Unknown year key: ${year}`);
