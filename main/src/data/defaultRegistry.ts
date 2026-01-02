@@ -94,13 +94,4 @@ export const defaultRegistry = [
 // 既存コードとの互換のため、年データの別名を用意する
 export const yearRegistry = defaultRegistry;
 
-export type YearKey = (typeof defaultRegistry)[number]["key"];
 export type YearRegistryEntry = (typeof defaultRegistry)[number];
-
-// URLなどの文字列からYearKeyかどうか判定する
-export const isYearKey = (value: string): value is YearKey =>
-  defaultRegistry.some((entry) => entry.key === value);
-
-// 年度情報を取得する（存在しない場合は先頭年度を返す）
-export const getYearEntry = (year: YearKey): YearRegistryEntry =>
-  defaultRegistry.find((entry) => entry.key === year) ?? defaultRegistry[0];
