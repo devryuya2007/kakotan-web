@@ -42,7 +42,7 @@ describe("YearTestPage", () => {
     );
 
     expect(screen.getByText("Reiwa 3")).toBeInTheDocument();
-    expect(screen.getByTestId("test-layout")).toHaveTextContent("令和3年");
+    expect(screen.getByTestId("test-layout")).toHaveTextContent("reiwa3");
   });
 
   test("不正な年度のときは案内文が表示される", () => {
