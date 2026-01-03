@@ -83,7 +83,13 @@ export default function UserConfig() {
   );
   const navigate = useNavigate();
   // JSONインポートはUIだけ先に用意し、処理は後で実装できるようにする
-  const { handleDataImport, importError, importSuccess } = useUserYearRegistryImport();
+  const {
+    handleDataImport,
+    importError,
+    importSuccess,
+    playerRegistry,
+    removePlayerRegistry,
+  } = useUserYearRegistryImport();
 
   return (
     <>
@@ -165,6 +171,40 @@ export default function UserConfig() {
                     >
                       {importError}
                     </p>
+                  )}
+                </div>
+                {/* 追加済みの問題セット一覧。削除したらlocalStorageとUIを更新する */}
+                <div className="w-full sm:w-[18rem]">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/40">
+                    your sets
+                  </p>
+                  {playerRegistry.length === 0 ? (
+                    <p className="mt-2 text-xs text-white/50">no custom sets yet.</p>
+                  ) : (
+                    <div className="mt-3 space-y-2">
+                      {playerRegistry.map((entry) => (
+                        <div
+                          key={entry.key}
+                          className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2"
+                        >
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-semibold text-white">
+                              {entry.label}
+                            </p>
+                            <p className="text-[10px] text-white/50">
+                              {entry.vocab.length} words
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removePlayerRegistry(entry.key)}
+                            className="rounded-full border border-rose-400/40 bg-rose-500/10 px-3 py-1 text-[10px] font-semibold text-rose-200 transition hover:border-rose-300/60 hover:bg-rose-500/20"
+                          >
+                            delete
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>

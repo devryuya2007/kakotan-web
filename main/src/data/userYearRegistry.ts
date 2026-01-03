@@ -4,6 +4,8 @@ interface UserYearImportResult {
   handleDataImport: (event: ChangeEvent<HTMLInputElement>) => Promise<void>;
   importError: string | null;
   importSuccess: string | null;
+  playerRegistry: PlayerRegistryEntry[];
+  removePlayerRegistry: (key: string) => void;
 }
 
 // インポートで受け取る単語の最小形
@@ -85,10 +87,22 @@ export const savePlayerRegistry = (entries: PlayerRegistryEntry[]): void => {
   window.localStorage.setItem(PLAYER_REGISTRY_STORAGE_KEY, JSON.stringify(entries));
 };
 
+// playerRegistryから指定キーのセットを削除する
+export const removePlayerRegistry = (key: string): PlayerRegistryEntry[] => {
+  const current = loadPlayerRegistry();
+  const next = current.filter((entry) => entry.key !== key);
+  savePlayerRegistry(next);
+  return next;
+};
+
 // ユーザーのJSONインポートを扱うためのフック
 export const useUserYearRegistryImport = (): UserYearImportResult => {
   const [importError, setImportError] = useState<string | null>(null);
   const [importSuccess, setImportSuccess] = useState<string | null>(null);
+  // UIで使う追加済みのセット一覧を管理する
+  const [playerRegistry, setPlayerRegistry] = useState<PlayerRegistryEntry[]>(
+    () => loadPlayerRegistry()
+  );
   // 成功通知の自動消し込み用のタイマーを保持する
   const successTimerRef = useRef<number | null>(null);
 
@@ -107,6 +121,12 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
       successTimerRef.current = null;
     }, 4000);
   }, [clearSuccessTimer]);
+
+  // 指定キーのセットを削除し、一覧も更新する
+  const handleRemovePlayerRegistry = useCallback((key: string) => {
+    const next = removePlayerRegistry(key);
+    setPlayerRegistry(next);
+  }, []);
 
   // アンマウント時のタイマー掃除
   useEffect(() => {
@@ -165,6 +185,8 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
       const current = loadPlayerRegistry();
       const merged = [...current, ...nextEntries];
       savePlayerRegistry(merged);
+      // 保存後に一覧も更新して即反映させる
+      setPlayerRegistry(merged);
 
       // 追加できた単語数を数えて通知に使う
       const totalWords = nextEntries.reduce((sum, entry) => sum + entry.vocab.length, 0);
@@ -176,5 +198,11 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
     }
   }, [scheduleSuccessReset]);
 
-  return { handleDataImport, importError, importSuccess };
+  return {
+    handleDataImport,
+    importError,
+    importSuccess,
+    playerRegistry,
+    removePlayerRegistry: handleRemovePlayerRegistry,
+  };
 };

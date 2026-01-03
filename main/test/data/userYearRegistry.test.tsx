@@ -133,4 +133,27 @@ describe("useUserYearRegistryImport", () => {
 
     expect(result.current.importSuccess).toBeNull();
   });
+
+  test("追加したセットを削除すると一覧とlocalStorageが更新される", () => {
+    const initial = [
+      {
+        key: "custom-set",
+        label: "Custom Set",
+        vocab: [{ phrase: "alpha", mean: "アルファ" }],
+      },
+    ];
+    localStorage.setItem(PLAYER_REGISTRY_STORAGE_KEY, JSON.stringify(initial));
+
+    const { result } = renderHook(() => useUserYearRegistryImport());
+
+    expect(result.current.playerRegistry).toHaveLength(1);
+
+    act(() => {
+      result.current.removePlayerRegistry("custom-set");
+    });
+
+    expect(result.current.playerRegistry).toHaveLength(0);
+    const stored = JSON.parse(localStorage.getItem(PLAYER_REGISTRY_STORAGE_KEY) ?? "[]");
+    expect(stored).toHaveLength(0);
+  });
 });
