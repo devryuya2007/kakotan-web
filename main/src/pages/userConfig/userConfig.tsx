@@ -150,11 +150,11 @@ export default function UserConfig() {
                   </p>
                 </div>
                 {/* 追加済みの問題セット一覧。削除したらlocalStorageとUIを更新する */}
-                <div className="relative w-full min-h-[140px] sm:w-[18rem]">
+                <div className="relative w-full min-h-[140px] rounded-2xl border-2 border-white/25 bg-[#0c1320] shadow-[0_12px_30px_rgba(0,0,0,0.45)] sm:w-[18rem]">
                   {/* 空間を確保するための下地ブロック。上にリストを重ねる */}
-                  <div className="pointer-events-none absolute inset-0 rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 via-white/0 to-white/5" />
+                  <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 via-white/0 to-white/5" />
                   {playerRegistry.length > 0 && (
-                    <div className="relative z-10 space-y-3 py-2">
+                    <div className="relative z-10 max-h-[220px] space-y-3 overflow-y-auto p-3 pr-2">
                       {playerRegistry.map((entry) => (
                         <div
                           key={entry.id}
