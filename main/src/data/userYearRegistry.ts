@@ -71,6 +71,30 @@ const createRegistryId = (base: string, index: number): string => {
   return `player-${normalized || "custom"}-${Date.now()}-${index}-${random}`;
 };
 
+// 末尾の連番を除いたラベルを作る（例: "My Set (2)" -> "My Set"）
+const stripLabelSuffix = (label: string): string => label.replace(/\s\(\d+\)$/u, "");
+
+// 既存の同名セットがある場合に連番ラベルを付与する
+const applyDuplicateLabelSuffix = (
+  current: PlayerRegistryEntry[],
+  incoming: PlayerRegistryEntryInput[]
+): PlayerRegistryEntryInput[] => {
+  const counts = current.reduce<Record<string, number>>((accumulator, entry) => {
+    accumulator[entry.key] = (accumulator[entry.key] ?? 0) + 1;
+    return accumulator;
+  }, {});
+
+  return incoming.map((entry) => {
+    const nextCount = (counts[entry.key] ?? 0) + 1;
+    counts[entry.key] = nextCount;
+    if (nextCount === 1) return entry;
+    return {
+      ...entry,
+      label: `${stripLabelSuffix(entry.label)} (${nextCount})`,
+    };
+  });
+};
+
 // idの欠けや重複を補正して、削除できる形に揃える
 const normalizePlayerRegistry = (
   entries: PlayerRegistryEntryInput[]
@@ -233,7 +257,8 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
 
       // 既存のplayerRegistryに追加して保存する
       const current = loadPlayerRegistry();
-      const { normalized: merged } = normalizePlayerRegistry([...current, ...nextEntries]);
+      const adjustedEntries = applyDuplicateLabelSuffix(current, nextEntries);
+      const { normalized: merged } = normalizePlayerRegistry([...current, ...adjustedEntries]);
       savePlayerRegistry(merged);
       // 保存後に一覧も更新して即反映させる
       setPlayerRegistry(merged);
