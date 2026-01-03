@@ -3,24 +3,17 @@ import { useEffect, useState } from "react";
 import { buildQuestionsFromVocab, loadYearVocab } from "@/data/vocabLoader";
 import type { QuizQuestion } from "@/data/vocabLoader";
 import { useUserConfig } from "@/pages/tests/test_page/hooks/useUserConfig";
-import { getAllRegistry } from "./getAllRegistry";
+import { buildRegistryMap, getAllRegistry, type RegistryMap } from "./getAllRegistry";
 
 export interface AllYearVocabResult {
   status: "idle" | "loading" | "ready" | "error";
-  questionsByYear: Record<string, QuizQuestion[]>;
+  questionsByYear: RegistryMap<QuizQuestion[]>;
   error: string | null;
 }
 
 // 年度キーの空配列を作って、描画時の安定性を確保する
-const buildEmptyQuestions = (): Record<string, QuizQuestion[]> => {
-  return getAllRegistry().reduce(
-    (accumulator, entry) => {
-      accumulator[entry.key] = [];
-      return accumulator;
-    },
-    {} as Record<string, QuizQuestion[]>
-  );
-};
+const buildEmptyQuestions = (): RegistryMap<QuizQuestion[]> =>
+  buildRegistryMap(() => []);
 
 export function useAllYearVocab(): AllYearVocabResult {
   const { config } = useUserConfig();

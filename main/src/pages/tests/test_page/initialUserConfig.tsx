@@ -1,4 +1,4 @@
-import { getAllRegistry, type RegistryEntry } from "@/hooks/getAllRegistry";
+import { buildRegistryMap, type RegistryMap } from "@/hooks/getAllRegistry";
 
 export interface YearConfigEntry {
   maxCount: number;
@@ -16,18 +16,11 @@ export interface UserConfigState {
 }
 
 // 年度レジストリから初期設定を自動生成する
-const buildInitialYearConfig = (): Record<string, YearConfigEntry> => {
-  return getAllRegistry().reduce(
-    (accumulator, entry: RegistryEntry) => {
-      accumulator[entry.key] = {
-        maxCount: entry.defaultQuestionCount,
-        sectionId: entry.sectionLabel,
-      };
-      return accumulator;
-    },
-    {} as Record<string, YearConfigEntry>
-  );
-};
+const buildInitialYearConfig = (): RegistryMap<YearConfigEntry> =>
+  buildRegistryMap((entry) => ({
+    maxCount: entry.defaultQuestionCount,
+    sectionId: entry.sectionLabel,
+  }));
 
 // 音とバイブの初期設定はONにして、既存の体験を保つ
 const buildInitialSoundPreference = (): SoundPreferenceState => {
