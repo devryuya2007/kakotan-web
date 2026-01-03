@@ -83,7 +83,16 @@ export default function UserConfig() {
   );
   const navigate = useNavigate();
   // JSONインポートはUIだけ先に用意し、処理は後で実装できるようにする
-  const { handleDataImport, importError, importSuccess } = useUserYearRegistryImport();
+  const {
+    handleDataImport,
+    importError,
+    importSuccess,
+    playerRegistry,
+    removePlayerRegistry,
+  } = useUserYearRegistryImport();
+  const shouldScrollRegistry = playerRegistry.length >= 5;
+  // 4件分の高さを確保して、5件目からスクロールに切り替える
+  const registryScrollClass = shouldScrollRegistry ? "max-h-[260px] overflow-y-auto pr-2" : "";
 
   return (
     <>
@@ -120,7 +129,7 @@ export default function UserConfig() {
                 onChange={setSoundEnabled}
               />
               <div className="flex w-full flex-col items-center justify-between gap-12 rounded-2xl border border-white/15 bg-[#0f1524] px-4 py-4 text-left shadow-[0_10px_30px_rgba(0,0,0,0.35)] transition hover:border-white/30 sm:flex-row">
-                <div className="space-y-1">
+                <div className="w-full space-y-1 sm:max-w-[26rem]">
                   <p className="text-sm font-semibold text-white">data import</p>
                   <p className="text-xs text-white/60">
                     import your vocab JSON file to add custom words.
@@ -142,6 +151,37 @@ export default function UserConfig() {
                   <p className="text-xs text-white/50">
                     The file extension should be .json (example.json).
                   </p>
+                </div>
+                {/* 追加済みの問題セット一覧。削除したらlocalStorageとUIを更新する */}
+                <div className="relative w-full min-h-[140px] rounded-2xl border-2 border-white/25 bg-[#0c1320] shadow-[0_12px_30px_rgba(0,0,0,0.45)] sm:w-[18rem]">
+                  {/* 空間を確保するための下地ブロック。上にリストを重ねる */}
+                  <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 via-white/0 to-white/5" />
+                  {playerRegistry.length > 0 && (
+                    <div className={`relative z-10 space-y-3 p-3 ${registryScrollClass}`}>
+                      {playerRegistry.map((entry) => (
+                        <div
+                          key={entry.id}
+                          className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2"
+                        >
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-semibold text-white">
+                              {entry.label}
+                            </p>
+                            <p className="text-[10px] text-white/50">
+                              {entry.vocab.length} words
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removePlayerRegistry(entry.id)}
+                            className="rounded-full border border-rose-400/40 bg-rose-500/10 px-3 py-1 text-[10px] font-semibold text-rose-200 transition hover:border-rose-300/60 hover:bg-rose-500/20"
+                          >
+                            delete
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 {/* ファイル選択UI。選択した内容は後で保存処理に繋げる想定 */}
                 <div className="relative m-2 flex items-center">

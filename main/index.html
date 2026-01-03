@@ -29,29 +29,35 @@
       content="#f5f2eb"
       media="(prefers-color-scheme: light)"
     />
-    <!-- Google tag (gtag.js) -->
-    <script>
-      if ("%VITE_GA_DISABLED%" === "true") {
-        window["ga-disable-G-CLQ4CTRTGV"] = true;
-      }
-    </script>
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-CLQ4CTRTGV"
-    ></script>
+    <!-- Google Tag Manager -->
     <script>
       if ("%VITE_GA_DISABLED%" !== "true") {
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-          dataLayer.push(arguments);
-        }
-        gtag("js", new Date());
-        gtag("config", "G-CLQ4CTRTGV");
+        (function (w, d, s, l, i) {
+          w[l] = w[l] || [];
+          w[l].push({"gtm.start": new Date().getTime(), event: "gtm.js"});
+          const f = d.getElementsByTagName(s)[0];
+          const j = d.createElement(s);
+          const dl = l !== "dataLayer" ? "&l=" + l : "";
+          j.async = true;
+          j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+          f.parentNode.insertBefore(j, f);
+        })(window, document, "script", "dataLayer", "GTM-MMDQRLF2");
       }
     </script>
+    <!-- End Google Tag Manager -->
     <title>kakotan</title>
   </head>
   <body class="h-full w-full bg-[#050509] text-[#f2c97d]/80">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-MMDQRLF2"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

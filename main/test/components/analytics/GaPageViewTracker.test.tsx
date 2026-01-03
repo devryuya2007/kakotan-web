@@ -1,28 +1,28 @@
 import {render, waitFor} from "@testing-library/react";
 import {MemoryRouter} from "react-router-dom";
-import {afterEach, describe, expect, test, vi} from "vitest";
+import {afterEach, describe, expect, test} from "vitest";
 
 import {GaPageViewTracker} from "@/components/analytics/GaPageViewTracker";
 
 declare global {
   interface Window {
-    gtag?: (...args: unknown[]) => void;
+    dataLayer?: Array<Record<string, unknown>>;
   }
 }
 
-// 既存のgtagを保持しておき、テスト後に必ず戻す
-const originalGtag = window.gtag;
+// 既存のdataLayerを保持しておき、テスト後に必ず戻す
+const originalDataLayer = window.dataLayer;
 
 describe("GaPageViewTracker", () => {
   afterEach(() => {
     // テスト間でグローバル状態が漏れないように復元する
-    window.gtag = originalGtag;
+    window.dataLayer = originalDataLayer;
+    window.localStorage.removeItem("analytics:user-id");
   });
 
   test("ルート情報からpage_viewを送る", async () => {
-    // gtagをモックして送信内容を検証できるようにする
-    const gtagMock = vi.fn();
-    window.gtag = gtagMock;
+    window.dataLayer = [];
+    window.localStorage.setItem("analytics:user-id", "test-user-id");
 
     render(
       <MemoryRouter initialEntries={["/tests/reiwa3?mode=1#hash"]}>
@@ -32,14 +32,14 @@ describe("GaPageViewTracker", () => {
 
     // useEffectの発火を待ってから呼び出し内容を確認する
     await waitFor(() => {
-      expect(gtagMock).toHaveBeenCalled();
+      expect(window.dataLayer?.length).toBeGreaterThan(0);
     });
 
-    expect(gtagMock).toHaveBeenCalledWith(
-      "event",
-      "page_view",
+    expect(window.dataLayer?.[0]).toEqual(
       expect.objectContaining({
+        event: "page_view",
         page_path: "/tests/reiwa3?mode=1#hash",
+        user_id: "test-user-id",
       }),
     );
   });

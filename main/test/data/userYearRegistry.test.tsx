@@ -57,6 +57,7 @@ describe("useUserYearRegistryImport", () => {
 
     const stored = JSON.parse(localStorage.getItem(PLAYER_REGISTRY_STORAGE_KEY) ?? "[]");
     expect(stored).toHaveLength(1);
+    expect(typeof stored[0].id).toBe("string");
     expect(stored[0].key).toBe("player-my-vocab");
     expect(stored[0].label).toBe("My Vocab");
     expect(stored[0].vocab).toEqual(payload);
@@ -81,6 +82,7 @@ describe("useUserYearRegistryImport", () => {
 
     const stored = JSON.parse(localStorage.getItem(PLAYER_REGISTRY_STORAGE_KEY) ?? "[]");
     expect(stored).toHaveLength(1);
+    expect(typeof stored[0].id).toBe("string");
     expect(stored[0].key).toBe("custom-set");
     expect(stored[0].label).toBe("Custom Set");
     expect(stored[0].vocab).toEqual(payload.vocab);
@@ -132,5 +134,51 @@ describe("useUserYearRegistryImport", () => {
     });
 
     expect(result.current.importSuccess).toBeNull();
+  });
+
+  test("同じファイル名の追加時はラベルに連番が付く", async () => {
+    const existing = [
+      {
+        id: "player-same-1",
+        key: "player-same",
+        label: "Same",
+        vocab: [{ phrase: "alpha", mean: "アルファ" }],
+      },
+    ];
+    localStorage.setItem(PLAYER_REGISTRY_STORAGE_KEY, JSON.stringify(existing));
+    const { result } = renderHook(() => useUserYearRegistryImport());
+    const payload = [{ phrase: "beta", mean: "ベータ" }];
+    const file = buildTestFile("Same.json", JSON.stringify(payload));
+
+    await act(async () => {
+      await result.current.handleDataImport(buildFileInputEvent(file));
+    });
+
+    const stored = JSON.parse(localStorage.getItem(PLAYER_REGISTRY_STORAGE_KEY) ?? "[]");
+    expect(stored).toHaveLength(2);
+    expect(stored[1].label).toBe("Same (2)");
+  });
+
+  test("追加したセットを削除すると一覧とlocalStorageが更新される", () => {
+    const initial = [
+      {
+        key: "custom-set",
+        label: "Custom Set",
+        vocab: [{ phrase: "alpha", mean: "アルファ" }],
+      },
+    ];
+    localStorage.setItem(PLAYER_REGISTRY_STORAGE_KEY, JSON.stringify(initial));
+
+    const { result } = renderHook(() => useUserYearRegistryImport());
+
+    expect(result.current.playerRegistry).toHaveLength(1);
+
+    act(() => {
+      result.current.removePlayerRegistry(result.current.playerRegistry[0].id);
+    });
+
+    expect(result.current.playerRegistry).toHaveLength(0);
+    const stored = JSON.parse(localStorage.getItem(PLAYER_REGISTRY_STORAGE_KEY) ?? "[]");
+    expect(stored).toHaveLength(0);
   });
 });

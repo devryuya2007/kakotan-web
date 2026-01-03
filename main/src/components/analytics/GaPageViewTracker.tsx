@@ -1,13 +1,22 @@
 import {useEffect} from "react";
 import {useLocation} from "react-router-dom";
 
+import {ensureGaUserId} from "@/components/analytics/gaUserId";
+
 declare global {
   interface Window {
-    gtag?: (...args: unknown[]) => void;
+    dataLayer?: Array<Record<string, unknown>>;
   }
 }
 
-// ルート切り替えを検知してGA4にpage_viewを送る
+// dataLayerが無い場合は作成して返す
+const ensureDataLayer = (): Array<Record<string, unknown>> => {
+  if (typeof window === "undefined") return [];
+  window.dataLayer = window.dataLayer || [];
+  return window.dataLayer;
+};
+
+// ルート切り替えを検知してanalyticsにpage_viewを送る
 export const GaPageViewTracker = (): null => {
   const location = useLocation();
 
@@ -16,18 +25,26 @@ export const GaPageViewTracker = (): null => {
     if (import.meta.env.VITE_GA_DISABLED === "true") {
       return;
     }
-    // gtagが無い場合は何もしない（開発中や未設定の環境向け）
-    if (typeof window === "undefined" || typeof window.gtag !== "function") {
+    // dataLayerが使えない環境では何もしない
+    if (typeof window === "undefined") {
       return;
     }
 
+    const userId = ensureGaUserId();
+
     const pagePath = `${location.pathname}${location.search}${location.hash}`;
 
-    window.gtag("event", "page_view", {
+    const payload: Record<string, unknown> = {
+      event: "page_view",
       page_path: pagePath,
       page_location: window.location.href,
       page_title: document.title,
-    });
+    };
+    if (userId) {
+      payload.user_id = userId;
+    }
+
+    ensureDataLayer().push(payload);
   }, [location.pathname, location.search, location.hash]);
 
   return null;
