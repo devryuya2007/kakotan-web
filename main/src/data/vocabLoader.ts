@@ -2,6 +2,7 @@ import { getAllRegistry } from "@/hooks/getAllRegistry";
 import type { VocabEntry } from "./vocabTypes";
 
 export type { VocabEntry } from "./vocabTypes";
+export type YearKey = string;
 
 export async function loadYearVocab(year: string): Promise<VocabEntry[]> {
   const entry = getAllRegistry().find((item) => item.key === year);

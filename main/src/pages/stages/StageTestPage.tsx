@@ -4,7 +4,7 @@ import {useParams} from "react-router-dom";
 
 import {AppLayout} from "@/components/layout/AppLayout";
 import {loadYearVocab} from "@/data/vocabLoader";
-import type {QuizQuestion, YearKey} from "@/data/vocabLoader";
+import type {QuizQuestion} from "@/data/vocabLoader";
 import {
   buildStageQuestions,
   createStageDefinitions,
@@ -13,8 +13,9 @@ import {
 import {useShuffledItems} from "@/hooks/useShuffledItems";
 import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
 import TestPageLayout from "@/pages/tests/test_page/layout/TestPageLayout";
+import { getAllRegistry } from "@/hooks/getAllRegistry";
 
-import {YEAR_LABELS, isYearKey} from "./stageConstants";
+import { getYearLabels, isYearKey } from "./stageConstants";
 
 interface StageQuestionState {
   status: "idle" | "loading" | "ready" | "error";
@@ -26,24 +27,29 @@ interface StageQuestionState {
 export default function StageTestPage() {
   const {year: yearParam, stageNumber: stageParam} = useParams();
   const {config} = useUserConfig();
+  const registry = getAllRegistry();
+  const yearLabels = getYearLabels();
 
   // URLの年度が有効かチェックして、無効ならデフォルトに切り替える
   const isValidYear =
     typeof yearParam === "string" && isYearKey(yearParam);
 
   // 年度とステージ番号を確定させる
-  const year: YearKey =
+  const fallbackYear = registry[0]?.key ?? "reiwa3";
+  const year =
     typeof yearParam === "string" && isYearKey(yearParam)
       ? yearParam
-      : "reiwa3";
+      : fallbackYear;
   // ステージ番号は1以上の数値に丸めておく
   const parsedStageNumber = Number(stageParam ?? "1");
   const stageNumber =
     Number.isFinite(parsedStageNumber) && parsedStageNumber > 0
       ? parsedStageNumber
       : 1;
-  const baseQuestionCount = config.years[year].maxCount;
-  const yearLabel = YEAR_LABELS[year];
+  const yearEntry = registry.find((entry) => entry.key === year);
+  const baseQuestionCount =
+    config.years[year]?.maxCount ?? yearEntry?.defaultQuestionCount ?? 10;
+  const yearLabel = yearLabels[year] ?? yearEntry?.label ?? year;
   // extraだけ順番をシャッフルして、連続出題の偏りを減らす
   const shouldShuffle = year === "extra";
 
