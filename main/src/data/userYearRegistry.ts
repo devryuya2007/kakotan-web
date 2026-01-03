@@ -1,8 +1,9 @@
-import { useCallback, useState, type ChangeEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type ChangeEvent } from "react";
 
 interface UserYearImportResult {
   handleDataImport: (event: ChangeEvent<HTMLInputElement>) => Promise<void>;
   importError: string | null;
+  importSuccess: string | null;
 }
 
 // インポートで受け取る単語の最小形
@@ -87,12 +88,39 @@ export const savePlayerRegistry = (entries: PlayerRegistryEntry[]): void => {
 // ユーザーのJSONインポートを扱うためのフック
 export const useUserYearRegistryImport = (): UserYearImportResult => {
   const [importError, setImportError] = useState<string | null>(null);
+  const [importSuccess, setImportSuccess] = useState<string | null>(null);
+  // 成功通知の自動消し込み用のタイマーを保持する
+  const successTimerRef = useRef<number | null>(null);
+
+  // 既存のタイマーがあればクリアして、通知の重なりを防ぐ
+  const clearSuccessTimer = useCallback(() => {
+    if (successTimerRef.current === null) return;
+    window.clearTimeout(successTimerRef.current);
+    successTimerRef.current = null;
+  }, []);
+
+  // 一定時間で成功通知を消す
+  const scheduleSuccessReset = useCallback(() => {
+    clearSuccessTimer();
+    successTimerRef.current = window.setTimeout(() => {
+      setImportSuccess(null);
+      successTimerRef.current = null;
+    }, 4000);
+  }, [clearSuccessTimer]);
+
+  // アンマウント時のタイマー掃除
+  useEffect(() => {
+    return () => {
+      clearSuccessTimer();
+    };
+  }, [clearSuccessTimer]);
 
   // ファイル選択のイベントからJSONを読み込む
   const handleDataImport = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
     // 非同期処理でも参照できるようにinput要素を退避する
     const input = event.currentTarget;
     setImportError(null);
+    setImportSuccess(null);
 
     try {
       // ファイルがなければ終了
@@ -135,11 +163,16 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
       const current = loadPlayerRegistry();
       const merged = [...current, ...nextEntries];
       savePlayerRegistry(merged);
+
+      // 追加できた単語数を数えて通知に使う
+      const totalWords = nextEntries.reduce((sum, entry) => sum + entry.vocab.length, 0);
+      setImportSuccess(`Import complete: ${totalWords} words added.`);
+      scheduleSuccessReset();
     } finally {
       // 同じファイルを選び直せるようにリセット
       input.value = "";
     }
-  }, []);
+  }, [scheduleSuccessReset]);
 
-  return { handleDataImport, importError };
+  return { handleDataImport, importError, importSuccess };
 };

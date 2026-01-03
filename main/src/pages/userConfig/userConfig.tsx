@@ -83,7 +83,7 @@ export default function UserConfig() {
   );
   const navigate = useNavigate();
   // JSONインポートはUIだけ先に用意し、処理は後で実装できるようにする
-  const { handleDataImport, importError } = useUserYearRegistryImport();
+  const { handleDataImport, importError, importSuccess } = useUserYearRegistryImport();
 
   return (
     <AppLayout
@@ -136,6 +136,11 @@ export default function UserConfig() {
                 {importError && (
                   <p className="text-xs text-rose-300" role="alert">
                     {importError}
+                  </p>
+                )}
+                {importSuccess && (
+                  <p className="text-xs text-emerald-200" role="status">
+                    {importSuccess}
                   </p>
                 )}
               </div>
