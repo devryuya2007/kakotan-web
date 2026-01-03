@@ -12,6 +12,11 @@ export interface RegistryEntry {
   defaultQuestionCount: number;
 }
 
+// レジストリのKey->Valueマップを扱う共通型
+export interface RegistryMap<T> {
+  [key: string]: T;
+}
+
 // ユーザー追加語彙の見た目用テーマ（固定）
 const playerTheme: StageTheme = {
   accent: "#7dd3fc",
@@ -39,10 +44,24 @@ export const getAllRegistry = (): RegistryEntry[] => {
   return [...baseEntries, ...playerEntries];
 };
 
+// レジストリ配列からKey->Valueの形へ変換する
+export const buildRegistryMap = <T>(
+  builder: (entry: RegistryEntry) => T
+): RegistryMap<T> => {
+  return getAllRegistry().reduce((accumulator, entry) => {
+    accumulator[entry.key] = builder(entry);
+    return accumulator;
+  }, {} as RegistryMap<T>);
+};
+
 // URLなどの文字列から有効なキーかどうか判定する
-export const isYearKey = (value: string): value is string =>
-  getAllRegistry().some((entry) => entry.key === value);
+export const isYearKey = (value: string): value is string => {
+  const registry = getAllRegistry();
+  return registry.some((entry) => entry.key === value);
+};
 
 // 年度情報を取得する（存在しない場合は先頭年度を返す）
-export const getYearEntry = (year: string): RegistryEntry =>
-  getAllRegistry().find((entry) => entry.key === year) ?? getAllRegistry()[0];
+export const getYearEntry = (year: string): RegistryEntry => {
+  const registry = getAllRegistry();
+  return registry.find((entry) => entry.key === year) ?? registry[0];
+};
