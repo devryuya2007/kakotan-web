@@ -17,12 +17,12 @@ describe("GaPageViewTracker", () => {
   afterEach(() => {
     // テスト間でグローバル状態が漏れないように復元する
     window.dataLayer = originalDataLayer;
-    window.localStorage.removeItem("ga4:user-id");
+    window.localStorage.removeItem("analytics:user-id");
   });
 
   test("ルート情報からpage_viewを送る", async () => {
     window.dataLayer = [];
-    window.localStorage.setItem("ga4:user-id", "test-user-id");
+    window.localStorage.setItem("analytics:user-id", "test-user-id");
 
     render(
       <MemoryRouter initialEntries={["/tests/reiwa3?mode=1#hash"]}>

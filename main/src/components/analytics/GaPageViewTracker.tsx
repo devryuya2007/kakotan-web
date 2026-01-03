@@ -16,7 +16,7 @@ const ensureDataLayer = (): Array<Record<string, unknown>> => {
   return window.dataLayer;
 };
 
-// ルート切り替えを検知してGA4にpage_viewを送る
+// ルート切り替えを検知してanalyticsにpage_viewを送る
 export const GaPageViewTracker = (): null => {
   const location = useLocation();
 

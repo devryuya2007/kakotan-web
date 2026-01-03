@@ -23,4 +23,14 @@ describe("gaUserId", () => {
 
     expect(loadedId).toBe(storedId);
   });
+
+  test("旧キーがあれば新キーへ移し替える", () => {
+    window.localStorage.setItem("ga4:user-id", "legacy-user-id");
+
+    const loadedId = loadGaUserId();
+
+    expect(loadedId).toBe("legacy-user-id");
+    expect(window.localStorage.getItem("analytics:user-id")).toBe("legacy-user-id");
+    expect(window.localStorage.getItem("ga4:user-id")).toBeNull();
+  });
 });
