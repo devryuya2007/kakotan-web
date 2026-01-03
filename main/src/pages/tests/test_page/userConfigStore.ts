@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-import type { YearKey } from "@/data/defaultRegistry";
+import type { YearKey } from "@/data/vocabLoader";
 
 import type { SoundPreferenceState, UserConfigState } from "./initialUserConfig";
 

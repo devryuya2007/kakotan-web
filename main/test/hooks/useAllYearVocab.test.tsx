@@ -2,8 +2,8 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { useAllYearVocab } from "@/hooks/useAllYearVocab";
-import { yearRegistry, type YearKey } from "@/data/defaultRegistry";
-import type { VocabEntry } from "@/data/vocabLoader";
+import { yearRegistry } from "@/data/defaultRegistry";
+import type { VocabEntry, YearKey } from "@/data/vocabLoader";
 
 const loadYearVocabMock = vi.fn();
 

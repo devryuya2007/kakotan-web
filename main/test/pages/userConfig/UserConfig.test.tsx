@@ -36,13 +36,16 @@ describe("UserConfig", () => {
     };
     window.cancelAnimationFrame = () => {};
     localStorage.clear();
-    if (!("ResizeObserver" in window)) {
+    const globalScope = globalThis as typeof globalThis & {
+      ResizeObserver?: typeof ResizeObserver;
+    };
+    if (!globalScope.ResizeObserver) {
       class ResizeObserverMock {
         observe() {}
         unobserve() {}
         disconnect() {}
       }
-      window.ResizeObserver = ResizeObserverMock as typeof ResizeObserver;
+      globalScope.ResizeObserver = ResizeObserverMock;
     }
   });
 

@@ -7,7 +7,7 @@ import {
   type YearConfigEntry,
 } from "./initialUserConfig";
 import { type UserConfigContextValue, UserConfigContext } from "./userConfigStore";
-import type { YearKey } from "@/data/defaultRegistry";
+import type { YearKey } from "@/data/vocabLoader";
 
 const USER_CONFIG_STORAGE_KEY = "user-config:max-count";
 
@@ -40,7 +40,7 @@ const loadStoredConfig = (): UserConfigState => {
       ...(isRecord(parsed.soundPreference) ? parsed.soundPreference : {}),
     };
     const nextYears = isRecord(parsed.years)
-      ? { ...initialUserConfig.years, ...parsed.years }
+      ? { ...initialUserConfig.years, ...(parsed.years as Record<string, YearConfigEntry>) }
       : initialUserConfig.years;
     return {
       ...initialUserConfig,
