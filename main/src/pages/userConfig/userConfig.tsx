@@ -91,6 +91,8 @@ export default function UserConfig() {
     removePlayerRegistry,
   } = useUserYearRegistryImport();
   const shouldScrollRegistry = playerRegistry.length >= 5;
+  // 4件分の高さを確保して、5件目からスクロールに切り替える
+  const registryScrollClass = shouldScrollRegistry ? "max-h-[260px] overflow-y-auto pr-2" : "";
 
   return (
     <>
@@ -155,11 +157,7 @@ export default function UserConfig() {
                   {/* 空間を確保するための下地ブロック。上にリストを重ねる */}
                   <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 via-white/0 to-white/5" />
                   {playerRegistry.length > 0 && (
-                    <div
-                      className={`relative z-10 space-y-3 p-3 ${
-                        shouldScrollRegistry ? "max-h-[220px] overflow-y-auto pr-2" : ""
-                      }`}
-                    >
+                    <div className={`relative z-10 space-y-3 p-3 ${registryScrollClass}`}>
                       {playerRegistry.map((entry) => (
                         <div
                           key={entry.id}
