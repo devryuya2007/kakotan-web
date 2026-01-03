@@ -83,7 +83,7 @@ export default function UserConfig() {
   );
   const navigate = useNavigate();
   // JSONインポートはUIだけ先に用意し、処理は後で実装できるようにする
-  const { handleDataImport } = useUserYearRegistryImport();
+  const { handleDataImport, importError } = useUserYearRegistryImport();
 
   return (
     <AppLayout
@@ -133,6 +133,11 @@ export default function UserConfig() {
                 <p className="text-xs text-white/50">
                   The file extension should be .json (example.json).
                 </p>
+                {importError && (
+                  <p className="text-xs text-rose-300" role="alert">
+                    {importError}
+                  </p>
+                )}
               </div>
               {/* ファイル選択UI。選択した内容は後で保存処理に繋げる想定 */}
               <div className=" items-center m-2">

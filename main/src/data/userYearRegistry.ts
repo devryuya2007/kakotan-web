@@ -90,50 +90,55 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
 
   // ファイル選択のイベントからJSONを読み込む
   const handleDataImport = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
-    // 同じファイルを選び直せるようにリセット
-    event.currentTarget.value = "";
+    // 非同期処理でも参照できるようにinput要素を退避する
+    const input = event.currentTarget;
     setImportError(null);
 
-    // ファイルがなければ終了
-    const file = event.currentTarget.files?.[0];
-    if (!file) return;
-
-    // 拡張子チェック（.jsonのみ許可）
-    if (!file.name.toLowerCase().endsWith(".json")) {
-      setImportError("you can only load JSON file.");
-      return;
-    }
-
-    // 中身を読み込む
-    const raw = await file.text();
-
-    // JSONとして読み込めるかチェック
-    let parsed: unknown;
     try {
-      parsed = JSON.parse(raw);
-    } catch {
-      setImportError("cannot load it as json file.");
-      return;
+      // ファイルがなければ終了
+      const file = input.files?.[0];
+      if (!file) return;
+
+      // 拡張子チェック（.jsonのみ許可）
+      if (!file.name.toLowerCase().endsWith(".json")) {
+        setImportError("you can only load JSON file.");
+        return;
+      }
+
+      // 中身を読み込む
+      const raw = await file.text();
+
+      // JSONとして読み込めるかチェック
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(raw);
+      } catch {
+        setImportError("cannot load it as json file.");
+        return;
+      }
+
+      // 受け付けるJSONをplayerRegistryの形に揃える
+      const nextEntries: PlayerRegistryEntry[] = isPlayerRegistryEntry(parsed)
+        ? [parsed]
+        : isPlayerRegistryEntryArray(parsed)
+          ? parsed
+          : isVocabEntryArray(parsed)
+            ? [buildEntryFromFileName(file.name, parsed)]
+            : [];
+
+      if (nextEntries.length === 0) {
+        setImportError("phraseとmeanを含む配列、またはkey/label/vocab形式のJSONにしてください。");
+        return;
+      }
+
+      // 既存のplayerRegistryに追加して保存する
+      const current = loadPlayerRegistry();
+      const merged = [...current, ...nextEntries];
+      savePlayerRegistry(merged);
+    } finally {
+      // 同じファイルを選び直せるようにリセット
+      input.value = "";
     }
-
-    // 受け付けるJSONをplayerRegistryの形に揃える
-    const nextEntries: PlayerRegistryEntry[] = isPlayerRegistryEntry(parsed)
-      ? [parsed]
-      : isPlayerRegistryEntryArray(parsed)
-        ? parsed
-        : isVocabEntryArray(parsed)
-          ? [buildEntryFromFileName(file.name, parsed)]
-          : [];
-
-    if (nextEntries.length === 0) {
-      setImportError("phraseとmeanを含む配列、またはkey/label/vocab形式のJSONにしてください。");
-      return;
-    }
-
-    // 既存のplayerRegistryに追加して保存する
-    const current = loadPlayerRegistry();
-    const merged = [...current, ...nextEntries];
-    savePlayerRegistry(merged);
   }, []);
 
   return { handleDataImport, importError };
