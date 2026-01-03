@@ -1,23 +1,14 @@
-import {yearRegistry, type YearKey} from "./yearRegistry";
-import type {VocabEntry} from "./vocabTypes";
+import { getAllRegistry } from "@/hooks/getAllRegistry";
+import type { VocabEntry } from "./vocabTypes";
 
-export type {VocabEntry} from "./vocabTypes";
-export type {YearKey} from "./yearRegistry";
+export type { VocabEntry } from "./vocabTypes";
+export type YearKey = string;
 
-const vocabByYear = yearRegistry.reduce(
-  (accumulator, entry) => {
-    accumulator[entry.key] = entry.vocab as VocabEntry[];
-    return accumulator;
-  },
-  {} as Record<YearKey, VocabEntry[]>,
-);
+export async function loadYearVocab(year: string): Promise<VocabEntry[]> {
+  const entry = getAllRegistry().find((item) => item.key === year);
+  if (!entry) throw new Error(`Unknown year key ${year}`);
 
-export async function loadYearVocab(year: YearKey): Promise<VocabEntry[]> {
-  const vocab = vocabByYear[year];
-  if (!vocab) {
-    throw new Error(`Unknown year key: ${year}`);
-  }
-  return structuredClone(vocab);
+  return structuredClone(entry.vocab as VocabEntry[]);
 }
 
 /**
@@ -36,10 +27,7 @@ export interface QuizQuestion {
   contextJa?: string; // 例文（和）
 }
 
-export function buildQuestionsFromVocab(
-  vocab: VocabEntry[],
-  maxCount = 20,
-): QuizQuestion[] {
+export function buildQuestionsFromVocab(vocab: VocabEntry[], maxCount = 20): QuizQuestion[] {
   const entries = vocab.filter((e) => !!e.phrase && !!e.mean);
   const take = Math.min(maxCount, entries.length);
 

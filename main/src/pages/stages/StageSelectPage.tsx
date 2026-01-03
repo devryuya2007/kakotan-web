@@ -11,12 +11,12 @@ import {
   loadStageProgress,
 } from "@/features/stages/stageProgressStore";
 import type {StageDefinition} from "@/features/stages/stageUtils";
-import type {YearKey} from "@/data/vocabLoader";
 import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
 import {initialStageSelectState, stageSelectReducer} from "@/pages/stages/stageSelectState";
+import { getAllRegistry } from "@/hooks/getAllRegistry";
 
 import {useStageDefinitions} from "./hooks/useStageDefinitions";
-import {YEAR_LABELS, isYearKey} from "./stageConstants";
+import { getYearLabels, isYearKey } from "./stageConstants";
 
 export default function StageSelectPage() {
   const {year: yearParam} = useParams();
@@ -37,19 +37,20 @@ export default function StageSelectPage() {
   const tileHeight = tileIconHeight + tileLabelHeight;
   const tileGap = 24;
 
+  const registry = getAllRegistry();
+  const yearLabels = getYearLabels();
   // URLの年度が有効かチェックして、無効ならデフォルトに切り替える
-  const isValidYear =
-    typeof yearParam === "string" && isYearKey(yearParam);
+  const isValidYear = typeof yearParam === "string" && isYearKey(yearParam);
 
   // 年度ラベルを決める
-  const year: YearKey =
-    typeof yearParam === "string" && isYearKey(yearParam)
-      ? yearParam
-      : "reiwa3";
-  const yearLabel = YEAR_LABELS[year];
+  const fallbackYear = registry[0]?.key ?? "reiwa3";
+  const year = isValidYear ? yearParam : fallbackYear;
+  const yearEntry = registry.find((entry) => entry.key === year);
+  const yearLabel = yearLabels[year] ?? yearEntry?.label ?? year;
   // ユーザー設定の「1ステージあたりの問題数」を取得する
   const {config} = useUserConfig();
-  const baseQuestionCount = config.years[year].maxCount;
+  const baseQuestionCount =
+    config.years[year]?.maxCount ?? yearEntry?.defaultQuestionCount ?? 10;
 
   const {status, stages} = useStageDefinitions({
     year,
@@ -175,9 +176,9 @@ export default function StageSelectPage() {
                 aria-live='polite'
                 aria-label='Loading stages'
               >
-                <div className='flex flex-col items-center gap-3'>
-                  <div className='h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-[#67e8f9]' />
-                  <span className='text-xs uppercase tracking-[0.3em] text-white/60'>
+                <div className='flex flex-col items-center gap-4'>
+                  <div className='h-14 w-14 animate-spin rounded-full border-4 border-white/20 border-t-[#67e8f9]' />
+                  <span className='text-sm uppercase tracking-[0.3em] text-white/70'>
                     Loading...
                   </span>
                 </div>

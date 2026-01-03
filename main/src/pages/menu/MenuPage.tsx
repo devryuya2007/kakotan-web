@@ -1,24 +1,21 @@
-import {
-  QuickStartButton,
-  QuickStartButtonStyle,
-} from "../../components/buttons/QuickStartButton";
-import {AppLayout} from "../../components/layout/AppLayout";
+import { QuickStartButton, QuickStartButtonStyle } from "../../components/buttons/QuickStartButton";
+import { AppLayout } from "../../components/layout/AppLayout";
 
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
-import {useNavigate} from "react-router-dom";
-
-import {yearRegistry} from "@/data/yearRegistry";
+import { useNavigate } from "react-router-dom";
 
 import "../../index.css";
+import { getAllRegistry } from "@/hooks/getAllRegistry";
 
 // 年度ごとのステージ一覧へ進むためのメニュー
-const MENU_ITEMS = yearRegistry.map((entry) => ({
-  label: entry.label,
-  path: `/stages/${entry.key}`,
-}));
 
 export default function MenuPage() {
+  const MENU_ITEMS = getAllRegistry().map((entry) => ({
+    label: entry.label,
+    path: `/stages/${entry.key}`,
+  }));
+
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -56,12 +53,8 @@ export default function MenuPage() {
           {/* 年度ごとのステージ入口 */}
           <section>
             <div className="grid grid-cols-3 gap-4 sm:gap-6">
-              {MENU_ITEMS.map(({label, path}) => (
-                <MenuButton
-                  key={label}
-                  label={label}
-                  onSelect={() => handleSelect(path)}
-                />
+              {MENU_ITEMS.map(({ label, path }) => (
+                <MenuButton key={label} label={label} onSelect={() => handleSelect(path)} />
               ))}
             </div>
           </section>
@@ -79,7 +72,7 @@ interface MenuButtonProps {
   onSelect: () => void;
 }
 
-function MenuButton({label, onSelect}: MenuButtonProps) {
+function MenuButton({ label, onSelect }: MenuButtonProps) {
   return (
     <button type="button" onClick={onSelect} className={QuickStartButtonStyle}>
       {label}

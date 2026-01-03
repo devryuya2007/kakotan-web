@@ -5,8 +5,8 @@ import reiwa6Vocab from "../assets/vocab/reiwa3_7/reiwa6.unigram.json";
 import reiwa7Vocab from "../assets/vocab/reiwa3_7/reiwa7.unigram.json";
 import extraVocab from "../assets/vocab/extra/extra_translated_refined.json";
 
-import type {VocabEntry} from "./vocabTypes";
-import {shuffleItems} from "../utils/shuffleItems";
+import type { VocabEntry } from "./vocabTypes";
+import { shuffleItems } from "../utils/shuffleItems";
 
 export interface StageTheme {
   accent: string;
@@ -15,11 +15,11 @@ export interface StageTheme {
 }
 
 // 年度の追加はこの配列に1件足すだけで済むようにする
-export const yearRegistry = [
+export const defaultRegistry = [
   {
     key: "reiwa3",
     label: "Reiwa 3",
-    sectionLabel: "令和3年",
+    sectionLabel: "reiwa3",
     vocab: reiwa3Vocab as VocabEntry[],
     theme: {
       accent: "#63e6c0",
@@ -31,7 +31,7 @@ export const yearRegistry = [
   {
     key: "reiwa4",
     label: "Reiwa 4",
-    sectionLabel: "令和4年",
+    sectionLabel: "reiwa4",
     vocab: reiwa4Vocab as VocabEntry[],
     theme: {
       accent: "#5aa9ff",
@@ -43,7 +43,7 @@ export const yearRegistry = [
   {
     key: "reiwa5",
     label: "Reiwa 5",
-    sectionLabel: "令和5年",
+    sectionLabel: "reiwa5",
     vocab: reiwa5Vocab as VocabEntry[],
     theme: {
       accent: "#b77bff",
@@ -55,7 +55,7 @@ export const yearRegistry = [
   {
     key: "reiwa6",
     label: "Reiwa 6",
-    sectionLabel: "令和6年",
+    sectionLabel: "reiwa6",
     vocab: reiwa6Vocab as VocabEntry[],
     theme: {
       accent: "#ff8ba7",
@@ -67,7 +67,7 @@ export const yearRegistry = [
   {
     key: "reiwa7",
     label: "Reiwa 7",
-    sectionLabel: "令和7年",
+    sectionLabel: "reiwa7",
     vocab: reiwa7Vocab as VocabEntry[],
     theme: {
       accent: "#b9f27c",
@@ -79,7 +79,7 @@ export const yearRegistry = [
   {
     key: "extra",
     label: "Extra",
-    sectionLabel: "追加単語",
+    sectionLabel: "extra",
     // extraは固定シードで一度シャッフルして、出題順の偏りを避ける
     vocab: shuffleItems(extraVocab as VocabEntry[], 20250101),
     theme: {
@@ -91,13 +91,7 @@ export const yearRegistry = [
   },
 ] as const;
 
-export type YearKey = (typeof yearRegistry)[number]["key"];
-export type YearRegistryEntry = (typeof yearRegistry)[number];
+// 既存コードとの互換のため、年データの別名を用意する
+export const yearRegistry = defaultRegistry;
 
-// URLなどの文字列からYearKeyかどうか判定する
-export const isYearKey = (value: string): value is YearKey =>
-  yearRegistry.some((entry) => entry.key === value);
-
-// 年度情報を取得する（存在しない場合は先頭年度を返す）
-export const getYearEntry = (year: YearKey): YearRegistryEntry =>
-  yearRegistry.find((entry) => entry.key === year) ?? yearRegistry[0];
+export type YearRegistryEntry = (typeof defaultRegistry)[number];

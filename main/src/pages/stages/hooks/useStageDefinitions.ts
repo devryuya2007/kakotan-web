@@ -41,8 +41,17 @@ export const useStageDefinitions = ({
     // 語彙データを読み込んでステージ定義へ変換する
     const run = async () => {
       try {
+        // 読み込み中の表示を必ず出すため、先にloadingへ切り替える
         setStatus("loading");
         setError(null);
+        // 同期処理でも1フレーム分はローディングを見せる
+        await new Promise<void>((resolve) => {
+          if (typeof requestAnimationFrame === "function") {
+            requestAnimationFrame(() => resolve());
+            return;
+          }
+          setTimeout(() => resolve(), 0);
+        });
 
         const vocab = await loadYearVocab(year);
         if (cancelled) return;

@@ -1,5 +1,5 @@
 import {render, screen, waitFor} from "@testing-library/react";
-import {beforeEach, describe, expect, test, vi} from "vitest";
+import {afterEach, beforeEach, describe, expect, test, vi} from "vitest";
 
 import type {VocabEntry} from "@/data/vocabLoader";
 
@@ -56,6 +56,10 @@ describe("useStageDefinitions", () => {
   beforeEach(() => {
     loadYearVocabMock.mockReset();
   });
+  afterEach(() => {
+    // フェイクタイマーを使ったテストが混ざるので毎回戻す
+    vi.useRealTimers();
+  });
 
   test("設定の問題数でステージ数が連動して変わる", async () => {
     // 語彙は5語、すべて有効なデータとして扱う
@@ -76,6 +80,25 @@ describe("useStageDefinitions", () => {
     rerender(<StageCountProbe baseQuestionCount={3} />);
     await waitFor(() => {
       expect(screen.getByTestId("stage-count")).toHaveTextContent("2");
+    });
+  });
+
+  test("読み込み直後はローディングが表示される", async () => {
+    // 即時に解決される場合でも、ローディングが1フレーム出ることを確認する
+    loadYearVocabMock.mockResolvedValueOnce([
+      {phrase: "one", mean: "1"},
+      {phrase: "two", mean: "2"},
+      {phrase: "three", mean: "3"},
+      {phrase: "four", mean: "4"},
+      {phrase: "five", mean: "5"},
+    ]);
+
+    render(<StageCountProbe baseQuestionCount={2} />);
+
+    expect(screen.getByText("loading")).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("stage-count")).toHaveTextContent("3");
     });
   });
 
@@ -133,6 +156,8 @@ describe("useStageDefinitions", () => {
     const pending = new Promise<VocabEntry[]>((_, reject) => {
       rejectPromise = reject;
     });
+    // 未処理のrejectionでテストが落ちないように吸収する
+    void pending.catch(() => {});
 
     loadYearVocabMock.mockReturnValueOnce(pending);
 

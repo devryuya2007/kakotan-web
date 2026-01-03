@@ -1,8 +1,8 @@
-import {createContext} from "react";
+import { createContext } from "react";
 
-import type {YearKey} from "@/data/yearRegistry";
+import type { YearKey } from "@/data/vocabLoader";
 
-import type {SoundPreferenceState, UserConfigState} from "./initialUserConfig";
+import type { SoundPreferenceState, UserConfigState } from "./initialUserConfig";
 
 export type UserConfigContextValue = {
   config: UserConfigState;
@@ -12,6 +12,4 @@ export type UserConfigContextValue = {
   updateSoundPreference: (next: Partial<SoundPreferenceState>) => void;
 };
 
-export const UserConfigContext = createContext<
-  UserConfigContextValue | undefined
->(undefined);
+export const UserConfigContext = createContext<UserConfigContextValue | undefined>(undefined);
