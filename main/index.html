@@ -31,8 +31,10 @@
     />
     <!-- Google tag (gtag.js) -->
     <script>
+      const gaMeasurementId = "G-CLQ4CTRTGV";
+      window.__GA_MEASUREMENT_ID__ = gaMeasurementId;
       if ("%VITE_GA_DISABLED%" === "true") {
-        window["ga-disable-G-CLQ4CTRTGV"] = true;
+        window[`ga-disable-${gaMeasurementId}`] = true;
       }
     </script>
     <script
@@ -46,7 +48,7 @@
           dataLayer.push(arguments);
         }
         gtag("js", new Date());
-        gtag("config", "G-CLQ4CTRTGV");
+        gtag("config", window.__GA_MEASUREMENT_ID__);
       }
     </script>
     <title>kakotan</title>
