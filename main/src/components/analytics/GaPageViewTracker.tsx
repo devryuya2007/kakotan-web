@@ -5,20 +5,15 @@ import {ensureGaUserId} from "@/components/analytics/gaUserId";
 
 declare global {
   interface Window {
-    gtag?: (...args: unknown[]) => void;
-    __GA_MEASUREMENT_ID__?: string;
+    dataLayer?: Array<Record<string, unknown>>;
   }
 }
 
-interface GtagConfigParams {
-  user_id: string;
-}
-
-// HTML側でセットしたGAの計測IDを安全に取り出す
-const getMeasurementId = (): string | null => {
-  if (typeof window === "undefined") return null;
-  if (!window.__GA_MEASUREMENT_ID__) return null;
-  return window.__GA_MEASUREMENT_ID__;
+// dataLayerが無い場合は作成して返す
+const ensureDataLayer = (): Array<Record<string, unknown>> => {
+  if (typeof window === "undefined") return [];
+  window.dataLayer = window.dataLayer || [];
+  return window.dataLayer;
 };
 
 // ルート切り替えを検知してGA4にpage_viewを送る
@@ -30,28 +25,26 @@ export const GaPageViewTracker = (): null => {
     if (import.meta.env.VITE_GA_DISABLED === "true") {
       return;
     }
-    // gtagが無い場合は何もしない（開発中や未設定の環境向け）
-    if (typeof window === "undefined" || typeof window.gtag !== "function") {
+    // dataLayerが使えない環境では何もしない
+    if (typeof window === "undefined") {
       return;
     }
 
-    // user_idの送信は公式ドキュメントの推奨通りconfigで行う
-    const measurementId = getMeasurementId();
-    if (measurementId) {
-      const userId = ensureGaUserId();
-      if (userId) {
-        const config: GtagConfigParams = {user_id: userId};
-        window.gtag("config", measurementId, config);
-      }
-    }
+    const userId = ensureGaUserId();
 
     const pagePath = `${location.pathname}${location.search}${location.hash}`;
 
-    window.gtag("event", "page_view", {
+    const payload: Record<string, unknown> = {
+      event: "page_view",
       page_path: pagePath,
       page_location: window.location.href,
       page_title: document.title,
-    });
+    };
+    if (userId) {
+      payload.user_id = userId;
+    }
+
+    ensureDataLayer().push(payload);
   }, [location.pathname, location.search, location.hash]);
 
   return null;
