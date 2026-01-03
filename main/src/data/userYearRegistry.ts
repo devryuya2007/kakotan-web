@@ -5,7 +5,7 @@ interface UserYearImportResult {
   importError: string | null;
   importSuccess: string | null;
   playerRegistry: PlayerRegistryEntry[];
-  removePlayerRegistry: (key: string) => void;
+  removePlayerRegistry: (id: string) => void;
 }
 
 // インポートで受け取る単語の最小形
@@ -16,6 +16,15 @@ interface VocabEntryLike {
 
 // ユーザーが追加したレジストリの1件分
 export interface PlayerRegistryEntry {
+  id: string;
+  key: string;
+  label: string;
+  vocab: VocabEntryLike[];
+}
+
+// 旧データ（idなし）も取り込むための入力型
+interface PlayerRegistryEntryInput {
+  id?: string;
   key: string;
   label: string;
   vocab: VocabEntryLike[];
@@ -37,22 +46,57 @@ const isVocabEntryArray = (value: unknown): value is VocabEntryLike[] => {
   });
 };
 
-// playerRegistryの1件かどうかを判定する
-const isPlayerRegistryEntry = (value: unknown): value is PlayerRegistryEntry => {
+// playerRegistryの1件かどうかを判定する（idは任意）
+const isPlayerRegistryEntry = (value: unknown): value is PlayerRegistryEntryInput => {
   if (!isRecord(value)) return false;
   if (typeof value.key !== "string") return false;
   if (typeof value.label !== "string") return false;
+  if ("id" in value && typeof value.id !== "string") return false;
   return isVocabEntryArray(value.vocab);
 };
 
 // playerRegistryの配列かどうかを判定する
-const isPlayerRegistryEntryArray = (value: unknown): value is PlayerRegistryEntry[] => {
+const isPlayerRegistryEntryArray = (value: unknown): value is PlayerRegistryEntryInput[] => {
   if (!Array.isArray(value)) return false;
   return value.every(isPlayerRegistryEntry);
 };
 
+// 追加セットの識別子を作成する（重複を避けるために乱数も使う）
+const createRegistryId = (base: string, index: number): string => {
+  const normalized = base
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/giu, "-")
+    .replace(/^-+|-+$/gu, "");
+  const random = Math.random().toString(36).slice(2, 8);
+  return `player-${normalized || "custom"}-${Date.now()}-${index}-${random}`;
+};
+
+// idの欠けや重複を補正して、削除できる形に揃える
+const normalizePlayerRegistry = (
+  entries: PlayerRegistryEntryInput[]
+): { normalized: PlayerRegistryEntry[]; changed: boolean } => {
+  const usedIds = new Set<string>();
+  let changed = false;
+  const normalized = entries.map((entry, index) => {
+    let id = typeof entry.id === "string" ? entry.id : "";
+    if (!id || usedIds.has(id)) {
+      id = createRegistryId(entry.key || entry.label, index);
+      changed = true;
+    }
+    usedIds.add(id);
+    return {
+      ...entry,
+      id,
+    };
+  });
+  return { normalized, changed };
+};
+
 // ファイル名からキーとラベルを作る（配列JSON用の仮登録）
-const buildEntryFromFileName = (fileName: string, vocab: VocabEntryLike[]): PlayerRegistryEntry => {
+const buildEntryFromFileName = (
+  fileName: string,
+  vocab: VocabEntryLike[]
+): PlayerRegistryEntryInput => {
   const baseName = fileName.replace(/\.json$/iu, "").trim();
   const normalized = baseName
     .toLowerCase()
@@ -62,6 +106,7 @@ const buildEntryFromFileName = (fileName: string, vocab: VocabEntryLike[]): Play
   const label = baseName.length > 0 ? baseName : "Player Extra";
 
   return {
+    id: createRegistryId(baseName || key, 0),
     key,
     label,
     vocab,
@@ -75,7 +120,12 @@ export const loadPlayerRegistry = (): PlayerRegistryEntry[] => {
   if (!raw) return [];
   try {
     const parsed = JSON.parse(raw) as unknown;
-    return isPlayerRegistryEntryArray(parsed) ? parsed : [];
+    if (!isPlayerRegistryEntryArray(parsed)) return [];
+    const { normalized, changed } = normalizePlayerRegistry(parsed);
+    if (changed) {
+      savePlayerRegistry(normalized);
+    }
+    return normalized;
   } catch {
     return [];
   }
@@ -87,10 +137,10 @@ export const savePlayerRegistry = (entries: PlayerRegistryEntry[]): void => {
   window.localStorage.setItem(PLAYER_REGISTRY_STORAGE_KEY, JSON.stringify(entries));
 };
 
-// playerRegistryから指定キーのセットを削除する
-export const removePlayerRegistry = (key: string): PlayerRegistryEntry[] => {
+// playerRegistryから指定IDのセットを削除する
+export const removePlayerRegistry = (id: string): PlayerRegistryEntry[] => {
   const current = loadPlayerRegistry();
-  const next = current.filter((entry) => entry.key !== key);
+  const next = current.filter((entry) => entry.id !== id);
   savePlayerRegistry(next);
   return next;
 };
@@ -166,7 +216,7 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
       }
 
       // 受け付けるJSONをplayerRegistryの形に揃える
-      const nextEntries: PlayerRegistryEntry[] = isPlayerRegistryEntry(parsed)
+      const nextEntries: PlayerRegistryEntryInput[] = isPlayerRegistryEntry(parsed)
         ? [parsed]
         : isPlayerRegistryEntryArray(parsed)
           ? parsed
@@ -183,7 +233,7 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
 
       // 既存のplayerRegistryに追加して保存する
       const current = loadPlayerRegistry();
-      const merged = [...current, ...nextEntries];
+      const { normalized: merged } = normalizePlayerRegistry([...current, ...nextEntries]);
       savePlayerRegistry(merged);
       // 保存後に一覧も更新して即反映させる
       setPlayerRegistry(merged);

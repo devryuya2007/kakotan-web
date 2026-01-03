@@ -57,6 +57,7 @@ describe("useUserYearRegistryImport", () => {
 
     const stored = JSON.parse(localStorage.getItem(PLAYER_REGISTRY_STORAGE_KEY) ?? "[]");
     expect(stored).toHaveLength(1);
+    expect(typeof stored[0].id).toBe("string");
     expect(stored[0].key).toBe("player-my-vocab");
     expect(stored[0].label).toBe("My Vocab");
     expect(stored[0].vocab).toEqual(payload);
@@ -81,6 +82,7 @@ describe("useUserYearRegistryImport", () => {
 
     const stored = JSON.parse(localStorage.getItem(PLAYER_REGISTRY_STORAGE_KEY) ?? "[]");
     expect(stored).toHaveLength(1);
+    expect(typeof stored[0].id).toBe("string");
     expect(stored[0].key).toBe("custom-set");
     expect(stored[0].label).toBe("Custom Set");
     expect(stored[0].vocab).toEqual(payload.vocab);
@@ -149,7 +151,7 @@ describe("useUserYearRegistryImport", () => {
     expect(result.current.playerRegistry).toHaveLength(1);
 
     act(() => {
-      result.current.removePlayerRegistry("custom-set");
+      result.current.removePlayerRegistry(result.current.playerRegistry[0].id);
     });
 
     expect(result.current.playerRegistry).toHaveLength(0);
