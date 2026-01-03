@@ -156,6 +156,8 @@ describe("useStageDefinitions", () => {
     const pending = new Promise<VocabEntry[]>((_, reject) => {
       rejectPromise = reject;
     });
+    // 未処理のrejectionでテストが落ちないように吸収する
+    void pending.catch(() => {});
 
     loadYearVocabMock.mockReturnValueOnce(pending);
 

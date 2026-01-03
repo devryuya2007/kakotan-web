@@ -19,7 +19,7 @@ export const defaultRegistry = [
   {
     key: "reiwa3",
     label: "Reiwa 3",
-    sectionLabel: "令和3年",
+    sectionLabel: "reiwa3",
     vocab: reiwa3Vocab as VocabEntry[],
     theme: {
       accent: "#63e6c0",
@@ -31,7 +31,7 @@ export const defaultRegistry = [
   {
     key: "reiwa4",
     label: "Reiwa 4",
-    sectionLabel: "令和4年",
+    sectionLabel: "reiwa4",
     vocab: reiwa4Vocab as VocabEntry[],
     theme: {
       accent: "#5aa9ff",
@@ -43,7 +43,7 @@ export const defaultRegistry = [
   {
     key: "reiwa5",
     label: "Reiwa 5",
-    sectionLabel: "令和5年",
+    sectionLabel: "reiwa5",
     vocab: reiwa5Vocab as VocabEntry[],
     theme: {
       accent: "#b77bff",
@@ -55,7 +55,7 @@ export const defaultRegistry = [
   {
     key: "reiwa6",
     label: "Reiwa 6",
-    sectionLabel: "令和6年",
+    sectionLabel: "reiwa6",
     vocab: reiwa6Vocab as VocabEntry[],
     theme: {
       accent: "#ff8ba7",
@@ -67,7 +67,7 @@ export const defaultRegistry = [
   {
     key: "reiwa7",
     label: "Reiwa 7",
-    sectionLabel: "令和7年",
+    sectionLabel: "reiwa7",
     vocab: reiwa7Vocab as VocabEntry[],
     theme: {
       accent: "#b9f27c",
@@ -79,7 +79,7 @@ export const defaultRegistry = [
   {
     key: "extra",
     label: "Extra",
-    sectionLabel: "追加単語",
+    sectionLabel: "extra",
     // extraは固定シードで一度シャッフルして、出題順の偏りを避ける
     vocab: shuffleItems(extraVocab as VocabEntry[], 20250101),
     theme: {

@@ -7,6 +7,19 @@ import {
   useUserYearRegistryImport,
 } from "@/data/userYearRegistry";
 
+const ensureFileText = (file: File, content: string) => {
+  if (typeof file.text === "function") return;
+  Object.defineProperty(file, "text", {
+    value: async () => content,
+  });
+};
+
+const buildTestFile = (name: string, content: string, type = "application/json"): File => {
+  const file = new File([content], name, { type });
+  ensureFileText(file, content);
+  return file;
+};
+
 const buildFileInputEvent = (file: File): ChangeEvent<HTMLInputElement> => {
   const input = document.createElement("input");
   Object.defineProperty(input, "files", {
@@ -31,9 +44,7 @@ describe("useUserYearRegistryImport", () => {
       { phrase: "apple", mean: "りんご" },
       { phrase: "policy", mean: "政策・方針" },
     ];
-    const file = new File([JSON.stringify(payload)], "My Vocab.json", {
-      type: "application/json",
-    });
+    const file = buildTestFile("My Vocab.json", JSON.stringify(payload));
 
     await act(async () => {
       await result.current.handleDataImport(buildFileInputEvent(file));
@@ -58,9 +69,7 @@ describe("useUserYearRegistryImport", () => {
       label: "Custom Set",
       vocab: [{ phrase: "alpha", mean: "アルファ" }],
     };
-    const file = new File([JSON.stringify(payload)], "custom.json", {
-      type: "application/json",
-    });
+    const file = buildTestFile("custom.json", JSON.stringify(payload));
 
     await act(async () => {
       await result.current.handleDataImport(buildFileInputEvent(file));
@@ -79,7 +88,7 @@ describe("useUserYearRegistryImport", () => {
 
   test("JSONとして読めない場合はエラーになる", async () => {
     const { result } = renderHook(() => useUserYearRegistryImport());
-    const file = new File(["not json"], "broken.json", { type: "application/json" });
+    const file = buildTestFile("broken.json", "not json");
 
     await act(async () => {
       await result.current.handleDataImport(buildFileInputEvent(file));
@@ -94,7 +103,7 @@ describe("useUserYearRegistryImport", () => {
 
   test("拡張子がjson以外のときはエラーになる", async () => {
     const { result } = renderHook(() => useUserYearRegistryImport());
-    const file = new File(["[]"], "vocab.txt", { type: "text/plain" });
+    const file = buildTestFile("vocab.txt", "[]", "text/plain");
 
     await act(async () => {
       await result.current.handleDataImport(buildFileInputEvent(file));
@@ -110,26 +119,18 @@ describe("useUserYearRegistryImport", () => {
     vi.useFakeTimers();
     const { result } = renderHook(() => useUserYearRegistryImport());
     const payload = [{ phrase: "alpha", mean: "アルファ" }];
-    const file = new File([JSON.stringify(payload)], "timed.json", {
-      type: "application/json",
-    });
+    const file = buildTestFile("timed.json", JSON.stringify(payload));
 
     await act(async () => {
       await result.current.handleDataImport(buildFileInputEvent(file));
     });
 
-    await waitFor(() => {
-      expect(result.current.importSuccess).toBe("Import complete: 1 words added.");
-    });
+    expect(result.current.importSuccess).toBe("Import complete: 1 words added.");
 
-    act(() => {
+    await act(async () => {
       vi.advanceTimersByTime(4000);
     });
 
-    await waitFor(() => {
-      expect(result.current.importSuccess).toBeNull();
-    });
-
-    vi.useRealTimers();
+    expect(result.current.importSuccess).toBeNull();
   });
 });
