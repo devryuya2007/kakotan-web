@@ -10,7 +10,6 @@ import {
   createStageDefinitions,
   type StageDefinition,
 } from "@/features/stages/stageUtils";
-import {useShuffledItems} from "@/hooks/useShuffledItems";
 import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
 import TestPageLayout from "@/pages/tests/test_page/layout/TestPageLayout";
 import { getAllRegistry } from "@/hooks/getAllRegistry";
@@ -50,8 +49,7 @@ export default function StageTestPage() {
   const baseQuestionCount =
     config.years[year]?.maxCount ?? yearEntry?.defaultQuestionCount ?? 10;
   const yearLabel = yearLabels[year] ?? yearEntry?.label ?? year;
-  // extraだけ順番をシャッフルして、連続出題の偏りを減らす
-  const shouldShuffle = year === "extra";
+  // extraは一旦シャッフルを止めて、同じ順番で出す
 
   // ステージの問題配列やエラーをまとめて管理する
   const [state, setState] = useState<StageQuestionState>({
@@ -123,7 +121,7 @@ export default function StageTestPage() {
     };
   }, [year, yearLabel, baseQuestionCount, stageNumber]);
   // 画面表示用の問題配列は必要に応じてシャッフルする
-  const displayQuestions = useShuffledItems(state.questions, shouldShuffle);
+  const displayQuestions = state.questions;
   // URLの年度が不正ならメニューに戻す案内を出す
   if (!isValidYear) {
     return (
