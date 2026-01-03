@@ -155,7 +155,9 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
             : [];
 
       if (nextEntries.length === 0) {
-        setImportError("phraseとmeanを含む配列、またはkey/label/vocab形式のJSONにしてください。");
+        setImportError(
+          "Use an array of items with \"phrase\" and \"mean\", or a JSON with key/label/vocab."
+        );
         return;
       }
 
