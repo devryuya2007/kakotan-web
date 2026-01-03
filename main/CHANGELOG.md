@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.2.0](https://github.com/devryuya2007/kakotan-web/compare/kakotan-web-v1.1.0...kakotan-web-v1.2.0) (2026-01-03)
+
+
+### Features
+
+* extra語彙に1900語を統合 ([90fdcf2](https://github.com/devryuya2007/kakotan-web/commit/90fdcf29c820c6005e43a5af402b69254b825ea5))
+* user-configの説明と固定ボタンを調整 ([499ac34](https://github.com/devryuya2007/kakotan-web/commit/499ac345ddd7f7bb8ed57f7ed0d5501164ebe5f4))
+
+
+### Bug Fixes
+
+* 1900語彙統合を取り消し ([7de1311](https://github.com/devryuya2007/kakotan-web/commit/7de131167aad3723d6fc37cb9f5ea5bc041f51ad))
+* applyXpテストのクリック処理を安定化 ([b0473fc](https://github.com/devryuya2007/kakotan-web/commit/b0473fc2b2f98e4ce6823ca41808b8215120cfb8))
+* loadingマークを削除 ([e04084b](https://github.com/devryuya2007/kakotan-web/commit/e04084bff811b1d057fc6dcc6c9cb4c7fe27c403))
+* テストページの環境依存処理を安定化 ([9558adc](https://github.com/devryuya2007/kakotan-web/commit/9558adc1714c4f57cbb82b9ce4b80921655c026b))
+* メニュー遷移時のローディングを追加 ([f3aede2](https://github.com/devryuya2007/kakotan-web/commit/f3aede2e172b9267136faddb40c81962a8c171ec))
+
 ## [1.1.0](https://github.com/devryuya2007/kakotan-web/compare/kakotan-web-v1.0.0...kakotan-web-v1.1.0) (2025-12-31)
 
 
