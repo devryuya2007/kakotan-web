@@ -135,20 +135,16 @@ export default function UserConfig() {
                     each item, with keys in double quotes.
                   </p>
                   <p className="text-xs text-white/60">
-                    Each item must include "phrase" and "mean". If the format is different, the
-                    import will fail with an error.
+                    Use a JSON array with "phrase" and "mean". You can also use a JSON with "key",
+                    "label", and "vocab" if you want to name the set. If the format is different,
+                    the import will fail with an error.
                   </p>
                   <p className="text-xs text-white/50">
                     The file extension should be .json (example.json).
                   </p>
-                  {importError && (
-                    <p className="text-xs text-rose-300" role="alert">
-                      {importError}
-                    </p>
-                  )}
                 </div>
                 {/* ファイル選択UI。選択した内容は後で保存処理に繋げる想定 */}
-                <div className=" items-center m-2">
+                <div className="relative m-2 flex items-center">
                   <input
                     id={dataImportInputId}
                     type="file"
@@ -162,6 +158,14 @@ export default function UserConfig() {
                   >
                     select file
                   </label>
+                  {importError && (
+                    <p
+                      className="absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap rounded-full border border-rose-400/40 bg-rose-500/10 px-3 py-1 text-[10px] font-semibold text-rose-200 shadow-[0_8px_20px_rgba(244,63,94,0.25)]"
+                      role="alert"
+                    >
+                      {importError}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

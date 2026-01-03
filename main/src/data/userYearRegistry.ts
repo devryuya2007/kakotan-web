@@ -156,7 +156,7 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
 
       if (nextEntries.length === 0) {
         setImportError(
-          "Use an array of items with \"phrase\" and \"mean\", or a JSON with key/label/vocab."
+          "Use an array of items with \"phrase\" and \"mean\", or a JSON with \"key\", \"label\", and \"vocab\"."
         );
         return;
       }
