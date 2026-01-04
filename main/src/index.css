@@ -91,3 +91,22 @@ h2 {
     -apple-system,
     sans-serif;
 }
+
+/* スクロールバーを細くして目立たなくする */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(242, 201, 125, 0.45) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(242, 201, 125, 0.35);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
