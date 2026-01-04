@@ -51,7 +51,7 @@ export default function MenuPage() {
           </header>
 
           {/* 年度ごとのステージ入口 */}
-          <section>
+          <section className="max-h-[60vh] overflow-y-scroll rounded-2xl border border-[#f2c97d]/30 bg-[#0b1022]/70 p-4 pr-2 shadow-[0_10px_30px_rgba(5,10,24,0.45)]">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
               {MENU_ITEMS.map(({ label, path }) => (
                 <MenuButton
