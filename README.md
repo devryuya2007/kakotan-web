@@ -5,7 +5,7 @@
 アプリURL: https://bst-1900.pages.dev/
 
 <p align="center">
-  <img src="docs/main.png" alt="カコタン ホーム画面" width="480" />
+  <img src="docs/mainPage.png" alt="カコタン ホーム画面" width="480" />
 </p>
 
 ## 主な機能
@@ -161,17 +161,23 @@ npm --prefix main run test -- run
 ### ホーム / メニュー
 
 <p align="center">
-  <img src="docs/main.png" alt="ホーム画面" width="420" />
+  <img src="docs/mainPage.png" alt="ホーム画面" width="360" />
+  <img src="docs/menu.png" alt="メニュー画面" width="360" />
 </p>
 
+### ステージ / 設定
+
 <p align="center">
-  <img src="docs/memu.png" alt="メニュー画面" width="420" />
+  <img src="docs/stages.png" alt="ステージ一覧" width="360" />
+  <img src="docs/setting.png" alt="設定画面" width="360" />
 </p>
 
-### テスト画面
+### 結果画面
 
 <p align="center">
-  <img src="docs/test.png" alt="テスト画面" width="420" />
+  <img src="docs/results.png" alt="結果画面" width="360" />
+  <img src="docs/result2.png" alt="結果画面（別カット）" width="360" />
+  <img src="docs/miniResults.png" alt="ミニ結果画面" width="360" />
 </p>
 
 ## デモ動画
@@ -183,6 +189,7 @@ npm --prefix main run test -- run
     Your browser does not support the video tag.
   </video>
 </p>
+
 
 ## コントリビュート
 
