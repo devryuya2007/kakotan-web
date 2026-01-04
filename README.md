@@ -182,7 +182,7 @@ npm --prefix main run test -- run
 
 ## デモ動画
 
-### テスト画面デモ
+### テスト/結果画面デモ
 
 <p align="center">
   <video src="docs/test.mp4" width="480" controls>
