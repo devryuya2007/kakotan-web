@@ -52,7 +52,7 @@ export default function MenuPage() {
 
           {/* 年度ごとのステージ入口 */}
           <section>
-            <div className="grid grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
               {MENU_ITEMS.map(({ label, path }) => (
                 <MenuButton
                   key={label}
