@@ -32,6 +32,8 @@ interface PlayerRegistryEntryInput {
 
 // 保存先のキーはバージョン付きで固定する
 export const PLAYER_REGISTRY_STORAGE_KEY = "playerRegistry:v1";
+// playerRegistryの更新をアプリ全体へ通知するイベント名
+export const PLAYER_REGISTRY_UPDATED_EVENT = "player-registry:updated";
 
 // 文字列キーだけを持つか判定するためのガード
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -159,6 +161,8 @@ export const loadPlayerRegistry = (): PlayerRegistryEntry[] => {
 export const savePlayerRegistry = (entries: PlayerRegistryEntry[]): void => {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(PLAYER_REGISTRY_STORAGE_KEY, JSON.stringify(entries));
+  // 保存内容が更新されたことをアプリ側へ伝える
+  window.dispatchEvent(new Event(PLAYER_REGISTRY_UPDATED_EVENT));
 };
 
 // playerRegistryから指定IDのセットを削除する
