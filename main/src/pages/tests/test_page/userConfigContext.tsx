@@ -7,12 +7,45 @@ import {
   type YearConfigEntry,
 } from "./initialUserConfig";
 import { type UserConfigContextValue, UserConfigContext } from "./userConfigStore";
+import { PLAYER_REGISTRY_UPDATED_EVENT } from "@/data/userYearRegistry";
 import type { YearKey } from "@/data/vocabLoader";
+import { getAllRegistry } from "@/hooks/getAllRegistry";
 
 const USER_CONFIG_STORAGE_KEY = "user-config:max-count";
 
 const isRecord = (value: unknown): value is Record<string, unknown> => {
   return typeof value === "object" && value !== null;
+};
+
+// レジストリの最新状態に合わせてyear設定を補完/整理する
+const syncConfigWithRegistry = (current: UserConfigState): UserConfigState => {
+  const registry = getAllRegistry();
+  const registryKeys = new Set(registry.map((entry) => entry.key));
+  let changed = false;
+  const nextYears: Record<string, YearConfigEntry> = {};
+
+  registry.forEach((entry) => {
+    const stored = current.years[entry.key];
+    if (stored) {
+      nextYears[entry.key] = stored;
+      return;
+    }
+    changed = true;
+    nextYears[entry.key] = {
+      maxCount: entry.defaultQuestionCount ?? 10,
+      sectionId: entry.sectionLabel ?? entry.label,
+    };
+  });
+
+  if (Object.keys(current.years).some((key) => !registryKeys.has(key))) {
+    changed = true;
+  }
+
+  if (!changed) return current;
+  return {
+    ...current,
+    years: nextYears,
+  };
 };
 
 const loadStoredConfig = (): UserConfigState => {
@@ -26,13 +59,13 @@ const loadStoredConfig = (): UserConfigState => {
     // 旧形式（年度ごとの設定だけ）も吸収して互換性を保つ
     if (!("years" in parsed)) {
       const legacy = parsed as Record<string, YearConfigEntry>;
-      return {
+      return syncConfigWithRegistry({
         ...initialUserConfig,
         years: {
           ...initialUserConfig.years,
           ...legacy,
         },
-      };
+      });
     }
 
     const nextSoundPreference: SoundPreferenceState = {
@@ -42,12 +75,12 @@ const loadStoredConfig = (): UserConfigState => {
     const nextYears = isRecord(parsed.years)
       ? { ...initialUserConfig.years, ...(parsed.years as Record<string, YearConfigEntry>) }
       : initialUserConfig.years;
-    return {
+    return syncConfigWithRegistry({
       ...initialUserConfig,
       ...parsed,
       years: nextYears,
       soundPreference: nextSoundPreference,
-    };
+    });
   } catch (error) {
     console.warn("Failed to load user config", error);
     return initialUserConfig;
@@ -56,6 +89,21 @@ const loadStoredConfig = (): UserConfigState => {
 
 export function UserConfigProvider({ children }: { children: ReactNode }) {
   const [config, setConfig] = useState<UserConfigState>(() => loadStoredConfig());
+
+  useEffect(() => {
+    const syncConfig = () => {
+      setConfig((prev) => syncConfigWithRegistry(prev));
+    };
+
+    // 画面起動時に追加語彙の設定を補完する
+    syncConfig();
+
+    if (typeof window === "undefined") return;
+    window.addEventListener(PLAYER_REGISTRY_UPDATED_EVENT, syncConfig);
+    return () => {
+      window.removeEventListener(PLAYER_REGISTRY_UPDATED_EVENT, syncConfig);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

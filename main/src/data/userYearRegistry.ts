@@ -32,6 +32,8 @@ interface PlayerRegistryEntryInput {
 
 // 保存先のキーはバージョン付きで固定する
 export const PLAYER_REGISTRY_STORAGE_KEY = "playerRegistry:v1";
+// playerRegistryの更新をアプリ全体へ通知するイベント名
+export const PLAYER_REGISTRY_UPDATED_EVENT = "player-registry:updated";
 
 // 文字列キーだけを持つか判定するためのガード
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -74,25 +76,55 @@ const createRegistryId = (base: string, index: number): string => {
 // 末尾の連番を除いたラベルを作る（例: "My Set (2)" -> "My Set"）
 const stripLabelSuffix = (label: string): string => label.replace(/\s\(\d+\)$/u, "");
 
+// 既存キーと重複しないキーを作る
+const buildUniqueKey = (baseKey: string, usedKeys: Set<string>): string => {
+  if (!usedKeys.has(baseKey)) {
+    usedKeys.add(baseKey);
+    return baseKey;
+  }
+  let index = 2;
+  let candidate = `${baseKey}-${index}`;
+  while (usedKeys.has(candidate)) {
+    index += 1;
+    candidate = `${baseKey}-${index}`;
+  }
+  usedKeys.add(candidate);
+  return candidate;
+};
+
 // 既存の同名セットがある場合に連番ラベルを付与する
 const applyDuplicateLabelSuffix = (
   current: PlayerRegistryEntry[],
   incoming: PlayerRegistryEntryInput[]
 ): PlayerRegistryEntryInput[] => {
   const counts = current.reduce<Record<string, number>>((accumulator, entry) => {
-    accumulator[entry.key] = (accumulator[entry.key] ?? 0) + 1;
+    const baseLabel = stripLabelSuffix(entry.label);
+    accumulator[baseLabel] = (accumulator[baseLabel] ?? 0) + 1;
     return accumulator;
   }, {});
 
   return incoming.map((entry) => {
-    const nextCount = (counts[entry.key] ?? 0) + 1;
-    counts[entry.key] = nextCount;
+    const baseLabel = stripLabelSuffix(entry.label);
+    const nextCount = (counts[baseLabel] ?? 0) + 1;
+    counts[baseLabel] = nextCount;
     if (nextCount === 1) return entry;
     return {
       ...entry,
-      label: `${stripLabelSuffix(entry.label)} (${nextCount})`,
+      label: `${baseLabel} (${nextCount})`,
     };
   });
+};
+
+// キーが重複しないように末尾へ連番を付ける
+const applyDuplicateKeySuffix = (
+  current: PlayerRegistryEntry[],
+  incoming: PlayerRegistryEntryInput[]
+): PlayerRegistryEntryInput[] => {
+  const usedKeys = new Set(current.map((entry) => entry.key));
+  return incoming.map((entry) => ({
+    ...entry,
+    key: buildUniqueKey(entry.key, usedKeys),
+  }));
 };
 
 // idの欠けや重複を補正して、削除できる形に揃える
@@ -159,6 +191,8 @@ export const loadPlayerRegistry = (): PlayerRegistryEntry[] => {
 export const savePlayerRegistry = (entries: PlayerRegistryEntry[]): void => {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(PLAYER_REGISTRY_STORAGE_KEY, JSON.stringify(entries));
+  // 保存内容が更新されたことをアプリ側へ伝える
+  window.dispatchEvent(new Event(PLAYER_REGISTRY_UPDATED_EVENT));
 };
 
 // playerRegistryから指定IDのセットを削除する
@@ -257,7 +291,8 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
 
       // 既存のplayerRegistryに追加して保存する
       const current = loadPlayerRegistry();
-      const adjustedEntries = applyDuplicateLabelSuffix(current, nextEntries);
+      const labeledEntries = applyDuplicateLabelSuffix(current, nextEntries);
+      const adjustedEntries = applyDuplicateKeySuffix(current, labeledEntries);
       const { normalized: merged } = normalizePlayerRegistry([...current, ...adjustedEntries]);
       savePlayerRegistry(merged);
       // 保存後に一覧も更新して即反映させる
