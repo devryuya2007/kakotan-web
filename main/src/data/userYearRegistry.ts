@@ -76,6 +76,22 @@ const createRegistryId = (base: string, index: number): string => {
 // 末尾の連番を除いたラベルを作る（例: "My Set (2)" -> "My Set"）
 const stripLabelSuffix = (label: string): string => label.replace(/\s\(\d+\)$/u, "");
 
+// 既存キーと重複しないキーを作る
+const buildUniqueKey = (baseKey: string, usedKeys: Set<string>): string => {
+  if (!usedKeys.has(baseKey)) {
+    usedKeys.add(baseKey);
+    return baseKey;
+  }
+  let index = 2;
+  let candidate = `${baseKey}-${index}`;
+  while (usedKeys.has(candidate)) {
+    index += 1;
+    candidate = `${baseKey}-${index}`;
+  }
+  usedKeys.add(candidate);
+  return candidate;
+};
+
 // 既存の同名セットがある場合に連番ラベルを付与する
 const applyDuplicateLabelSuffix = (
   current: PlayerRegistryEntry[],
@@ -95,6 +111,18 @@ const applyDuplicateLabelSuffix = (
       label: `${stripLabelSuffix(entry.label)} (${nextCount})`,
     };
   });
+};
+
+// キーが重複しないように末尾へ連番を付ける
+const applyDuplicateKeySuffix = (
+  current: PlayerRegistryEntry[],
+  incoming: PlayerRegistryEntryInput[]
+): PlayerRegistryEntryInput[] => {
+  const usedKeys = new Set(current.map((entry) => entry.key));
+  return incoming.map((entry) => ({
+    ...entry,
+    key: buildUniqueKey(entry.key, usedKeys),
+  }));
 };
 
 // idの欠けや重複を補正して、削除できる形に揃える
@@ -261,7 +289,8 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
 
       // 既存のplayerRegistryに追加して保存する
       const current = loadPlayerRegistry();
-      const adjustedEntries = applyDuplicateLabelSuffix(current, nextEntries);
+      const labeledEntries = applyDuplicateLabelSuffix(current, nextEntries);
+      const adjustedEntries = applyDuplicateKeySuffix(current, labeledEntries);
       const { normalized: merged } = normalizePlayerRegistry([...current, ...adjustedEntries]);
       savePlayerRegistry(merged);
       // 保存後に一覧も更新して即反映させる
