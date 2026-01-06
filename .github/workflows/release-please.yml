@@ -14,7 +14,94 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run release-please
+        id: release
         uses: googleapis/release-please-action@v4
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+      - name: Checkout repository
+        if: steps.release.outputs.prs_created == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build custom release PR body data
+        if: steps.release.outputs.prs_created == 'true'
+        id: pr_body
+        run: |
+          git fetch --tags --force
+          latest_tag=$(git describe --tags --abbrev=0)
+          commit_count=$(git rev-list --count "${latest_tag}..HEAD")
+          short_sha=$(git rev-parse --short HEAD)
+          branch="${GITHUB_REF_NAME}"
+          {
+            echo "latest_tag=${latest_tag}"
+            echo "commit_count=${commit_count}"
+            echo "short_sha=${short_sha}"
+            echo "branch=${branch}"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "changelog<<EOF"
+            git log --pretty=format:"- %s" "${latest_tag}..HEAD"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+      - name: Update release PR body
+        if: steps.release.outputs.prs_created == 'true'
+        uses: actions/github-script@v7
+        env:
+          PRS: ${{ steps.release.outputs.prs }}
+          COMMIT_COUNT: ${{ steps.pr_body.outputs.commit_count }}
+          SHORT_SHA: ${{ steps.pr_body.outputs.short_sha }}
+          BRANCH: ${{ steps.pr_body.outputs.branch }}
+          LATEST_TAG: ${{ steps.pr_body.outputs.latest_tag }}
+          CHANGELOG: ${{ steps.pr_body.outputs.changelog }}
+        with:
+          script: |
+            const prs = JSON.parse(process.env.PRS || "[]");
+            if (!Array.isArray(prs) || prs.length === 0) {
+              return;
+            }
+            const pr = prs[0];
+            const version = (pr.title || "").trim();
+            if (!version) {
+              core.warning("Release PR title is empty; skipping body update.");
+              return;
+            }
+            const tagName = `v${version}`;
+            const rawBody = pr.body || "";
+            const lines = rawBody.split("\n");
+            const firstDivider = lines.indexOf("---");
+            const lastDivider = lines.lastIndexOf("---");
+            let notes = rawBody.trim();
+            if (firstDivider !== -1 && lastDivider !== -1 && lastDivider > firstDivider) {
+              notes = lines.slice(firstDivider + 1, lastDivider).join("\n").trim();
+            }
+            const commitCount = process.env.COMMIT_COUNT || "0";
+            const shortSha = process.env.SHORT_SHA || "";
+            const branch = process.env.BRANCH || "main";
+            const latestTag = process.env.LATEST_TAG || "";
+            const changelog = (process.env.CHANGELOG || "").trim();
+            const body = [
+              `${version} Latest`,
+              "@github-actions github-actions released this update",
+              `· ${commitCount} commits to ${branch} since this release`,
+              tagName,
+              shortSha,
+              "",
+              notes,
+              "",
+              `Full Changelog: ${latestTag}...${tagName}`,
+              "",
+              "---",
+              "",
+              "Changelog (PRs merged in this tag range)",
+              "",
+              changelog
+            ]
+              .filter(Boolean)
+              .join("\n");
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              body
+            });
