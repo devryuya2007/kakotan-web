@@ -98,17 +98,19 @@ const applyDuplicateLabelSuffix = (
   incoming: PlayerRegistryEntryInput[]
 ): PlayerRegistryEntryInput[] => {
   const counts = current.reduce<Record<string, number>>((accumulator, entry) => {
-    accumulator[entry.key] = (accumulator[entry.key] ?? 0) + 1;
+    const baseLabel = stripLabelSuffix(entry.label);
+    accumulator[baseLabel] = (accumulator[baseLabel] ?? 0) + 1;
     return accumulator;
   }, {});
 
   return incoming.map((entry) => {
-    const nextCount = (counts[entry.key] ?? 0) + 1;
-    counts[entry.key] = nextCount;
+    const baseLabel = stripLabelSuffix(entry.label);
+    const nextCount = (counts[baseLabel] ?? 0) + 1;
+    counts[baseLabel] = nextCount;
     if (nextCount === 1) return entry;
     return {
       ...entry,
-      label: `${stripLabelSuffix(entry.label)} (${nextCount})`,
+      label: `${baseLabel} (${nextCount})`,
     };
   });
 };
