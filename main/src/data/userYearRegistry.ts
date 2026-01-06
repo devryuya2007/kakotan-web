@@ -203,14 +203,6 @@ export const removePlayerRegistry = (id: string): PlayerRegistryEntry[] => {
   return next;
 };
 
-// playerRegistryから指定IDのセットを削除する
-export const removePlayerRegistry = (id: string): PlayerRegistryEntry[] => {
-  const current = loadPlayerRegistry();
-  const next = current.filter((entry) => entry.id !== id);
-  savePlayerRegistry(next);
-  return next;
-};
-
 // ユーザーのJSONインポートを扱うためのフック
 export const useUserYearRegistryImport = (): UserYearImportResult => {
   const [importError, setImportError] = useState<string | null>(null);
