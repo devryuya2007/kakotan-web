@@ -2,7 +2,8 @@
   "packages": {
     "main": {
       "release-type": "node",
-      "package-name": "kakotan-web"
+      "package-name": "kakotan-web",
+      "include-component-in-tag": false
     }
   },
   "pull-request-title-pattern": "${version}"
