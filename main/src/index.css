@@ -19,6 +19,14 @@
   color-scheme: dark;
 }
 
+/* 画面全体の引っ張りを抑えて、スクロール領域だけ動かす */
+html,
+body,
+#root {
+  height: 100%;
+  overscroll-behavior: none;
+}
+
 body {
   min-height: 100%;
   font-family:
@@ -30,10 +38,18 @@ body {
   sans-serif;
   overscroll-behavior: none;
   overscroll-behavior-y: none;
+  overflow: hidden;
 }
 
 #root {
   min-height: 100vh;
+}
+
+/* スクロールする箱はここに集約してタッチ操作を安定させる */
+[data-scroll-area='true'] {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 .btn-text-glow {
