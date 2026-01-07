@@ -1,11 +1,11 @@
-import {useCallback, useEffect, useMemo, useReducer} from "react";
+import {useCallback, useEffect, useReducer} from "react";
 
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 
 import {AppLayout} from "@/components/layout/AppLayout";
 import {Modal} from "@/components/modal/Modal";
 import {QuickStartButton} from "@/components/buttons/QuickStartButton";
-import {buildStageStatusMap, type StageProgressState} from "@/features/stages/stageProgressStore";
+import {type StageProgressState} from "@/features/stages/stageProgressStore";
 import type {StageDefinition} from "@/features/stages/stageUtils";
 import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
 import {initialStageSelectState, stageSelectReducer} from "@/pages/stages/stageSelectState";
@@ -18,6 +18,7 @@ import {StageLoadingOverlay} from "./components/StageLoadingOverlay";
 import {StageSelectHeader} from "./components/StageSelectHeader";
 import {StageStartModal} from "./components/StageTile";
 import {useStageProgressSync} from "./hooks/useStageProgressSync";
+import { useStageStatusMap } from "./hooks/useStageStatusMap";
 
 export default function StageSelectPage() {
   const {year: yearParam} = useParams();
@@ -86,24 +87,11 @@ export default function StageSelectPage() {
   }, []);
 
   // 次に挑戦すべきステージを探して、駒の位置を決める
-  const stageStatusMap = useMemo(
-    () => buildStageStatusMap(stages, state.stageProgress),
-    [stages, state.stageProgress],
-  );
-  const nextPlayableIndex = stages.findIndex((stage) => {
-    const status = stageStatusMap[stage.stageId];
-    return Boolean(status?.isUnlocked && !status?.isCleared);
+  const { stageStatusMap, activeStageIndex, selectedStageProgress } = useStageStatusMap({
+    stages,
+    stageProgress: state.stageProgress,
+    selectedStage: state.selectedStage,
   });
-  const activeStageIndex =
-    stages.length === 0
-      ? 0
-      : nextPlayableIndex >= 0
-        ? nextPlayableIndex
-        : stages.length - 1;
-  // 進捗をもとに、どのステージが解放されているかを計算する
-  const selectedStageProgress = state.selectedStage
-    ? state.stageProgress[state.selectedStage.stageId]
-    : null;
 
   // ステージ開始ボタン
   const handleStartStage = (stage: StageDefinition) => {
