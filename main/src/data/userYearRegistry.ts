@@ -1,13 +1,9 @@
 import { useCallback, useEffect, useRef, useState, type ChangeEvent } from "react";
 
-import type { PlayerRegistryEntry, PlayerRegistryEntryInput } from "./playerRegistryTypes";
+import type { PlayerRegistryEntry } from "./playerRegistryTypes";
 import {
   applyDuplicateKeySuffix,
   applyDuplicateLabelSuffix,
-  buildEntryFromFileName,
-  isPlayerRegistryEntry,
-  isPlayerRegistryEntryArray,
-  isVocabEntryArray,
   normalizePlayerRegistry,
 } from "./playerRegistryHelpers";
 import {
@@ -15,6 +11,7 @@ import {
   removePlayerRegistry,
   savePlayerRegistry,
 } from "./playerRegistryStorage";
+import { validateImportedVocab } from "./validateImportedVocab";
 
 export type { PlayerRegistryEntry } from "./playerRegistryTypes";
 export {
@@ -85,37 +82,16 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
       const file = input.files?.[0];
       if (!file) return;
 
-      // 拡張子チェック（.jsonのみ許可）
-      if (!file.name.toLowerCase().endsWith(".json")) {
-        setImportError("you can only load JSON file.");
-        return;
-      }
-
       // 中身を読み込む
       const raw = await file.text();
 
-      // JSONとして読み込めるかチェック
-      let parsed: unknown;
-      try {
-        parsed = JSON.parse(raw);
-      } catch {
-        setImportError("cannot load it as json file.");
-        return;
-      }
-
-      // 受け付けるJSONをplayerRegistryの形に揃える
-      const nextEntries: PlayerRegistryEntryInput[] = isPlayerRegistryEntry(parsed)
-        ? [parsed]
-        : isPlayerRegistryEntryArray(parsed)
-          ? parsed
-          : isVocabEntryArray(parsed)
-            ? [buildEntryFromFileName(file.name, parsed)]
-            : [];
-
-      if (nextEntries.length === 0) {
-        setImportError(
-          "Use an array of items with \"phrase\" and \"mean\", or a JSON with \"key\", \"label\", and \"vocab\"."
-        );
+      // JSONとして使えるか判定して、取り込み用の形に整える
+      const { entries: nextEntries, error } = validateImportedVocab({
+        fileName: file.name,
+        raw,
+      });
+      if (error) {
+        setImportError(error);
         return;
       }
 
