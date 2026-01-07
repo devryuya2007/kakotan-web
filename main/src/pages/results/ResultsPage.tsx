@@ -3,6 +3,10 @@ import {useTestResults} from '../states/useTestResults';
 import {useAllYearVocab} from "@/hooks/useAllYearVocab";
 import {calculateLevelProgress} from '@/features/results/scoring';
 import { RankSummaryCard } from "./components/RankSummaryCard";
+import { ProgressRingCard } from "./components/ProgressRingCard";
+import { SummaryCardGrid } from "./components/SummaryCardGrid";
+import { WeeklyStudyChartCard } from "./components/WeeklyStudyChartCard";
+import { RecentSessionList } from "./components/RecentSessionList";
 
 import {useEffect, useMemo, useRef, useState} from 'react';
 
@@ -19,7 +23,6 @@ import {
   Tooltip,
 } from 'chart.js';
 import {differenceInCalendarDays, startOfDay} from 'date-fns';
-import {Line} from 'react-chartjs-2';
 import {useNavigate} from 'react-router-dom';
 
 import TimeElapsedIcon from '@/assets/iconSvg/時間経過のアイコン .svg';
@@ -365,266 +368,37 @@ export default function ResultsPage() {
             </div>
           </header>
           <div className='flex flex-col gap-8'>
-              <div className='flex flex-col gap-6 lg:flex-row lg:items-stretch'>
-                <div className='w-full lg:w-1/2'>
-                  <div className='flex h-full rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_30px_60px_-35px_rgba(3,5,20,0.9)] backdrop-blur'>
-                  <div className='flex flex-1 flex-col gap-8 lg:flex-row lg:items-stretch lg:items-center'>
-                    <div className='flex h-full items-center justify-center'>
-                      <div
-                        className='flex rounded-full p-4'
-                        style={{width: ringSize + 16, height: ringSize + 16}}
-                      >
-                        <svg
-                          width={ringSize}
-                          height={ringSize}
-                          viewBox={`0 0 ${ringSize} ${ringSize}`}
-                          role='img'
-                          aria-label='XP progress ring'
-                        >
-                          <defs>
-                            <linearGradient
-                              id='xp-gradient'
-                              x1='0%'
-                              y1='0%'
-                              x2='100%'
-                              y2='100%'
-                            >
-                              <stop
-                                offset='0%'
-                                stopColor='#f2c97d'
-                                stopOpacity='0.9'
-                              >
-                                <animate
-                                  attributeName='stop-color'
-                                  values='#f2c97d;#fff4cf;#f2c97d'
-                                  dur='3s'
-                                  repeatCount='indefinite'
-                                />
-                              </stop>
-                              <stop offset='50%' stopColor='#f6dda5'>
-                                <animate
-                                  attributeName='stop-color'
-                                  values='#f6dda5;#ffe7b0;#f6dda5'
-                                  dur='3s'
-                                  repeatCount='indefinite'
-                                />
-                              </stop>
-                              <stop offset='100%' stopColor='#f2c97d'>
-                                <animate
-                                  attributeName='stop-color'
-                                  values='#f2c97d;#ffd68f;#f2c97d'
-                                  dur='3s'
-                                  repeatCount='indefinite'
-                                />
-                              </stop>
-                            </linearGradient>
-                            <filter id='glow'>
-                              <feGaussianBlur
-                                stdDeviation='2'
-                                result='coloredBlur'
-                              />
-                              <feMerge>
-                                <feMergeNode in='coloredBlur' />
-                                <feMergeNode in='SourceGraphic' />
-                              </feMerge>
-                            </filter>
-                          </defs>
-                          <circle
-                            cx={ringSize / 2}
-                            cy={ringSize / 2}
-                            r={ringRadius}
-                            fill='none'
-                            stroke='dimgray'
-                            strokeWidth={6}
-                            opacity={0.85}
-                          />
-                          <circle
-                            cx={ringSize / 2}
-                            cy={ringSize / 2}
-                            r={ringRadius}
-                            fill='none'
-                            stroke='url(#xp-gradient)'
-                            strokeWidth={6}
-                            strokeLinecap='round'
-                            strokeDasharray={ringCircumference}
-                            strokeDashoffset={strokeDashoffset}
-                            transform={`rotate(-90 ${ringSize / 2} ${ringSize / 2})`}
-                            filter='url(#glow)'
-                            className='transition-all duration-1000 ease-out'
-                          />
-                          <text
-                            x='50%'
-                            y='50%'
-                            textAnchor='middle'
-                            dominantBaseline='central'
-                            fill='#f2c97d'
-                            fontSize='20'
-                          >
-                            {displayProgress}%
-                          </text>
-                        </svg>
-                      </div>
-                    </div>
-                    <div className='flex flex-1 flex-col items-center justify-center space-y-3 text-center lg:items-start lg:text-left'>
-                      <p className='text-xs uppercase tracking-[0.6em] text-[#f2c97d]/80'>
-                        MAIN QUEST
-                      </p>
-                      <h2 className='text-2xl font-semibold'>
-                        On track to clear every question
-                      </h2>
-                      <p className='text-sm text-white/70'>
-                        We keep stacking every word you solved. Completion rate is{' '}
-                        <span className='text-[#f2c97d]'>
-                          {progress === 0 ? 'Loading...' : progress}%
-                        </span>
-                        .
-                      </p>
-                      <div className='flex justify-center gap-2 text-xs text-white/70 sm:flex-wrap sm:gap-3 lg:justify-start'>
-                        <span className='rounded-full border border-white/10 bg-white/5 px-3 py-1'>
-                          Solved: {solvedWords.toLocaleString()} words
-                        </span>
-                        <span className='rounded-full border border-white/10 bg-white/5 px-3 py-1'>
-                          Total questions: {totalWords.toLocaleString()} words
-                        </span>
-                        <span className='rounded-full border border-white/10 bg-white/5 px-3 py-1'>
-                          Remaining:{' '}
-                          {Math.max(totalWords - solvedWords, 0).toLocaleString()}{' '}
-                          words
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <div className='flex flex-col gap-6 lg:flex-row lg:items-stretch'>
+              <div className='w-full lg:w-1/2'>
+                <ProgressRingCard
+                  ringSize={ringSize}
+                  ringRadius={ringRadius}
+                  ringCircumference={ringCircumference}
+                  strokeDashoffset={strokeDashoffset}
+                  displayProgress={displayProgress}
+                  progress={progress}
+                  solvedWords={solvedWords}
+                  totalWords={totalWords}
+                />
               </div>
-                <div className='w-full lg:w-1/2'>
-                  <RankSummaryCard
-                    levelProgress={calculateLevelProgress(totalXp ?? 0)}
-                    variant='results'
-                  />
-                </div>
+              <div className='w-full lg:w-1/2'>
+                <RankSummaryCard
+                  levelProgress={calculateLevelProgress(totalXp ?? 0)}
+                  variant='results'
+                />
+              </div>
             </div>
             <div className='grid grid-cols-1 gap-8 lg:grid-cols-[1.1fr_1.4fr]'>
-              <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1'>
-                {summaryCards.map(({icon, title, value, caption, fullSpan}) => (
-                  <div
-                    key={title}
-                    className={`rounded-2xl border border-white/10 bg-[#0f1524] p-4 shadow-[0_18px_30px_-24px_rgba(2,6,23,0.9)] transition hover:-translate-y-1 hover:border-[#f2c97d]/60 hover:bg-[#141b2d] ${fullSpan ? 'sm:col-span-2 lg:col-span-1' : ''}`}
-                  >
-                    <div className='flex items-center justify-center gap-3'>
-                      <img
-                        src={icon}
-                        alt={`${title} icon`}
-                        width={iconSize}
-                        height={iconSize}
-                        className='rounded-full border border-white/10 bg-[#050917] p-2'
-                      />
-                      <div>
-                        <p className='py-2 text-xs uppercase tracking-[0.3em] text-white/60'>
-                          {title}
-                        </p>
-                        <p className='text-2xl font-semibold text-white'>
-                          {value}
-                        </p>
-                      </div>
-                    </div>
-                    <p className='mt-3 pl-4 text-center text-sm text-white/60'>
-                      {caption}
-                    </p>
-                  </div>
-                ))}
-              </div>
-              <div className='rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_25px_40px_-30px_rgba(5,8,20,0.9)]'>
-                <div className='flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between'>
-                  <div>
-                    <p className='text-xs uppercase tracking-[0.5em] text-[#f2c97d]/80'>
-                      WEEKLY PULSE
-                    </p>
-                    <h2 className='text-xl font-semibold'>Weekly study time</h2>
-                  </div>
-                  <p className='text-sm text-white/70'>
-                    Daily avg {averageDailyMinutes} min
-                  </p>
-                </div>
-                <div className='mt-4 h-64 min-h-[18rem] sm:min-h-[20rem] lg:min-h-[22rem]'>
-                  <Line data={lineChartData} options={lineChartOptions} />
-                </div>
-                <p className='mt-2 text-xs text-white/60'>
-                  Plotting the latest 7-day trend from sessionHistory.
-                </p>
-              </div>
+              <SummaryCardGrid cards={summaryCards} iconSize={iconSize} />
+              <WeeklyStudyChartCard
+                lineChartData={lineChartData}
+                lineChartOptions={lineChartOptions}
+                averageDailyMinutes={averageDailyMinutes}
+              />
             </div>
           </div>
 
-          <div className='rounded-3xl border border-white/10 bg-[#0f1524] p-6 shadow-[0_25px_40px_-30px_rgba(5,8,20,0.9)]'>
-            <div className='flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between'>
-              <div>
-                <p className='text-xs uppercase tracking-[0.5em] text-[#f2c97d]/80'>
-                  RECENT LOG
-                </p>
-                <h2 className='text-xl font-semibold'>Recent study log</h2>
-              </div>
-              <p className='text-sm text-white/70'>
-                Showing the latest {recentSessionLabels.length} entries
-              </p>
-            </div>
-            <div className='mt-4 flex snap-x snap-mandatory flex-col gap-4 overflow-auto pb-4 sm:hidden'>
-              {recentSessionLabels.length === 0 && (
-                <div className='min-w-[260px] snap-center rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-white/60'>
-                  No study history yet.
-                </div>
-              )}
-              {recentSessionLabels.map((session) => (
-                <div
-                  key={`card-${session.key}`}
-                  className='min-w-[260px] snap-center rounded-2xl border border-white/10 bg-[#0b101d] p-4 text-white/90'
-                >
-                  <p className='text-xs uppercase tracking-[0.3em] text-white/50'>
-                    {session.sectionId}
-                  </p>
-                  <p className='mt-2 text-lg font-semibold text-white'>
-                    {session.label}
-                  </p>
-                  <p className='mt-4 text-sm text-[#f2c97d]'>
-                    {session.gainedXp} XP
-                  </p>
-                  <p className='text-sm text-white/70'>
-                    Accuracy {session.accuracyRate}%
-                  </p>
-                </div>
-              ))}
-            </div>
-            <ul className='mt-4 hidden divide-y divide-white/10 text-sm sm:block'>
-              <li className='grid grid-cols-[1.4fr,1fr,0.8fr,0.8fr] gap-2 pb-3 text-xs uppercase tracking-[0.2em] text-white/50'>
-                <span>Date</span>
-                <span>Section</span>
-                <span>XP gained</span>
-                <span>Accuracy</span>
-              </li>
-              {recentSessionLabels.length === 0 ? (
-                <li className='py-6 text-center text-white/60'>
-                  No study history yet.
-                </li>
-              ) : (
-                recentSessionLabels.map((session) => (
-                  <li
-                    key={session.key}
-                    className='grid grid-cols-[1.4fr,1.4fr,0.8fr,0.8fr] items-center gap-2 py-3 text-white/90'
-                  >
-                    <span className='font-semibold text-white'>
-                      {session.label}
-                    </span>
-                    <span className='justify-self-start rounded-full border border-white/10 bg-white/5 px-6 py-2 text-center text-xs uppercase tracking-wide text-white/70'>
-                      {session.sectionId}
-                    </span>
-                    <span className='font-semibold text-[#f2c97d]'>
-                      {session.gainedXp} XP
-                    </span>
-                    <span>{session.accuracyRate}%</span>
-                  </li>
-                ))
-              )}
-            </ul>
-          </div>
+          <RecentSessionList sessions={recentSessionLabels} />
         </div>
       </section>
     </AppLayout>
