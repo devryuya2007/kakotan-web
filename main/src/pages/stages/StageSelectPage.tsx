@@ -1,14 +1,11 @@
-import {useEffect, useMemo, useReducer} from "react";
+import {useCallback, useEffect, useMemo, useReducer} from "react";
 
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 
 import {AppLayout} from "@/components/layout/AppLayout";
 import {Modal} from "@/components/modal/Modal";
 import {QuickStartButton} from "@/components/buttons/QuickStartButton";
-import {
-  buildStageStatusMap,
-  loadStageProgress,
-} from "@/features/stages/stageProgressStore";
+import {buildStageStatusMap, type StageProgressState} from "@/features/stages/stageProgressStore";
 import type {StageDefinition} from "@/features/stages/stageUtils";
 import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
 import {initialStageSelectState, stageSelectReducer} from "@/pages/stages/stageSelectState";
@@ -16,7 +13,11 @@ import { getAllRegistry } from "@/hooks/getAllRegistry";
 
 import {useStageDefinitions} from "./hooks/useStageDefinitions";
 import { getYearLabels, isYearKey } from "./stageConstants";
-import { StageStartModal, StageTile } from "./components/StageTile";
+import {StageGrid} from "./components/StageGrid";
+import {StageLoadingOverlay} from "./components/StageLoadingOverlay";
+import {StageSelectHeader} from "./components/StageSelectHeader";
+import {StageStartModal} from "./components/StageTile";
+import {useStageProgressSync} from "./hooks/useStageProgressSync";
 
 export default function StageSelectPage() {
   const {year: yearParam} = useParams();
@@ -61,43 +62,17 @@ export default function StageSelectPage() {
   const isLoadingStages = status === "idle" || status === "loading";
 
   // 進捗はマウント時にlocalStorageから読み込み、reducerのstateで更新する
-  useEffect(() => {
-    const syncProgress = () => {
-      dispatch({type: "setStageProgress", progress: loadStageProgress()});
-    };
+  const handleProgressSync = useCallback(
+    (progress: StageProgressState) => {
+      dispatch({type: "setStageProgress", progress});
+    },
+    [dispatch],
+  );
 
-    // 画面表示時に必ず最新の進捗を読み込む
-    syncProgress();
-
-    const handleFocus = () => {
-      syncProgress();
-    };
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        syncProgress();
-      }
-    };
-    const handlePageShow = () => {
-      syncProgress();
-    };
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key === "stage-progress:v1") {
-        syncProgress();
-      }
-    };
-
-    window.addEventListener("focus", handleFocus);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("pageshow", handlePageShow);
-    window.addEventListener("storage", handleStorage);
-
-    return () => {
-      window.removeEventListener("focus", handleFocus);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("pageshow", handlePageShow);
-      window.removeEventListener("storage", handleStorage);
-    };
-  }, [location.key]);
+  useStageProgressSync({
+    onSync: handleProgressSync,
+    refreshKey: location.key,
+  });
 
   // 画面に入ったタイミングでアニメーションを開始
   useEffect(() => {
@@ -163,62 +138,25 @@ export default function StageSelectPage() {
               : "translate-y-4 opacity-0"
           }`}
         >
-          <div className="flex w-full items-center justify-end">
-            <span className="text-xs uppercase tracking-[0.35em] text-white/40">
-              {yearLabel}
-            </span>
-          </div>
-          <section className='relative min-h-[220px] sm:min-h-[260px]'>
-            {isLoadingStages && (
-              <div
-                className='absolute inset-0 z-10 grid place-items-center rounded-2xl bg-[#0b0b13]/60 backdrop-blur-sm'
-                role='status'
-                aria-live='polite'
-                aria-label='Loading stages'
-              >
-                <div className='flex flex-col items-center gap-4'>
-                  <div className='h-14 w-14 animate-spin rounded-full border-4 border-white/20 border-t-[#67e8f9]' />
-                  <span className='text-sm uppercase tracking-[0.3em] text-white/70'>
-                    Loading...
-                  </span>
-                </div>
-              </div>
-            )}
-            {status === 'ready' && stages.length > 0 && (
-              <div
-                className='mx-auto grid w-full justify-center'
-                style={{
-                  gridTemplateColumns: `repeat(auto-fit, minmax(${tileWidth}px, ${tileWidth}px))`,
-                  gap: `${tileGap}px`,
-                }}
-              >
-                {/* ステージタイルはGridで自動配置し、初期幅が0でも崩れにくくする */}
-                {stages.map((stage, index) => {
-                  const stageStatus = stageStatusMap[stage.stageId];
-                  const isCleared = Boolean(stageStatus?.isCleared);
-                  // 進捗とステージ順から解放状態を決める
-                  const isUnlocked = Boolean(stageStatus?.isUnlocked);
-                  const isActive = index === activeStageIndex;
-
-                  return (
-                    <StageTile
-                      key={stage.stageId}
-                      stage={stage}
-                      isLocked={!isUnlocked && !isCleared}
-                      isCleared={isCleared}
-                      isActive={isActive}
-                      primaryColor={primaryColor}
-                      primaryDeep={primaryDeep}
-                      primaryGlow={primaryGlow}
-                      tileWidth={tileWidth}
-                      tileHeight={tileHeight}
-                      tileIconHeight={tileIconHeight}
-                      delayMs={index * 60}
-                      onSelect={() => dispatch({type: "selectStage", stage})}
-                    />
-                  );
-                })}
-              </div>
+          <StageSelectHeader yearLabel={yearLabel} />
+          <section className="relative min-h-[220px] sm:min-h-[260px]">
+            <StageLoadingOverlay isVisible={isLoadingStages} />
+            {status === "ready" && (
+              <StageGrid
+                stages={stages}
+                stageStatusMap={stageStatusMap}
+                activeStageIndex={activeStageIndex}
+                primaryColor={primaryColor}
+                primaryDeep={primaryDeep}
+                primaryGlow={primaryGlow}
+                tileWidth={tileWidth}
+                tileHeight={tileHeight}
+                tileIconHeight={tileIconHeight}
+                tileGap={tileGap}
+                onSelectStage={(stage) =>
+                  dispatch({type: "selectStage", stage})
+                }
+              />
             )}
           </section>
         </div>
