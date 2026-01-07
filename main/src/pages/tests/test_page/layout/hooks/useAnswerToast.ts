@@ -29,7 +29,7 @@ interface UseAnswerToastOptions {
 
 interface UseAnswerToastResult {
   gainToast: GainToast | null;
-  toastRef: RefObject<HTMLDivElement>;
+  toastRef: RefObject<HTMLDivElement | null>;
   toastPositionStyle: CSSProperties | undefined;
   queueToast: (amount: number, position: ToastPosition) => void;
 }

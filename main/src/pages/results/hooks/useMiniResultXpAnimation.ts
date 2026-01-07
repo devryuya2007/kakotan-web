@@ -19,8 +19,8 @@ interface UseMiniResultXpAnimationResult {
   shouldShowMascot: boolean;
   shouldAnimateGain: boolean;
   shouldHideMascotAtStart: boolean;
-  expRingRef: RefObject<HTMLDivElement>;
-  expMascotRef: RefObject<HTMLButtonElement>;
+  expRingRef: RefObject<HTMLDivElement | null>;
+  expMascotRef: RefObject<HTMLButtonElement | null>;
   expPointsRef: MutableRefObject<Array<HTMLSpanElement | null>>;
   expPointCount: number;
   handleMascotTap: () => void;

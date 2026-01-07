@@ -16,6 +16,8 @@ import { MiniResultSummaryCard } from "./components/MiniResultSummaryCard";
 import { MissedWordsPanel } from "./components/MissedWordsPanel";
 import { buildWrongWordStats, getRankLetter, getStageListPath, type WrongWordStat } from "./miniResultUtils";
 
+export type { WrongWordStat } from "./miniResultUtils";
+
 // Temporary mini result card shown right after a test
 
 export default function MiniResultPage() {

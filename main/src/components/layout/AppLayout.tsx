@@ -54,7 +54,7 @@ const nudgeScrollPosition = (element: HTMLElement) => {
 };
 
 // 背景側のスワイプを抑えて、スクロール領域だけ反応させる
-const useTouchScrollGuard = (mainRef: RefObject<HTMLElement>) => {
+const useTouchScrollGuard = (mainRef: RefObject<HTMLElement | null>) => {
   useEffect(() => {
     const mainElement = mainRef.current;
     if (!mainElement) return;

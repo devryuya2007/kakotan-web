@@ -1,6 +1,6 @@
 import type { CSSProperties, MouseEvent } from "react";
 
-import type { QuizQuestion } from "../../../../data/vocabLoader";
+import type { QuizQuestion } from "@/data/vocabLoader";
 import type { CardPresentation } from "../testPageLayoutConfig";
 
 import { ExpIndicator } from "./ExpIndicator";
