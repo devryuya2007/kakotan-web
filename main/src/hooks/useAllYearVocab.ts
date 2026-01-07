@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import { buildQuestionsFromVocab, loadYearVocab } from "@/data/vocabLoader";
 import type { QuizQuestion } from "@/data/vocabLoader";
 import { useUserConfig } from "@/pages/tests/test_page/hooks/useUserConfig";
-import { buildRegistryMap, getAllRegistry, type RegistryMap } from "./getAllRegistry";
+import {
+  buildRegistryMap,
+  getAllRegistry,
+  type RegistryMap,
+} from "./getAllRegistry";
 
 export interface AllYearVocabResult {
   status: "idle" | "loading" | "ready" | "error";
@@ -24,6 +28,17 @@ export function useAllYearVocab(): AllYearVocabResult {
   useEffect(() => {
     let cancelled = false;
 
+    // 1年分の語彙を読み込み、出題データに変換する
+    const loadQuestionsForEntry = async (
+      entryKey: string,
+      fallbackCount: number
+    ) => {
+      const vocab = await loadYearVocab(entryKey);
+      const maxCount = config.years[entryKey]?.maxCount ?? fallbackCount;
+      const questions = buildQuestionsFromVocab(vocab, maxCount);
+      return questions;
+    };
+
     // 年度ごとの語彙をまとめて読み込み、問題配列に変換する
     const run = async () => {
       try {
@@ -32,9 +47,10 @@ export function useAllYearVocab(): AllYearVocabResult {
 
         const results = await Promise.all(
           getAllRegistry().map(async (entry) => {
-            const vocab = await loadYearVocab(entry.key);
-            const maxCount = config.years[entry.key]?.maxCount ?? entry.defaultQuestionCount;
-            const questions = buildQuestionsFromVocab(vocab, maxCount);
+            const questions = await loadQuestionsForEntry(
+              entry.key,
+              entry.defaultQuestionCount
+            );
             return [entry.key, questions] as const;
           })
         );

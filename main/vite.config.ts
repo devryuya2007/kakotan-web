@@ -17,7 +17,8 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: "./src/setupTests.ts",
-    css: true,
+    // jsdomが生成CSSをパースできずにエラーになるため、テストではCSSを無視する
+    css: false,
     pool: "forks",
     coverage: {
       provider: "v8",

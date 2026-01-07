@@ -1,21 +1,28 @@
-import {useEffect, useRef} from "react";
+import { useEffect, useRef } from "react";
 
-import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
+import { useUserConfig } from "@/pages/tests/test_page/hooks/useUserConfig";
+import {
+  createAudio,
+  detectShouldUnlockAudio,
+  pickPlayableAudioUrl,
+  resetAudioPlayback,
+  unlockAudioIfNeeded,
+} from "@/hooks/soundUtils";
 const correctSoundOggUrl = new URL(
   "../../assets/kenney_interface-sounds/Audio/answer_correct.ogg",
-  import.meta.url,
+  import.meta.url
 ).href;
 const correctSoundMp3Url = new URL(
   "../../assets/kenney_interface-sounds/Audio/answer_correct.mp3",
-  import.meta.url,
+  import.meta.url
 ).href;
 const incorrectSoundOggUrl = new URL(
   "../../assets/kenney_interface-sounds/Audio/answer_incorrect.ogg",
-  import.meta.url,
+  import.meta.url
 ).href;
 const incorrectSoundMp3Url = new URL(
   "../../assets/kenney_interface-sounds/Audio/answer_incorrect.mp3",
-  import.meta.url,
+  import.meta.url
 ).href;
 
 interface AnswerSoundControls {
@@ -23,22 +30,12 @@ interface AnswerSoundControls {
 }
 
 export const useAnswerResultSound = (): AnswerSoundControls => {
-  const {config} = useUserConfig();
+  const { config } = useUserConfig();
   // 設定画面のON/OFFに合わせて音とバイブの挙動を切り替える
-  const {isSoundEnabled, isVibrationEnabled} = config.soundPreference;
+  const { isSoundEnabled, isVibrationEnabled } = config.soundPreference;
   // iOS Safariはユーザー操作で一度音を再生しないと後続の音が鳴らないことがある
-  const shouldUnlockRef = useRef<boolean | null>(null);
-  if (shouldUnlockRef.current === null) {
-    if (typeof navigator === "undefined") {
-      shouldUnlockRef.current = false;
-    } else {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      const isIPadOS =
-        navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
-      shouldUnlockRef.current = isIOS || isIPadOS;
-    }
-  }
-  const isUnlockedRef = useRef(!(shouldUnlockRef.current ?? false));
+  const shouldUnlockRef = useRef(detectShouldUnlockAudio());
+  const isUnlockedRef = useRef(!shouldUnlockRef.current);
   // バイブが使えるかどうかをキャッシュしておく
   const canVibrateRef = useRef(false);
   // バイブが使えない端末向けに音を保持しておく
@@ -53,28 +50,16 @@ export const useAnswerResultSound = (): AnswerSoundControls => {
 
     // 再生できる形式を選んで、音を先読みしておく
     if (isSoundEnabled) {
-      const probe = document.createElement("audio");
-      const canPlayMp3 = probe.canPlayType("audio/mpeg");
-      const canPlayOgg = probe.canPlayType("audio/ogg; codecs=\"vorbis\"");
-      const pickUrl = (oggUrl: string, mp3Url: string) =>
-        canPlayMp3 !== ""
-          ? mp3Url
-          : canPlayOgg !== ""
-            ? oggUrl
-            : mp3Url;
-
-      const correctAudio = new Audio(
-        pickUrl(correctSoundOggUrl, correctSoundMp3Url),
+      const correctUrl = pickPlayableAudioUrl(
+        correctSoundOggUrl,
+        correctSoundMp3Url
       );
-      const incorrectAudio = new Audio(
-        pickUrl(incorrectSoundOggUrl, incorrectSoundMp3Url),
+      const incorrectUrl = pickPlayableAudioUrl(
+        incorrectSoundOggUrl,
+        incorrectSoundMp3Url
       );
-      correctAudio.preload = "auto";
-      incorrectAudio.preload = "auto";
-      correctAudio.volume = 0.95;
-      incorrectAudio.volume = 0.95;
-      correctAudioRef.current = correctAudio;
-      incorrectAudioRef.current = incorrectAudio;
+      correctAudioRef.current = createAudio(correctUrl, 0.95);
+      incorrectAudioRef.current = createAudio(incorrectUrl, 0.95);
       isUnlockedRef.current = !shouldUnlock;
     } else {
       correctAudioRef.current = null;
@@ -82,35 +67,9 @@ export const useAnswerResultSound = (): AnswerSoundControls => {
       isUnlockedRef.current = !shouldUnlock;
     }
 
-    const unlockAudio = (playback: HTMLAudioElement | null) => {
-      if (!shouldUnlock || isUnlockedRef.current) return true;
-      if (!playback) return false;
-      const prevMuted = playback.muted;
-      const prevVolume = playback.volume;
-      playback.muted = true;
-      playback.volume = 0;
-      const result = playback.play();
-      const finalizeUnlock = () => {
-        playback.pause();
-        playback.currentTime = 0;
-        playback.muted = prevMuted;
-        playback.volume = prevVolume;
-        isUnlockedRef.current = true;
-      };
-      if (result && typeof result.then === "function") {
-        void result.then(finalizeUnlock).catch(() => {
-          playback.muted = prevMuted;
-          playback.volume = prevVolume;
-        });
-        return false;
-      }
-      finalizeUnlock();
-      return false;
-    };
-
     const handleUnlock = () => {
       const playback = correctAudioRef.current ?? incorrectAudioRef.current;
-      unlockAudio(playback);
+      unlockAudioIfNeeded(playback, shouldUnlock, isUnlockedRef);
     };
 
     if (shouldUnlock && isSoundEnabled) {
@@ -149,14 +108,10 @@ export const useAnswerResultSound = (): AnswerSoundControls => {
       ? correctAudioRef.current
       : incorrectAudioRef.current;
     if (!playback) return;
-    if (
-      shouldUnlockRef.current === true &&
-      !isUnlockedRef.current
-    ) {
+    if (shouldUnlockRef.current === true && !isUnlockedRef.current) {
       return;
     }
-    playback.pause();
-    playback.currentTime = 0;
+    resetAudioPlayback(playback);
     const result = playback.play();
     // テスト環境ではplayがPromiseを返さない場合があるので安全にガードする
     if (result && typeof result.catch === "function") {
@@ -164,5 +119,5 @@ export const useAnswerResultSound = (): AnswerSoundControls => {
     }
   };
 
-  return {playAnswerSound};
+  return { playAnswerSound };
 };
