@@ -73,26 +73,6 @@ export default function TestPageLayout({
 
   const { startSession, stopSession } = useActiveSessionTimer();
 
-  useEffect(() => {
-    reset();
-    sessionStartRef.current = Date.now();
-    // セッション開始時点は獲得XPを0に戻す
-    setSessionGainedXp(0);
-    resetXpCounter();
-    // 画面がアクティブな時だけカウントする
-    startSession();
-
-    // ステージモードなら挑戦済みを先に記録しておく
-    if (stageId) {
-      recordStageAttempt(stageId);
-    }
-
-    return () => {
-      sessionStartRef.current = null;
-      stopSession();
-    };
-  }, [reset, stageId, startSession, stopSession, resetXpCounter]);
-
   const [currentIndex, setCurrentIndex] = useState(0);
   // 各選択肢が正解・不正解・未回答かを保持する
   const [buttonStates, setButtonStates] = useState<
@@ -128,6 +108,26 @@ export default function TestPageLayout({
   const useTransitionLayouts = isSlideActive && effectiveTransitionDuration > 0;
 
   const { getShuffledChoices } = useShuffledChoices(questions);
+
+  useEffect(() => {
+    reset();
+    sessionStartRef.current = Date.now();
+    // セッション開始時点は獲得XPを0に戻す
+    setSessionGainedXp(0);
+    resetXpCounter();
+    // 画面がアクティブな時だけカウントする
+    startSession();
+
+    // ステージモードなら挑戦済みを先に記録しておく
+    if (stageId) {
+      recordStageAttempt(stageId);
+    }
+
+    return () => {
+      sessionStartRef.current = null;
+      stopSession();
+    };
+  }, [reset, stageId, startSession, stopSession, resetXpCounter]);
 
   // 現在の問題を取り出す。存在しない場合は後でnull returnする
   const question = questions[currentIndex];
