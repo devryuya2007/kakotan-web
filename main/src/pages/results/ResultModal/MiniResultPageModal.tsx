@@ -1,4 +1,4 @@
-import type {WrongWordStat} from '../MiniResultPage';
+import type {WrongWordStat} from '../miniResultUtils';
 
 import {useEffect, useRef} from 'react';
 

@@ -10,19 +10,13 @@ import {QuickStartButton} from '@/components/buttons/QuickStartButton';
 import {AppLayout} from '@/components/layout/AppLayout';
 import {calculateLevelProgress} from '@/features/results/scoring';
 import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
-import {isYearKey} from "@/pages/stages/stageConstants";
 
 import MiniResultPageModal from './ResultModal/MiniResultPageModal';
 import { MiniResultRankCard } from "./components/MiniResultRankCard";
 import { MiniResultSummaryCard } from "./components/MiniResultSummaryCard";
 import { MissedWordsPanel } from "./components/MissedWordsPanel";
+import { buildWrongWordStats, getRankLetter, getStageListPath, type WrongWordStat } from "./miniResultUtils";
 
-export type WrongWordStat = {
-  word: string;
-  missCount: number;
-  meaning: string;
-  severity: 'neutral' | 'caution' | 'negative';
-};
 // Temporary mini result card shown right after a test
 
 export default function MiniResultPage() {
@@ -95,43 +89,7 @@ export default function MiniResultPage() {
     },
   ];
 
-  const wrongWordsAll = useMemo<WrongWordStat[]>(() => {
-    if (incorrect.length === 0) return [];
-
-    const mistakeTally = new Map<string, {count: number; meaning: string}>();
-
-    incorrect.forEach((question) => {
-      const word = question.phrase;
-      const meaning = question.mean ?? 'Meaning unavailable';
-      const tally = mistakeTally.get(word);
-
-      if (tally) {
-        mistakeTally.set(word, {
-          count: tally.count + 1,
-          meaning: tally.meaning || meaning,
-        });
-      } else {
-        mistakeTally.set(word, {count: 1, meaning});
-      }
-    });
-
-    const talliedEntries = Array.from(mistakeTally.entries());
-    const sortedEntries = [...talliedEntries].sort(
-      (a, b) => b[1].count - a[1].count,
-    );
-
-    return sortedEntries.map<WrongWordStat>(([word, data]) => {
-      const severity: WrongWordStat['severity'] =
-        data.count >= 3 ? 'negative' : data.count === 2 ? 'caution' : 'neutral';
-
-      return {
-        word,
-        missCount: data.count,
-        meaning: data.meaning,
-        severity,
-      };
-    });
-  }, [incorrect]);
+  const wrongWordsAll = useMemo<WrongWordStat[]>(() => buildWrongWordStats(incorrect), [incorrect]);
 
   const wrongWordsTop = useMemo(() => {
     const topEntries = wrongWordsAll.slice(0, 6);
@@ -139,24 +97,7 @@ export default function MiniResultPage() {
   }, [wrongWordsAll]);
 
   // 直近のステージ情報から戻り先の年度を推定する
-  const stageListPath = useMemo(() => {
-    const latestStageId =
-      sessionHistory[sessionHistory.length - 1]?.stageId ?? null;
-    if (!latestStageId) return "/menu";
-
-    const [maybeYear] = latestStageId.split("-");
-    return isYearKey(maybeYear) ? `/stages/${maybeYear}` : "/menu";
-  }, [sessionHistory]);
-
-  function letterCalculate() {
-    if (level === 99) return 'SS';
-    else if (level >= 90) return 'S';
-    else if (level >= 70) return 'A';
-    else if (level >= 50) return 'B';
-    else if (level >= 30) return 'C';
-    else if (level >= 10) return 'D';
-    else return 'E';
-  }
+  const stageListPath = useMemo(() => getStageListPath(sessionHistory), [sessionHistory]);
 
   const r = 52;
   const circumference = 2 * Math.PI * r;
@@ -427,7 +368,7 @@ export default function MiniResultPage() {
   };
 
   const rankInfo = {
-    letter: letterCalculate(),
+    letter: getRankLetter(level),
     title: 'AURORA KNIGHT',
     level: level,
     nextXp: xpTillNextLevel,
