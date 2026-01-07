@@ -55,6 +55,7 @@ export default function StageTestPage() {
             questions={displayQuestions}
             sectionId={`${yearLabel} Stage ${stageNumber}`}
             stageId={state.stage.stageId}
+            stageNumber={stageNumber}
           />
         )}
       </div>

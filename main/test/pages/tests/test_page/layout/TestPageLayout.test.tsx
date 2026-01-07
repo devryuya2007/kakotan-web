@@ -23,10 +23,18 @@ vi.mock("@/pages/states/useTestResults", () => ({
   useTestResults: () => useTestResultsMock(),
 }));
 
-vi.mock("@/features/stages/stageProgressStore", () => ({
-  recordStageAttempt: (...args: unknown[]) => recordStageAttemptMock(...args),
-  recordStageResult: (...args: unknown[]) => recordStageResultMock(...args),
-}));
+vi.mock("@/features/stages/stageProgressStore", async () => {
+  const actual = await vi.importActual<
+    typeof import("@/features/stages/stageProgressStore")
+  >("@/features/stages/stageProgressStore");
+
+  return {
+    ...actual,
+    recordStageAttempt: (...args: unknown[]) => recordStageAttemptMock(...args),
+    recordStageResult: (...args: unknown[]) => recordStageResultMock(...args),
+    loadStageProgress: () => ({}),
+  };
+});
 
 vi.mock("@/hooks/usePrefersReducedMotion", () => ({
   usePrefersReducedMotion: () => usePrefersReducedMotionMock(),
