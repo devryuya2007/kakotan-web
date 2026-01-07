@@ -2,17 +2,14 @@
 import { type QuizQuestion } from "../../../../data/vocabLoader";
 
 import {
-  type CSSProperties,
   type MouseEvent,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
 
-import { gsap } from "gsap";
 import { useNavigate } from "react-router-dom";
 
 import { QuickStartButton } from "@/components/buttons/QuickStartButton";
@@ -31,6 +28,7 @@ import { useTestResults } from "@/pages/states/useTestResults";
 
 import { TestQuestionCard } from "./components/TestQuestionCard";
 import { useActiveSessionTimer } from "./hooks/useActiveSessionTimer";
+import { useAnswerToast } from "./hooks/useAnswerToast";
 import { useIsSmallScreen } from "./hooks/useIsSmallScreen";
 import { useShuffledChoices } from "./hooks/useShuffledChoices";
 import { useXpCounter } from "./hooks/useXpCounter";
@@ -103,23 +101,13 @@ export default function TestPageLayout({
   // カード切り替え中かどうか。trueになっている間はボタン操作を無効化する
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isSlideActive, setIsSlideActive] = useState(false);
-  // 獲得XPのトースト表示に使うstate
-  const [gainToast, setGainToast] = useState<{
-    amount: number;
-    key: number;
-    position: { top: number; left: number };
-  } | null>(null);
   // テスト中に獲得したXPを積み上げておく
   const [sessionGainedXp, setSessionGainedXp] = useState(0);
   // 直近の獲得演出を強調するためのフラグ
   const [isGainPulse, setIsGainPulse] = useState(false);
-  // トーストのアニメーション制御に使う参照
-  const toastRef = useRef<HTMLDivElement | null>(null);
-  const toastAnimationRef = useRef<gsap.core.Timeline | null>(null);
   const gainPulseTimeoutRef = useRef<number | null>(null);
   // セクション要素の位置を参照してトーストの表示座標に使う
   const sectionRef = useRef<HTMLElement | null>(null);
-  const toastDelayTimeoutRef = useRef<number | null>(null);
   // 解答直後の待ち時間を制御するためのタイマー参照
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // カードアニメーション終了待ち用タイマーの参照
@@ -130,6 +118,11 @@ export default function TestPageLayout({
     sessionGainedXp,
     prefersReducedMotion,
   );
+  const { gainToast, toastRef, toastPositionStyle, queueToast } = useAnswerToast({
+    prefersReducedMotion,
+    toastDelay: TOAST_DELAY,
+    toastDuration: TOAST_DURATION,
+  });
   // 設定によってはアニメーション時間をゼロにする
   const effectiveTransitionDuration = prefersReducedMotion ? 0 : TRANSITION_DURATION;
   const useTransitionLayouts = isSlideActive && effectiveTransitionDuration > 0;
@@ -213,9 +206,6 @@ export default function TestPageLayout({
   // コンポーネントが壊れるときにタイマーを全部止めるためのクリーンアップ
   useEffect(() => {
     return () => {
-      if (toastDelayTimeoutRef.current) {
-        clearTimeout(toastDelayTimeoutRef.current);
-      }
       if (feedbackTimeoutRef.current) {
         clearTimeout(feedbackTimeoutRef.current);
       }
@@ -224,9 +214,6 @@ export default function TestPageLayout({
       }
       if (gainPulseTimeoutRef.current) {
         clearTimeout(gainPulseTimeoutRef.current);
-      }
-      if (toastAnimationRef.current) {
-        toastAnimationRef.current.kill();
       }
     };
   }, []);
@@ -253,59 +240,6 @@ export default function TestPageLayout({
     };
   }, [sessionGainedXp]);
 
-  // トーストはGSAPで短く動かし、一定時間だけ表示する
-  useLayoutEffect(() => {
-    if (!gainToast) return;
-    const toastEl = toastRef.current;
-    if (!toastEl) return;
-
-    if (toastAnimationRef.current) {
-      toastAnimationRef.current.kill();
-    }
-
-    if (prefersReducedMotion) {
-      const timeoutId = globalThis.setTimeout(() => {
-        setGainToast(null);
-      }, TOAST_DURATION);
-      return () => {
-        clearTimeout(timeoutId);
-      };
-    }
-
-    const holdMs = Math.max(TOAST_DURATION - 380, 0);
-    toastAnimationRef.current = gsap
-      .timeline({
-        onComplete: () => {
-          setGainToast(null);
-        },
-      })
-      .fromTo(
-        toastEl,
-        { autoAlpha: 0, y: 10, scale: 0.9 },
-        { autoAlpha: 1, y: -6, scale: 1, duration: 0.18, ease: "power2.out" }
-      )
-      .to(toastEl, {
-        autoAlpha: 1,
-        y: -8,
-        scale: 1,
-        duration: holdMs / 1000,
-        ease: "none",
-      })
-      .to(toastEl, {
-        autoAlpha: 0,
-        y: -18,
-        scale: 0.96,
-        duration: 0.2,
-        ease: "power2.in",
-      });
-
-    return () => {
-      if (toastAnimationRef.current) {
-        toastAnimationRef.current.kill();
-      }
-    };
-  }, [gainToast, prefersReducedMotion]);
-
   // 問題や正解が存在しない場合は何も描画しない
   if (!question || !answerChoice)
     return <p aria-label="data-error">問題データが取得できませんでした</p>;
@@ -331,15 +265,7 @@ export default function TestPageLayout({
     const gainAmount = isAnswer ? XP_PER_CORRECT : XP_PER_INCORRECT;
     // 獲得XPは累積で表示するためにセッション内で加算しておく
     setSessionGainedXp((prev) => prev + gainAmount);
-    clearTimeout(toastDelayTimeoutRef.current as unknown as number);
-    toastDelayTimeoutRef.current = globalThis.setTimeout(() => {
-      setGainToast({
-        amount: gainAmount,
-        key: Date.now(),
-        position: { top: relativeTop, left: relativeLeft },
-      });
-      toastDelayTimeoutRef.current = null;
-    }, TOAST_DELAY);
+    queueToast(gainAmount, { top: relativeTop, left: relativeLeft });
 
     // 正解・不正解ごとの記録に追加
     recordResult(question, isAnswer);
@@ -384,13 +310,6 @@ export default function TestPageLayout({
 
   const toastVariantClass =
     gainToast?.amount === XP_PER_CORRECT ? CORRECT_TOAST_CLASS : INCORRECT_TOAST_CLASS;
-  const toastPositionStyle: CSSProperties | undefined = gainToast
-    ? {
-        top: gainToast.position.top,
-        left: gainToast.position.left,
-        transform: "translate(-50%, -120%)",
-      }
-    : undefined;
 
   return (
     <>
