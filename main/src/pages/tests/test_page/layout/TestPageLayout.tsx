@@ -30,6 +30,8 @@ import { useAnswerResultSound } from "@/hooks/useAnswerResultSound";
 import { useTestResults } from "@/pages/states/useTestResults";
 
 import { TestQuestionCard } from "./components/TestQuestionCard";
+import { useIsSmallScreen } from "./hooks/useIsSmallScreen";
+import { useShuffledChoices } from "./hooks/useShuffledChoices";
 import {
   BASE_BUTTON_STYLE,
   CORRECT_BUTTON_STYLE,
@@ -46,10 +48,6 @@ import {
 
 const hasWindow = typeof window !== "undefined";
 const hasDocument = typeof document !== "undefined";
-const getIsSmallDefault = () => {
-  if (!hasWindow || !window.matchMedia) return false;
-  return window.matchMedia("(max-width: 640px)").matches;
-};
 const isDocumentVisible = () =>
   hasDocument ? document.visibilityState === "visible" : true;
 
@@ -81,22 +79,7 @@ export default function TestPageLayout({
   // 正解・不正解に合わせた効果音を鳴らすための関数
   const { playAnswerSound } = useAnswerResultSound();
 
-  const [isSmall, setIsSmall] = useState(getIsSmallDefault);
-
-  useEffect(() => {
-    if (!hasWindow || !window.matchMedia) return;
-    const mediaQuery = window.matchMedia("(max-width: 640px)");
-    const handleChange = (event: MediaQueryListEvent) => {
-      setIsSmall(event.matches);
-    };
-
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener("change", handleChange);
-      return () => mediaQuery.removeEventListener("change", handleChange);
-    }
-    mediaQuery.addListener(handleChange);
-    return () => mediaQuery.removeListener(handleChange);
-  }, []);
+  const isSmall = useIsSmallScreen();
 
   useEffect(() => {
     reset();
@@ -193,36 +176,16 @@ export default function TestPageLayout({
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // カードアニメーション終了待ち用タイマーの参照
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // 問題ごとのシャッフル済み選択肢を保存しておくキャッシュ
-  const shuffledChoicesRef = useRef<Record<string, string[]>>({});
-  // どのquestion配列をキャッシュに使っているかを覚えておく
-  const cacheSourceRef = useRef<QuizQuestion[] | null>(null);
   // アクセシビリティ設定を反映した結果の真偽値
   const prefersReducedMotion = usePrefersReducedMotion();
   // 設定によってはアニメーション時間をゼロにする
   const effectiveTransitionDuration = prefersReducedMotion ? 0 : TRANSITION_DURATION;
   const useTransitionLayouts = isSlideActive && effectiveTransitionDuration > 0;
 
-  // 問題セットが差し替わったらシャッフル結果をリセットする
-  if (cacheSourceRef.current !== questions) {
-    shuffledChoicesRef.current = {};
-    cacheSourceRef.current = questions;
-  }
+  const { getShuffledChoices } = useShuffledChoices(questions);
 
   // 現在の問題を取り出す。存在しない場合は後でnull returnする
   const question = questions[currentIndex];
-  // 問題ごとに一度だけ選択肢をシャッフルし、キャッシュする関数
-  const getShuffledChoices = (q: QuizQuestion) => {
-    // idがあればそれを、なければ英単語をキーにする
-    const key = q.id || q.phrase;
-    // 既にシャッフル済みなら再利用
-    const cached = shuffledChoicesRef.current[key];
-    if (cached) return cached;
-    // シャッフルしてキャッシュへ保存
-    const randomized = [...q.choices].sort(() => Math.random() - 0.5);
-    shuffledChoicesRef.current[key] = randomized;
-    return randomized;
-  };
   // 正解の選択肢。null安全のためoptional chaining
   const answerChoice = question?.choices[question?.answerIndex];
   // 表示上の総問題数。props優先で数がなければ配列長を使う
