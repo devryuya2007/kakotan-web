@@ -28,7 +28,21 @@ import {
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useAnswerResultSound } from "@/hooks/useAnswerResultSound";
 import { useTestResults } from "@/pages/states/useTestResults";
+
 import { TestQuestionCard } from "./components/TestQuestionCard";
+import {
+  BASE_BUTTON_STYLE,
+  CORRECT_BUTTON_STYLE,
+  INCORRECT_BUTTON_STYLE,
+  CORRECT_TOAST_CLASS,
+  INCORRECT_TOAST_CLASS,
+  REVIEW_DURATION,
+  TOAST_BASE_CLASS,
+  TOAST_DELAY,
+  TOAST_DURATION,
+  TRANSITION_DURATION,
+  getCardPresentation,
+} from "./testPageLayoutConfig";
 
 const hasWindow = typeof window !== "undefined";
 const hasDocument = typeof document !== "undefined";
@@ -83,17 +97,6 @@ export default function TestPageLayout({
     mediaQuery.addListener(handleChange);
     return () => mediaQuery.removeListener(handleChange);
   }, []);
-
-  // 表示するカードのindexから適切なレイアウト情報を引き出す
-  function getCardPresentation(idx: number) {
-    const desktopLayouts =
-      isSlideActive && effectiveTransitionDuration > 0 ? transitionLayouts : baseLayouts;
-    const mobileLayouts =
-      isSlideActive && effectiveTransitionDuration > 0 ? smallTransitionLayouts : smallBaseLayouts;
-    const layouts = isSmall ? mobileLayouts : desktopLayouts;
-    const clampedIndex = Math.min(idx, layouts.length - 1);
-    return layouts[clampedIndex];
-  }
 
   useEffect(() => {
     reset();
@@ -194,15 +197,11 @@ export default function TestPageLayout({
   const shuffledChoicesRef = useRef<Record<string, string[]>>({});
   // どのquestion配列をキャッシュに使っているかを覚えておく
   const cacheSourceRef = useRef<QuizQuestion[] | null>(null);
-  const REVIEW_DURATION = 800;
-  // 実際のカードスライドにかける時間
-  const TRANSITION_DURATION = 400; // アニメーション本体（FEEDBACK_DELAYと合わせて0.5s）
-  const TOAST_DELAY = 0;
-  const TOAST_DURATION = 800;
   // アクセシビリティ設定を反映した結果の真偽値
   const prefersReducedMotion = usePrefersReducedMotion();
   // 設定によってはアニメーション時間をゼロにする
   const effectiveTransitionDuration = prefersReducedMotion ? 0 : TRANSITION_DURATION;
+  const useTransitionLayouts = isSlideActive && effectiveTransitionDuration > 0;
 
   // 問題セットが差し替わったらシャッフル結果をリセットする
   if (cacheSourceRef.current !== questions) {
@@ -435,7 +434,7 @@ export default function TestPageLayout({
         toastAnimationRef.current.kill();
       }
     };
-  }, [gainToast, prefersReducedMotion, TOAST_DURATION]);
+  }, [gainToast, prefersReducedMotion]);
 
   // 問題や正解が存在しない場合は何も描画しない
   if (!question || !answerChoice)
@@ -506,62 +505,15 @@ export default function TestPageLayout({
     }, REVIEW_DURATION);
   }
 
-  // まだ判定が付いていない選択肢ボタンの共通スタイル
-  const baseButtonStyle =
-    "button-pressable group relative w-full rounded-xl border border-white/15 bg-[radial-gradient(circle_at_top,#1a1c26,#070811)]/90 px-5 py-4 text-center text-base font-medium tracking-wide text-white/85 shadow-[0_12px_28px_-18px_rgba(15,23,42,0.9)] transition-all duration-300 hover:-translate-y-1 hover:border-[#f2c97d]/70 hover:bg-[radial-gradient(circle_at_top,#202333,#0d101c)] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f2c97d]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
-
-  // 正解ボタン用の見た目（ゴールド系）
-  const correctButtonStyle =
-    "button-pressable w-full rounded-xl border border-amber-200/70 bg-gradient-to-br from-amber-400 via-amber-300 to-yellow-200 px-5 py-4 text-center text-base font-semibold tracking-wide text-slate-900 shadow-[0_22px_48px_-20px_rgba(251,191,36,0.9)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_28px_55px_-18px_rgba(251,191,36,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-200/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
-
-  // 不正解ボタン用の見た目（赤系）
-  const incorrectButtonStyle =
-    "button-pressable w-full rounded-xl border border-rose-500/60 bg-gradient-to-br from-rose-600 via-rose-500 to-rose-400 px-5 py-4 text-center text-base font-semibold tracking-wide text-rose-50 shadow-[0_18px_38px_-18px_rgba(244,63,94,0.85)] transition-all duration-300 hover:-translate-y-1 hover:border-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950";
-
   // 選択肢ごとの状態に合わせてスタイルを出し分ける小さなヘルパー
-  function ButtonStyleSwitch(choice: string) {
-    if (buttonStates[choice] === "correct") return correctButtonStyle;
-    if (buttonStates[choice] === "incorrect") return incorrectButtonStyle;
-    else return baseButtonStyle;
+  function getChoiceButtonClass(choice: string) {
+    if (buttonStates[choice] === "correct") return CORRECT_BUTTON_STYLE;
+    if (buttonStates[choice] === "incorrect") return INCORRECT_BUTTON_STYLE;
+    return BASE_BUTTON_STYLE;
   }
 
-  // カードが静止しているときの位置・スケール・不透明度などのリスト
-  const baseLayouts = [
-    { x: 0, y: 0, scale: 1, opacity: 1, zIndex: 40 },
-    { x: -6, y: -4, scale: 0.94, opacity: 0.9, zIndex: 30 },
-    { x: -12, y: -7, scale: 0.88, opacity: 0.7, zIndex: 20 },
-    { x: -18, y: -11, scale: 0.82, opacity: 0.0, zIndex: 10 },
-  ];
-
-  // カードが動いているときに適用する位置・スケールの並び
-  const transitionLayouts = [
-    { x: 14, y: 12, scale: 1.02, opacity: 0, zIndex: 5 },
-    baseLayouts[0],
-    baseLayouts[1],
-    { x: -12, y: -7, scale: 0.88, opacity: 0.72, zIndex: 22 },
-  ];
-
-  const smallBaseLayouts = [
-    { x: 0, y: 0, scale: 1, opacity: 1, zIndex: 40 },
-    { x: 0, y: -4, scale: 0.94, opacity: 0.9, zIndex: 30 },
-    { x: 0, y: -8, scale: 0.88, opacity: 0.7, zIndex: 20 },
-    { x: 0, y: -10, scale: 0.82, opacity: 0.0, zIndex: 10 },
-  ];
-  const smallTransitionLayouts = [
-    { x: 0, y: 12, scale: 1.02, opacity: 0, zIndex: 5 },
-    smallBaseLayouts[0],
-    smallBaseLayouts[1],
-    smallBaseLayouts[2],
-  ];
-
-  const toastBaseClass =
-    "absolute z-[9999] flex h-[28px] w-[72px] items-center justify-center rounded-xl border text-[12px] font-semibold shadow-[0_10px_24px_rgba(0,0,0,0.35)] pointer-events-none";
-
-  const correctToastClass = "border-emerald-200/80 bg-emerald-500/90 text-emerald-50";
-  const incorrectToastClass = "border-rose-200/80 bg-rose-500/90 text-rose-50";
-
   const toastVariantClass =
-    gainToast?.amount === XP_PER_CORRECT ? correctToastClass : incorrectToastClass;
+    gainToast?.amount === XP_PER_CORRECT ? CORRECT_TOAST_CLASS : INCORRECT_TOAST_CLASS;
   const toastPositionStyle: CSSProperties | undefined = gainToast
     ? {
         top: gainToast.position.top,
@@ -583,7 +535,7 @@ export default function TestPageLayout({
         {gainToast && gainToast.amount === XP_PER_CORRECT && (
           <div
             ref={toastRef}
-            className={`${toastBaseClass} ${toastVariantClass}`}
+            className={`${TOAST_BASE_CLASS} ${toastVariantClass}`}
             style={toastPositionStyle}
             key={gainToast.key}
             data-testid="xp-toast"
@@ -604,7 +556,7 @@ export default function TestPageLayout({
             // 固定化された順番の選択肢配列
             const cardChoices = getShuffledChoices(cardQuestion);
             // カードの位置や透明度などの設定
-            const presentation = getCardPresentation(idx);
+            const presentation = getCardPresentation(idx, isSmall, useTransitionLayouts);
 
             return (
               <TestQuestionCard
@@ -624,8 +576,8 @@ export default function TestPageLayout({
                 expFillRatio={expFillRatio}
                 answerChoice={answerChoice}
                 cardChoices={cardChoices}
-                baseButtonStyle={baseButtonStyle}
-                getChoiceButtonClass={ButtonStyleSwitch}
+                baseButtonStyle={BASE_BUTTON_STYLE}
+                getChoiceButtonClass={getChoiceButtonClass}
                 onChoiceClick={handleClick}
               />
             );

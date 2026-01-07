@@ -1,15 +1,9 @@
 import type { CSSProperties, MouseEvent } from "react";
 
 import type { QuizQuestion } from "../../../../data/vocabLoader";
-import { ExpIndicator } from "./ExpIndicator";
+import type { CardPresentation } from "../testPageLayoutConfig";
 
-interface CardPresentation {
-  x: number;
-  y: number;
-  scale: number;
-  opacity: number;
-  zIndex: number;
-}
+import { ExpIndicator } from "./ExpIndicator";
 
 interface TestQuestionCardProps {
   cardQuestion: QuizQuestion;
