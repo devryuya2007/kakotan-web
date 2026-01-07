@@ -2,10 +2,9 @@ import {AppLayout} from '../../components/layout/AppLayout';
 import {useTestResults} from '../states/useTestResults';
 import {useAllYearVocab} from "@/hooks/useAllYearVocab";
 import {calculateLevelProgress} from '@/features/results/scoring';
-import { RankSummaryCard } from "./components/RankSummaryCard";
-import { ProgressRingCard } from "./components/ProgressRingCard";
-import { SummaryCardGrid } from "./components/SummaryCardGrid";
-import { WeeklyStudyChartCard } from "./components/WeeklyStudyChartCard";
+import { ResultsActions } from "./components/ResultsActions";
+import { ResultsHeader } from "./components/ResultsHeader";
+import { ResultsStatGrid } from "./components/ResultsStatGrid";
 import { RecentSessionList } from "./components/RecentSessionList";
 import { useResultRanking } from "./hooks/useResultRanking";
 import { useResultSummary } from "./hooks/useResultSummary";
@@ -26,7 +25,6 @@ import {useNavigate} from 'react-router-dom';
 import TimeElapsedIcon from '@/assets/iconSvg/時間経過のアイコン .svg';
 import AchievementIcon from '@/assets/iconSvg/業績アイコン.svg';
 import StreakIcon from '@/assets/iconSvg/火の玉のアイコン.svg';
-import {QuickStartButton} from '@/components/buttons/QuickStartButton';
 import {lineGlowPlugin} from './lineGlowPlugin';
 
 Chart.register(
@@ -106,44 +104,25 @@ export default function ResultsPage() {
     <AppLayout>
       <section className='w-full overflow-x-hidden text-white'>
         <div className='mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-8 sm:px-6 lg:px-12'>
-          <header className='text-center'>
-            <h1 className='mt-2 text-3xl font-bold tracking-tight text-[#f2c97d] sm:text-4xl'>
-              Progress Log
-            </h1>
-            <div className='fixed bottom-6 right-6 z-[9999] w-[6rem]'>
-              <QuickStartButton onClick={() => navigate('/')} label='Home' />
-            </div>
-          </header>
-          <div className='flex flex-col gap-8'>
-            <div className='flex flex-col gap-6 lg:flex-row lg:items-stretch'>
-              <div className='w-full lg:w-1/2'>
-                <ProgressRingCard
-                  ringSize={ringSize}
-                  ringRadius={ringRadius}
-                  ringCircumference={ringCircumference}
-                  strokeDashoffset={strokeDashoffset}
-                  displayProgress={displayProgress}
-                  progress={progress}
-                  solvedWords={solvedWords}
-                  totalWords={totalWords}
-                />
-              </div>
-              <div className='w-full lg:w-1/2'>
-                <RankSummaryCard
-                  levelProgress={calculateLevelProgress(totalXp ?? 0)}
-                  variant='results'
-                />
-              </div>
-            </div>
-            <div className='grid grid-cols-1 gap-8 lg:grid-cols-[1.1fr_1.4fr]'>
-              <SummaryCardGrid cards={summaryCards} iconSize={iconSize} />
-              <WeeklyStudyChartCard
-                lineChartData={lineChartData}
-                lineChartOptions={lineChartOptions}
-                averageDailyMinutes={averageDailyMinutes}
-              />
-            </div>
-          </div>
+          <ResultsHeader title="Progress Log" actions={
+            <ResultsActions onHome={() => navigate("/")} />
+          } />
+          <ResultsStatGrid
+            ringSize={ringSize}
+            ringRadius={ringRadius}
+            ringCircumference={ringCircumference}
+            strokeDashoffset={strokeDashoffset}
+            displayProgress={displayProgress}
+            progress={progress}
+            solvedWords={solvedWords}
+            totalWords={totalWords}
+            levelProgress={calculateLevelProgress(totalXp ?? 0)}
+            summaryCards={summaryCards}
+            iconSize={iconSize}
+            lineChartData={lineChartData}
+            lineChartOptions={lineChartOptions}
+            averageDailyMinutes={averageDailyMinutes}
+          />
 
           <RecentSessionList sessions={recentSessionLabels} />
         </div>
