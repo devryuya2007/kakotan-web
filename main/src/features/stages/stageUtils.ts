@@ -1,38 +1,22 @@
 import {buildQuestionsFromVocab} from "@/data/vocabLoader";
 import type {QuizQuestion, VocabEntry, YearKey} from "@/data/vocabLoader";
 
-// ステージ1つ分の情報。UIやルーティングで使うために必須の情報だけまとめる
-export interface StageDefinition {
-  stageId: string;
-  year: YearKey;
-  title: string;
-  stageNumber: number;
-  startIndex: number;
-  questionCount: number;
-  baseQuestionCount: number;
-}
+import {getCachedStageDefinitions, storeStageDefinitions} from "./stageDefinitionCache";
+import type {
+  StageDefinition,
+  StageDefinitionInput,
+  StageDefinitionResult,
+  StageDefinitionSummary,
+  StageQuestionInput,
+} from "./stageDefinitionTypes";
 
-// ステージ生成の入力に使うパラメータ。年度別にまとめて渡す
-export interface StageDefinitionInput {
-  year: YearKey;
-  yearLabel: string;
-  vocab: VocabEntry[];
-  baseQuestionCount: number;
-}
-
-// ステージ生成結果。総語彙数や基準問題数も一緒に返す
-export interface StageDefinitionResult {
-  stages: StageDefinition[];
-  totalWords: number;
-  normalizedQuestionCount: number;
-}
-
-// ステージ数の計算結果をまとめた型
-export interface StageDefinitionSummary {
-  totalWords: number;
-  normalizedQuestionCount: number;
-  totalStages: number;
-}
+export type {
+  StageDefinition,
+  StageDefinitionInput,
+  StageDefinitionResult,
+  StageDefinitionSummary,
+  StageQuestionInput,
+} from "./stageDefinitionTypes";
 
 // 設定値が0や負数だったときの保険。最低1問は保証する
 const normalizeQuestionCount = (count: number) => Math.max(1, count);
@@ -102,94 +86,6 @@ const buildStageDefinitions = ({
   });
 };
 
-// ステージ定義のキャッシュ。localStorageは既存ストアと区別する
-const STAGE_DEFINITION_STORAGE_KEY = "stage-definition-cache:v1";
-
-interface StageDefinitionCacheEntry {
-  totalWords: number;
-  normalizedQuestionCount: number;
-  stages: StageDefinition[];
-  savedAt: number;
-}
-
-// 年度 + 設定問題数をキーにしたキャッシュ状態
-interface StageDefinitionCacheState {
-  [cacheKey: string]: StageDefinitionCacheEntry;
-}
-
-const buildStageCacheKey = (year: YearKey, normalizedQuestionCount: number) =>
-  `${year}-q${normalizedQuestionCount}`;
-
-const loadStageDefinitionCache = (): StageDefinitionCacheState => {
-  if (typeof window === "undefined") return {};
-  try {
-    const raw = window.localStorage.getItem(STAGE_DEFINITION_STORAGE_KEY);
-    if (!raw) return {};
-    return JSON.parse(raw) as StageDefinitionCacheState;
-  } catch {
-    // 読み込みに失敗したら空で再開する
-    return {};
-  }
-};
-
-const saveStageDefinitionCache = (cache: StageDefinitionCacheState) => {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(
-      STAGE_DEFINITION_STORAGE_KEY,
-      JSON.stringify(cache),
-    );
-  } catch {
-    // 保存できなくてもアプリは進められるので握りつぶす
-  }
-};
-
-const getCachedStageDefinitions = ({
-  year,
-  yearLabel,
-  summary,
-}: {
-  year: YearKey;
-  yearLabel: string;
-  summary: StageDefinitionSummary;
-}): StageDefinition[] | null => {
-  // キャッシュ読み込みは必ずこの関数経由にまとめる
-  const cache = loadStageDefinitionCache();
-  const key = buildStageCacheKey(year, summary.normalizedQuestionCount);
-  const entry = cache[key];
-  if (!entry) return null;
-  if (entry.totalWords !== summary.totalWords) return null;
-
-  // タイトルは最新の年表示に合わせて作り直す
-  return entry.stages.map((stage) => ({
-    ...stage,
-    year,
-    title: `${yearLabel} Stage ${stage.stageNumber}`,
-    baseQuestionCount: summary.normalizedQuestionCount,
-  }));
-};
-
-const storeStageDefinitions = ({
-  year,
-  summary,
-  stages,
-}: {
-  year: YearKey;
-  summary: StageDefinitionSummary;
-  stages: StageDefinition[];
-}) => {
-  // 保存前に最新キャッシュを取り直して上書きする
-  const cache = loadStageDefinitionCache();
-  const key = buildStageCacheKey(year, summary.normalizedQuestionCount);
-  cache[key] = {
-    totalWords: summary.totalWords,
-    normalizedQuestionCount: summary.normalizedQuestionCount,
-    stages,
-    savedAt: Date.now(),
-  };
-  saveStageDefinitionCache(cache);
-};
-
 // 年度語彙からステージ定義を生成する
 export const createStageDefinitions = ({
   year,
@@ -213,12 +109,6 @@ export const createStageDefinitions = ({
     normalizedQuestionCount: summary.normalizedQuestionCount,
   };
 };
-
-// 1ステージ分の問題を作る。年度語彙 + ステージ番号 + 1ステージの問題数で切り出す
-export interface StageQuestionInput {
-  vocab: VocabEntry[];
-  stage: StageDefinition;
-}
 
 // 指定ステージの問題配列を作る（最後のステージは残り分だけになる）
 export const buildStageQuestions = ({
