@@ -30,6 +30,7 @@ import { useAnswerResultSound } from "@/hooks/useAnswerResultSound";
 import { useTestResults } from "@/pages/states/useTestResults";
 
 import { TestQuestionCard } from "./components/TestQuestionCard";
+import { useActiveSessionTimer } from "./hooks/useActiveSessionTimer";
 import { useIsSmallScreen } from "./hooks/useIsSmallScreen";
 import { useShuffledChoices } from "./hooks/useShuffledChoices";
 import {
@@ -45,11 +46,6 @@ import {
   TRANSITION_DURATION,
   getCardPresentation,
 } from "./testPageLayoutConfig";
-
-const hasWindow = typeof window !== "undefined";
-const hasDocument = typeof document !== "undefined";
-const isDocumentVisible = () =>
-  hasDocument ? document.visibilityState === "visible" : true;
 
 // このコンポーネントが受け取るpropsの形。questionsは問題配列、countは総数
 interface TestPageLayoutProps {
@@ -69,17 +65,14 @@ export default function TestPageLayout({
   const { correct, incorrect, recordResult, totalXp, applyXp, reset, addSession } =
     useTestResults();
 
-  const now = () => performance.now();
-  const isVisible = () => isDocumentVisible();
   // セッションの開始時刻（画面表示の時刻）を残す
   const sessionStartRef = useRef<number | null>(null);
-  // アクティブ時間の開始点と累積値を保存する
-  const activeStartRef = useRef<number | null>(isVisible() ? now() : null);
-  const activeTotalRef = useRef(0);
   // 正解・不正解に合わせた効果音を鳴らすための関数
   const { playAnswerSound } = useAnswerResultSound();
 
   const isSmall = useIsSmallScreen();
+
+  const { startSession, stopSession } = useActiveSessionTimer();
 
   useEffect(() => {
     reset();
@@ -87,9 +80,8 @@ export default function TestPageLayout({
     // セッション開始時点は獲得XPを0に戻す
     setSessionGainedXp(0);
     setAnimatedXp(0);
-    // 画面がアクティブな時だけカウントするように初期化
-    activeTotalRef.current = 0;
-    activeStartRef.current = isVisible() ? now() : null;
+    // 画面がアクティブな時だけカウントする
+    startSession();
 
     // ステージモードなら挑戦済みを先に記録しておく
     if (stageId) {
@@ -98,49 +90,9 @@ export default function TestPageLayout({
 
     return () => {
       sessionStartRef.current = null;
-      activeStartRef.current = null;
-      activeTotalRef.current = 0;
+      stopSession();
     };
-  }, [reset, stageId]);
-
-  useEffect(() => {
-    const handleBlur = () => {
-      // セッションが終わっている場合は何もしない
-      if (sessionStartRef.current === null) return;
-      if (activeStartRef.current === null) return;
-      activeTotalRef.current += now() - activeStartRef.current;
-      activeStartRef.current = null;
-    };
-
-    const handleFocus = () => {
-      if (sessionStartRef.current === null) return;
-      if (activeStartRef.current !== null) return;
-      activeStartRef.current = now();
-    };
-
-    const handleVisibilityChange = () => {
-      if (isVisible()) handleFocus();
-      else handleBlur();
-    };
-
-    if (hasDocument) {
-      document.addEventListener("visibilitychange", handleVisibilityChange);
-    }
-    if (hasWindow) {
-      window.addEventListener("blur", handleBlur);
-      window.addEventListener("focus", handleFocus);
-    }
-
-    return () => {
-      if (hasDocument) {
-        document.removeEventListener("visibilitychange", handleVisibilityChange);
-      }
-      if (hasWindow) {
-        window.removeEventListener("blur", handleBlur);
-        window.removeEventListener("focus", handleFocus);
-      }
-    };
-  }, []);
+  }, [reset, stageId, startSession, stopSession]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   // 各選択肢が正解・不正解・未回答かを保持する
@@ -212,11 +164,7 @@ export default function TestPageLayout({
     const incorrectCount = incorrect.length;
     const totalAnswered = correctCount + incorrectCount;
 
-    const activeDuration =
-      activeTotalRef.current +
-      (activeStartRef.current !== null
-        ? now() - activeStartRef.current
-        : 0);
+    const activeDuration = stopSession();
     const durationMs = Math.max(0, activeDuration);
     // セッション履歴は集計に使うので、テスト毎のメタ情報を丸ごと残しておく
     addSession({
@@ -231,7 +179,6 @@ export default function TestPageLayout({
       stageId,
     });
     sessionStartRef.current = null;
-    activeStartRef.current = null;
 
     // ステージモードのときは進捗を保存する（正答率90%以上でクリア扱い）
     if (stageId && totalAnswered > 0) {
@@ -243,7 +190,7 @@ export default function TestPageLayout({
     }
 
     return { gainedXp, updatedTotalXp, durationMs };
-  }, [correct, incorrect, totalXp, applyXp, addSession, sectionId, stageId]);
+  }, [correct, incorrect, totalXp, applyXp, addSession, sectionId, stageId, stopSession]);
 
   const hasFinishedRef = useRef(false);
   const navigate = useNavigate();
