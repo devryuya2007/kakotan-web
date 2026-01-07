@@ -2,6 +2,7 @@ import { useId } from "react";
 
 import type { StageProgressEntry } from "@/features/stages/stageProgressStore";
 import type { StageDefinition } from "@/features/stages/stageUtils";
+import { getStageButtonClass, getStageIconColors, getStageLabelClass } from "./stageTileStyles";
 
 interface StageTileProps {
   stage: StageDefinition;
@@ -63,9 +64,7 @@ export function StageTile({
       type="button"
       onClick={onSelect}
       disabled={isLocked}
-      className={`button-pressable group flex flex-col items-center justify-start transition-all duration-300 ${
-        isLocked ? "cursor-not-allowed" : "hover:-translate-y-1"
-      }`}
+      className={getStageButtonClass(isLocked)}
       style={{
         width: `${tileWidth}px`,
         height: `${tileHeight}px`,
@@ -81,15 +80,7 @@ export function StageTile({
         primaryDeep={primaryDeep}
         primaryGlow={primaryGlow}
       />
-      <span
-        className={`mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] ${
-          isCleared
-            ? "text-emerald-300"
-            : isLocked
-              ? "text-[#f2c97d]/50"
-              : "text-[#f2c97d]"
-        }`}
-      >
+      <span className={getStageLabelClass({ isLocked, isCleared })}>
         {label}
       </span>
     </button>
@@ -109,16 +100,12 @@ function StageIcon({
   const gradientId = useId();
   const shadowId = useId();
   const glowId = useId();
-  const isLocked = variant === "locked";
-  const isActive = variant === "active";
-  const isCleared = variant === "cleared";
-  const lockedBase = "#b19662";
-  const lockedDeep = "#8a6f42";
-  const clearedBase = "#8fe3b3";
-  const clearedDeep = "#4fbf7d";
-  const fillBase = isCleared ? clearedBase : isLocked ? lockedBase : primaryColor;
-  const fillDeep = isCleared ? clearedDeep : isLocked ? lockedDeep : primaryDeep;
-  const glowColor = isCleared ? "rgba(112, 230, 176, 0.55)" : primaryGlow;
+  const { isLocked, isActive, isCleared, fillBase, fillDeep, glowColor } = getStageIconColors({
+    variant,
+    primaryColor,
+    primaryDeep,
+    primaryGlow,
+  });
 
   return (
     <svg
