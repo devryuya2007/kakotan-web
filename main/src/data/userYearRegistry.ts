@@ -35,6 +35,13 @@ export const PLAYER_REGISTRY_STORAGE_KEY = "playerRegistry:v1";
 // playerRegistryの更新をアプリ全体へ通知するイベント名
 export const PLAYER_REGISTRY_UPDATED_EVENT = "player-registry:updated";
 
+// 文字列をキーとして扱える形に整形する（小文字 + 記号をハイフンに変換）
+const normalizeKeyFragment = (value: string): string =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/giu, "-")
+    .replace(/^-+|-+$/gu, "");
+
 // 文字列キーだけを持つか判定するためのガード
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
@@ -65,10 +72,7 @@ const isPlayerRegistryEntryArray = (value: unknown): value is PlayerRegistryEntr
 
 // 追加セットの識別子を作成する（重複を避けるために乱数も使う）
 const createRegistryId = (base: string, index: number): string => {
-  const normalized = base
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/giu, "-")
-    .replace(/^-+|-+$/gu, "");
+  const normalized = normalizeKeyFragment(base);
   const random = Math.random().toString(36).slice(2, 8);
   return `player-${normalized || "custom"}-${Date.now()}-${index}-${random}`;
 };
@@ -154,10 +158,7 @@ const buildEntryFromFileName = (
   vocab: VocabEntryLike[]
 ): PlayerRegistryEntryInput => {
   const baseName = fileName.replace(/\.json$/iu, "").trim();
-  const normalized = baseName
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/giu, "-")
-    .replace(/^-+|-+$/gu, "");
+  const normalized = normalizeKeyFragment(baseName);
   const key = normalized ? `player-${normalized}` : `player-${Date.now()}`;
   const label = baseName.length > 0 ? baseName : "Player Extra";
 
@@ -231,8 +232,8 @@ export const useUserYearRegistryImport = (): UserYearImportResult => {
   }, [clearSuccessTimer]);
 
   // 指定キーのセットを削除し、一覧も更新する
-  const handleRemovePlayerRegistry = useCallback((key: string) => {
-    const next = removePlayerRegistry(key);
+  const handleRemovePlayerRegistry = useCallback((entryId: string) => {
+    const next = removePlayerRegistry(entryId);
     setPlayerRegistry(next);
   }, []);
 

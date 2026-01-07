@@ -1,3 +1,5 @@
+import type { VocabEntry } from "./vocabTypes";
+import { shuffleItems } from "../utils/shuffleItems";
 import reiwa3Vocab from "../assets/vocab/reiwa3_7/reiwa3.unigram.json";
 import reiwa4Vocab from "../assets/vocab/reiwa3_7/reiwa4.unigram.json";
 import reiwa5Vocab from "../assets/vocab/reiwa3_7/reiwa5.unigram.json";
@@ -5,13 +7,20 @@ import reiwa6Vocab from "../assets/vocab/reiwa3_7/reiwa6.unigram.json";
 import reiwa7Vocab from "../assets/vocab/reiwa3_7/reiwa7.unigram.json";
 import extraVocab from "../assets/vocab/extra/extra_translated_refined.json";
 
-import type { VocabEntry } from "./vocabTypes";
-import { shuffleItems } from "../utils/shuffleItems";
-
 export interface StageTheme {
   accent: string;
   accentSoft: string;
   accentGlow: string;
+}
+
+// 年度ごとのレジストリ定義（画面表示に必要な情報をまとめる）
+export interface DefaultRegistryEntry {
+  key: string;
+  label: string;
+  sectionLabel: string;
+  vocab: VocabEntry[];
+  theme: StageTheme;
+  defaultQuestionCount: number;
 }
 
 // 年度の追加はこの配列に1件足すだけで済むようにする
@@ -89,7 +98,7 @@ export const defaultRegistry = [
     },
     defaultQuestionCount: 20,
   },
-] as const;
+] as const satisfies readonly DefaultRegistryEntry[];
 
 // 既存コードとの互換のため、年データの別名を用意する
 export const yearRegistry = defaultRegistry;
