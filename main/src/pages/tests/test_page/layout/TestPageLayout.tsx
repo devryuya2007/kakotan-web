@@ -33,6 +33,7 @@ import { TestQuestionCard } from "./components/TestQuestionCard";
 import { useActiveSessionTimer } from "./hooks/useActiveSessionTimer";
 import { useIsSmallScreen } from "./hooks/useIsSmallScreen";
 import { useShuffledChoices } from "./hooks/useShuffledChoices";
+import { useXpCounter } from "./hooks/useXpCounter";
 import {
   BASE_BUTTON_STYLE,
   CORRECT_BUTTON_STYLE,
@@ -79,7 +80,7 @@ export default function TestPageLayout({
     sessionStartRef.current = Date.now();
     // セッション開始時点は獲得XPを0に戻す
     setSessionGainedXp(0);
-    setAnimatedXp(0);
+    resetXpCounter();
     // 画面がアクティブな時だけカウントする
     startSession();
 
@@ -92,7 +93,7 @@ export default function TestPageLayout({
       sessionStartRef.current = null;
       stopSession();
     };
-  }, [reset, stageId, startSession, stopSession]);
+  }, [reset, stageId, startSession, stopSession, resetXpCounter]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   // 各選択肢が正解・不正解・未回答かを保持する
@@ -112,11 +113,6 @@ export default function TestPageLayout({
   const [sessionGainedXp, setSessionGainedXp] = useState(0);
   // 直近の獲得演出を強調するためのフラグ
   const [isGainPulse, setIsGainPulse] = useState(false);
-  // 表示用のXPをなめらかに増やすためのstate
-  const [animatedXp, setAnimatedXp] = useState(0);
-  // XP演出の現在値をGSAPで回すための参照
-  const xpCounterRef = useRef({ value: 0 });
-  const xpTweenRef = useRef<gsap.core.Tween | null>(null);
   // トーストのアニメーション制御に使う参照
   const toastRef = useRef<HTMLDivElement | null>(null);
   const toastAnimationRef = useRef<gsap.core.Timeline | null>(null);
@@ -130,6 +126,10 @@ export default function TestPageLayout({
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // アクセシビリティ設定を反映した結果の真偽値
   const prefersReducedMotion = usePrefersReducedMotion();
+  const { animatedXp, resetXpCounter } = useXpCounter(
+    sessionGainedXp,
+    prefersReducedMotion,
+  );
   // 設定によってはアニメーション時間をゼロにする
   const effectiveTransitionDuration = prefersReducedMotion ? 0 : TRANSITION_DURATION;
   const useTransitionLayouts = isSlideActive && effectiveTransitionDuration > 0;
@@ -225,51 +225,11 @@ export default function TestPageLayout({
       if (gainPulseTimeoutRef.current) {
         clearTimeout(gainPulseTimeoutRef.current);
       }
-      if (xpTweenRef.current) {
-        xpTweenRef.current.kill();
-      }
       if (toastAnimationRef.current) {
         toastAnimationRef.current.kill();
       }
     };
   }, []);
-
-  // XPの現在値をrefにも保存し、次の演出で途切れないようにする
-  useEffect(() => {
-    xpCounterRef.current.value = animatedXp;
-  }, [animatedXp]);
-
-  // XPが増えたときに、数値をカウントアップで見せる
-  useEffect(() => {
-    const targetXp = Math.max(0, sessionGainedXp);
-    if (prefersReducedMotion) {
-      setAnimatedXp(targetXp);
-      xpCounterRef.current.value = targetXp;
-      return;
-    }
-    if (xpTweenRef.current) {
-      xpTweenRef.current.kill();
-    }
-    if (xpCounterRef.current.value === targetXp) {
-      return;
-    }
-
-    // スロットっぽく小刻みに増えるように、ステップ状のイージングを使う
-    xpTweenRef.current = gsap.to(xpCounterRef.current, {
-      value: targetXp,
-      duration: 0.6,
-      ease: "steps(24)",
-      onUpdate: () => {
-        setAnimatedXp(Math.round(xpCounterRef.current.value));
-      },
-    });
-
-    return () => {
-      if (xpTweenRef.current) {
-        xpTweenRef.current.kill();
-      }
-    };
-  }, [sessionGainedXp, prefersReducedMotion]);
 
   // XPが増えた直後だけ強調演出を入れる
   useEffect(() => {
