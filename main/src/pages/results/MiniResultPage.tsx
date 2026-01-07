@@ -14,6 +14,8 @@ import {isYearKey} from "@/pages/stages/stageConstants";
 
 import MiniResultPageModal from './ResultModal/MiniResultPageModal';
 import { MiniResultRankCard } from "./components/MiniResultRankCard";
+import { MiniResultSummaryCard } from "./components/MiniResultSummaryCard";
+import { MissedWordsPanel } from "./components/MissedWordsPanel";
 
 export type WrongWordStat = {
   word: string;
@@ -462,73 +464,28 @@ export default function MiniResultPage() {
                 const toneClass = tone ? toneStyles[tone] : '';
 
                 return (
-                  <div
+                  <MiniResultSummaryCard
                     key={label}
-                    className='flex min-w-0 flex-col gap-2 rounded-2xl border border-white/10 bg-[#0f1524] p-4'
-                  >
-                    <p className={`text-xs ${palette.muted} sm:text-sm`}>
-                      {label}
-                    </p>
-                    <div
-                      className={`text-2xl font-semibold tracking-tight sm:text-3xl ${toneClass}`}
-                    >
-                      {value}
-                    </div>
-                  </div>
+                    label={label}
+                    value={value}
+                    mutedClass={palette.muted}
+                    toneClass={toneClass}
+                  />
                 );
               })}
             </section>
 
             <section className='order-2 mb-0 grid w-full min-w-0 grid-cols-1 gap-6 sm:order-3 lg:grid-cols-3'>
-              <div className='order-2 min-w-0 rounded-2xl border border-white/10 bg-[#0f1524] p-5 lg:order-1 lg:col-span-2'>
-                <div className='mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between'>
-                  <div>
-                    <h2
-                      className={`text-base font-semibold ${palette.highlight} sm:text-lg`}
-                    >
-                      Missed words list
-                    </h2>
-                  </div>
-                  {/* <button
-                    type="button"
-                    className={`inline-flex items-center gap-2 rounded-xl border border-[#f2c97d33] px-3 py-1.5 text-xs font-semibold ${palette.accent} transition hover:border-[#f2c97d] hover:text-[#f7e2bd] sm:px-4 sm:py-2 sm:text-sm`}>
-                    <span aria-hidden="true">★</span>
-                    Targeted practice
-                  </button> */}
-                </div>
-                <div className='grid grid-cols-1 gap-2.5 sm:grid-cols-2'>
-                  {hasNoWrongWords ? (
-                    <h1 className={`col-span-full text-sm ${palette.muted}`}>
-                      No missed words this time. Nice work!
-                    </h1>
-                  ) : (
-                    wrongWordsTop.map(({word, meaning}) => {
-                      return (
-                        <div
-                          key={word}
-                          className='flex items-center justify-between gap-3 rounded-xl border border-white/5 bg-[#262335] px-3 py-2.5 text-left text-sm transition sm:px-4 sm:py-3'
-                        >
-                          <span className={`font-medium ${palette.negative}`}>
-                            {word}
-                          </span>
-                          <span className='truncate text-xs text-white/70'>
-                            {meaning}
-                          </span>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-                {incorrect.length > 6 && (
-                  <button
-                    onClick={() => setIsModalOpen(true)}
-                    type='button'
-                    className={`button-pressable mt-4 block w-full text-sm font-semibold ${palette.accent} transition hover:text-[#f7e2bd]`}
-                  >
-                    View more...
-                  </button>
-                )}
-              </div>
+              <MissedWordsPanel
+                highlightClass={palette.highlight}
+                mutedClass={palette.muted}
+                negativeClass={palette.negative}
+                accentClass={palette.accent}
+                wrongWords={wrongWordsTop}
+                hasNoWrongWords={hasNoWrongWords}
+                hasMore={incorrect.length > 6}
+                onOpenModal={() => setIsModalOpen(true)}
+              />
 
               <MiniResultRankCard
                 palette={palette}
