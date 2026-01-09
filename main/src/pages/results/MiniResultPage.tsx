@@ -1,20 +1,25 @@
-import {useTestResults} from '../states/useTestResults';
+import { useTestResults } from "../states/useTestResults";
 
-import {type ReactNode, useMemo, useState} from "react";
+import { type ReactNode, useMemo, useState } from "react";
 
-import {useLocation, useNavigate} from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 
-import {QuickStartButton} from '@/components/buttons/QuickStartButton';
-import {AppLayout} from '@/components/layout/AppLayout';
-import {calculateLevelProgress} from '@/features/results/scoring';
-import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
+import { QuickStartButton } from "@/components/buttons/QuickStartButton";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { calculateLevelProgress } from "@/features/results/scoring";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useMiniResultXpAnimation } from "./hooks/useMiniResultXpAnimation";
 
-import MiniResultPageModal from './ResultModal/MiniResultPageModal';
+import MiniResultPageModal from "./ResultModal/MiniResultPageModal";
 import { MiniResultRankCard } from "./components/MiniResultRankCard";
 import { MiniResultSummaryCard } from "./components/MiniResultSummaryCard";
 import { MissedWordsPanel } from "./components/MissedWordsPanel";
-import { buildWrongWordStats, getRankLetter, getStageListPath, type WrongWordStat } from "./miniResultUtils";
+import {
+  buildWrongWordStats,
+  getRankLetter,
+  getStageListPath,
+  type WrongWordStat,
+} from "./miniResultUtils";
 
 export type { WrongWordStat } from "./miniResultUtils";
 
@@ -25,14 +30,14 @@ export default function MiniResultPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const palette = {
-    base: 'text-[#f5f6ff]',
-    muted: 'text-[#f2c97d]',
-    subtle: 'text-[#9499b1]',
-    accent: 'text-[#f2c97d]',
-    highlight: 'text-[#f2c97d]', // text-[#f7e2bd]
-    positive: 'text-[#9fe0c8]',
-    negative: 'text-[#f1a5b2]',
-    caution: 'text-[#f5d3a6]',
+    base: "text-[#f5f6ff]",
+    muted: "text-[#f2c97d]",
+    subtle: "text-[#9499b1]",
+    accent: "text-[#f2c97d]",
+    highlight: "text-[#f2c97d]", // text-[#f7e2bd]
+    positive: "text-[#9fe0c8]",
+    negative: "text-[#f1a5b2]",
+    caution: "text-[#f5d3a6]",
   } as const;
 
   const toneStyles = {
@@ -44,11 +49,10 @@ export default function MiniResultPage() {
 
   type ToneKey = keyof typeof toneStyles;
 
-  const {correct, incorrect, totalXp, sessionHistory} = useTestResults();
+  const { correct, incorrect, totalXp } = useTestResults();
 
   const totalAnswer = correct.length + incorrect.length;
-  const correctRate =
-    totalAnswer === 0 ? 0 : Math.round((correct.length / totalAnswer) * 100);
+  const correctRate = totalAnswer === 0 ? 0 : Math.round((correct.length / totalAnswer) * 100);
   const incorrectNumber = incorrect.length;
 
   interface ResultLocationState {
@@ -75,18 +79,18 @@ export default function MiniResultPage() {
     tone?: ToneKey;
   }> = [
     {
-      label: 'Section accuracy',
+      label: "Section accuracy",
       value: `${correctRate}%`,
-      tone: 'positive',
+      tone: "positive",
     },
     {
-      label: 'Missed words',
+      label: "Missed words",
       value: `${incorrectNumber}`,
-      tone: 'negative',
+      tone: "negative",
     },
     {
-      label: 'Badges earned',
-      value: <span className='text-sm text-white/60'>secret...</span>,
+      label: "Badges earned",
+      value: <span className="text-sm text-white/60">secret...</span>,
     },
   ];
 
@@ -98,14 +102,14 @@ export default function MiniResultPage() {
   }, [wrongWordsAll]);
 
   // 直近のステージ情報から戻り先の年度を推定する
-  const stageListPath = useMemo(() => getStageListPath(sessionHistory), [sessionHistory]);
+  const stageListPath = getStageListPath();
 
   const r = 52;
   const circumference = 2 * Math.PI * r;
 
   // Slightly scale the layout down on mobile to keep it within the viewport
   const contentWrapperClass =
-    'flex w-full max-w-[100vw] min-w-0 flex-col gap-6 pb-4 text-left text-[#f5f6ff] max-h-[calc(100dvh-4.5rem)] origin-top scale-[0.94] sm:scale-100 sm:gap-8 sm:pb-6';
+    "flex w-full max-w-[100vw] min-w-0 flex-col gap-6 pb-4 text-left text-[#f5f6ff] max-h-[calc(100dvh-4.5rem)] origin-top scale-[0.94] sm:scale-100 sm:gap-8 sm:pb-6";
 
   const hasNoWrongWords = wrongWordsTop.length === 0;
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -132,7 +136,7 @@ export default function MiniResultPage() {
   const dashOffset = circumference * (1 - displayProgress);
 
   const results = () => {
-    navigate('/results');
+    navigate("/results");
   };
 
   const goStageList = () => {
@@ -141,7 +145,7 @@ export default function MiniResultPage() {
 
   const rankInfo = {
     letter: getRankLetter(level),
-    title: 'AURORA KNIGHT',
+    title: "AURORA KNIGHT",
     level: level,
     nextXp: xpTillNextLevel,
   };
@@ -149,32 +153,32 @@ export default function MiniResultPage() {
   return (
     <>
       <AppLayout>
-        <div className='relative flex w-full justify-center overflow-y-auto px-4 sm:overflow-hidden sm:px-6 lg:px-8'>
-          <div className='fixed bottom-6 right-6 z-20 w-[6rem]'>
-            <QuickStartButton onClick={() => navigate('/')} label='Home' />
+        <div className="relative flex w-full justify-center overflow-y-auto px-4 sm:overflow-hidden sm:px-6 lg:px-8">
+          <div className="fixed bottom-6 right-6 z-20 w-[6rem]">
+            <QuickStartButton onClick={() => navigate("/")} label="Home" />
           </div>
           <div className={contentWrapperClass}>
-            <section className='order-1 relative w-full space-y-2 pt-2 sm:pt-3'>
-              <h1 className='text-center text-xl font-bold tracking-tight text-[#f2c97d] sm:text-3xl'>
+            <section className="order-1 relative w-full space-y-2 pt-2 sm:pt-3">
+              <h1 className="text-center text-xl font-bold tracking-tight text-[#f2c97d] sm:text-3xl">
                 RESULT
               </h1>
-              <div className='absolute right-0 top-1/2 flex -translate-y-1/2 flex-row gap-2'>
+              <div className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-row gap-2">
                 <QuickStartButton
                   onClick={() => results()}
-                  label='Results'
-                  className='!w-[7rem] !px-5 !py-2.5 text-xs tracking-[0.2em]'
+                  label="Results"
+                  className="!w-[7rem] !px-5 !py-2.5 text-xs tracking-[0.2em]"
                 />
                 <QuickStartButton
                   onClick={goStageList}
-                  label='Stage'
-                  className='!w-[7rem] !px-5 !py-2.5 text-xs tracking-[0.2em]'
+                  label="Stage"
+                  className="!w-[7rem] !px-5 !py-2.5 text-xs tracking-[0.2em]"
                 />
               </div>
             </section>
 
-            <section className='order-3 grid w-full min-w-0 grid-cols-1 gap-4 sm:order-2 sm:grid-cols-3'>
-              {summaryCards.map(({label, value, tone}) => {
-                const toneClass = tone ? toneStyles[tone] : '';
+            <section className="order-3 grid w-full min-w-0 grid-cols-1 gap-4 sm:order-2 sm:grid-cols-3">
+              {summaryCards.map(({ label, value, tone }) => {
+                const toneClass = tone ? toneStyles[tone] : "";
 
                 return (
                   <MiniResultSummaryCard
@@ -188,7 +192,7 @@ export default function MiniResultPage() {
               })}
             </section>
 
-            <section className='order-2 mb-0 grid w-full min-w-0 grid-cols-1 gap-6 sm:order-3 lg:grid-cols-3'>
+            <section className="order-2 mb-0 grid w-full min-w-0 grid-cols-1 gap-6 sm:order-3 lg:grid-cols-3">
               <MissedWordsPanel
                 highlightClass={palette.highlight}
                 mutedClass={palette.muted}

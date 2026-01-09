@@ -48,4 +48,3 @@ createRoot(container).render(
     </UserConfigProvider>
   </StrictMode>
 );
-
