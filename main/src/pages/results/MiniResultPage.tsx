@@ -24,9 +24,7 @@ export default function MiniResultPage() {
   const getStageListPath = (): string => {
     const { year } = useParams();
 
-    const stagePath = year?.split("/")[2];
-
-    return `/stages/${stagePath}`;
+    return `/stages/${year}`;
   };
 
   // Placeholder stats; replace with real test results later
