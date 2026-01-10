@@ -1,33 +1,30 @@
-import {useCallback, useEffect, useReducer} from "react";
+import { useCallback, useEffect, useReducer } from "react";
 
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import {AppLayout} from "@/components/layout/AppLayout";
-import {Modal} from "@/components/modal/Modal";
-import {QuickStartButton} from "@/components/buttons/QuickStartButton";
-import {type StageProgressState} from "@/features/stages/stageProgressStore";
-import type {StageDefinition} from "@/features/stages/stageUtils";
-import {useUserConfig} from "@/pages/tests/test_page/hooks/useUserConfig";
-import {initialStageSelectState, stageSelectReducer} from "@/pages/stages/stageSelectState";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { Modal } from "@/components/modal/Modal";
+import { QuickStartButton } from "@/components/buttons/QuickStartButton";
+import { type StageProgressState } from "@/features/stages/stageProgressStore";
+import type { StageDefinition } from "@/features/stages/stageUtils";
+import { useUserConfig } from "@/pages/tests/test_page/hooks/useUserConfig";
+import { initialStageSelectState, stageSelectReducer } from "@/pages/stages/stageSelectState";
 import { getAllRegistry } from "@/hooks/getAllRegistry";
 
-import {useStageDefinitions} from "./hooks/useStageDefinitions";
+import { useStageDefinitions } from "./hooks/useStageDefinitions";
 import { getYearLabels, isYearKey } from "./stageConstants";
-import {StageGrid} from "./components/StageGrid";
-import {StageLoadingOverlay} from "./components/StageLoadingOverlay";
-import {StageSelectHeader} from "./components/StageSelectHeader";
-import {StageStartModal} from "./components/StageTile";
-import {useStageProgressSync} from "./hooks/useStageProgressSync";
+import { StageGrid } from "./components/StageGrid";
+import { StageLoadingOverlay } from "./components/StageLoadingOverlay";
+import { StageSelectHeader } from "./components/StageSelectHeader";
+import { StageStartModal } from "./components/StageTile";
+import { useStageProgressSync } from "./hooks/useStageProgressSync";
 import { useStageStatusMap } from "./hooks/useStageStatusMap";
 
 export default function StageSelectPage() {
-  const {year: yearParam} = useParams();
+  const { year: yearParam } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const [state, dispatch] = useReducer(
-    stageSelectReducer,
-    initialStageSelectState,
-  );
+  const [state, dispatch] = useReducer(stageSelectReducer, initialStageSelectState);
   // フラット系デザインの基準カラー（メインは #f2c97d）
   const primaryColor = "#f2c97d";
   const primaryDeep = "#d4a34d";
@@ -40,7 +37,6 @@ export default function StageSelectPage() {
   const tileGap = 24;
 
   const registry = getAllRegistry();
-  const yearLabels = getYearLabels();
   // URLの年度が有効かチェックして、無効ならデフォルトに切り替える
   const isValidYear = typeof yearParam === "string" && isYearKey(yearParam);
 
@@ -48,13 +44,14 @@ export default function StageSelectPage() {
   const fallbackYear = registry[0]?.key ?? "reiwa3";
   const year = isValidYear ? yearParam : fallbackYear;
   const yearEntry = registry.find((entry) => entry.key === year);
+  const yearLabels = getYearLabels();
   const yearLabel = yearLabels[year] ?? yearEntry?.label ?? year;
-  // ユーザー設定の「1ステージあたりの問題数」を取得する
-  const {config} = useUserConfig();
-  const baseQuestionCount =
-    config.years[year]?.maxCount ?? yearEntry?.defaultQuestionCount ?? 10;
 
-  const {status, stages} = useStageDefinitions({
+  // ユーザー設定の「1ステージあたりの問題数」を取得する
+  const { config } = useUserConfig();
+  const baseQuestionCount = config.years[year]?.maxCount ?? yearEntry?.defaultQuestionCount ?? 10;
+
+  const { status, stages } = useStageDefinitions({
     year,
     yearLabel,
     baseQuestionCount,
@@ -65,9 +62,9 @@ export default function StageSelectPage() {
   // 進捗はマウント時にlocalStorageから読み込み、reducerのstateで更新する
   const handleProgressSync = useCallback(
     (progress: StageProgressState) => {
-      dispatch({type: "setStageProgress", progress});
+      dispatch({ type: "setStageProgress", progress });
     },
-    [dispatch],
+    [dispatch]
   );
 
   useStageProgressSync({
@@ -78,11 +75,11 @@ export default function StageSelectPage() {
   // 画面に入ったタイミングでアニメーションを開始
   useEffect(() => {
     const raf = requestAnimationFrame(() => {
-      dispatch({type: "setVisible", isVisible: true});
+      dispatch({ type: "setVisible", isVisible: true });
     });
     return () => {
       cancelAnimationFrame(raf);
-      dispatch({type: "setVisible", isVisible: false});
+      dispatch({ type: "setVisible", isVisible: false });
     };
   }, []);
 
@@ -95,7 +92,7 @@ export default function StageSelectPage() {
 
   // ステージ開始ボタン
   const handleStartStage = (stage: StageDefinition) => {
-    dispatch({type: "selectStage", stage: null});
+    dispatch({ type: "selectStage", stage: null });
     navigate(`/stages/${year}/${stage.stageNumber}`);
   };
 
@@ -104,10 +101,7 @@ export default function StageSelectPage() {
     return (
       <AppLayout>
         <div className="flex w-full flex-col items-center gap-6">
-          <QuickStartButton
-            onClick={() => navigate("/")}
-            label="Home"
-          />
+          <QuickStartButton onClick={() => navigate("/")} label="Home" />
           <div className="rounded-2xl border border-white/10 bg-[#0f1524] px-6 py-4 text-center text-sm text-white/70">
             年度が見つからないので、メニューに戻ります。
           </div>
@@ -121,9 +115,7 @@ export default function StageSelectPage() {
       <AppLayout mainClassName="overflow-y-auto overscroll-y-contain">
         <div
           className={`mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 transition-all duration-500 ease-out sm:px-6 ${
-            state.isVisible
-              ? "translate-y-0 opacity-100"
-              : "translate-y-4 opacity-0"
+            state.isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
           }`}
         >
           <StageSelectHeader yearLabel={yearLabel} />
@@ -141,9 +133,7 @@ export default function StageSelectPage() {
                 tileHeight={tileHeight}
                 tileIconHeight={tileIconHeight}
                 tileGap={tileGap}
-                onSelectStage={(stage) =>
-                  dispatch({type: "selectStage", stage})
-                }
+                onSelectStage={(stage) => dispatch({ type: "selectStage", stage })}
               />
             )}
           </section>
@@ -151,7 +141,7 @@ export default function StageSelectPage() {
 
         <Modal
           open={Boolean(state.selectedStage)}
-          onClose={() => dispatch({type: "selectStage", stage: null})}
+          onClose={() => dispatch({ type: "selectStage", stage: null })}
           content={
             state.selectedStage ? (
               <StageStartModal
@@ -168,10 +158,7 @@ export default function StageSelectPage() {
 
       {/* 画面スクロール中も常に右下に表示したいので画面固定で配置 */}
       <div className="fixed bottom-6 right-6 z-50">
-        <QuickStartButton
-          onClick={() => navigate("/")}
-          label="Home"
-        />
+        <QuickStartButton onClick={() => navigate("/")} label="Home" />
       </div>
     </>
   );

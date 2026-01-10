@@ -1,23 +1,12 @@
 // 単語テストの一問分を表す型。外部のデータローダーから入ってくる
 import { type QuizQuestion } from "../../../../data/vocabLoader";
 
-import {
-  type MouseEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { QuickStartButton } from "@/components/buttons/QuickStartButton";
-import {
-  XP_PER_CORRECT,
-  XP_PER_INCORRECT,
-  getExperiencePoints,
-} from "@/features/results/scoring";
+import { XP_PER_CORRECT, XP_PER_INCORRECT, getExperiencePoints } from "@/features/results/scoring";
 import {
   recordStageAttempt,
   recordStageResult,
@@ -100,10 +89,7 @@ export default function TestPageLayout({
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // アクセシビリティ設定を反映した結果の真偽値
   const prefersReducedMotion = usePrefersReducedMotion();
-  const { animatedXp, resetXpCounter } = useXpCounter(
-    sessionGainedXp,
-    prefersReducedMotion,
-  );
+  const { animatedXp, resetXpCounter } = useXpCounter(sessionGainedXp, prefersReducedMotion);
   const { gainToast, toastRef, toastPositionStyle, queueToast } = useAnswerToast({
     prefersReducedMotion,
     toastDelay: TOAST_DELAY,
@@ -161,24 +147,18 @@ export default function TestPageLayout({
     const incorrectCount = incorrect.length;
     const totalAnswered = correctCount + incorrectCount;
     // ステージ番号があるときだけ初回クリアボーナスを計算する
-    const shouldCheckFirstClear =
-      typeof stageId === "string" && typeof stageNumber === "number";
+    const shouldCheckFirstClear = typeof stageId === "string" && typeof stageNumber === "number";
     const currentStageId = shouldCheckFirstClear ? stageId : undefined;
-    const previousEntry = currentStageId
-      ? loadStageProgress()[currentStageId]
-      : undefined;
+    const previousEntry = currentStageId ? loadStageProgress()[currentStageId] : undefined;
     // クリア判定は正答率90%以上。問題が0ならクリア扱いにしない
     const accuracy = totalAnswered === 0 ? 0 : correctCount / totalAnswered;
-    const isCleared =
-      shouldCheckFirstClear && accuracy >= STAGE_CLEAR_THRESHOLD;
+    const isCleared = shouldCheckFirstClear && accuracy >= STAGE_CLEAR_THRESHOLD;
     const isFirstClear = shouldCheckFirstClear
       ? isFirstStageClear({ previousEntry, isCleared })
       : false;
     // 初回クリア時だけボーナスEXPを付与する
     const firstClearBonusExp =
-      shouldCheckFirstClear && isFirstClear
-        ? getFirstClearBonusExp(stageNumber)
-        : 0;
+      shouldCheckFirstClear && isFirstClear ? getFirstClearBonusExp(stageNumber) : 0;
     const gainedXp = baseGainedXp + firstClearBonusExp;
     applyXp(gainedXp); // 得た経験値を含めた累計 - 累計 = 今回得た経験値
     const updatedTotalXp = nextTotalXp + firstClearBonusExp;
@@ -225,6 +205,9 @@ export default function TestPageLayout({
   const navigate = useNavigate();
 
   // すべての問題を解いたときに成績を表示させる
+
+  // navigateで変数として持たせてminiResulsページからstage画面に戻るときのパスに使う
+  const { year } = useParams();
   useEffect(() => {
     if (currentIndex < totalQuestions) return;
     // 二重実行防止のガードはテスト対象外にする
@@ -234,7 +217,8 @@ export default function TestPageLayout({
     const { gainedXp, updatedTotalXp, durationMs } = finishTest();
 
     hasFinishedRef.current = true;
-    navigate("/results/mini", {
+
+    navigate(`/results/mini/${year}`, {
       state: { gainedXp, updatedTotalXp, durationMs },
     });
   }, [currentIndex, totalQuestions, finishTest, navigate]);

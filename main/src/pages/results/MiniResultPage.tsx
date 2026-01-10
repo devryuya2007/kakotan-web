@@ -2,7 +2,7 @@ import { useTestResults } from "../states/useTestResults";
 
 import { type ReactNode, useMemo, useState } from "react";
 
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { QuickStartButton } from "@/components/buttons/QuickStartButton";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -14,18 +14,21 @@ import MiniResultPageModal from "./ResultModal/MiniResultPageModal";
 import { MiniResultRankCard } from "./components/MiniResultRankCard";
 import { MiniResultSummaryCard } from "./components/MiniResultSummaryCard";
 import { MissedWordsPanel } from "./components/MissedWordsPanel";
-import {
-  buildWrongWordStats,
-  getRankLetter,
-  getStageListPath,
-  type WrongWordStat,
-} from "./miniResultUtils";
+import { buildWrongWordStats, getRankLetter, type WrongWordStat } from "./miniResultUtils";
 
 export type { WrongWordStat } from "./miniResultUtils";
 
 // Temporary mini result card shown right after a test
 
 export default function MiniResultPage() {
+  const getStageListPath = (): string => {
+    const { year } = useParams();
+
+    const stagePath = year?.split("/")[2];
+
+    return `/stages/${stagePath}`;
+  };
+
   // Placeholder stats; replace with real test results later
   const [isModalOpen, setIsModalOpen] = useState(false);
 

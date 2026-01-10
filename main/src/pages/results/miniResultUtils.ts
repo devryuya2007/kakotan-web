@@ -45,15 +45,6 @@ export const buildWrongWordStats = (incorrect: QuizQuestion[]): WrongWordStat[] 
   });
 };
 
-// 直近のステージ情報から戻り先の年度を推定する
-export const getStageListPath = (): string => {
-  const stagePath = window.location.pathname.split("/")[2];
-
-  if (!stagePath) return "/menu";
-
-  return `/stages/${stagePath}`;
-};
-
 // レベル帯に応じたランク文字を決める
 export const getRankLetter = (level: number): string => {
   if (level === 99) return "SS";
