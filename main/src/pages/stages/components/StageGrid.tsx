@@ -65,6 +65,7 @@ export function StageGrid({
             delayMs={index * 60}
             onSelect={() => onSelectStage(stage)}
           />
+          // </div>
         );
       })}
     </div>
