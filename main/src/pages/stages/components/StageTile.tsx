@@ -1,10 +1,9 @@
-import { useId, useRef, useState } from "react";
+import { useId, useState } from "react";
 
 import type { StageProgressEntry } from "@/features/stages/stageProgressStore";
 import type { StageDefinition } from "@/features/stages/stageUtils";
 import { getStageButtonClass, getStageIconColors, getStageLabelClass } from "./stageTileStyles";
 import useStageUnlockAnimation from "../hooks/useStageUnlockAnimation";
-import { useOverlayLock } from "@/hooks/useOverlayLook";
 import OverlayLock from "@/hooks/overlayLock";
 
 interface StageTileProps {
