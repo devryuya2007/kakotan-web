@@ -1,9 +1,11 @@
-import { useId, useRef } from "react";
+import { useId, useRef, useState } from "react";
 
 import type { StageProgressEntry } from "@/features/stages/stageProgressStore";
 import type { StageDefinition } from "@/features/stages/stageUtils";
 import { getStageButtonClass, getStageIconColors, getStageLabelClass } from "./stageTileStyles";
 import useStageUnlockAnimation from "../hooks/useStageUnlockAnimation";
+import { useOverlayLock } from "@/hooks/useOverlayLook";
+import OverlayLock from "@/hooks/overlayLock";
 
 interface StageTileProps {
   stage: StageDefinition;
@@ -56,18 +58,20 @@ export function StageTile({
   const label = `Stage ${String(stage.stageNumber).padStart(2, "0")}`;
   const variant: StageIconProps["variant"] = isCleared ? "cleared" : isActive ? "active" : "locked";
 
-  let isFirst = useRef(false);
+  const [isFirst, setIsFirst] = useState(true);
   const onComplete = () => {
-    isFirst.current = true;
+    setIsFirst(false);
   };
 
   const { activeStageRef } = useStageUnlockAnimation({
-    isFirstClear: isActive,
+    isFirstClear: isFirst,
     onComplete: onComplete,
   });
 
   return (
     <div>
+      {isFirst && <OverlayLock />}
+
       <button
         ref={isActive ? activeStageRef : undefined}
         type="button"
