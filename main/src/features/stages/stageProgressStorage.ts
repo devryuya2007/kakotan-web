@@ -2,6 +2,14 @@ import type { StageProgressEntry, StageProgressState } from "./stageProgressType
 
 // 保存キー。バージョンを付けて将来の拡張にも備える
 const STAGE_PROGRESS_STORAGE_KEY = "stage-progress:v1";
+// 初回クリア演出などで使う「直近のクリア情報」を保存するキー
+const STAGE_CLEAR_EVENT_STORAGE_KEY = "stage-clear-event:v1";
+
+// 直近のクリア情報を保存するための型
+export interface StageClearEvent {
+  stageId: string;
+  clearedAt: number;
+}
 
 // localStorageから進捗を安全に読み込む
 export const loadStageProgress = (): StageProgressState => {
@@ -61,5 +69,57 @@ export const saveStageProgress = (state: StageProgressState) => {
     );
   } catch (error) {
     console.warn("Failed to persist stage progress", error);
+  }
+};
+
+// 直近のクリア情報を読み込む（演出やボーナス判定に使う）
+export const loadStageClearEvent = (): StageClearEvent | null => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const raw = window.localStorage.getItem(STAGE_CLEAR_EVENT_STORAGE_KEY);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as Partial<StageClearEvent>;
+    if (!parsed || typeof parsed !== "object") {
+      return null;
+    }
+
+    if (typeof parsed.stageId !== "string") return null;
+    if (typeof parsed.clearedAt !== "number") return null;
+
+    return {
+      stageId: parsed.stageId,
+      clearedAt: parsed.clearedAt,
+    };
+  } catch {
+    return null;
+  }
+};
+
+// 直近のクリア情報を保存する（初回クリア時だけ使う想定）
+export const saveStageClearEvent = (event: StageClearEvent) => {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.setItem(
+      STAGE_CLEAR_EVENT_STORAGE_KEY,
+      JSON.stringify(event)
+    );
+  } catch {
+    return;
+  }
+};
+
+// 直近のクリア情報を削除する（演出を消したいときに使う）
+export const clearStageClearEvent = () => {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.removeItem(STAGE_CLEAR_EVENT_STORAGE_KEY);
+  } catch {
+    return;
   }
 };

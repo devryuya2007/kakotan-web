@@ -30,7 +30,7 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "menu", element: <MenuPage /> },
       { path: "results", element: <ResultsPage /> },
-      { path: "results/mini", element: <MiniResultPage /> },
+      { path: "results/mini/:year?", element: <MiniResultPage /> },
       { path: "stages/:year", element: <StageSelectPage /> },
       { path: "stages/:year/:stageNumber", element: <StageTestPage /> },
       { path: "tests/:year", element: <YearTestPage /> },
@@ -48,4 +48,3 @@ createRoot(container).render(
     </UserConfigProvider>
   </StrictMode>
 );
-

@@ -1,6 +1,6 @@
-import {createContext} from 'react';
+import { createContext } from "react";
 
-import {type QuizQuestion} from '@/data/vocabLoader';
+import { type QuizQuestion } from "@/data/vocabLoader";
 
 export interface SessionRecord {
   startedAt: number;
@@ -26,6 +26,4 @@ export type TestResultsContextValue = {
   addSession: (session: SessionRecord) => void;
 };
 
-export const TestResultsContext = createContext<
-  TestResultsContextValue | undefined
->(undefined);
+export const TestResultsContext = createContext<TestResultsContextValue | undefined>(undefined);

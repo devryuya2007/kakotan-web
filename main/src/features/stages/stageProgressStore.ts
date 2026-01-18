@@ -1,8 +1,29 @@
 import type { StageProgressEntry, StageProgressState } from "./stageProgressTypes";
-import { loadStageProgress, saveStageProgress } from "./stageProgressStorage";
+import {
+  loadStageProgress,
+  saveStageClearEvent,
+  saveStageProgress,
+} from "./stageProgressStorage";
 
 export type { StageProgressEntry, StageProgressState } from "./stageProgressTypes";
-export { loadStageProgress, saveStageProgress } from "./stageProgressStorage";
+export {
+  clearStageClearEvent,
+  loadStageClearEvent,
+  loadStageProgress,
+  saveStageClearEvent,
+  saveStageProgress,
+  type StageClearEvent,
+} from "./stageProgressStorage";
+export {
+  DEFAULT_STAGE_CLEAR_REWARD_CONFIG,
+  buildStageClearReward,
+  getFirstClearBonusExp,
+  isFirstStageClear,
+  type StageClearReward,
+  type StageClearRewardConfig,
+  type StageClearRewardInput,
+  type StageFirstClearInput,
+} from "./stageClearReward";
 export {
   buildStageStatusMap,
   buildStageUnlockMap,
@@ -58,14 +79,19 @@ export const recordStageResult = ({
   const accuracy =
     totalCount === 0 ? 0 : Math.min(1, correctCount / totalCount);
   const previous = currentState[stageId];
+  // クリア済みだったかを先に確保する（初回判定に使う）
+  const wasCleared = Boolean(previous?.cleared);
   const cleared = accuracy >= STAGE_CLEAR_THRESHOLD;
+  // 初回クリア時だけ演出に使う情報を保存する
+  const isFirstClear = cleared && !wasCleared;
+  const now = Date.now();
 
   const nextEntry: StageProgressEntry = {
     stageId,
     bestAccuracy: Math.max(previous?.bestAccuracy ?? 0, accuracy),
     cleared: Boolean(previous?.cleared) || cleared,
     attempts: (previous?.attempts ?? 0) + 1,
-    lastPlayedAt: Date.now(),
+    lastPlayedAt: now,
     lastAccuracy: accuracy,
     // ステージ結果が保存できた時点で挑戦済み扱いにする
     hasAttempted: true,
@@ -77,5 +103,8 @@ export const recordStageResult = ({
   };
 
   saveStageProgress(nextState);
+  if (isFirstClear) {
+    saveStageClearEvent({ stageId, clearedAt: now });
+  }
   return nextState;
 };

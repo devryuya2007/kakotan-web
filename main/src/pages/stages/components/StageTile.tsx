@@ -1,8 +1,10 @@
-import { useId } from "react";
+import { useId, useState } from "react";
 
 import type { StageProgressEntry } from "@/features/stages/stageProgressStore";
 import type { StageDefinition } from "@/features/stages/stageUtils";
 import { getStageButtonClass, getStageIconColors, getStageLabelClass } from "./stageTileStyles";
+import useStageUnlockAnimation from "../hooks/useStageUnlockAnimation";
+import OverlayLock from "@/hooks/overlayLock";
 
 interface StageTileProps {
   stage: StageDefinition;
@@ -53,37 +55,46 @@ export function StageTile({
   onSelect,
 }: StageTileProps) {
   const label = `Stage ${String(stage.stageNumber).padStart(2, "0")}`;
-  const variant: StageIconProps["variant"] = isCleared
-    ? "cleared"
-    : isActive
-      ? "active"
-      : "locked";
+  const variant: StageIconProps["variant"] = isCleared ? "cleared" : isActive ? "active" : "locked";
+
+  const [isFirst, setIsFirst] = useState(true);
+  const onComplete = () => {
+    setIsFirst(false);
+  };
+
+  const { activeStageRef } = useStageUnlockAnimation({
+    isFirstClear: isFirst,
+    onComplete: onComplete,
+  });
 
   return (
-    <button
-      type="button"
-      onClick={onSelect}
-      disabled={isLocked}
-      className={getStageButtonClass(isLocked)}
-      style={{
-        width: `${tileWidth}px`,
-        height: `${tileHeight}px`,
-        transitionDelay: `${delayMs}ms`,
-      }}
-    >
-      <StageIcon
-        variant={variant}
-        stageNumber={stage.stageNumber}
-        width={tileWidth}
-        height={tileIconHeight}
-        primaryColor={primaryColor}
-        primaryDeep={primaryDeep}
-        primaryGlow={primaryGlow}
-      />
-      <span className={getStageLabelClass({ isLocked, isCleared })}>
-        {label}
-      </span>
-    </button>
+    <div>
+      {isFirst && <OverlayLock />}
+
+      <button
+        ref={isActive ? activeStageRef : undefined}
+        type="button"
+        onClick={onSelect}
+        disabled={isLocked}
+        className={getStageButtonClass(isLocked)}
+        style={{
+          width: `${tileWidth}px`,
+          height: `${tileHeight}px`,
+          transitionDelay: `${delayMs}ms`,
+        }}
+      >
+        <StageIcon
+          variant={variant}
+          stageNumber={stage.stageNumber}
+          width={tileWidth}
+          height={tileIconHeight}
+          primaryColor={primaryColor}
+          primaryDeep={primaryDeep}
+          primaryGlow={primaryGlow}
+        />
+        <span className={getStageLabelClass({ isLocked, isCleared })}>{label}</span>
+      </button>
+    </div>
   );
 }
 
@@ -184,21 +195,14 @@ export function StageStartModal({
 
   return (
     <div className="space-y-4 text-left">
-      <p className="text-xs uppercase tracking-[0.4em] text-white/50">
-        Stage Ready
-      </p>
-      <p className="text-xl font-semibold uppercase text-[#f2c97d]">
-        {stage.title}
-      </p>
+      <p className="text-xs uppercase tracking-[0.4em] text-white/50">Stage Ready</p>
+      <p className="text-xl font-semibold uppercase text-[#f2c97d]">{stage.title}</p>
       <p className="text-sm text-white/70">
-        This stage has {stage.questionCount} questions. Score 90% or higher to
-        clear.
+        This stage has {stage.questionCount} questions. Score 90% or higher to clear.
       </p>
       <p className="text-sm text-white/60">
         Last accuracy:{" "}
-        {hasAttempted && lastAccuracy !== null
-          ? `${lastAccuracy}%`
-          : "Not attempted"}
+        {hasAttempted && lastAccuracy !== null ? `${lastAccuracy}%` : "Not attempted"}
       </p>
       <div className="flex items-center gap-3">
         <div

@@ -1,5 +1,4 @@
 import type { QuizQuestion } from "@/data/vocabLoader";
-import { isYearKey } from "@/pages/stages/stageConstants";
 
 // 間違えた単語の表示に使う型
 export type WrongWordStat = {
@@ -8,10 +7,6 @@ export type WrongWordStat = {
   meaning: string;
   severity: "neutral" | "caution" | "negative";
 };
-
-interface SessionWithStageId {
-  stageId?: string;
-}
 
 // 間違い単語を集計して重みづけする
 export const buildWrongWordStats = (incorrect: QuizQuestion[]): WrongWordStat[] => {
@@ -35,9 +30,7 @@ export const buildWrongWordStats = (incorrect: QuizQuestion[]): WrongWordStat[] 
   });
 
   const talliedEntries = Array.from(mistakeTally.entries());
-  const sortedEntries = [...talliedEntries].sort(
-    (a, b) => b[1].count - a[1].count
-  );
+  const sortedEntries = [...talliedEntries].sort((a, b) => b[1].count - a[1].count);
 
   return sortedEntries.map<WrongWordStat>(([word, data]) => {
     const severity: WrongWordStat["severity"] =
@@ -50,15 +43,6 @@ export const buildWrongWordStats = (incorrect: QuizQuestion[]): WrongWordStat[] 
       severity,
     };
   });
-};
-
-// 直近のステージ情報から戻り先の年度を推定する
-export const getStageListPath = (sessionHistory: SessionWithStageId[]): string => {
-  const latestStageId = sessionHistory[sessionHistory.length - 1]?.stageId ?? null;
-  if (!latestStageId) return "/menu";
-
-  const [maybeYear] = latestStageId.split("-");
-  return isYearKey(maybeYear) ? `/stages/${maybeYear}` : "/menu";
 };
 
 // レベル帯に応じたランク文字を決める
